@@ -1,7 +1,5 @@
 #import "@preview/ctheorems:1.1.3": *
 
-#let lightlightgray = luma(0)
-#let lightgray = luma(0)
 #let auxColor = rgb("#00f")
 
 #let base-text-size = 11pt
@@ -11,7 +9,12 @@
 #let font-code = ("JuliaMono")
 
 #let init(body) = {
-  set page("a4", numbering: "1", number-align: center)
+  set page(
+    "a4",
+    numbering: "1",
+    number-align: center,
+    margin: (left: 40mm, right: 40mm),
+  )
 
   set heading(numbering: "1.1")
 
@@ -36,12 +39,18 @@
   
   show link: set text(fill: auxColor)
 
-  set par(justify: true)
-
-  show: thmrules.with(qed-symbol: [#text(fill: lightgray)[❏]])
+  show: thmrules.with(qed-symbol: [#text[❏]])
 
   set document()
   
+  set par(
+    justify: true,
+    first-line-indent: (
+      all: true,
+      amount: 1em,
+    ),
+  )
+
   body
 
   pagebreak()
@@ -83,7 +92,7 @@
 
   set par(justify: true)
 
-  show: thmrules.with(qed-symbol: [#text(fill: lightgray)[❏]])
+  show: thmrules.with(qed-symbol: [#text  [❏]])
 
   set document(title: title)
 
@@ -110,8 +119,6 @@
 
 #let sqthmbox(
     title,
-    color: lightlightgray,
-    color2: lightgray,
     dash: "solid",
     base: "heading") = thmbox(
   "theorem",
@@ -119,10 +126,10 @@
   base: base,
   inset: (left: 0pt, top: 0pt, bottom: 0pt),
   titlefmt: body => [
-    #text(font: font-alter, size: base-text-size, fill: color2)[*#body*]
+    #text(font: font-alter, size: base-text-size)[*#body*]
   ],
   namefmt: name => [
-    #text(font: font-alter, size: base-text-size, fill: color2)[*(#name)*]
+    #text(font: font-alter, size: base-text-size)[*(#name)*]
   ],
   separator: [
     #h(.4em) 
@@ -133,18 +140,16 @@
 
 #let barthmbox(
     title,
-    color: lightlightgray,
-    color2: lightgray,
     dash: "solid") = thmbox(
   "theorem",
   title,
   radius: 0pt,
   inset: (left: 0pt, top: 0pt, bottom: 0pt),
   titlefmt: body => [
-    #text(font: font-alter, size: base-text-size, fill: color2)[*#body*] 
+    #text(font: font-alter, size: base-text-size)[*#body*] 
   ],
   namefmt: name => [
-    #text(font: font-alter, size: base-text-size, fill: color2)[*(#name)*]
+    #text(font: font-alter, size: base-text-size)[*(#name)*]
   ],
   separator: [
     #h(.4em)
@@ -166,9 +171,9 @@
 
 #let definition = barthmbox("Definition")
 
-#let notation = barthmbox("Notation", color: auxColor, color2: auxColor, dash: "dotted")
+#let notation = barthmbox("Notation", dash: "dotted")
 
-#let remark = barthmbox("Remark", color: auxColor, color2: auxColor, dash: "dotted")
+#let remark = barthmbox("Remark", dash: "dotted")
 
 #let example = barthmbox("Example")
 
@@ -180,16 +185,9 @@
   "proof",
   [_Proof._],
   titlefmt: body => [
-    #text(font: font-alter, size: base-text-size, fill: lightgray)[#body]
+    #text(font: font-alter, size: base-text-size)[#body]
   ],
   separator: [
     #h(.4em)
   ],
 )
-
-#let struct(body) = {
-  block(
-    width: 100%,
-    stroke: (left: (thickness: 1pt, paint: luma(230))),
-    inset: (left: 12pt, top: 5pt, bottom: 8pt))[#body]
-}

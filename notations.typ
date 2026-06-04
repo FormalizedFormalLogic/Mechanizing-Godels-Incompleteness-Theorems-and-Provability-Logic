@@ -37,4 +37,8 @@
 #let sim = $class("unary", \~)$
 
 
+#let Box = $class("unary", square)$
+
+
 #let LogicGL = $sans("GL")$
+#let LogicSFour = $sans("S4")$
