@@ -1,4 +1,5 @@
 #import "@preview/ctheorems:1.1.3": *
+#import "@preview/curryst:0.5.0": prooftree, rule
 
 #let auxColor = rgb("#00f")
 
@@ -6,7 +7,7 @@
 #let font-base = ("libertinus serif", "Shippori Mincho B1")
 #let font-alter = font-base
 #let font-math = ("New Computer Modern Math", "New Computer Modern Sans Math", "libertinus serif")
-#let font-code = ("JuliaMono")
+#let font-code = "JuliaMono"
 
 #let init(body) = {
   set page(
@@ -31,18 +32,18 @@
     outset: (y: 3pt),
     radius: 4pt,
   )
-  
+
   show raw.where(block: true): block.with(
     inset: 10pt,
     radius: 4pt,
   )
-  
+
   show link: set text(fill: auxColor)
 
   show: thmrules.with(qed-symbol: [#text[❏]])
 
   set document()
-  
+
   set par(
     justify: true,
     first-line-indent: (
@@ -54,17 +55,17 @@
   body
 
   pagebreak()
-  
+
   bibliography("references.bib")
 }
 
 #let abst(
-    title: "",
-    subtitle: "",
-    author: "",
-    date: (datetime.today().year(), datetime.today().month(), datetime.today().day()),
-    body
-  ) = {
+  title: "",
+  subtitle: "",
+  author: "",
+  date: (datetime.today().year(), datetime.today().month(), datetime.today().day()),
+  body,
+) = {
   set page(numbering: "1", number-align: center)
 
   set heading(numbering: "1.1")
@@ -82,12 +83,12 @@
     outset: (y: 3pt),
     radius: 4pt,
   )
-  
+
   show raw.where(block: true): block.with(
     inset: 10pt,
     radius: 4pt,
   )
-  
+
   show link: set text(fill: auxColor)
 
   set par(justify: true)
@@ -97,7 +98,7 @@
   set document(title: title)
 
   grid(
-    columns: (1fr),
+    columns: 1fr,
     align: (center + horizon),
     rect(stroke: none)[
       #block(text(weight: 700, 1.75em, title))
@@ -107,7 +108,7 @@
       #pad(
         top: 1em,
         x: 1em,
-        author
+        author,
       )
     ],
     v(1cm),
@@ -118,9 +119,10 @@
 = theorems
 
 #let sqthmbox(
-    title,
-    dash: "solid",
-    base: "heading") = thmbox(
+  title,
+  dash: "solid",
+  base: "heading",
+) = thmbox(
   "theorem",
   title,
   base: base,
@@ -132,21 +134,22 @@
     #text(font: font-alter, size: base-text-size)[*(#name)*]
   ],
   separator: [
-    #h(.4em) 
+    #h(.4em)
   ],
   base_level: 1,
   breakable: true,
 )
 
 #let barthmbox(
-    title,
-    dash: "solid") = thmbox(
+  title,
+  dash: "solid",
+) = thmbox(
   "theorem",
   title,
   radius: 0pt,
   inset: (left: 0pt, top: 0pt, bottom: 0pt),
   titlefmt: body => [
-    #text(font: font-alter, size: base-text-size)[*#body*] 
+    #text(font: font-alter, size: base-text-size)[*#body*]
   ],
   namefmt: name => [
     #text(font: font-alter, size: base-text-size)[*(#name)*]
@@ -167,7 +170,7 @@
 
 #let fact = sqthmbox("Fact")
 
-#let corollary = sqthmbox("Corollary", base: "theorem", )
+#let corollary = sqthmbox("Corollary", base: "theorem")
 
 #let definition = barthmbox("Definition")
 

@@ -17,18 +17,18 @@
       stack(
         Large[Shogo Saito],
         normalsize[Tohoku University \ Mathematical Institute],
-        normalsize[`saito.shogo.q8@dc.tohoku.ac.jp`]
+        normalsize[`saito.shogo.q8@dc.tohoku.ac.jp`],
       ),
       stack(
         Large[Mashu Noguchi],
         normalsize[Kobe Unversity \ Graduate School of System Informatics],
-        normalsize[`251x054x@stu.kobe-u.ac.jp`]
+        normalsize[`251x054x@stu.kobe-u.ac.jp`],
       ),
     ),
     v(4mm),
     large[June 4, 2026],
     v(4mm),
-  )
+  ),
 )
 
 #align(
@@ -41,7 +41,7 @@
       Solovay's arithmetical completeness of $LogicGL$ and related results in Lean4 theorem prover.
     ]),
     v(8mm),
-  )
+  ),
 )
 
 = Introduction
@@ -52,7 +52,7 @@ and in a footnote, he outlined the second incompleteness theorem (G2), which was
 
 Another short but impactful work by Gödel in the early development of intuitionistic propositional logic and modal logic @godelInterpretationIntuitionischenAussagenkalkuls1933 introduced a unary operator $frak(B)$,
 interpreted as "provable somehow", and investigated its behavior.
-From a modern perspective, he observed that the modal operator $Box$ in the modal logic $LogicSFour$ plays a similar role, though it differs in subtle but important ways.
+From a modern perspective, he observed that the modal operator $Box$ in the modal logic $LogicS4$ plays a similar role, though it differs in subtle but important ways.
 Later, some logicians proposed the modal operator $Box$ interpret as a formal provability, i.e. provability predicate, which plays important role in proof of incompleteness theorem.
 The subfield of modal logic under this interpretation is called provability logic.
 The first important result in provability logic is Solovay's arithmetical completeness theorem @solovay1976,
@@ -64,3 +64,5 @@ Our work is carried out in Lean 4, an interactive theorem prover, together with 
 Lean 4 is based on the Calculus of Inductive Constructions (CIC) @moura2021lean,
 and features dependent types, quotient types, and support for noncomputable definitions, making it highly expressive.
 In addition, its powerful metaprogramming infrastructure like aesop @inproceedings enables efficient proof automation and extensibility.
+
+#include "provability-logic.typ"

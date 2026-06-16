@@ -37,8 +37,33 @@
 #let sim = $class("unary", \~)$
 
 
+
+#let proves = $class("relation", tack.r)$
+#let nproves = $class("relation", tack.r.not)$
+
 #let Box = $class("unary", square)$
+#let Dia = $class("unary", diamond)$
+#let land = $and$
+#let limp = $->$
+#let lor = $or$
+#let lnot = $not$
+
+#let Prop = $upright("Prop")$
+
+#let Logic(L) = $sans(upright(#L))$
+#let LogicS4 = Logic("S4")
+#let LogicGL = Logic("GL")
+#let LogicGLPlusBoxBot(n) = $LogicGL + Box^#n bot$
+
+#let Prov(T) = $attach(br: #T, upright("Prov"))$
+// Use for *standard* provability predicate
+#let Pr(T) = $attach(br: #T, upright("Pr"))$
+
+#let height(T) = $upright("hgt")(#T)$
+
+#let GoedelNum(x) = $corner.l #x corner.r$
+#let ProvLogic(T, U) = $upright("PL")_(#T) (#U)$
 
 
-#let LogicGL = $sans("GL")$
-#let LogicSFour = $sans("S4")$
+#let Theory(T) = $sans(upright(#T))$
+#let PeanoArithmetic = Theory("PA")
