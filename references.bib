@@ -226,14 +226,6 @@
   langid    = {english},
   file      = {C:\Users\user\Zotero\storage\BFETH8QC\Smoryński - 1985 - Self-Reference and Modal Logic.pdf}
 }
-@inproceedings{moura2021lean,
-  title        = {The Lean 4 theorem prover and programming language},
-  author       = {Moura, Leonardo de and Ullrich, Sebastian},
-  booktitle    = {Automated Deduction--CADE 28: 28th International Conference on Automated Deduction, Virtual Event, July 12--15, 2021, Proceedings 28},
-  pages        = {625--635},
-  year         = {2021},
-  organization = {Springer}
-}
 
 @inproceedings{inproceedings,
   author = {Limperg, Jannis and From, Asta},
@@ -261,13 +253,20 @@
   location  = {New Orleans, LA, USA},
   series    = {CPP 2020}
 }
-@incollection{oconnorEssentialIncompletenessArithmetic2005,
+
+@inproceedings{OConnor2005,
   title     = {Essential {{Incompleteness}} of {{Arithmetic Verified}} by {{Coq}}},
-  booktitle = {International Conference on Theorem Proving in Higher Order Logics},
+  booktitle = {Theorem {{Proving}} in {{Higher Order Logics}}},
   author    = {O'Connor, Russell},
-  year      = {2005},
+  editor    = {Hurd, Joe and Melham, Tom},
+  year      = 2005,
   pages     = {245--260},
-  publisher = {Springer}
+  publisher = {Springer Berlin Heidelberg},
+  address   = {Berlin, Heidelberg},
+  abstract  = {A constructive proof of the G\"odel-Rosser incompleteness theorem [9] has been completed using Coq proof assistant. Some theory of classical first-order logic over an arbitrary language is formalized. A development of primitive recursive functions is given, and all primitive recursive functions are proved to be representable in a weak axiom system. Formulas and proofs are encoded as natural numbers, and functions operating on these codes are proved to be primitive recursive. The weak axiom system is proved to be essentially incomplete. In particular, Peano arithmetic is proved to be consistent in Coq's type theory and therefore is incomplete.},
+  isbn      = {978-3-540-31820-0},
+  langid    = {american},
+  doi       = {10.1007/11541868_16}
 }
 
 @article{shillitoNewFoundationsProof,
@@ -433,16 +432,8 @@
   publisher = {Cambridge University Press},
   address   = {Cambridge},
   isbn      = {978-0-521-58533-0},
+  doi       = {10.1017/CBO9780511569883},
   langid    = {english}
-}
-
-@incollection{OConnor2005,
-  title     = {Essential {{Incompleteness}} of {{Arithmetic Verified}} by {{Coq}}},
-  booktitle = {International Conference on Theorem Proving in Higher Order Logics},
-  author    = {O'Connor, Russell},
-  year      = 2005,
-  pages     = {245--260},
-  publisher = {Springer}
 }
 
 @phdthesis{OConnor2009,
@@ -454,7 +445,7 @@
   langid     = {english},
   school     = {Radboud University Nijmegen},
   annotation = {OCLC: 778418868},
-  file       = {/home/sno2wman/Zotero/storage/Y9VCZU36/O'Connor - 2009 - Incompleteness & completeness formalizing logic and analysis in type theory.pdf}
+  url        = {https://r6.ca/Thesis/}
 }
 
 @article{PopescuTraytel2021,
@@ -493,10 +484,81 @@
 }
 
 @misc{AwesomeLogicFormalization,
-  title        = {Awesome {{Logic Formalization}}},
-  author       = {{Formalized Formal Logic}},
-  year         = 2026,
-  journal      = {Awesome Logic Formalization},
-  urldate      = {2026-06-17},
-  howpublished = {https://formalizedformallogic.github.io/awesome-logic-formalization/}
+  title   = {Awesome {{Logic Formalization}}},
+  author  = {{Formalized Formal Logic}},
+  year    = 2026,
+  journal = {Awesome Logic Formalization},
+  urldate = {2026-06-17},
+  url     = {https://formalizedformallogic.github.io/awesome-logic-formalization/}
+}
+
+
+@misc{RocqProver,
+  title  = {The Rocq Prover (9.1.0)},
+  author = {{{The Rocq Development Team}}},
+  year   = 2025,
+  doi    = {10.5281/zenodo.17473943}
+}
+
+@misc{HOLLight,
+  title  = {The HOL Light theorem prover},
+  author = {John Harrison},
+  url    = {https://hol-light.github.io/}
+}
+
+
+@misc{HOLLightTutorial,
+  title  = {HOL Light Tutorial},
+  author = {John Harrison and Juneyoung Lee},
+  url    = {https://hol-light.github.io/tutorial.pdf},
+  year   = 2025,
+  month  = oct,
+  day    = {29}
+}
+
+@misc{Isabelle,
+  title  = {Isabelle},
+  author = {{Isabelle Contributors}},
+  url    = {https://isabelle.in.tum.de/}
+}
+
+@inproceedings{mathlib2020,
+  author    = {{The mathlib Community}},
+  title     = {The {L}ean {M}athematical {L}ibrary},
+  booktitle = {Proceedings of the 9th {ACM} {SIGPLAN} International Conference
+               on Certified Programs and Proofs},
+  series    = {CPP 2020},
+  publisher = {ACM},
+  address   = {New Orleans, LA, USA},
+  year      = {2020},
+  month     = jan,
+  doi       = {10.1145/3372885.3373824},
+  url       = {https://doi.org/10.1145/3372885.3373824}
+}
+
+@software{Agda,
+  author  = {{Agda Developers}},
+  title   = {{Agda}},
+  url     = {https://agda.readthedocs.io/},
+  version = {2.9.0}
+}
+
+@inproceedings{moura2021lean,
+  title     = {The Lean 4 Theorem Prover and Programming Language},
+  author    = {de Moura, Leonardo and Ullrich, Sebastian},
+  year      = {2021},
+  isbn      = {978-3-030-79875-8},
+  publisher = {Springer-Verlag},
+  address   = {Berlin, Heidelberg},
+  url       = {https://doi.org/10.1007/978-3-030-79876-5_37},
+  doi       = {10.1007/978-3-030-79876-5_37},
+  abstract  = {Lean 4 is a reimplementation of the Lean interactive theorem prover (ITP) in Lean itself. It addresses many shortcomings of the previous versions and contains many new features. Lean 4 is fully extensible: users can modify and extend the parser, elaborator, tactics, decision procedures, pretty printer, and code generator. The new system has a hygienic macro system custom-built for ITPs. It contains a new typeclass resolution procedure based on tabled resolution, addressing significant performance problems reported by the growing user base. Lean 4 is also an efficient functional programming language based on a novel programming paradigm called functional but in-place. Efficient code generation is crucial for Lean users because many write custom proof automation procedures in Lean itself.},
+  booktitle = {Automated Deduction – CADE 28: 28th International Conference on Automated Deduction, Virtual Event, July 12–15, 2021, Proceedings},
+  pages     = {625–635},
+  numpages  = {11}
+}
+
+@article{Madelenie2026,
+  title  = {Craig Interpolation for GL via Coalgebraic Proofs in Lean 4},
+  author = {Madeleine Gignoux}
 }

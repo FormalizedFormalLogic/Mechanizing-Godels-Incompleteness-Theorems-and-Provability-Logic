@@ -60,15 +60,15 @@ Solovay @solovay1976 showed that the modal logic called #LogicGL precisely captu
 This fact, known as _Solovay's arithmetical completeness theorem_, was a significant result that opened up the subfield of modal logic called _provability logic_.
 
 On the other hand, recently, there have been much active works on mechanizing mathematics using interactive theorem provers, guaranteeing the validity of existing and new results, and providing AI/LLM-assisted or automated proving.
-There are many well-known interactive theorem provers such as Coq, Isabelle/HOL, Agda, and Lean, and mathematics has been mechanized in each of them, including in the field of mathematical logic (some of these mechanizations are summarized in @AwesomeLogicFormalization).
+There are many well-known interactive theorem provers such as Rocq @RocqProver, Isabelle @Isabelle, HOL Light @HOLLight @HOLLightTutorial, Agda @Agda, and Lean @moura2021lean, and mathematics has been mechanized in each of them, including in the field of mathematical logic (some of these mechanizations are summarized in @AwesomeLogicFormalization).
 In particular, for mechanizing Gödel's incompleteness theorems, this line of work began with Shankar in 1986 @Shankar1986 @Shankar1997, and continues with Harrison @Harrison2006, O'Connor @OConnor2005 @OConnor2009, Paulson @Paulson2015, and Popescu & Traytel @PopescuTraytel2019 @PopescuTraytel2021.
-As for provability logic, modal-logical properties of #LogicGL, such as its semantical completeness and automated solvers, have been mechanized by Maggesi & Perini-Brogi @maggesiMechanisingGodelLob2023.
+As for provability logic, modal-logical properties of #LogicGL, such as its semantical completeness and automated solvers, have been mechanized by Maggesi & Perini Brogi @maggesiMechanisingGodelLob2023, Madelenie @Madelenie2026.
 However, these are either abstract or not full mechanizations within arithmetic.
-For instance, O'Connor's implementation assumes as axioms several facts needed for the proof of G2, and Paulson's mechanization of G2 uses hereditarily finite sets, not arithmetic.
+For instance, O'Connor's implementation assumes several facts needed for the proof of G2 as axioms, and Paulson's mechanization of G2 uses hereditarily finite sets, not arithmetic.
 To the best of our knowledge, no full formalization of the incompleteness theorems entirely within arithmetic is known, and consequently, no mechanization about provability logic has been reported.
 
 In this paper, we present machine-assisted formalizations of Gödel's 1st and 2nd incompleteness theorems and Solovay's arithmetical completeness theorem.
-Our work is carried out in Lean 4, an interactive theorem prover, together with mathlib4, its community-developed mathematics library.
+Our work is carried out in Lean 4, an interactive theorem prover, together with mathlib4 @mathlib2020, its community-developed mathematics library.
 Lean 4 is based on the Calculus of Inductive Constructions (CIC) @moura2021lean,
 and features dependent types, quotient types, and support for noncomputable definitions, making it highly expressive.
 In addition, its powerful metaprogramming infrastructure like aesop @inproceedings enables efficient proof automation and extensibility.
