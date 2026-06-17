@@ -54,6 +54,7 @@
 #let LogicS4 = Logic("S4")
 #let LogicGL = Logic("GL")
 #let LogicGLPlusBoxBot(n) = $LogicGL + Box^#n bot$
+#let LogicS = Logic("S")
 
 #let Prov(T) = $attach(br: #T, upright("Prov"))$
 // Use for *standard* provability predicate
@@ -64,6 +65,11 @@
 #let GoedelNum(x) = $corner.l #x corner.r$
 #let ProvLogic(T, U) = $upright("PL")_(#T) (#U)$
 
-
 #let Theory(T) = $sans(upright(#T))$
 #let PeanoArithmetic = Theory("PA")
+#let TrueArithmetic = Theory("TA")
+
+#let Axiom(A) = $upright(#A)$
+#let AxiomK = $Axiom("k")$
+#let AxiomL = $Axiom("löb")$
+#let AxiomT = $Axiom("t")$
