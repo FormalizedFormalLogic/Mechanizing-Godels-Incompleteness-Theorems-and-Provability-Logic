@@ -50,13 +50,13 @@ _Gödel's incompleteness theorems_ are among the most significant results in mat
 In his seminal paper @godel1931, he proved what is now known as the first incompleteness theorem (G1), and in a footnote, he outlined the second incompleteness theorem (G2).
 G2 was later proved rigorously by Hilbert and Bernays @hilbertGrundlagenMathematikBd1939.
 We state the theorems in modern terms:
-G1, with Rosser's improvement, states that for any consistent axiomatic system with sufficient expressive power to execute arithmetic, we can construct a proposition that can neither be proved nor disproved within the system.
-G2 states that, as in G1, for any consistent _nice_ axiomatic system, the proposition formally asserting the system's own consistency cannot be proved within the system itself.
+G1, with Rosser's improvement, states that for any consistent axiomatic system with sufficient expressive power to execute arithmetic, there exists a proposition that can neither be proved nor disproved within the system.
+G2 states that, for any consistent _nice_ axiomatic system as in G1, the proposition formally representing the system's own consistency cannot be proved within the system itself.
 
 Gödel also made another important observation: that provability can be regarded as a modality.
-In his early work @godelInterpretationIntuitionischenAussagenkalkuls1933, he observed that the provability in intuitionistic logic can be treated similarly to the modal operator $Box$ in the modal logic now called #LogicSFour.
-It follows from G2, however, that abstracting the behavior of the provability predicate, the most central notion of the incompleteness theorems, does not yield #LogicSFour.
-Solovay @solovay1976 showed that a modal logic called #LogicGL precisely captures the behavior of the standard provability predicate.
+In his early work @godelInterpretationIntuitionischenAussagenkalkuls1933, he observed that the provability of intuitionistic logic can be treated similarly to the modal operator $Box$ in the modal logic now called #LogicSFour.
+However, it follows from G2, that abstracting the behavior of the provability predicate, the most central notion of the incompleteness theorems, does not yield #LogicSFour.
+Solovay @solovay1976 showed that the modal logic called #LogicGL precisely captures the behavior of the standard provability predicate.
 This fact, known as _Solovay's arithmetical completeness theorem_, was a significant result that opened up the subfield of modal logic called _provability logic_.
 
 In this paper, we present machine-assisted formalizations of Gödel's incompleteness theorems and provability logic.
