@@ -10,6 +10,8 @@ For proofs and further details, the reader is referred to standard text @chagrov
 
 Formulas of modal logic are defined from propositional variables (denotes #Prop), the primitive logical connectives $bot$ and $limp$, and the modal operator $Box$.
 The remaining operators $top, lnot, land, lor, Dia$ are introduced as the usual abbreviations.
+We write $[p := B]$ for substitution, and write $A[p := B]$ for the result of substituting $B$ for all occurrences of $p$ in $A$.
+In our mechanization, we mainly consider #Prop as type of natural numbers `Nat`(`ℕ`).
 
 #definition[
   The Gödel–Löb modal logic #LogicGL is the logic defined in Hilbert style by the following axioms and rules.
@@ -32,6 +34,18 @@ The remaining operators $top, lnot, land, lor, Dia$ are introduced as the usual 
 
 #definition[
   Solovay's logic #LogicS is the non-normal logic obtained by closing all theorems of #LogicGL together with the axiom $AxiomT$: $Box p -> p$ under modus ponens and the substitution rule.
+
+  // https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Logic/SumQuasiNormal.lean#L13-L17
+  // https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Logic/S/Basic.lean#L14
+  ```lean
+  inductive sumQuasiNormal (L₁ L₂ : Logic α) : Logic α
+  | mem₁ {φ}    : L₁ ⊢ φ → sumQuasiNormal L₁ L₂ φ
+  | mem₂ {φ}    : L₂ ⊢ φ → sumQuasiNormal L₁ L₂ φ
+  | mdp  {φ ψ}  : sumQuasiNormal L₁ L₂ (φ 🡒 ψ) → sumQuasiNormal L₁ L₂ φ → sumQuasiNormal L₁ L₂ ψ
+  | subst {φ s} : sumQuasiNormal L₁ L₂ φ → sumQuasiNormal L₁ L₂ (φ⟦s⟧)
+
+  protected abbrev S := sumQuasiNormal Modal.GL {Axioms.T (.atom 0)}
+  ```
 ]
 
 We introduce Kripke semantics, the standard semantics for modal logic.
@@ -43,14 +57,55 @@ We introduce Kripke semantics, the standard semantics for modal logic.
   - A _root_ of a model is a point $r in W$ such that $r R x$ for every $x in W$ with $x != r$. If a model has a root, we call it a _rooted model_.
   - A model is _transitive_ if, for all $x, y, z in W$, $x R y$ and $y R z$ imply $x R z$.
   - A model is _irreflexive_ if no $x in W$ satisfies $x R x$.
+
+  // https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Kripke/Basic.lean
+  ```lean
+  structure Frame where
+    World : Type
+    Rel : Rel World World
+    [world_nonempty : Nonempty World]
+
+  abbrev Frame.Rel' (x y : F.World) := F.Rel x y
+  infix:45 " ≺ " => Frame.Rel'
+
+  abbrev Valuation (F : Frame) := ℕ → F.World → Prop
+
+  structure Model extends Frame where
+    Val : Valuation toFrame
+
+  def Satisfies (M : Kripke.Model) (x : M.World) : Formula ℕ → Prop
+    | atom a  => M a x
+    | ⊥       => False
+    | φ 🡒 ψ   => (Satisfies M x φ) 🡒 (Satisfies M x ψ)
+    | □φ      => ∀ y, x ≺ y → (Satisfies M y φ)
+  ```
+
+  Mechanization Note:
+  We only describe Kripke frame and model, and satisfication relation in our mechanization.
+  Since we have notation class for `⊧`, we can write `x ⊧ φ` for `Satisfies M x φ`.
 ]
 
-We first mechanized the Kripke completeness of #LogicGL.
+First we mechanized the Kripke completeness of #LogicGL.
 We note that Kripke completeness of #LogicGL is already mechanized in HOL/Light by Maggesi and Pelini-Brogi @maggesiMechanisingGodelLob2023.
-However, for the arithmetical completeness theorem, we need not merely Kripke completeness but Kripke completeness with respect to rooted models. The transformation into a rooted model is carried out by a method known as _tree unraveling_ (cf. @chagrovModalLogic2001[Theorem 3.18]).
+However, for the arithmetical completeness theorem, we need not merely Kripke completeness but Kripke completeness with respect to rooted models.
+// The transformation into a rooted model is carried out by a method known as _tree unraveling_ (cf. @chagrovModalLogic2001[Theorem 3.18]).
 
 #theorem[Kripke completeness of #LogicGL][
   $LogicGL proves A$ if and only if $M, r forces A$ at the root $r$ of every transitive, irreflexive, rooted finite model $M$.
+
+  // https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Kripke/Logic/GL/Completeness.lean#L217-L222
+  ```lean
+  theorem finite_completeness_TFAE : [
+    Modal.GL ⊢ φ,
+    FrameClass.finite_GL ⊧ φ,
+    ∀ F : Kripke.Frame, [F.IsFinite] → [F.IsTransitive] → [F.IsIrreflexive] → [F.IsRooted] → F ⊧ φ,
+    ∀ M : Kripke.Model, [M.IsFinite] → [M.IsTransitive] → [M.IsIrreflexive] → [M.IsRooted] → M.root.1 ⊧ φ,
+  ].TFAE
+  ```
+
+  Mechanization note:
+  In this mechanization, the statement is the equivalence between the first and fourth propositions.
+  Equivalence to the second proposition is the usual Kripke completeness (which is proved by Segerberg @Segerberg1971 first and already mechanized in @maggesiMechanisingGodelLob2023) for the class of all transitive and irreflexive finite frames, and to the third proposition is the completeness for the class of models with the additional condition of being rooted.
 ]
 
 By this theorem, we henceforth call a transitive and irreflexive finite model a $LogicGL$-model.
@@ -59,46 +114,87 @@ This fact plays an important role in the discussion of the arithmetical complete
 For a detail of tail models, see @Visser1984.
 
 We next define the arithmetical interpretation, which translates modal formulas into arithmetic sentences.
-Throughout, $T$ and $U$ denote nice theories extending #PeanoArithmetic.
+Throughout, $T$ and $U$ denote nice theories extending #PeanoArithmetic, and consider only the standard provability predicate $Pr(T)$ for $T$.
 
 #definition[
   A map $f colon Prop -> upright("Sent")_upright("A")$ is called an _arithmetic realization_ or shortly _realization_.
-  Given a realization $f$ and a provability predicate $Prov(T)(x)$, the _arithmetic interpretation_ is the extension of $f$ that translates a modal formula $A$ into an arithmetic sentence $f_(Prov(T))(A)$ as follows:
+  Given a realization $f$, the _(standard) arithmetic interpretation_ is the extension of $f$ that translates a modal formula $A$ into an arithmetic sentence $f_(Pr(T))(A)$ as follows:
   $
-         f_(Prov(T)) (p) & = f(p) \
-       f_(Prov(T)) (bot) & = bot \
-    f_(Prov(T)) (A -> B) & = f_(Prov(T)) (A) -> f_(Prov(T)) (B) \
-     f_(Prov(T)) (Box A) & = Prov(T) (GoedelNum(f_(Prov(T))(A)))
+         f_(Pr(T)) (p) & = f(p) \
+       f_(Pr(T)) (bot) & = bot \
+    f_(Pr(T)) (A -> B) & = f_(Pr(T)) (A) -> f_(Pr(T)) (B) \
+     f_(Pr(T)) (Box A) & = Pr(T) (GoedelNum(f_(Pr(T))(A)))
   $
-  When the provability predicate $Prov(T)$ is obvious from context, we omit this and simply write $f(A)$.
+
+  // https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/ProvabilityLogic/Realization.lean#L17-L32
+  ```lean
+  structure Realization (𝔅 : Provability T₀ T) where
+    val : ℕ → FirstOrder.Sentence L
+
+  abbrev _root_.LO.FirstOrder.ArithmeticTheory.StandardRealization (T : ArithmeticTheory) [T.Δ₁] := Realization T.standardProvability
+
+  def interpret {𝔅 : Provability T₀ T} (f : Realization 𝔅) : Formula ℕ → FirstOrder.Sentence L
+    | .atom a => f.val a
+    |       ⊥ => ⊥
+    |   φ 🡒 ψ => (f.interpret φ) 🡒 (f.interpret ψ)
+    |      □φ => 𝔅 (f.interpret φ)
+  ```
+
+  Mechanization note: For technical reasons, our implementation of realization depends on an arbitrary provability `𝔅`. However, in this report we only consider the standard provability, so we always consider `T.standardProvability` as `𝔅`.
 ]
 
-In what follows, we consider only the standard provability predicate $Pr(T)$.
 
 #definition[
   The _(standard) provability logic of $T$ relative to $U$_, written $ProvLogic(T, U)$, is defined as follows:
   $
     ProvLogic(T, U) = { A | #text[ $U proves f_(Pr(T)) (A)$ for any realization $f$ ] }
   $
+
+  // https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/ProvabilityLogic/Arithmetic.lean#L80
+  ```lean
+  def provabilityLogicOn (T U : ArithmeticTheory) [T.Δ₁] : Modal.Logic ℕ := {A | ∀ f : T.StandardRealization, U ⊢ f A}
+  ```
 ]
 
 Solovay's arithmetical completeness theorem states that the behavior of the standard provability predicate, regarded simply as a modal operator, is captured exactly by the modal logic #LogicGL.
 In other words, for appropriate choices of $T$ and $U$, the provability logic $ProvLogic(T, U)$ coincides with #LogicGL.
-Here we present the generalized version of the theorem, using the notion of the _height_ of a theory due to Visser @Visser1981.
+Here we present the generalized version, @thm:arithmetical_completeness, using the notion of the _height_ of a theory due to Visser @Visser1981.
 
 #definition[Height of Theory][
   For $n >= 1$, we write $Pr(T)^n$ for the $n$-times iteration of the provability predicate $Pr(T)$.
   The _height_ of theory $T$, denoted $height(T) <= omega$, is the minimum $n in omega$ such that $T proves Pr(T)^n (GoedelNum(bot))$, or $omega$ if no such $n$ exists.
+
+  // https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Height.lean#L18
+  ```lean
+  noncomputable def Provability.height (𝔅 : Provability T₀ T) : ENat := ENat.find (T ⊢ 𝔅^[·] ⊥)
+  ```
+
+  Mechanization note: Same here, we can take any provability `𝔅`, but in this report we only consider the standard provability.
 ]
 
 Note that if $T$ is $Sigma_1$-sound, $T$ does not prove $Pr(T)^n (GoedelNum(bot))$ for any $n in omega$, therefore $height(T) = omega$.
 
 #definition[
   For $n <= omega$, we define #LogicGLPlusBoxBot($n$) as follows: if $n < omega$, it is the non-normal modal logic obtained by closing all theorems of #LogicGL together with the formula $Box^n bot$ under modus ponens and the substitution rule; if $n = omega$, it is #LogicGL itself.
+
+  // https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Logic/GLPlusBoxBot/Basic.lean#L17-L20
+  ```lean
+  protected def GLPlusBoxBot (n : ℕ∞) :=
+  match n with
+  | .some n => Modal.GL.sumQuasiNormal {□^[n]⊥}
+  | .none   => Modal.GL
+  ```
 ]
+
+The main result of our provability logic mechanization is the following.
 
 #theorem[@Visser1981][
   $ProvLogic(T, T) = LogicGLPlusBoxBot(height(T))$.
+
+  // https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/ProvabilityLogic/GL/Completeness.lean#L104-L105
+  ```lean
+  theorem provabilityLogic_eq_GLPlusBoxBot : (T.provabilityLogicOn T) ≊ Modal.GLPlusBoxBot T.height
+  ```
 ] <thm:arithmetical_completeness>
 
 @thm:arithmetical_completeness is proved by embedding into arithmetic an appropriate $LogicGL$-model of suitable height, obtained as a countermodel when $LogicGLPlusBoxBot(height(T)) nproves A$.
@@ -106,11 +202,27 @@ As a corollary, we obtain Solovay's original statement.
 
 #corollary[Solovay's Arithmetical Completeness Theorem 1 @solovay1976][
   If $T$ is $Sigma_1$-sound, then $ProvLogic(T, T) = LogicGL$.
+  In particular, $ProvLogic(PeanoArithmetic, PeanoArithmetic) = LogicGL$.
+
+  // https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/ProvabilityLogic/GL/Completeness.lean#L110
+  ```lean
+  instance : (𝗣𝗔.provabilityLogicOn 𝗣𝗔) ≊ Modal.GL
+  ```
 ]
 
-Solovay also proved that #LogicS is arithmetically complete with respect to true arithmetic #TrueArithmetic.
+Moreover, Solovay also consider proved that #LogicS is arithmetically complete with respect to true arithmetic #TrueArithmetic.
 
 #theorem[Solovay's Arithmetical Completeness Theorem 2 @solovay1976][
-  $ProvLogic(T, TrueArithmetic) = LogicS$.
-  That is, for any formula $A$, $LogicS proves A$ if and only if $NN models f_(Pr(T)) (A)$ for every arithmetic interpretation $f$.
+  For any formula $A$, $LogicS proves A$ if and only if $NN models f_(Pr(T)) (A)$ for every arithmetic interpretation $f$.
+  That is, $ProvLogic(T, TrueArithmetic) = LogicS$.
+
+  // https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/ProvabilityLogic/S/Completeness.lean#L184
+  ```lean
+  theorem S.arithmetical_completeness_iff : Modal.S ⊢ A ↔ ∀ f : T.StandardRealization, ℕ ⊧ₘ f A
+  ```
+
+  // https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/ProvabilityLogic/S/Completeness.lean#L186
+  ```lean
+  theorem provabilityLogic_PA_TA_eq_S : (T.provabilityLogicOn 𝗧𝗔) ≊ Modal.S
+  ```
 ]
