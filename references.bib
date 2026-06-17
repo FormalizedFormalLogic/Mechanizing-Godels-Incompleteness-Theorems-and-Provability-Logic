@@ -28,21 +28,6 @@
   keywords  = {03-02}
 }
 
-@book{shankar1986proof,
-  title     = {Proof-checking metamathematics (theorem-proving)},
-  author    = {Shankar, Natarajan},
-  year      = {1986},
-  publisher = {The University of Texas at Austin}
-}
-
-@book{shankar1997metamathematics,
-  title     = {Metamathematics, machines and G{\"o}del's proof},
-  author    = {Shankar, Natarajan},
-  number    = {38},
-  year      = {1997},
-  publisher = {Cambridge University Press}
-}
-
 @inproceedings{o2005essential,
   title        = {Essential incompleteness of arithmetic verified by Coq},
   author       = {O’Connor, Russell},
@@ -241,14 +226,6 @@
   langid    = {english},
   file      = {C:\Users\user\Zotero\storage\BFETH8QC\Smoryński - 1985 - Self-Reference and Modal Logic.pdf}
 }
-@inproceedings{moura2021lean,
-  title        = {The Lean 4 theorem prover and programming language},
-  author       = {Moura, Leonardo de and Ullrich, Sebastian},
-  booktitle    = {Automated Deduction--CADE 28: 28th International Conference on Automated Deduction, Virtual Event, July 12--15, 2021, Proceedings 28},
-  pages        = {625--635},
-  year         = {2021},
-  organization = {Springer}
-}
 
 @inproceedings{inproceedings,
   author = {Limperg, Jannis and From, Asta},
@@ -276,13 +253,20 @@
   location  = {New Orleans, LA, USA},
   series    = {CPP 2020}
 }
-@incollection{oconnorEssentialIncompletenessArithmetic2005,
+
+@inproceedings{OConnor2005,
   title     = {Essential {{Incompleteness}} of {{Arithmetic Verified}} by {{Coq}}},
-  booktitle = {International Conference on Theorem Proving in Higher Order Logics},
+  booktitle = {Theorem {{Proving}} in {{Higher Order Logics}}},
   author    = {O'Connor, Russell},
-  year      = {2005},
+  editor    = {Hurd, Joe and Melham, Tom},
+  year      = 2005,
   pages     = {245--260},
-  publisher = {Springer}
+  publisher = {Springer Berlin Heidelberg},
+  address   = {Berlin, Heidelberg},
+  abstract  = {A constructive proof of the G\"odel-Rosser incompleteness theorem [9] has been completed using Coq proof assistant. Some theory of classical first-order logic over an arbitrary language is formalized. A development of primitive recursive functions is given, and all primitive recursive functions are proved to be representable in a weak axiom system. Formulas and proofs are encoded as natural numbers, and functions operating on these codes are proved to be primitive recursive. The weak axiom system is proved to be essentially incomplete. In particular, Peano arithmetic is proved to be consistent in Coq's type theory and therefore is incomplete.},
+  isbn      = {978-3-540-31820-0},
+  langid    = {american},
+  doi       = {10.1007/11541868_16}
 }
 
 @article{shillitoNewFoundationsProof,
@@ -426,4 +410,228 @@
   year   = 1971,
   school = {Stanford University},
   file   = {/home/sno2wman/Zotero/storage/3LZ64CZA/Segerbert1971_original.pdf;/home/sno2wman/Zotero/storage/VQIN6VNL/Segerbert1971_xerocopy.pdf}
+}
+
+@article{Paulson2015,
+  title    = {A {{Mechanised Proof}} of {{G\"odel}}'s {{Incompleteness Theorems Using Nominal Isabelle}}},
+  author   = {Paulson, Lawrence C.},
+  year     = 2015,
+  month    = jun,
+  journal  = {Journal of Automated Reasoning},
+  volume   = {55},
+  number   = {1},
+  pages    = {1--37},
+  issn     = {0168-7433, 1573-0670},
+  doi      = {10.1007/s10817-015-9322-8},
+  urldate  = {2024-10-27},
+  abstract = {An Isabelle/HOL formalisation of G\textasciidieresis odel's two incompleteness theorems is presented. The work follows S\textasciiacute{} wierczkowski's detailed proof of the theorems using hereditarily finite (HF) set theory (Dissertationes Mathematicae 422, 1--58, 2003). Avoiding the usual arithmetical encodings of syntax eliminates the necessity to formalise elementary number theory within an embedded logical calculus. The Isabelle formalisation uses two separate treatments of variable binding: the nominal package (Logical Methods in Computer Science 8(2:14), 1--35, 2012) is shown to scale to a development of this complexity, while de Bruijn indices (Indagationes Mathematicae 34, 381--392, 1972) turn out to be ideal for coding syntax. Critical details of the Isabelle proof are described, in particular gaps and errors found in the literature.},
+  langid   = {english},
+  keywords = {68V20 03F40,Computer Science - Logic in Computer Science},
+  file     = {/home/sno2wman/Zotero/storage/2Z5V536A/Paulson - 2015 - A Mechanised Proof of Gödel’s Incompleteness Theorems Using Nominal Isabelle.pdf;/home/sno2wman/Zotero/storage/4NUGS3SJ/Paulson - 2015 - A Mechanised Proof of Godel's Incompleteness The.pdf}
+}
+
+@incollection{Harrison2006,
+  title     = {Towards {{Self-verification}} of {{HOL Light}}},
+  booktitle = {Automated {{Reasoning}}},
+  author    = {Harrison, John},
+  editor    = {Hutchison, David and Kanade, Takeo and Kittler, Josef and Kleinberg, Jon M. and Mattern, Friedemann and Mitchell, John C. and Naor, Moni and Nierstrasz, Oscar and Pandu Rangan, C. and Steffen, Bernhard and Sudan, Madhu and Terzopoulos, Demetri and Tygar, Dough and Vardi, Moshe Y. and Weikum, Gerhard and Furbach, Ulrich and Shankar, Natarajan},
+  year      = 2006,
+  volume    = {4130},
+  pages     = {177--191},
+  publisher = {Springer Berlin Heidelberg},
+  address   = {Berlin, Heidelberg},
+  doi       = {10.1007/11814771_17},
+  urldate   = {2026-01-09},
+  abstract  = {The HOL Light prover is based on a logical kernel consisting of about 400 lines of mostly functional OCaml, whose complete formal verification seems to be quite feasible. We would like to formally verify (i) that the abstract HOL logic is indeed correct, and (ii) that the OCaml code does correctly implement this logic. We have performed a full verification of an imperfect but quite detailed model of the basic HOL Light core, without definitional mechanisms, and this verification is entirely conducted with respect to a set-theoretic semantics within HOL Light itself. We will duly explain why the obvious logical and pragmatic difficulties do not vitiate this approach, even though it looks impossible or useless at first sight. Extension to include definitional mechanisms seems straightforward enough, and the results so far allay most of our practical worries.},
+  isbn      = {978-3-540-37187-8 978-3-540-37188-5},
+  langid    = {english},
+  file      = {/home/sno2wman/Zotero/storage/NNZJS3VC/Harrison - 2006 - Towards Self-verification of HOL Light.pdf}
+}
+
+@phdthesis{Shankar1986,
+  title    = {Proof-Checking Metamathematics (Theorem-Proving)},
+  author   = {Shankar, Natarajan},
+  year     = 1986,
+  abstract = {Formal proof-checking has long been recognized as an interesting application of computers. It has often been claimed that significant proofs in mathematics cannot be checked using an automatic proof-checker, and that formal proofs lack the intuitive plausibility and insight that informal proofs possess. We argue against these claims by presenting machine-checked versions of some landmark proofs in metamathematics, such as those of the tautology theorem, Godel's incompleteness theorem, and the Church-Rosser theorem. These proofs were checked using the Boyer-Moore theorem power. The tautology theorem and the incompleteness theorem are proved by first defining a proof-checker for the formal theory Z2 in the Boyer-Moore logic. The theory Z2 consists of the rules and axioms for Shoenfield's first-order logic with the axioms of a theory of hereditarily finite sets due to Cohen. A tautology-checker is defined for Z2 formulas and is shown to be correct with respect to the truth-table definition of a tautology. Every tautology is shown to have a proof by defining a Lisp function which constructs such a proof. The tautology theorem is then used as a sound derived inference rule to demonstrate that any specific tautology is provable in Z2, without actually constructing the corresponding formal proof.To prove Godel's incompleteness theorem, a Lisp interpreter is defined in Lisp. The interpreter is shown to be representable in Z2 under an encoding of Lisp data-structures as sets. Metatheoretic functions such as the Z2 proof-checker are shown to be computable by means of the Lisp interpreter. The representability of the metatheory of Z2 in Z2 permits the construction of an undecidable sentence. If the undecidable sentence is either provable or disprovable, then it is shown to be both provable and disprovable. Z2 is therefore either incomplete or inconsistent.The mechanical proof of the Church-Rosser theorem is carried out by formalizing the syntax of lambda calculus in the Boyer-Moore logic. The theorem asserts that if the term X is reduced to Y in one way, and Z in another, then Y and Z can both be reduced to a common W. The mechanical proof involves constructing the term W and the reductions from Y and Z to W. This proof was actually carried out by formally mapping the problem to a formalization of lambda calculus which uses the de Bruijn representation. A version of the Tait/Martin-Lof proof of the Church-Rosser theorem is then carried out for this representation.},
+  school   = {The University of Texas at Austin}
+}
+
+@book{Shankar1997,
+  title     = {Metamathematics, Machines, and {{G\"odel}}'s Proof},
+  author    = {Shankar, Natarajan},
+  year      = 1997,
+  series    = {Cambridge Tracts in Theoretical Computer Science},
+  edition   = {Transferred to digital print},
+  number    = {38},
+  publisher = {Cambridge University Press},
+  address   = {Cambridge},
+  isbn      = {978-0-521-58533-0},
+  doi       = {10.1017/CBO9780511569883},
+  langid    = {english}
+}
+
+@phdthesis{OConnor2009,
+  title      = {Incompleteness \& Completeness: Formalizing Logic and Analysis in Type Theory},
+  shorttitle = {Incompleteness \& Completeness},
+  author     = {O'Connor, Russell},
+  year       = 2009,
+  isbn       = {978-90-90-24455-6},
+  langid     = {english},
+  school     = {Radboud University Nijmegen},
+  annotation = {OCLC: 778418868},
+  url        = {https://r6.ca/Thesis/}
+}
+
+@article{PopescuTraytel2021,
+  title    = {Distilling the {{Requirements}} of {{G\"odel}}'s {{Incompleteness Theorems}} with a {{Proof Assistant}}},
+  author   = {Popescu, Andrei and Traytel, Dmitriy},
+  year     = 2021,
+  month    = oct,
+  journal  = {Journal of Automated Reasoning},
+  volume   = {65},
+  number   = {7},
+  pages    = {1027--1070},
+  issn     = {0168-7433, 1573-0670},
+  doi      = {10.1007/s10817-021-09599-8},
+  urldate  = {2026-01-09},
+  abstract = {We present an abstract development of G\"odel's incompleteness theorems, performed with the help of the Isabelle/HOL proof assistant. We analyze sufficient conditions for the applicability of our theorems to a partially specified logic. In addition to the usual benefits of generality, our abstract perspective enables a comparison between alternative approaches from the literature. These include Rosser's variation of the first theorem, Jeroslow's variation of the second theorem, and the \textasciiacute Swierczkowski--Paulson semantics-based approach. As part of the validation of our framework, we upgrade Paulson's Isabelle proof to produce a mechanization of the second theorem that does not assume soundness in the standard model, and in fact does not rely on any notion of model or semantic interpretation.},
+  langid   = {english},
+  file     = {/home/sno2wman/Zotero/storage/DFAJH247/Popescu と Traytel - 2021 - Distilling the Requirements of Gödel’s Incompleteness Theorems with a Proof Assistant.pdf}
+}
+
+@incollection{PopescuTraytel2019,
+  title     = {A {{Formally Verified Abstract Account}} of {{G\"odel}}'s {{Incompleteness Theorems}}},
+  booktitle = {Automated {{Deduction}} -- {{CADE}} 27},
+  author    = {Popescu, Andrei and Traytel, Dmitriy},
+  editor    = {Fontaine, Pascal},
+  year      = 2019,
+  volume    = {11716},
+  pages     = {442--461},
+  publisher = {Springer International Publishing},
+  address   = {Cham},
+  doi       = {10.1007/978-3-030-29436-6_26},
+  urldate   = {2026-01-09},
+  abstract  = {We present an abstract development of G\"odel's incompleteness theorems, performed with the help of the Isabelle/HOL theorem prover. We analyze sufficient conditions for the theorems' applicability to a partially specified logic. In addition to the usual benefits of generality, our abstract perspective enables a comparison between alternative approaches from the literature. These include Rosser's variation of the first theorem, Jeroslow's variation of the second theorem, and the S\textasciiacute{} wierczkowski--Paulson semantics-based approach. As part of our framework's validation, we upgrade Paulson's Isabelle proof to produce a mechanization of the second theorem that does not assume soundness in the standard model, and in fact does not rely on any notion of model or semantic interpretation.},
+  isbn      = {978-3-030-29435-9 978-3-030-29436-6},
+  langid    = {english},
+  file      = {/home/sno2wman/Zotero/storage/J56KNGS5/Popescu と Traytel - 2019 - A Formally Verified Abstract Account of Gödel’s Incompleteness Theorems.pdf}
+}
+
+@misc{AwesomeLogicFormalization,
+  title   = {Awesome {{Logic Formalization}}},
+  author  = {{Formalized Formal Logic}},
+  year    = 2026,
+  journal = {Awesome Logic Formalization},
+  urldate = {2026-06-17},
+  url     = {https://formalizedformallogic.github.io/awesome-logic-formalization/}
+}
+
+
+@misc{RocqProver,
+  title  = {The Rocq Prover (9.1.0)},
+  author = {{{The Rocq Development Team}}},
+  year   = 2025,
+  doi    = {10.5281/zenodo.17473943}
+}
+
+@misc{HOLLight,
+  title  = {The HOL Light theorem prover},
+  author = {John Harrison},
+  url    = {https://hol-light.github.io/}
+}
+
+
+@misc{HOLLightTutorial,
+  title  = {HOL Light Tutorial},
+  author = {John Harrison and Juneyoung Lee},
+  url    = {https://hol-light.github.io/tutorial.pdf},
+  year   = 2025,
+  month  = oct,
+  day    = {29}
+}
+
+@misc{Isabelle,
+  title  = {Isabelle},
+  author = {{Isabelle Contributors}},
+  url    = {https://isabelle.in.tum.de/}
+}
+
+@inproceedings{mathlib2020,
+  author    = {{The mathlib Community}},
+  title     = {The {L}ean {M}athematical {L}ibrary},
+  booktitle = {Proceedings of the 9th {ACM} {SIGPLAN} International Conference
+               on Certified Programs and Proofs},
+  series    = {CPP 2020},
+  publisher = {ACM},
+  address   = {New Orleans, LA, USA},
+  year      = {2020},
+  month     = jan,
+  doi       = {10.1145/3372885.3373824},
+  url       = {https://doi.org/10.1145/3372885.3373824}
+}
+
+@software{Agda,
+  author  = {{Agda Developers}},
+  title   = {{Agda}},
+  url     = {https://agda.readthedocs.io/},
+  version = {2.9.0}
+}
+
+@inproceedings{moura2021lean,
+  title     = {The Lean 4 Theorem Prover and Programming Language},
+  author    = {de Moura, Leonardo and Ullrich, Sebastian},
+  year      = {2021},
+  isbn      = {978-3-030-79875-8},
+  publisher = {Springer-Verlag},
+  address   = {Berlin, Heidelberg},
+  url       = {https://doi.org/10.1007/978-3-030-79876-5_37},
+  doi       = {10.1007/978-3-030-79876-5_37},
+  abstract  = {Lean 4 is a reimplementation of the Lean interactive theorem prover (ITP) in Lean itself. It addresses many shortcomings of the previous versions and contains many new features. Lean 4 is fully extensible: users can modify and extend the parser, elaborator, tactics, decision procedures, pretty printer, and code generator. The new system has a hygienic macro system custom-built for ITPs. It contains a new typeclass resolution procedure based on tabled resolution, addressing significant performance problems reported by the growing user base. Lean 4 is also an efficient functional programming language based on a novel programming paradigm called functional but in-place. Efficient code generation is crucial for Lean users because many write custom proof automation procedures in Lean itself.},
+  booktitle = {Automated Deduction – CADE 28: 28th International Conference on Automated Deduction, Virtual Event, July 12–15, 2021, Proceedings},
+  pages     = {625–635},
+  numpages  = {11}
+}
+
+@phdthesis{Gignoux2026,
+  type   = {{{MSc Thesis}}},
+  title  = {Proofs as {{Coalgebras}}},
+  author = {Gignoux, Madeleine},
+  year   = 2026,
+  month  = may,
+  school = {Universiteit van Amsterdam}
+}
+
+@article{KirstPeters2023,
+  title     = {G\"odel's {{Theorem Without Tears}} - {{Essential Incompleteness}} in {{Synthetic Computability}}},
+  author    = {Kirst, Dominik and Peters, Benjamin},
+  editor    = {Klin, Bartek and Pimentel, Elaine},
+  year      = 2023,
+  journal   = {LIPIcs, Volume 252, CSL 2023},
+  volume    = {252},
+  pages     = {30:1-30:18},
+  publisher = {Schloss Dagstuhl -- Leibniz-Zentrum f\"ur Informatik},
+  issn      = {1868-8969},
+  doi       = {10.4230/LIPICS.CSL.2023.30},
+  urldate   = {2025-09-22},
+  abstract  = {G\"odel published his groundbreaking first incompleteness theorem in 1931, stating that a large class of formal logics admits independent sentences which are neither provable nor refutable. This result, in conjunction with his second incompleteness theorem, established the impossibility of concluding Hilbert's program, which pursued a possible path towards a single formal system unifying all of mathematics. Using a technical trick to refine G\"odel's original proof, the incompleteness result was strengthened further by Rosser in 1936 regarding the conditions imposed on the formal systems.},
+  copyright = {Creative Commons Attribution 4.0 International license, info:eu-repo/semantics/openAccess},
+  isbn      = {9783959772648},
+  langid    = {english},
+  keywords  = {incompleteness,synthetic computability theory,Theory of computation  Constructive mathematics,Theory of computation  Logic and verification,Theory of computation  Type theory,undecidability},
+  file      = {C:\Users\SnO2WMaN\Zotero\storage\YAUZDBY7\Kirst と Peters - 2023 - Gödel’s Theorem Without Tears - Essential Incompleteness in Synthetic Computability.pdf}
+}
+
+@article{Rosser1936,
+  title     = {Extensions of Some Theorems of {{G\"odel}} and {{Church}}},
+  author    = {Rosser, Barkley},
+  year      = 1936,
+  journal   = {Journal of Symbolic Logic},
+  edition   = {2014/03/12},
+  volume    = {1},
+  number    = {3},
+  pages     = {87--91},
+  publisher = {Cambridge University Press},
+  issn      = {0022-4812},
+  doi       = {10.2307/2269028},
+  abstract  = {We shall say that a logic is ``simply consistent'' if there is no formula A such that both A and {$\sim$} A are provable. ``{$\omega$}-consistent'' will be used in the sense of G\"odel. ``General recursive'' and ``primitive recursive'' will be used in the sense of Kleene, so that what G\"odel calls ``rekursiv'' will be called ``primitive recursive.'' By an ``Entscheidungsverfahren'' will be meant a general recursive function {$\phi$}(n) such that, if n is the G\"odel number of a provable formula, {$\phi$}(n) = 0 and, if n is not the G\"odel number of a provable formula, {$\phi$}(n) = 1. In specifying that {$\phi$} must be general recursive we are following Church in identifying ``general recursiveness'' and ``effective calculability.''First, a modification is made in G\"odel's proofs of his theorems, Satz VI (G\"odel, p. 187---this is the theorem which states that {$\omega$}-consistency implies the existence of undecidable propositions) and Satz XI (G\"odel, p. 196---this is the theorem which states that simple consistency implies that the formula which states simple consistency is not provable). The modifications of the proofs make these theorems hold for a much more general class of logics. Then, by sacrificing some generality, it is proved that simple consistency implies the existence of undecidable propositions (a strengthening of G\"odel's Satz VI and Kleene's Theorem XIII) and that simple consistency implies the non-existence of an Entscheidungsverfahren (a strengthening of the result in the last paragraph of Church).}
 }

@@ -46,23 +46,33 @@
 
 = Introduction
 
-Gödel's incompleteness theorems are among the most significant results in mathematical logic.
-In his seminal paper @godel1931, he proved what is now known as the first incompleteness theorem (G1),
-and in a footnote, he outlined the second incompleteness theorem (G2), which was later proved rigorously by Hilbert and Bernays @hilbertGrundlagenMathematikBd1939.
+_Gödel's incompleteness theorems_ are among the most significant results in mathematical logic.
+In his seminal paper @godel1931, he proved what is now known as the first incompleteness theorem (G1), and in a footnote, he outlined the second incompleteness theorem (G2).
+G2 was later proved rigorously by Hilbert and Bernays @hilbertGrundlagenMathematikBd1939.
+We state the theorems in modern terms:
+G1, with Rosser's improvement @Rosser1936, states that for any consistent axiomatic system with sufficient expressive power to execute arithmetic, there exists a proposition that can neither be proved nor disproved within the system.
+G2 states that, for any consistent _nice_ axiomatic system as in G1, the proposition formally representing the system's own consistency cannot be proved within the system itself.
 
-Another short but impactful work by Gödel in the early development of intuitionistic propositional logic and modal logic @godelInterpretationIntuitionischenAussagenkalkuls1933 introduced a unary operator $frak(B)$,
-interpreted as "provable somehow", and investigated its behavior.
-From a modern perspective, he observed that the modal operator $Box$ in the modal logic $LogicS4$ plays a similar role, though it differs in subtle but important ways.
-Later, some logicians proposed the modal operator $Box$ interpret as a formal provability, i.e. provability predicate, which plays important role in proof of incompleteness theorem.
-The subfield of modal logic under this interpretation is called provability logic.
-The first important result in provability logic is Solovay's arithmetical completeness theorem @solovay1976,
-which states that the behavior of standard provability predicate sufficient to derive G2 is precisely captured by the modal logic $LogicGL$.
-See more topic of provability logic in textbook @boolosLogicProvability1994, @smorynskiSelfReferenceModalLogic1985 and survey @artemovProvabilityLogic2005,@japaridzeLogicProvability1998.
+Gödel also made another important observation: that provability can be regarded as a modality.
+In his early work @godelInterpretationIntuitionischenAussagenkalkuls1933, he observed that the provability of intuitionistic logic can be treated similarly to the modal operator $Box$ in the modal logic now called #LogicS4.
+However, it follows from G2, that abstracting the behavior of the provability predicate, the most central notion of the incompleteness theorems, does not yield #LogicS4.
+Solovay @solovay1976 showed that the modal logic called #LogicGL precisely captures the behavior of the standard provability predicate.
+This fact, known as _Solovay's arithmetical completeness theorem_, was a significant result that opened up the subfield of modal logic called _provability logic_.
 
-In this paper, we present machine-assisted formalizations of Gödel's incompleteness theorems and provability logic.
-Our work is carried out in Lean 4, an interactive theorem prover, together with mathlib4, its community-developed mathematics library.
+On the other hand, recently, there have been much active works on mechanizing mathematics using interactive theorem provers, guaranteeing the validity of existing and new results, and providing AI/LLM-assisted or automated proving.
+There are many well-known interactive theorem provers such as Rocq @RocqProver, Isabelle @Isabelle, HOL Light @HOLLight @HOLLightTutorial, Agda @Agda, and Lean @moura2021lean, and mathematics has been mechanized in each of them, including in the field of mathematical logic (some of these mechanizations are summarized in @AwesomeLogicFormalization).
+In particular, for mechanizing Gödel's incompleteness theorems, this line of work began with Shankar in 1986 @Shankar1986 @Shankar1997, and continues with O'Connor @OConnor2005 @OConnor2009, Harrison @Harrison2006, Paulson @Paulson2015, and Popescu and Traytel @PopescuTraytel2019 @PopescuTraytel2021, Kirst and Peters @KirstPeters2023.
+As for provability logic, modal-logical properties of #LogicGL, such as its semantical completeness and automated solvers, have been mechanized by Maggesi and Perini Brogi @maggesiMechanisingGodelLob2023, Gignoux @Gignoux2026.
+However, these are either abstract or not full mechanizations within arithmetic.
+For instance, O'Connor's implementation assumes several facts needed for the proof of G2 as axioms, and Paulson's mechanization of G2 uses hereditarily finite sets, not arithmetic.
+To the best of our knowledge, no full formalization of the incompleteness theorems entirely within arithmetic is known, and consequently, no mechanization about provability logic has been reported.
+
+In this paper, we present machine-assisted formalizations of Gödel's 1st and 2nd incompleteness theorems and Solovay's arithmetical completeness theorem.
+Our work is carried out in Lean 4, an interactive theorem prover, together with mathlib4 @mathlib2020, its community-developed mathematics library.
 Lean 4 is based on the Calculus of Inductive Constructions (CIC) @moura2021lean,
 and features dependent types, quotient types, and support for noncomputable definitions, making it highly expressive.
 In addition, its powerful metaprogramming infrastructure like aesop @inproceedings enables efficient proof automation and extensibility.
+
+// TODO: Paper organization
 
 #include "provability-logic.typ"
