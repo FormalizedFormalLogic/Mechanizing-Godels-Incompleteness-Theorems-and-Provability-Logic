@@ -50,7 +50,7 @@ _Gödel's incompleteness theorems_ are among the most significant results in mat
 In his seminal paper @godel1931, he proved what is now known as the first incompleteness theorem (G1), and in a footnote, he outlined the second incompleteness theorem (G2).
 G2 was later proved rigorously by Hilbert and Bernays @hilbertGrundlagenMathematikBd1939.
 We state the theorems in modern terms:
-G1, with Rosser's improvement, states that for any consistent axiomatic system with sufficient expressive power to execute arithmetic, there exists a proposition that can neither be proved nor disproved within the system.
+G1, with Rosser's improvement @Rosser1936, states that for any consistent axiomatic system with sufficient expressive power to execute arithmetic, there exists a proposition that can neither be proved nor disproved within the system.
 G2 states that, for any consistent _nice_ axiomatic system as in G1, the proposition formally representing the system's own consistency cannot be proved within the system itself.
 
 Gödel also made another important observation: that provability can be regarded as a modality.
@@ -61,8 +61,8 @@ This fact, known as _Solovay's arithmetical completeness theorem_, was a signifi
 
 On the other hand, recently, there have been much active works on mechanizing mathematics using interactive theorem provers, guaranteeing the validity of existing and new results, and providing AI/LLM-assisted or automated proving.
 There are many well-known interactive theorem provers such as Rocq @RocqProver, Isabelle @Isabelle, HOL Light @HOLLight @HOLLightTutorial, Agda @Agda, and Lean @moura2021lean, and mathematics has been mechanized in each of them, including in the field of mathematical logic (some of these mechanizations are summarized in @AwesomeLogicFormalization).
-In particular, for mechanizing Gödel's incompleteness theorems, this line of work began with Shankar in 1986 @Shankar1986 @Shankar1997, and continues with Harrison @Harrison2006, O'Connor @OConnor2005 @OConnor2009, Paulson @Paulson2015, and Popescu & Traytel @PopescuTraytel2019 @PopescuTraytel2021.
-As for provability logic, modal-logical properties of #LogicGL, such as its semantical completeness and automated solvers, have been mechanized by Maggesi & Perini Brogi @maggesiMechanisingGodelLob2023, Madelenie @Madelenie2026.
+In particular, for mechanizing Gödel's incompleteness theorems, this line of work began with Shankar in 1986 @Shankar1986 @Shankar1997, and continues with O'Connor @OConnor2005 @OConnor2009, Harrison @Harrison2006, Paulson @Paulson2015, and Popescu and Traytel @PopescuTraytel2019 @PopescuTraytel2021, Kirst and Peters @KirstPeters2023.
+As for provability logic, modal-logical properties of #LogicGL, such as its semantical completeness and automated solvers, have been mechanized by Maggesi and Perini Brogi @maggesiMechanisingGodelLob2023, Gignoux @Gignoux2026.
 However, these are either abstract or not full mechanizations within arithmetic.
 For instance, O'Connor's implementation assumes several facts needed for the proof of G2 as axioms, and Paulson's mechanization of G2 uses hereditarily finite sets, not arithmetic.
 To the best of our knowledge, no full formalization of the incompleteness theorems entirely within arithmetic is known, and consequently, no mechanization about provability logic has been reported.
