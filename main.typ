@@ -79,3 +79,4 @@ Moreover, owing to motivations other than the incompleteness theorems and provab
 We add comments where we deem it necessary, but for the actual working (verified) code, refer to the repository.
 
 #include "provability-logic.typ"
+#include "conclusion.typ"
