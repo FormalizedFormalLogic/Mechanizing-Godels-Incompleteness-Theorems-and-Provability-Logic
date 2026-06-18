@@ -70,6 +70,6 @@
 #let TrueArithmetic = Theory("TA")
 
 #let Axiom(A) = $upright(#A)$
-#let AxiomK = $Axiom("k")$
-#let AxiomL = $Axiom("löb")$
-#let AxiomT = $Axiom("t")$
+#let AxiomK = $Axiom("K")$
+#let AxiomL = $Axiom("Löb")$
+#let AxiomT = $Axiom("T")$

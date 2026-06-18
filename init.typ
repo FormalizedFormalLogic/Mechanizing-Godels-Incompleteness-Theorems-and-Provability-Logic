@@ -1,7 +1,7 @@
 #import "@preview/ctheorems:1.1.3": *
 #import "@preview/curryst:0.5.0": prooftree, rule
 
-#let auxColor = rgb("#00f")
+#let auxColor = color.hsl(205deg, 55%, 40%)
 
 #let base-text-size = 11pt
 #let font-base = ("libertinus serif", "Shippori Mincho B1")
@@ -115,8 +115,6 @@
   body
 }
 
-#let _lean-border = luma(210)
-
 #let leancode(code, links: (), note: none) = {
   let code-text = if code.func() == raw {
     code.text
@@ -127,39 +125,40 @@
 
   block(
     width: 100%,
-    stroke: (0.5pt + _lean-border),
+    stroke: (left: 1pt + luma(0)),
     inset: 0pt,
     breakable: true,
     clip: true,
   )[
-    #block(width: 100%, fill: luma(220), inset: (x: 12pt, y: 4pt))[
+    #block(
+      width: 100%,
+      fill: luma(245),
+      inset: (x: 8pt, y: 16pt),
+      spacing: 0pt,
+    )[
+      #set par(justify: false, first-line-indent: 0pt)
+      #set text(fill: rgb("#000000"), size: 10pt, font: font-code)
+      #show raw: set text(font: font-code)
+      #raw(code-text, lang: "lean")
+    ]
+
+
+    #block(width: 100%, inset: (x: 12pt, y: 8pt), spacing: 0pt)[
+      #set par(first-line-indent: 0pt)
       #grid(
         columns: (auto, 1fr),
         align: (left + horizon, right + horizon),
         if links.len() > 0 {
-          text(size: 8pt, fill: auxColor)[
-            #links.map(l => link(l)[#l.split("/").last().split("#").first()]).join(h(8pt))
+          text[
+            #strong[#if links.len() > 1 { "Related Sources" } else { "Related Source" }:]
+            #text(size: 8pt)[#enum(..links.map(l => link(l)[#text(font: font-code)[#l]]))]
           ]
         },
       )
+      #if note != none {
+        text[*Note:* #note]
+      }
     ]
-
-    #block(
-      width: 100%,
-      fill: luma(250),
-      inset: (x: 8pt, y: 12pt),
-      text(fill: rgb("#000000"), 9pt, font: font-code, raw(code-text, lang: "lean")),
-    )
-
-    #if note != none {
-      line(length: 100%, stroke: 0.5pt + _lean-border)
-      block(width: 100%, inset: (x: 12pt, y: 8pt))[
-        #text(size: 9pt)[
-          #show raw: set text(1em)
-          *Mechanization Note:* #note
-        ]
-      ]
-    }
   ]
 }
 

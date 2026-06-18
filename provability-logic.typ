@@ -14,22 +14,42 @@ We write $[p := B]$ for substitution, and write $A[p := B]$ for the result of su
 In our mechanization, we mainly consider #Prop as type of natural numbers `Nat`(`ℕ`).
 
 #definition[
-  The Gödel–Löb modal logic #LogicGL is the logic defined in Hilbert style by the following axioms and rules.
-  #grid(
-    columns: 2,
-    column-gutter: 16pt,
-    align: top,
-    [
-      1. Tautologies of propositional logic
-      2. Axiom $AxiomK$: $Box(p -> q) -> (Box p -> Box q)$
-      3. Axiom $AxiomL$: $Box(Box p -> p) -> Box p$
-    ],
-    [
-      4. #prooftree(rule(name: "MP", $B$, $A -> B$, $B$))
-      5. #prooftree(rule(name: "Nec", $Box A$, $A$))
-      6. #prooftree(rule(name: "Subst", $A[p := B]$, $A$))
-    ],
-  )
+  The Gödel–Löb modal logic #LogicGL is the logic defined in Hilbert style as follows:
+
+  For any subsitution instances of the following axioms:
+  1. $p -> q -> p$: axiom imply $Axiom("K")$
+  2. $(p -> q -> r) -> (p -> q) -> (p -> r)$: axiom imply $Axiom("S")$
+  3. $(lnot p -> lnot q) -> (q -> p)$: elimination of contraposition
+  4. Axiom $AxiomK$: $Box(p -> q) -> (Box p -> Box q)$
+  5. Axiom $AxiomL$: $Box(Box p -> p) -> Box p$
+
+  And modus ponens and the necessitation rule:
+  6. #prooftree(rule(name: "MP", $B$, $A -> B$, $B$))
+  7. #prooftree(rule(name: "Nec", $Box A$, $A$))
+
+  #leancode(links: (
+    "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Axioms.lean#L16",
+    "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Axioms.lean#L98",
+    "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Hilbert/Normal/Basic.lean#L19-L25",
+    "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Hilbert/Normal/Basic.lean#L627-L634",
+  ))[
+    ```
+    protected abbrev K := □(φ 🡒 ψ) 🡒 □φ 🡒 □ψ
+
+    protected abbrev L := □(□φ 🡒 φ) 🡒 □φ
+
+    inductive Hilbert.Normal {α} (Ax : Axiom α) : Logic α
+    | implyK φ ψ    : Normal Ax $ Axioms.ImplyK φ ψ
+    | implyS φ ψ χ  : Normal Ax $ Axioms.ImplyS φ ψ χ
+    | ec φ ψ        : Normal Ax $ Axioms.ElimContra φ ψ
+    | axm {φ} (s : Substitution _) : φ ∈ Ax → Normal Ax (φ⟦s⟧)
+    | mdp {φ ψ}     : Normal Ax (φ 🡒 ψ) → Normal Ax φ → Normal Ax ψ
+    | nec {φ}       : Normal Ax φ → Normal Ax (□φ)
+
+    protected abbrev GL.axioms : Axiom ℕ := {Axioms.K (.atom 0) (.atom 1), Axioms.L (.atom 0)}
+    protected abbrev GL := Hilbert.Normal GL.axioms
+    ```
+  ]
 ]
 
 #definition[
@@ -37,11 +57,14 @@ In our mechanization, we mainly consider #Prop as type of natural numbers `Nat`(
 
   #leancode(
     links: (
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Axioms.lean#L25",
       "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Logic/SumQuasiNormal.lean#L13-L17",
       "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Logic/S/Basic.lean#L14",
     ),
   )[
     ```
+    protected abbrev T := □φ 🡒 φ
+
     inductive sumQuasiNormal (L₁ L₂ : Logic α) : Logic α
     | mem₁ {φ}    : L₁ ⊢ φ → sumQuasiNormal L₁ L₂ φ
     | mem₂ {φ}    : L₂ ⊢ φ → sumQuasiNormal L₁ L₂ φ
@@ -102,7 +125,7 @@ However, for the arithmetical completeness theorem, we need not merely Kripke co
 
 #theorem[Kripke completeness of #LogicGL][
   $LogicGL proves A$ if and only if $M, r forces A$ at the root $r$ of every transitive, irreflexive, rooted finite model $M$.
-
+  0)
   #leancode(
     links: (
       "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Kripke/Logic/GL/Completeness.lean#L217-L222",
@@ -258,7 +281,7 @@ As a corollary, we obtain Solovay's original statement.
   ]
 ]
 
-Moreover, Solovay also consider proved that #LogicS is arithmetically complete with respect to true arithmetic #TrueArithmetic.
+Moreover, Solovay also proved that #LogicS is arithmetically complete with respect to true arithmetic #TrueArithmetic.
 
 #theorem[Solovay's Arithmetical Completeness Theorem 2 @solovay1976][
   For any formula $A$, $LogicS proves A$ if and only if $NN models f_(Pr(T)) (A)$ for every arithmetic interpretation $f$.

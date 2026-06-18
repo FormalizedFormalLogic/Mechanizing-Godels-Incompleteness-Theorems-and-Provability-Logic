@@ -1,6 +1,5 @@
 #import "init.typ": *
 #import "notations.typ": *
-#import "@preview/curryst:0.3.0": rule
 
 #show: thmrules
 #show: init
@@ -72,7 +71,5 @@ Our work is carried out in Lean 4, an interactive theorem prover, together with 
 Lean 4 is based on the Calculus of Inductive Constructions (CIC) @moura2021lean,
 and features dependent types, quotient types, and support for noncomputable definitions, making it highly expressive.
 In addition, its powerful metaprogramming infrastructure like aesop @inproceedings enables efficient proof automation and extensibility.
-
-// TODO: Paper organization
 
 #include "provability-logic.typ"
