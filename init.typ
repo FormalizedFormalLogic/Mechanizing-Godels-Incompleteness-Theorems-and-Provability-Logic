@@ -9,6 +9,8 @@
 #let font-math = ("New Computer Modern Math", "New Computer Modern Sans Math", "libertinus serif")
 #let font-code = "JuliaMono"
 
+#let SOURCE = "https://github.com/FormalizedFormalLogic/Foundation/blob/master"
+
 #let init(body) = {
   set page(
     "a4",
@@ -151,7 +153,7 @@
         if links.len() > 0 {
           text[
             #strong[#if links.len() > 1 { "Related Sources" } else { "Related Source" }:]
-            #text(size: 8pt)[#enum(..links.map(l => link(l)[#text(font: font-code)[#l]]))]
+            #text(size: 8pt)[#enum(..links.map(l => link(SOURCE + "/" + l)[#text(font: font-code)[#l]]))]
           ]
         },
       )

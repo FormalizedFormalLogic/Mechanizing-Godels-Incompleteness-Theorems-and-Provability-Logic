@@ -28,10 +28,10 @@ In our mechanization, we mainly consider #Prop as type of natural numbers `Nat`(
   7. #prooftree(rule(name: "Nec", $Box A$, $A$))
 
   #leancode(links: (
-    "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Axioms.lean#L16",
-    "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Axioms.lean#L98",
-    "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Hilbert/Normal/Basic.lean#L19-L25",
-    "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Hilbert/Normal/Basic.lean#L627-L634",
+    "Foundation/Modal/Axioms.lean#L16",
+    "Foundation/Modal/Axioms.lean#L98",
+    "Foundation/Modal/Hilbert/Normal/Basic.lean#L19-L25",
+    "Foundation/Modal/Hilbert/Normal/Basic.lean#L627-L634",
   ))[
     ```
     protected abbrev K := □(φ 🡒 ψ) 🡒 □φ 🡒 □ψ
@@ -57,9 +57,9 @@ In our mechanization, we mainly consider #Prop as type of natural numbers `Nat`(
 
   #leancode(
     links: (
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Axioms.lean#L25",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Logic/SumQuasiNormal.lean#L13-L17",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Logic/S/Basic.lean#L14",
+      "Foundation/Modal/Axioms.lean#L25",
+      "Foundation/Modal/Logic/SumQuasiNormal.lean#L13-L17",
+      "Foundation/Modal/Logic/S/Basic.lean#L14",
     ),
   )[
     ```
@@ -88,7 +88,7 @@ We introduce Kripke semantics, the standard semantics for modal logic.
 
   #leancode(
     links: (
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Kripke/Basic.lean",
+      "Foundation/Modal/Kripke/Basic.lean",
     ),
     note: [
       We only describe Kripke frame and model, and satisfication relation in our mechanization.
@@ -128,7 +128,7 @@ However, for the arithmetical completeness theorem, we need not merely Kripke co
   0)
   #leancode(
     links: (
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Kripke/Logic/GL/Completeness.lean#L217-L222",
+      "Foundation/Modal/Kripke/Logic/GL/Completeness.lean#L217-L222",
     ),
     note: [
       In this mechanization, the statement is the equivalence between the first and fourth propositions.
@@ -166,7 +166,7 @@ Throughout, $T$ and $U$ denote nice theories extending #PeanoArithmetic, and con
 
   #leancode(
     links: (
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/ProvabilityLogic/Realization.lean#L17-L32",
+      "Foundation/ProvabilityLogic/Realization.lean#L17-L32",
     ),
     note: [
       For technical reasons, our implementation of realization depends on an arbitrary provability `𝔅`.
@@ -197,7 +197,7 @@ Throughout, $T$ and $U$ denote nice theories extending #PeanoArithmetic, and con
 
   #leancode(
     links: (
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/ProvabilityLogic/Arithmetic.lean#L80",
+      "Foundation/ProvabilityLogic/Arithmetic.lean#L80",
     ),
   )[
     ```
@@ -216,7 +216,7 @@ Here we present the generalized version, @thm:arithmetical_completeness, using t
 
   #leancode(
     links: (
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Height.lean#L18",
+      "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Height.lean#L18",
     ),
     note: [
       Same here, we can take any provability `𝔅`, but in this report we only consider the standard provability.
@@ -235,7 +235,7 @@ Note that if $T$ is $Sigma_1$-sound, $T$ does not prove $Pr(T)^n (GoedelNum(bot)
 
   #leancode(
     links: (
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/Modal/Logic/GLPlusBoxBot/Basic.lean#L17-L20",
+      "Foundation/Modal/Logic/GLPlusBoxBot/Basic.lean#L17-L20",
     ),
   )[
     ```
@@ -254,7 +254,7 @@ The main result of our provability logic mechanization is the following.
 
   #leancode(
     links: (
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/ProvabilityLogic/GL/Completeness.lean#L104-L105",
+      "Foundation/ProvabilityLogic/GL/Completeness.lean#L104-L105",
     ),
   )[
     ```
@@ -272,7 +272,7 @@ As a corollary, we obtain Solovay's original statement.
 
   #leancode(
     links: (
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/ProvabilityLogic/GL/Completeness.lean#L110",
+      "Foundation/ProvabilityLogic/GL/Completeness.lean#L110",
     ),
   )[
     ```
@@ -289,8 +289,8 @@ Moreover, Solovay also proved that #LogicS is arithmetically complete with respe
 
   #leancode(
     links: (
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/ProvabilityLogic/S/Completeness.lean#L184",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/ProvabilityLogic/S/Completeness.lean#L186",
+      "Foundation/ProvabilityLogic/S/Completeness.lean#L184",
+      "Foundation/ProvabilityLogic/S/Completeness.lean#L186",
     ),
   )[
     ```

@@ -72,4 +72,10 @@ Lean 4 is based on the Calculus of Inductive Constructions (CIC) @moura2021lean,
 and features dependent types, quotient types, and support for noncomputable definitions, making it highly expressive.
 In addition, its powerful metaprogramming infrastructure like aesop @inproceedings enables efficient proof automation and extensibility.
 
+Our mechanization is currently hosted as a repository on GitHub, and the version we refer to is #link(SOURCE).
+In this report, we will briefly and informally introduce the mathematical facts without omitting the essentials, and show the code of our mechanization corresponding to those facts.
+However, for the sake of readability, note that in some places we have modified the hosted code.
+Moreover, owing to motivations other than the incompleteness theorems and provability logic that this report focuses on, some implementations are stated as more general definitions.
+We add comments where we deem it necessary, but for the actual working (verified) code, refer to the repository.
+
 #include "provability-logic.typ"
