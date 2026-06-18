@@ -1,6 +1,5 @@
 #import "init.typ": *
 #import "notations.typ": *
-#import "@preview/curryst:0.3.0": rule
 
 #show: thmrules
 #show: init
@@ -54,8 +53,8 @@ G1, with Rosser's improvement @Rosser1936, states that for any consistent axioma
 G2 states that, for any consistent _nice_ axiomatic system as in G1, the proposition formally representing the system's own consistency cannot be proved within the system itself.
 
 Gödel also made another important observation: that provability can be regarded as a modality.
-In his early work @godelInterpretationIntuitionischenAussagenkalkuls1933, he observed that the provability of intuitionistic logic can be treated similarly to the modal operator $Box$ in the modal logic now called #LogicSFour.
-However, it follows from G2, that abstracting the behavior of the provability predicate, the most central notion of the incompleteness theorems, does not yield #LogicSFour.
+In his early work @godelInterpretationIntuitionischenAussagenkalkuls1933, he observed that the provability of intuitionistic logic can be treated similarly to the modal operator $Box$ in the modal logic now called #LogicS4.
+However, it follows from G2, that abstracting the behavior of the provability predicate, the most central notion of the incompleteness theorems, does not yield #LogicS4.
 Solovay @solovay1976 showed that the modal logic called #LogicGL precisely captures the behavior of the standard provability predicate.
 This fact, known as _Solovay's arithmetical completeness theorem_, was a significant result that opened up the subfield of modal logic called _provability logic_.
 
@@ -73,4 +72,10 @@ Lean 4 is based on the Calculus of Inductive Constructions (CIC) @moura2021lean,
 and features dependent types, quotient types, and support for noncomputable definitions, making it highly expressive.
 In addition, its powerful metaprogramming infrastructure like aesop @inproceedings enables efficient proof automation and extensibility.
 
-// TODO: Paper organization
+Our mechanization is currently hosted as a repository on GitHub, and the version we refer to is #link(SOURCE).
+In this report, we will briefly and informally introduce the mathematical facts without omitting the essentials, and show the code of our mechanization corresponding to those facts.
+However, for the sake of readability, note that in some places we have modified the hosted code.
+Moreover, owing to motivations other than the incompleteness theorems and provability logic that this report focuses on, some implementations are stated as more general definitions.
+We add comments where we deem it necessary, but for the actual working (verified) code, refer to the repository.
+
+#include "provability-logic.typ"
