@@ -41,6 +41,9 @@
 #let proves = $class("relation", tack.r)$
 #let nproves = $class("relation", tack.r.not)$
 
+#let models = $class("relation", tack.r.double)$
+#let nmodels = $class("relation", tack.r.double.not)$
+
 #let Box = $class("unary", square)$
 #let Dia = $class("unary", diamond)$
 #let land = $and$
