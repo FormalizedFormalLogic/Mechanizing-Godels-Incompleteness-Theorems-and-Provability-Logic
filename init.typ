@@ -23,8 +23,7 @@
 
   show math.equation: set text(font: font-math)
 
-  show raw: set text(size: 7pt, font: font-code)
-
+  // show raw: set text(size: 7pt, font: font-code)
   show raw: set text(font: font-code)
 
   show raw.where(block: false): box.with(
@@ -116,7 +115,53 @@
   body
 }
 
-= theorems
+#let _lean-border = luma(210)
+
+#let leancode(code, links: (), note: none) = {
+  let code-text = if code.func() == raw {
+    code.text
+  } else {
+    let raw-elem = code.children.find(it => it.func() == raw)
+    if raw-elem != none { raw-elem.text } else { "" }
+  }
+
+  block(
+    width: 100%,
+    stroke: (0.5pt + _lean-border),
+    inset: 0pt,
+    breakable: true,
+    clip: true,
+  )[
+    #block(width: 100%, fill: luma(220), inset: (x: 12pt, y: 4pt))[
+      #grid(
+        columns: (auto, 1fr),
+        align: (left + horizon, right + horizon),
+        if links.len() > 0 {
+          text(size: 8pt, fill: auxColor)[
+            #links.map(l => link(l)[#l.split("/").last().split("#").first()]).join(h(8pt))
+          ]
+        },
+      )
+    ]
+
+    #block(
+      width: 100%,
+      fill: luma(250),
+      inset: (x: 8pt, y: 12pt),
+      text(fill: rgb("#000000"), 9pt, font: font-code, raw(code-text, lang: "lean")),
+    )
+
+    #if note != none {
+      line(length: 100%, stroke: 0.5pt + _lean-border)
+      block(width: 100%, inset: (x: 12pt, y: 8pt))[
+        #text(size: 9pt)[
+          #show raw: set text(1em)
+          *Mechanization Note:* #note
+        ]
+      ]
+    }
+  ]
+}
 
 #let sqthmbox(
   title,
@@ -194,3 +239,4 @@
     #h(.4em)
   ],
 )
+
