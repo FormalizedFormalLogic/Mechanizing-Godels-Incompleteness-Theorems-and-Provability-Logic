@@ -66,7 +66,7 @@
 #let height(T) = $upright("hgt")(#T)$
 
 #let GoedelNum(x) = $corner.l #x corner.r$
-#let ProvLogic(T, U) = $upright("PL")_(#T) (#U)$
+#let ProvLogic(T, U) = $upright("PrL")_(#T) (#U)$
 
 #let Theory(T) = $sans(upright(#T))$
 #let PeanoArithmetic = Theory("PA")
