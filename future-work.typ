@@ -36,10 +36,10 @@ However, we have not yet established modal completeness with respect to frames, 
 
 == Syntactical Arguements for Modal Logics
 
-Apart from the perspective of provability logic, since $LogicGL$ is very interesting modal logic, we also consider it an interesting  the general properties of #LogicGL, #LogicS, and other pure logics, and in particular the syntactic argument such as cut-elimination of sequent calculi for these logic, interpolation calcululation, and automated deduction.
+Apart from the perspective of provability logic, since $LogicGL$ is very interesting modal logic, we also consider it exciting the general properties of #LogicGL, #LogicS, #Logic("D"), or else, and in particular, the syntactic argument such as cut-elimination of sequent calculi for these logic, interpolation calcululation, and automated deduction.
 Historically, cut-elimination for the sequent calculus of #LogicGL required a delicate analysis, see @GoreRamanayake2012.
 Recently, the termination of cut-elimination for #LogicGL using a method called regress process by Brighton @Brighton2016 has been verified in Rocq by Goré, Ramanayake and Shillito @GoreRamanayakeShillito2021.
-In addition, for other logic, HOLMS @Bilotta2025 @BilottaMaggesiPeriniBrogi2025 @BilottaMaggesiPeriniBrogi2026a @BilottaMaggesiPeriniBrogi2026b, that continues Maggesi and Perini Brogi's mechanization of #LogicGL @maggesiMechanisingGodelLob2023, and furthermore mechanizes content concerning automated proving for well-knowm modal logics on modal-cube like $Logic("K"), Logic("K4"), Logic("S4")$, and moreover, Grzegorczyk's modal logic #Logic("Grz")
+In addition, for other logic, HOLMS @Bilotta2025 @BilottaMaggesiPeriniBrogi2025 @BilottaMaggesiPeriniBrogi2026a @BilottaMaggesiPeriniBrogi2026b, that continues Maggesi and Perini Brogi's work @maggesiMechanisingGodelLob2023, and furthermore mechanizes automated deductions for not only #Logic("GL") but also well-knowm modal logics on modal-cube like $Logic("K"), Logic("K4"), Logic("S4")$, and moreover, Grzegorczyk's modal logic #Logic("Grz")
 #footnote[
   Although we did not mention it, we also mechanizes the Kripke completeness of #Logic("Grz"), and moreover mechanizes the arithmetical completeness theorem of #Logic("Grz") based on @goldblattArithmeticalNecessityProvability1978 @boolosProvabilityArithmeticSchema1980.
   Outline is here:
