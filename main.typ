@@ -78,4 +78,116 @@ However, for the sake of readability, note that in some places we have modified 
 Moreover, owing to motivations other than the incompleteness theorems and provability logic that this report focuses on, some implementations are stated as more general definitions.
 We add comments where we deem it necessary, but for the actual working (verified) code, refer to the repository.
 
-#include "provability-logic.typ"
+
+= 証明可能性論理
+
+この節では，様相論理，特に証明可能性論理の形式化について述べる．
+我々は，証明可能性論理という分野の中でも基本的かつ最重要の事実として，我々はSolovayの算術的完全性定理 @solovay1976 の形式化に成功した．
+前節と同様に，定義や事実の導入は最小限に留める．
+様相論理および証明可能性論理の詳細については，標準的な教科書 @chagrovModalLogic2001 @boolosLogicProvability1994 あるいは，サーベイ @japaridzeLogicProvability1998 @artemovProvabilityLogic2005 を参照されたい．
+
+== 様相論理の基本的な性質など
+
+まず，様相論理の基本的な枠組みを準備しよう．
+Formulas of modal logic are defined from propositional variables (denotes #Prop), the primitive logical connectives $bot$ and $limp$, and the modal operator $Box$.
+The remaining operators $top, lnot, land, lor, Dia$ are introduced as the usual abbreviations.
+We write $[p := B]$ for substitution, and write $A[p := B]$ for the result of substituting $B$ for all occurrences of $p$ in $A$.
+
+#leancode(
+  links: (
+    "Foundation/Modal/Formula/Basic.lean",
+  ),
+)[
+  ```
+  inductive Formula (α : Type*) where
+    | atom   : α → Formula α
+    | falsum : Formula α
+    | imp    : Formula α → Formula α → Formula α
+    | box    : Formula α → Formula α
+
+  abbrev top : Formula α := imp falsum falsum
+  abbrev neg (φ : Formula α) : Formula α := imp φ falsum
+  abbrev or (φ ψ : Formula α) : Formula α := imp (neg φ) ψ
+  abbrev and (φ ψ : Formula α) : Formula α := neg (imp φ (neg ψ))
+  abbrev dia (φ : Formula α) : Formula α := neg (box (neg φ))
+
+  abbrev Substitution (α) := α → (Formula α)
+
+  def Formula.subst (s : Substitution α) : Formula α → Formula α
+    | atom a  => (s a)
+    | ⊥       => ⊥
+    | □φ      => □(φ.subst s)
+    | φ 🡒 ψ   => φ.subst s 🡒 ψ.subst s
+
+  notation:80 φ "⟦" s "⟧" => Modal.Formula.subst s φ
+  ```
+]
+
+論理とは論理式の集合としよう．
+我々は論理 $LogicGL$ を定義するが，その方法はまずGentzen流のシークエント計算によって定める．
+#LogicGL は一般にはHilbert流で定義するが，Kripke意味論に対する完全性を示す場合や，あるいはその他の重要な性質を示す際において，シークエント計算を導入したほうがいくらか証明が簡単であり，かつ，形式化の難易度も低くなる．
+ここでの #LogicGL のGentzen流シークエント計算は，SambinとValentini @SV82 によるものである．
+最終的には，以下の同値性を示すことができる．
+
+最後に，証明可能性論理で重要な非正規な様相論理 $Logic("S")$ と $Logic("D")$ を導入する．
+前者は Solovay @solovay1976 に，後者はJaparidze (Dzhaparidze) に由来する．
+これらに純粋にはKripke意味論は適用できないが，適当に拡張したKripeモデルのクラスに対して健全かつ完全であることが知られている．ただしその説明は省略する．
+
+#proposition[cf. @Vis84][
+  以下同値．
+
+  1. $Logic("S") proves A$
+]
+
+#proposition[cf. @Bek90][
+  以下は同値．
+
+  1. $Logic("D") proves A$
+]
+
+これらの意味論を用いて，以下の包含関係が成り立つ．
+
+=== シークエント計算の応用について <sect:application-of-sequent-calculus>
+
+SambinとValentini @SV82 ではさらに$LogicGL$ のシークエント計算に対してのいくつかの応用が示されている．
+まず，純粋なシークエント計算であるため，Maeharaの手法を用いて，Craig補間定理(CIP)を示すことができる．
+
+さらに，Boolos および Smorynskiは，$LogicGL$ のCIPから，#LogicGL の不動点定理を示すことができることを示している．この証明もシークエント計算を用いて形式化することができている．
+
+#LogicGL の不動点定理は，例えば のでもLeanで形式化されている．
+ここでは，その証明の形式化から，補間および不動点は，シークエント計算の導出木から構成的にLean上で計算することが可能であることを注意しておこう．
+
+ただし，現状ではシークエント計算の導出木を自動で証明探索などによって構成することは出来ないので，単に具体的に導出木をこちらで別途手入力で計算する必要がある．また，例えばKripke意味論を用いて $LogicGL proves A$ を非構成的に証明している場合は当然その補間や不動点は計算可能ではない．
+
+最後に $LogicS$ と $Logic("D")$ のCIPに関しての事実も形式化しているので，軽く述べおこう．
+
+#proposition[@Bek87][
+  $Logic("S")$ はCIPを持つ．
+]
+
+#proposition[@Bek89][
+  $Logic("D")$ はCIPを持たない．
+  特に，次の $A$ と $B$ に対しての補間が存在しない．
+]
+
+=== ラベル付きシークエント計算について
+
+我々は，#LogicGL のラベル付きシークエント計算 @Neg14 についても形式化しているが，これは先行研究として MaggesiとPerini Brogi @maggesiMechanisingGodelLob2023 によるHOL Lightでの #LogicGL のラベル付きシークエント計算の形式化とほとんど方法としては同じであり，その意味では新規性はあまりない．
+ただしいくつかの実装上の相違点については触れておこう．
+
+MaggesiとPerini Brogiのシークエント計算の*実装の*停止性はメタの数学的事実として保証されている．
+一方で，我々は実際にproof-searchを定義する際に，Leanの制約上としてそれがwell-foundedになるということによって，停止性を定理証明支援系の中で保証していると言える．
+この点では我々のほうがより強い保証を与えていると言える．
+しかし，MaggesiとPerini Brogiの形式化は実用上の有用性があり，停止性の保証は無いものの実際に計算を行わせてタクティク的に使うことが出来て，形式化上に現れる #LogicGL の簡単な証明を自動化することが出来ている．
+他方我々の実装では，そのwell-foundednessの証明の実装上の制約上，我々のラベル付きシークエント計算を例えばLeanのタクティクとして使うことが出来ず，純粋に数学的事実としてラベル付きシークエント計算の諸性質が形式化されているに留まっている．
+故に実用性上の優位性に関してはMaggesiとPerini Brogiの形式化のほうに軍配が上がっている．
+
+また，ラベル付きシークエント計算で @sect:application-of-sequent-calculus で述べたようなCIPを示すことができるかは未解決であるため，現状では，#LogicGL の論理としての特徴を形式化する点においては，あまり有効ではないことは指摘しておく．
+
+== 算術的完全性定理
+
+== 証明可能性定理の分類定理
+
+=== いくつかの `sorry` に関して
+
+分類定理を形式化すること自体とは直接関係が無いものの，しかし証明可能性論理上のいくつかの事実は `sorry` のままで残されている．
