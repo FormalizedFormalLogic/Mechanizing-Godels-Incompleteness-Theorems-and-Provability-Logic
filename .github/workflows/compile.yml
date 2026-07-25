@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6.0.3
       - name: Install "Libertinus Serif"
-        uses: SnO2WMaN/install-fontsource-action@v0.0.2
+        uses: SnO2WMaN/install-fontsource-action@v0.0.3
         with:
           font-name: Libertinus Serif
       - name: Install "Julia Mono"
