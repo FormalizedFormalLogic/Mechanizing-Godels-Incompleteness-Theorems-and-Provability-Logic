@@ -147,8 +147,8 @@ Our sequent calculus for #LogicGL is due to Sambin and Valentini @SV82.
 
 #definition[
   A _sequent_ $Gamma => Delta$ is a pair of finite sets of formulas.
-  The sequent calculus $cal("G")_LogicGL$ for #LogicGL consists of the following rules,
-  where in the weakening rules (wkL) and (wkR) we assume $Gamma subset.eq Gamma'$ and $Delta subset.eq Delta'$ respectively. We write $cal("G")_LogicGL proves Gamma => Delta$ if the sequent $Gamma => Delta$ is provable in $cal("G")_LogicGL$.
+  The sequent calculus $GentzenGL$ for #LogicGL consists of the following rules,
+  where in the weakening rules (wkL) and (wkR) we assume $Gamma subset.eq Gamma'$ and $Delta subset.eq Delta'$ respectively. We write $GentzenGL proves Gamma => Delta$ if the sequent $Gamma => Delta$ is provable in $GentzenGL$.
 
   #align(center, grid(
     columns: 2,
@@ -266,8 +266,8 @@ For later use, we also introduce the notions of the _rank_ of a point and the _h
 Finally, we introduce the Hilbert-style proof system.
 
 #definition[
-  The Hilbert-style proof system $cal("H")_LogicGL$ for #LogicGL consists of the following axioms and inference rules.
-  We write $cal("H")_LogicGL proves A$ if $A$ is provable in $cal("H")_LogicGL$, and define $LogicGL := { A : cal("H")_LogicGL proves A }$.
+  The Hilbert-style proof system $HilbertGL$ for #LogicGL consists of the following axioms and inference rules.
+  We write $HilbertGL proves A$ if $A$ is provable in $HilbertGL$, and define $LogicGL := { A : HilbertGL proves A }$.
 
   1. Tautologies of classical propositional logic (cf. @CZ97)
   2. Axiom $AxiomK$: $Box(A limp B) limp (Box A limp Box B)$
@@ -310,9 +310,9 @@ As the equivalence of these characterizations, we mechanized the following.
   The following are equivalent.
 
   1. $LogicGL proves A$.
-  2. $cal("H")_LogicGL proves A$.
-  2. $cal("G")_LogicGL proves => A$.
-  3. $cal("G")_LogicGL + ("Cut") proves => A$.
+  2. $HilbertGL proves A$.
+  2. $GentzenGL proves => A$.
+  3. $GentzenWithCutGL proves => A$.
   4. $=> 0 : A$ is provable in the labelled sequent calculus (see @sect:labelled-sequent-calculus).
   5. $A$ is forced at every point of every finite $LogicGL$-model.
   6. $A$ is forced at the root of every rooted finite $LogicGL$-model.
@@ -845,7 +845,7 @@ We briefly describe these results.
 ]
 
 #definition[
-  A finite $LogicGL$-model that is moreover linear, i.e., $x prec y$ and $x prec z$ imply $y prec z$ or $y = z$ or $z prec y$, is called a finite $LogicGLPoint3$-model.
+  A finite $LogicGL$-model is called _finite $LogicGLPoint3$_ when $prec$ is linear, i.e., $x prec y$ and $x prec z$ imply $y prec z$ or $y = z$ or $z prec y$.
 ]
 
 #leancode(links: ("ProvabilityLogic/Kripke/Linearity.lean",))[
@@ -856,7 +856,7 @@ We briefly describe these results.
 ]
 
 #definition[
-  The sequent calculus for $LogicGLPoint3$ is obtained from the sequent calculus for #LogicGL by replacing the $Box upright("GL")$ rule with the following rule,
+  The sequent calculus $GentzenGLPoint3$ for $LogicGLPoint3$ is obtained from the sequent calculus for #LogicGL by replacing the $Box upright("GL")$ rule with the following rule,
   where $Delta != emptyset$ and ${S_1, dots, S_m} = PowerSet(Delta) without {emptyset}$ (hence $m = 2^(|Delta|) - 1$).
 
   #align(center, prooftree(rule(
@@ -884,7 +884,7 @@ For these characterizations, equivalences analogous to those for #LogicGL hold.
 #theorem[@VS83][
   The following are equivalent.
   1. $LogicGLPoint3 proves A$.
-  2. $=> A$ is provable in the sequent calculus for $LogicGLPoint3$.
+  2. $GentzenGLPoint3 proves => A$.
   3. $A$ is forced at every point of every finite $LogicGLPoint3$-model.
   4. $A$ is forced at the root of every rooted finite $LogicGLPoint3$-model.
 ]
@@ -914,7 +914,7 @@ In particular, on closed formulas $LogicGLPoint3$ and $LogicGL$ do not differ; t
 Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect to consistency assertions.
 
 #definition[
-  - A sentence $sigma$ is a _consistency assertion_ if it is generated from $lnot Pr(T)(GoedelNum(bot))$ and $Pr(T)(GoedelNum(bot))$ by closing under $Pr(T)(GoedelNum(dot))$, $lnot$, $land$, $lor$, and $limp$.
+  - A sentence $sigma$ is a _consistency assertion_ if it is generated from $lnot Pr(T)(GoedelNum(bot))$ and $Pr(T)(GoedelNum(bot))$ by closing under $Pr(T)(x)$, $lnot$, $land$, $lor$, and $limp$.
   - A realization $f$ is a _consistency realization_ if $f$ sends every propositional variable to a consistency assertion.
 ]
 

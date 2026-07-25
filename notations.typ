@@ -64,10 +64,18 @@
 #let trace(x) = $upright("tr")(#x)$
 #let subfml(A) = $upright("Sub")(#A)$
 #let prebox(X) = $Box^(-1) #X$
+
 #let LogicS4 = Logic("S4")
 #let LogicGL = Logic("GL")
 #let LogicGLPlusBoxBot(n) = $LogicGL + Box^#n bot$
 #let LogicS = Logic("S")
+
+#let Gentzen(L) = $cal("G")_(#L)$
+#let Hilbert(L) = $cal("H")_(#L)$
+#let GentzenGL = Gentzen(LogicGL)
+#let GentzenWithCutGL = $Gentzen(LogicGL) + ("Cut")$
+#let HilbertGL = Hilbert(LogicGL)
+#let GentzenGLPoint3 = Gentzen(LogicGLPoint3)
 
 #let Prov(T) = $attach(br: #T, upright("Prov"))$
 // Use for *standard* provability predicate
