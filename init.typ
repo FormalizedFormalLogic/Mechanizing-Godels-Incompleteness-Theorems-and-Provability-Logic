@@ -11,6 +11,17 @@
 
 #let SOURCE = "https://github.com/FormalizedFormalLogic/Foundation/blob/master"
 
+// リンクのパスの先頭ディレクトリ（リポジトリ名）から宛先リポジトリを解決する
+#let REPO_SOURCES = (
+  "Foundation": "https://github.com/FormalizedFormalLogic/Foundation/blob/master",
+  "ProvabilityLogic": "https://github.com/FormalizedFormalLogic/ProvabilityLogic/blob/main",
+)
+#let lean-link(l) = {
+  let repo = l.split("/").first()
+  let base = REPO_SOURCES.at(repo, default: SOURCE)
+  link(base + "/" + l)[#text(font: font-code)[#l]]
+}
+
 #let init(body) = {
   set page(
     "a4",
@@ -151,7 +162,7 @@
         if links.len() > 0 {
           text[
             #strong[#if links.len() > 1 { "Related Sources" } else { "Related Source" }:]
-            #text(size: 8pt)[#enum(..links.map(l => link(SOURCE + "/" + l)[#text(font: font-code)[#l]]))]
+            #text(size: 8pt)[#enum(..links.map(lean-link))]
           ]
         },
       )
