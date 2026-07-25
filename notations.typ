@@ -54,6 +54,7 @@
 #let Prop = $upright("Prop")$
 
 #let Logic(L) = $sans(upright(#L))$
+#let sumQuasiNormal(L1, L2) = $#L1 + #L2$
 #let LogicS4 = Logic("S4")
 #let LogicGL = Logic("GL")
 #let LogicGLPlusBoxBot(n) = $LogicGL + Box^#n bot$

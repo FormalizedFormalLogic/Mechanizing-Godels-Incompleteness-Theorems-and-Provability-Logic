@@ -4,9 +4,9 @@
 #let auxColor = color.hsl(205deg, 55%, 40%)
 
 #let base-text-size = 11pt
-#let font-base = ("libertinus serif", "Shippori Mincho B1")
+#let font-base = "libertinus serif"
 #let font-alter = font-base
-#let font-math = ("New Computer Modern Math", "New Computer Modern Sans Math", "libertinus serif")
+#let font-math = ("New Computer Modern Math", "libertinus serif")
 #let font-code = "JuliaMono"
 
 #let SOURCE = "https://github.com/FormalizedFormalLogic/Foundation/blob/master"
@@ -16,7 +16,6 @@
     "a4",
     numbering: "1",
     number-align: center,
-    margin: (left: 40mm, right: 40mm),
   )
 
   set heading(numbering: "1.1")
@@ -55,9 +54,9 @@
 
   body
 
-  pagebreak()
+  pagebreak(weak: true)
 
-  bibliography("references.bib")
+  bibliography("references.bib", style: "association-for-computing-machinery")
 }
 
 #let abst(
@@ -130,22 +129,21 @@
     stroke: (left: 1pt + luma(0)),
     inset: 0pt,
     breakable: true,
-    clip: true,
   )[
     #block(
       width: 100%,
-      fill: luma(245),
-      inset: (x: 8pt, y: 16pt),
+      fill: luma(250),
+      inset: (x: 4pt, y: 8pt),
       spacing: 0pt,
     )[
       #set par(justify: false, first-line-indent: 0pt)
       #set text(fill: rgb("#000000"), size: 10pt, font: font-code)
       #show raw: set text(font: font-code)
-      #raw(code-text, lang: "lean")
+      #raw(code-text, lang: "lean", block: true, syntaxes: "assets/syntaxes/Lean.sublime-syntax")
     ]
 
 
-    #block(width: 100%, inset: (x: 12pt, y: 8pt), spacing: 0pt)[
+    #block(width: 100%, inset: (x: 12pt, y: 4pt), spacing: 0pt)[
       #set par(first-line-indent: 0pt)
       #grid(
         columns: (auto, 1fr),
