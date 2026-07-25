@@ -62,6 +62,8 @@
 #let LogicGLAlpha(a) = $Logic("GL")_(#a)$
 #let LogicGLBetaMinus(b) = $Logic("GL")_(#b)^-$
 #let trace(x) = $upright("tr")(#x)$
+#let subfml(A) = $upright("Sub")(#A)$
+#let prebox(X) = $Box^(-1) #X$
 #let LogicS4 = Logic("S4")
 #let LogicGL = Logic("GL")
 #let LogicGLPlusBoxBot(n) = $LogicGL + Box^#n bot$
