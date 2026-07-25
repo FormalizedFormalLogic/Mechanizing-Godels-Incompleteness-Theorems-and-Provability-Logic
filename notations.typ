@@ -49,6 +49,7 @@
 #let Dia = $class("unary", diamond)$
 #let land = $and$
 #let limp = $->$
+#let liff = $<->$
 #let lor = $or$
 #let lnot = $not$
 

@@ -57,9 +57,9 @@ Solovay @Sol76 showed that the modal logic called #LogicGL precisely captures th
 This fact, known as _Solovay's arithmetical completeness theorem_, was a significant result that opened up the subfield of modal logic called _provability logic_.
 
 On the other hand, recently, there have been much active works on mechanizing mathematics using interactive theorem provers, guaranteeing the validity of existing and new results, and providing AI/LLM-assisted or automated proving.
-There are many well-known interactive theorem provers such as Rocq @RocqProver, Isabelle @Isabelle, HOL Light @HOLLight @HOLLightTutorial, Agda @Agda, and Lean @dMU21, and mathematics has been mechanized in each of them, including in the field of mathematical logic (some of these mechanizations are summarized in @AwesomeLogicFormalization).
+There are many well-known interactive theorem provers such as Rocq @RocqProver, Isabelle @Isabelle, HOL Light @HOLLight @HOLLightTutorial, Agda @Agda, and Lean @dMU21, and mathematics has been mechanized in each of them, including in the field of mathematical logic#footnote[Some of these mechanizations are summarized in @AwesomeLogicFormalization.].
 In particular, for mechanizing Gödel's incompleteness theorems, this line of work began with Shankar in 1986 @Sha86 @Sha97, and continues with O'Connor @OCo05 @OCo09, Harrison @Har06, Paulson @Pau15, and Popescu and Traytel @PT19 @PT21, Kirst and Peters @KP23.
-As for provability logic, modal-logical properties of #LogicGL, such as its semantical completeness and automated solvers, have been mechanized by Maggesi and Perini Brogi @MPB23, Gignoux @Gig26.
+As for provability logic, modal-logical properties of #LogicGL, such as its semantical completeness and automated solvers, have been mechanized by Goré and Kelly @GR07, Goré, Ramanayake and Shillito @GoreRamanayakeShillito2021, Maggesi and Perini Brogi @MPB21 @MPB23, Gignoux @Gig26.
 However, these are either abstract or not full mechanizations within arithmetic.
 For instance, O'Connor's implementation assumes several facts needed for the proof of G2 as axioms, and Paulson's mechanization of G2 uses hereditarily finite sets, not arithmetic.
 To the best of our knowledge, no full formalization of the incompleteness theorems entirely within arithmetic is known, and consequently, no mechanization about provability logic has been reported.
@@ -83,7 +83,7 @@ In this section, we describe our mechanization of modal logic, in particular of 
 As the most fundamental and important result in the field of provability logic, we have succeeded in mechanizing Solovay's arithmetical completeness theorem @Sol76.
 We have also mechanized the classification theorem of provability logics due to Beklemishev @Bek90.
 As in the previous section, we keep the introduction of definitions and facts brief.
-For the details of modal logic and provability logic, we refer the reader to the standard textbooks @CZ97 @Boo94 @Smo85 and the surveys @JdJ98 @AB05.
+For the details of modal logic and provability logic, we refer the reader to the standard textbooks @CZ97 @Boo94 @Smo85 and the surveys @JdJ98 @AB05 @BV06.
 
 == Basics of modal logic
 
@@ -91,7 +91,7 @@ We first set up the basic framework of modal logic.
 
 #definition[
   Formulas of modal logic are built from propositional variables (denoted by #Prop), the primitive logical connectives $bot$ and $limp$, and the modal operator $Box$.
-  The remaining operators $top, lnot, land, lor, Dia$ are introduced as the usual abbreviations.
+  The remaining operators $top, lnot, land, lor, liff, Dia$ are introduced as the usual abbreviations.
   We also abbreviate $Boxdot A equiv A land Box A$.
   A _substitution_ is a map $s$ assigning a formula to each propositional variable, and $A[s]$ denotes the formula obtained from $A$ by replacing every occurrence of each propositional variable $p$ with $s(p)$.
   For a finite set of formulas $Gamma$, we write $Box Gamma = { Box B | B in Gamma }$.
@@ -335,7 +335,7 @@ As the equivalence of these characterizations, we mechanized the following.
 
 Here are a few remarks.
 The Kripke completeness of $LogicGL$ (the equivalence of 1 and 6) is due to Segerberg @Seg71.
-This is the usual Kripke completeness with respect to the class of finite $LogicGL$-models, and has already been mechanized in HOL Light by Maggesi and Perini Brogi @MPB23.
+This is the usual Kripke completeness with respect to the class of finite $LogicGL$-models, and has already been mechanized in HOL Light by Maggesi and Perini Brogi @MPB21 @MPB23.
 However, the proof of the arithmetical completeness theorem described later requires not the mere Kripke completeness, but the completeness with respect to rooted models (7, and furthermore 8).
 The transformation of a rooted model into a tree model is done by the technique known as tree unraveling (cf. @CZ97[Theorem 3.18]).
 The equivalence of 3 and 4 corresponds to the cut-elimination theorem.
@@ -431,6 +431,8 @@ Moreover, by constructing countermodels via the semantics, the following proper 
   links: ("ProvabilityLogic/Logic/D/Basic.lean",),
 )[
   ```
+  lemma LogicGL_ssubset_LogicD [DecidableEq α] : (LogicGL : Logic α) ⊂ LogicD
+
   lemma LogicD_ssubset_LogicS [Inhabited α] [DecidableEq α] : (LogicD : Logic α) ⊂ LogicS
   ```
 ]
@@ -470,13 +472,12 @@ We have also mechanized the fixed point theorem of $LogicGL$ via the sequent cal
   Suppose that $p$ is modalized in $A$.
   Then there exists a formula $D$ not containing $p$ and consisting only of propositional variables of $A$ such that
   $ LogicGL proves A[p := D] <-> D $
-  Moreover, the fixed point is unique up to equivalence.
+  Moreover, the fixed point is unique up to provable equivalence:
+  for a propositional variable $q$ not occurring in $A$,
+  $ LogicGL proves Boxdot(A <-> p) land Boxdot(A[p := q] <-> q) limp (p <-> q) $
 ] <thm:GL_fixpoint>
 #leancode(
   links: ("ProvabilityLogic/Logic/GL/Fixedpoint.lean",),
-  note: [
-    Here `q` is a fresh propositional variable not occurring in $A$, used in the construction of the fixed point.
-  ],
 )[
   ```
   theorem fixpointTheorem {A : Formula α} {p q : α}
@@ -524,7 +525,7 @@ Finally, we have also mechanized facts on the CIP of $LogicS$ and $LogicD$, whic
 
 === On the labelled sequent calculus <sect:labelled-sequent-calculus>
 
-We have also mechanized the labelled sequent calculus for #LogicGL @Neg14. As for prior work, our mechanization is almost the same in its method as the mechanization of the labelled sequent calculus for #LogicGL in HOL Light by Maggesi and Perini Brogi @MPB23, and in that sense it has little novelty.
+We have also mechanized the labelled sequent calculus for #LogicGL by Negri @Neg14. As for prior work, our mechanization is almost the same in its method as the mechanization of the labelled sequent calculus for #LogicGL in HOL Light by Maggesi and Perini Brogi @MPB21 @MPB23, and in that sense it has little novelty.
 We nevertheless touch on some differences between the implementations.
 
 The termination of Maggesi and Perini Brogi's _implementation_ of the calculus is guaranteed as a mathematical fact on the meta-level.
@@ -931,6 +932,9 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
 
   def Realization.IsConsistencyRealization {𝔅 : Provability T₀ T} (f : Realization α 𝔅) : Prop :=
     ∀ a, 𝔅.IsConsistencyAssertion (f.val a)
+
+  abbrev ConsistencyRealization (α : Type*) (𝔅 : Provability T₀ T) :=
+    {f : Realization α 𝔅 // f.IsConsistencyRealization}
 
   abbrev StandardConsistencyRealization (α : Type*) (T : FirstOrder.ArithmeticTheory) [T.Δ₁] :=
     ConsistencyRealization α T.standardProvability
