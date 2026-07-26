@@ -1,0 +1,8 @@
+[submodule "Foundation"]
+	path = repos/Foundation
+	url = https://github.com/FormalizedFormalLogic/Foundation
+
+[submodule "ProvabilityLogic"]
+	path = repos/ProvabilityLogic
+	url = https://github.com/FormalizedFormalLogic/ProvabilityLogic.git
+

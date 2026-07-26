@@ -45,19 +45,38 @@
 #let nmodels = $class("relation", tack.r.double.not)$
 
 #let Box = $class("unary", square)$
+#let Boxdot = $class("unary", ⊡)$
 #let Dia = $class("unary", diamond)$
 #let land = $and$
 #let limp = $->$
+#let liff = $<->$
 #let lor = $or$
 #let lnot = $not$
 
 #let Prop = $upright("Prop")$
 
 #let Logic(L) = $sans(upright(#L))$
+#let sumQuasiNormal(L1, L2) = $#L1 + #L2$
+#let LogicD = Logic("D")
+#let LogicA = Logic("A")
+#let LogicGLPoint3 = Logic("GL.3")
+#let LogicGLAlpha(a) = $Logic("GL")_(#a)$
+#let LogicGLBetaMinus(b) = $Logic("GL")_(#b)^-$
+#let trace(x) = $upright("tr")(#x)$
+#let subfml(A) = $upright("Sub")(#A)$
+#let prebox(X) = $Box^(-1) #X$
+
 #let LogicS4 = Logic("S4")
 #let LogicGL = Logic("GL")
 #let LogicGLPlusBoxBot(n) = $LogicGL + Box^#n bot$
 #let LogicS = Logic("S")
+
+#let Gentzen(L) = $cal("G")_(#L)$
+#let Hilbert(L) = $cal("H")_(#L)$
+#let GentzenGL = Gentzen(LogicGL)
+#let GentzenWithCutGL = $Gentzen(LogicGL) + ("Cut")$
+#let HilbertGL = Hilbert(LogicGL)
+#let GentzenGLPoint3 = Gentzen(LogicGLPoint3)
 
 #let Prov(T) = $attach(br: #T, upright("Prov"))$
 // Use for *standard* provability predicate
