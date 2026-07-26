@@ -59,7 +59,7 @@ This fact, known as _Solovay's arithmetical completeness theorem_, was a signifi
 On the other hand, recently, there have been much active works on mechanizing mathematics using interactive theorem provers, guaranteeing the validity of existing and new results, and providing AI/LLM-assisted or automated proving.
 There are many well-known interactive theorem provers such as Rocq @RocqProver, Isabelle @Isabelle, HOL Light @HOLLight @HOLLightTutorial, Agda @Agda, and Lean @dMU21, and mathematics has been mechanized in each of them, including in the field of mathematical logic#footnote[Some of these mechanizations are summarized in @AwesomeLogicFormalization.].
 In particular, for mechanizing Gödel's incompleteness theorems, this line of work began with Shankar in 1986 @Sha86 @Sha97, and continues with O'Connor @OCo05 @OCo09, Harrison @Har06, Paulson @Pau15, and Popescu and Traytel @PT19 @PT21, Kirst and Peters @KP23.
-As for provability logic, modal-logical properties of #LogicGL, such as its semantical completeness and automated solvers, have been mechanized by Harrison @HOLLightTutorial[Chapter 20]#footnote[Harrisonのこの様相論理に関する形式化がどのタイミングで為されたものなのかはよくわからない．], Goré and Kelly @GK07, Goré, Ramanayake and Shillito @GRS21, Maggesi and Perini Brogi @MPB21 @MPB23, Gignoux @Gig26.
+As for provability logic, modal-logical properties of #LogicGL, such as its semantical completeness and automated solvers, have been mechanized by Harrison @HOLLightTutorial[Chapter 20]#footnote[We don't know when Harrison's mechanization of modal logic was carried out.], Goré and Kelly @GK07, Goré, Ramanayake and Shillito @GRS21, Maggesi and Perini Brogi @MPB21 @MPB23, Gignoux @Gig26.
 However, these are either abstract or not full mechanizations within arithmetic.
 For instance, O'Connor's implementation assumes several facts needed for the proof of G2 as axioms, and Paulson's mechanization of G2 uses hereditarily finite sets, not arithmetic.
 To the best of our knowledge, no full formalization of the incompleteness theorems entirely within arithmetic is known, and consequently, no mechanization about provability logic has been reported.
@@ -981,8 +981,8 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
 
 == Related works and Concluding <sect:provabilitylogic_futurework>
 
-最後に，我々の証明可能性論理のtheorem proverや形式化に関していくつかの先行研究に関するコメントと，今後の展望などを述べる．
-以下では特に証明可能性論理という分野に限って関連する先行研究の話を述べるため，それ以外の様相論理の分野（例えばtense logicやepismetic logic）の先行研究に関しては割愛する．
+Finally, we comment on some prior work related to theorem provers and mechanizations for provability logic, and describe future prospects.
+In the following, we restrict our attention to prior work in the field of provability logic, and omit prior work in the other areas of modal logic (e.g., tense logic and epistemic logic).
 
 === Polymodal provability logic and reflected calculus
 
@@ -990,38 +990,39 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
 
 === Proof theory
 
-#LogicGL の証明論に関しては多くの研究が行われている．
-まず，Gentzen流のシークエント計算に関しては多くの研究が為されてきた @SV80 @Lei81 @SV82 @Val83 @Bor83 @Avr84 @Moe01 @GR12 @Bri16．
-特に構文論的な議論として，カット除去アルゴリズムの停止性がmultiset-basedなシークエントによるシークエント計算で成立するかは長らく議論の余地があり，@GR12 で合意が取れたとされている．
-一方，Brighton @Bri16 では，regression treeという手法を用いてカット除去アルゴリズムの停止性の別証明を与えており，この議論は，Gore, Ramanayake, Shilito @GRS21 によってCoqで形式化されている．
+The proof theory of #LogicGL has been studied extensively.
+First, Gentzen-style sequent calculi have been investigated in numerous works @SV80 @Lei81 @SV82 @Val83 @Bor83 @Avr84 @Moe01 @GR12 @Bri16.
+In particular, as a syntactic issue, whether the termination of the cut-elimination algorithm holds for sequent calculi based on multisets had long been a matter of debate, and the issue is considered to have been resolved by @GR12.
+On the other hand, Brighton @Bri16 gave an alternative proof of the termination of the cut-elimination algorithm using the technique called _regression trees_, and this argument has been mechanized in Rocq by Goré, Ramanayake, and Shillito @GRS21.
+This mechanization can be regarded as a significant result in that it settled a debate over ambiguous pen-and-paper arguments by verifying on a computer strictly.
 
-他方，non-Gentzen流の，つまり，通常のシークエント計算に更に新しい機構を加えた #LogicGL の証明体系も多くのアプローチが存在している．
-例えば，Negriによる_labelled sequent calculi_ @Neg05 @Neg14，Poggiolesiによる_tree-hypersequent sequent calculus_ @Pog09，ManiwaとKashimaによる_nested sequent calculi_ @MK24，更にShamkanovによる_non-wellfounded proof_ または _circular proof_ @Sha14 などがある#footnote[ここでは，#LogicGL のものに限って言及している．それぞれの体系の一般的な議論などは，それぞれの論文の参考文献を更に参照のこと．]．
-Gentzen流のものも含め，これらのシークエント体系のいくつかの証明能力の等価性に関する議論はGoreとRamanayake @GR12A やLyon @Lyo25 などを見ると良い．
-特に，Shamkanovのnon-wellfounded proofではLyndon interpolation theoremが構文論的に証明できるという利点がある @Sha14[Chapter 4] #footnote[この事実自体は @Sha11 でも証明されているがその証明はKripke意味論的な技法によるものである．]．
-我々が知る限り，これらの新たな機構をを備えたシークエント計算の証明論に関する形式化は，MagessiとPerini Brogiによるラベル付きシークエント計算のHOL/Lightでの形式化 @MPB21 @MPB23 およびその延長線にあるBilottaのHOLMS project @Bil25 のみである．
+Besides, there are also many approaches to non-Gentzen-style proof systems for #LogicGL, i.e., systems obtained by adding further machinery to ordinary sequent calculi:
+e.g., the _labelled sequent calculi_ by Negri @Neg05 @Neg14, the _tree-hypersequent calculus_ by Poggiolesi @Pog09, the _nested sequent calculi_ by Maniwa and Kashima @MK24, and the _non-wellfounded proofs_ (or _circular proofs_) by Shamkanov @Sha14#footnote[Here we mention only the systems for #LogicGL. For general discussions of each formalism, we refer the reader to the references of the respective papers.].
+For discussions on the equivalence of the provability of several of these sequent systems, including the Gentzen-style ones, see Goré and Ramanayake @GR12A and Lyon @Lyo25.
+In particular, Shamkanov's non-wellfounded proofs have the advantage that the Lyndon interpolation theorem can be proved syntactically @Sha14[Chapter 4]#footnote[This fact itself is also proved in @Sha11, but the proof there relies on Kripke-semantical techniques.].
+As far as we know, the only mechanizations of the proof theory of sequent calculi equipped with such additional machinery are the mechanization of the labelled sequent calculus in HOL Light by Maggesi and Perini Brogi @MPB21 @MPB23 and, along that line, Bilotta's HOLMS project @Bil25.
 
 
-#LogicGL のタブロー計算は @Boo94[Chapter 10]などで議論されている．
-タブローベースの #LogicGL のautomated theorem proverは @GK07 で実装されており，その実装の効率性などが議論されている．
+Tableau calculi for #LogicGL are discussed in @Boo94[Chapter 10] for instance.
+A tableau-based automated theorem prover for #LogicGL is implemented by Goré and Kelly @GK07, where the efficiency of the implementation is also discussed.
 
 #let seq(l) = $attach(tr: #l, =>)$
 #let seq1 = seq("1")
 #let seq2 = seq("2")
 #let seq3 = seq("3")
 
-#LogicS や #LogicD の証明論的な研究は最近になって行われてきた．
-Sierra MirandaとStuder @SMS26 は，non-wellfounded proofを用いて #LogicS のLyndon interpolation propertyを示している．
-それとは異なるアプローチとして，Kushida @Kus20 では，#LogicS のシークエント計算として2つのレベルのシークエント $seq1$ と $seq2$ を用いるシークエント計算を提案した．
-大雑把に言うと，#seq1 のシークエントに関しては #GentzenGL の証明可能なものと等しく，#seq1 から #seq2 へのリフトアップ機構が備わっており，#seq2 では論理 $Logic("KT")$ と同様の証明が出来るというシステムになっている．
-@Kus20 では構文論的なカット除去のアルゴリズムを与え，Kashima と Kato @KK23 では #LogicS の意味論的な方法を用いてカット除去を示している．
-更に，Kashimaら @KKIM25 はこのアプローチを拡張し，#LogicD に関するシークエント計算を2つ定式化した．
-2つのうちの前者は #LogicS と同様に2つのレベルのシークエントを用いるが，カットが除去出来ないという問題がある．
-もう片方は #seq1, #seq2, #seq3 の3つのレベルのシークエントを用いて，特にカット除去も可能である．
+The proof theory of #LogicS and #LogicD has been developed only recently.
+Sierra Miranda and Studer @SMS26 proved the Lyndon interpolation property of #LogicS using non-wellfounded proofs.
+As a different approach, Kushida @Kus20 proposed a sequent calculus for #LogicS that uses two levels of sequents $seq1$ and $seq2$.
+Roughly speaking, the provable #seq1;-sequents coincide with those provable in #GentzenGL, the system is equipped with a lift-up mechanism from #seq1 to #seq2, and on the level of #seq2 one can reason as in the logic $Logic("KT")$.
+While @Kus20 gives a syntactic cut-elimination algorithm, Kashima and Kato @KK23 proved the cut elimination for #LogicS by a semantical method.
+Furthermore, Kashima et al. @KKIM25 extended this approach and formulated two sequent calculi for #LogicD.
+The former uses two levels of sequents as for #LogicS, but has the drawback that the cut rule cannot be eliminated.
+The latter uses three levels of sequents #seq1, #seq2, and #seq3, and in particular admits cut elimination.
 
-今回の我々の形式化では，#LogicGL のGentzen流のシークエント計算，#LogicGL のラベル付きシークエント計算 ( @sect:labelled-sequent-calculus を見なさい)，#LogicS の2-levelのシークエント計算を形式化している（@prop:S_characterization を見なさい）．
-可能なら，我々は他の機構を備えたシークエント計算も形式化し，これらの証明可能性の等価性も形式化していきたい．
-特に，Shamkanovによるcircular-proofは無限的な構造を含むものの多くの応用先があることがSierra Mirandaらの研究 @SM23 @SMSZ24 @HSMS25 @SMS26 によってわかっており，形式化の技術的にもチャレンジングな課題だと思われる．
-また，今後 #LogicD の3-levelシークエント計算も @KKIM25 に沿って形式化していきたい．
-これにより例えば， #LogicD がCIPを持たないこと @thm:D_no_CIP の構文論的な証明，および簡潔な形式化の実装が与えられるのではないかと期待している．
+In the present work, we have mechanized the Gentzen-style sequent calculus for #LogicGL, the labelled sequent calculus for #LogicGL (see @sect:labelled-sequent-calculus), and the two-level sequent calculus for #LogicS (see @prop:S_characterization).
+For the future work, we plan to mechanize sequent calculi with other machinery as well, together with the equivalence of their provability.
+In particular, although Shamkanov's circular proofs involve infinitary structures, the studies by Sierra Miranda et al. @SM23 @SMSZ24 @HSMS25 @SMS26 have revealed that they have many applications, so their mechanization seems to be a technically challenging but worthwhile task.
+We also plan to mechanize the three-level sequent calculus for #LogicD following @KKIM25.
+We expect that this would provide, for instance, a syntactic proof of the failure of the CIP for #LogicD (@thm:D_no_CIP) and a concise implementation of its mechanization.
 
