@@ -16,10 +16,12 @@
   "Foundation": "https://github.com/FormalizedFormalLogic/Foundation/blob/master",
   "ProvabilityLogic": "https://github.com/FormalizedFormalLogic/ProvabilityLogic/blob/main",
 )
+// リンクはタプル ("Foundation", "Foundation/FirstOrder/...") で指定する:
+// 第1要素がリポジトリ名（REPO_SOURCES のキー），第2要素がリポジトリ内のパス
 #let lean-link(l) = {
-  let repo = l.split("/").first()
+  let (repo, path) = l
   let base = REPO_SOURCES.at(repo, default: SOURCE)
-  link(base + "/" + l)[#text(font: font-code)[#l]]
+  link(base + "/" + path)[#text(font: font-code)[#path]]
 }
 
 #let init(body) = {

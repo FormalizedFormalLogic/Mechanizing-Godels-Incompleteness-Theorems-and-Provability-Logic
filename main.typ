@@ -105,9 +105,9 @@ We first set up the basic framework of modal logic.
     For instance, taking `α` to be `Empty` yields the formulas containing no propositional variables (called closed or letterless formulas).
   ],
   links: (
-    "ProvabilityLogic/Formula/Basic.lean",
-    "ProvabilityLogic/Formula/Substitution.lean",
-    "ProvabilityLogic/Logic/Basic.lean",
+    ("ProvabilityLogic", "ProvabilityLogic/Formula/Basic.lean"),
+    ("ProvabilityLogic", "ProvabilityLogic/Formula/Substitution.lean"),
+    ("ProvabilityLogic", "ProvabilityLogic/Logic/Basic.lean"),
   ),
 )[
   ```
@@ -172,7 +172,7 @@ Our sequent calculus for #LogicGL is due to Sambin and Valentini @SV82.
     ))),
   ))
 ]
-#leancode(links: ("ProvabilityLogic/Gentzen/Basic.lean",))[
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Gentzen/Basic.lean"),))[
   ```
   structure Sequent (α : Type u) where
     ant : FormulaFinset α
@@ -217,7 +217,7 @@ Since we are not concerned with modal logic in general, we omit the notion of fr
   - $M, x forces Box A$ iff $M, y forces A$ for every $y in W$ with $x R y$.
 ]
 #leancode(
-  links: ("ProvabilityLogic/Kripke/Basic.lean", "ProvabilityLogic/Kripke/RootedModel.lean"),
+  links: (("ProvabilityLogic", "ProvabilityLogic/Kripke/Basic.lean"), ("ProvabilityLogic", "ProvabilityLogic/Kripke/RootedModel.lean")),
   note: [
     $W$ is given as an arbitrary nonempty type `κ`, and a model is implemented as a pair of a relation and a valuation.
   ],
@@ -254,7 +254,7 @@ For later use, we also introduce the notions of the _rank_ of a point and the _h
   - The _height_ of a rooted finite $LogicGL$-model $M$ is the rank of its root.
   These notions are well-defined since $M$ is conversely well-founded.
 ]
-#leancode(links: ("ProvabilityLogic/Kripke/Rank.lean",))[
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Kripke/Rank.lean"),))[
   ```
   noncomputable def World.rank {M : Model κ α} [Fintype M.World] [M.IsGL] (x : M.World) : ℕ :=
     cwfHeight (· ≺ ·) x
@@ -276,7 +276,7 @@ Finally, we introduce the Hilbert-style proof system.
   5. Inference rules: modus ponens (MP) and the necessitation rule (Nec).
 ]
 #leancode(
-  links: ("ProvabilityLogic/Hilbert/Basic.lean", "ProvabilityLogic/Logic/GL/Basic.lean"),
+  links: (("ProvabilityLogic", "ProvabilityLogic/Hilbert/Basic.lean"), ("ProvabilityLogic", "ProvabilityLogic/Logic/GL/Basic.lean")),
   note: [
     Łukasiewicz's three axioms would suffice to prove all tautologies of classical propositional logic, but then the axioms listed here would have to be proved syntactically, which is extremely tedious; so we adopt all of them as axioms.
     Axiom $Axiom("4")$ is syntactically derivable from the others (cf. @Boo94[Chapter 1, Theorem 18]), but its proof is a tedious puzzle, so our mechanization adopts it as an axiom.
@@ -318,7 +318,7 @@ As the equivalence of these characterizations, we mechanized the following.
   6. $A$ is forced at the root of every rooted finite $LogicGL$-model.
   7. $A$ is forced at the root of every rooted finite $LogicGL$-model that is a tree.
 ] <thm:GL_TFAE>
-#leancode(links: ("ProvabilityLogic/Logic/GL/Basic.lean",))[
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GL/Basic.lean"),))[
   ```
   theorem provability_TFAE [DecidableEq α] {A : Formula α} : [
     A ∈ LogicGL,
@@ -350,9 +350,9 @@ Next, we introduce the modal logics $LogicS$ (due to Solovay @Sol76) and $LogicD
   - $LogicD := sumQuasiNormal(LogicGL, ({ lnot Box bot } union { Box(Box A lor Box B) limp Box A lor Box B | A, B }))$.
 ]
 #leancode(links: (
-  "ProvabilityLogic/Logic/SumQuasiNormal.lean",
-  "ProvabilityLogic/Logic/S/Basic.lean",
-  "ProvabilityLogic/Logic/D/Basic.lean",
+  ("ProvabilityLogic", "ProvabilityLogic/Logic/SumQuasiNormal.lean"),
+  ("ProvabilityLogic", "ProvabilityLogic/Logic/S/Basic.lean"),
+  ("ProvabilityLogic", "ProvabilityLogic/Logic/D/Basic.lean"),
 ))[
   ```
   inductive Logic.sumQuasiNormal (L₁ L₂ : Logic α) : Logic α
@@ -382,7 +382,7 @@ We omit the details of these constructions; via these semantic characterizations
   4. $LogicGL proves and.big_(Box B in subfml(A)) (Box B limp B) limp A$
 ] <prop:S_characterization>
 #leancode(
-  links: ("ProvabilityLogic/Logic/S/Basic.lean",),
+  links: (("ProvabilityLogic", "ProvabilityLogic/Logic/S/Basic.lean"),),
   note: [
     The statement of the mechanized theorem also includes the equivalence with the characterization via the cut-free sequent calculus of Kashima and Kato @KK23.
   ],
@@ -408,7 +408,7 @@ We omit the details of these constructions; via these semantic characterizations
   3. $and.big_(Gamma subset.eq prebox(subfml(A))) (Box(or.big Box Gamma) limp or.big Box Gamma) limp A$ is forced at the root of every rooted finite $LogicGL$-model.
   4. $LogicGL proves and.big_(Gamma subset.eq prebox(subfml(A))) (Box(or.big Box Gamma) limp or.big Box Gamma) limp A$
 ] <prop:D_characterization>
-#leancode(links: ("ProvabilityLogic/Logic/D/Basic.lean",))[
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/D/Basic.lean"),))[
   ```
   theorem provability_TFAE [DecidableEq α] : [
     A ∈ LogicD,
@@ -428,7 +428,7 @@ Moreover, by constructing countermodels via the semantics, the following proper 
   $LogicGL subset.neq LogicD subset.neq LogicS$
 ]
 #leancode(
-  links: ("ProvabilityLogic/Logic/D/Basic.lean",),
+  links: (("ProvabilityLogic", "ProvabilityLogic/Logic/D/Basic.lean"),),
 )[
   ```
   lemma LogicGL_ssubset_LogicD [DecidableEq α] : (LogicGL : Logic α) ⊂ LogicD
@@ -445,7 +445,7 @@ First, since it is a pure sequent calculus, the Craig interpolation property (CI
 #theorem[Craig Interpolation Property for #LogicGL][
   If $LogicGL proves A limp B$, then there exists a formula $C$ such that $LogicGL proves A limp C$ and $LogicGL proves C limp B$, and every propositional variable of $C$ occurs in both $A$ and $B$.
 ] <thm:GL_CIP>
-#leancode(links: ("ProvabilityLogic/Logic/GL/CIP.lean", "ProvabilityLogic/Gentzen/Maehara.lean"))[
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GL/CIP.lean"), ("ProvabilityLogic", "ProvabilityLogic/Gentzen/Maehara.lean")))[
   ```
   theorem CIP (h : (A 🡒 B) ∈ LogicGL) :
     ∃ C : Formula α, (A 🡒 C) ∈ LogicGL ∧ (C 🡒 B) ∈ LogicGL ∧ C.atoms ⊆ A.atoms ∩ B.atoms
@@ -458,7 +458,7 @@ We have also mechanized the fixed point theorem of $LogicGL$ via the sequent cal
 #definition[
   A propositional variable $p$ is _modalized_ in a formula $A$ if every occurrence of $p$ in $A$ is within the scope of $Box$.
 ]
-#leancode(links: ("ProvabilityLogic/Formula/Modalized.lean",))[
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Formula/Modalized.lean"),))[
   ```
   def ModalizedIn (p : α) : Formula α → Prop
     | #a    => a ≠ p
@@ -477,7 +477,7 @@ We have also mechanized the fixed point theorem of $LogicGL$ via the sequent cal
   $ LogicGL proves Boxdot(A <-> p) land Boxdot(A[p := q] <-> q) limp (p <-> q) $
 ] <thm:GL_fixpoint>
 #leancode(
-  links: ("ProvabilityLogic/Logic/GL/Fixedpoint.lean",),
+  links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GL/Fixedpoint.lean"),),
 )[
   ```
   theorem fixpointTheorem {A : Formula α} {p q : α}
@@ -498,7 +498,7 @@ Finally, we have also mechanized facts on the CIP of $LogicS$ and $LogicD$, whic
 #theorem[@Bek87][
   $LogicS$ has the CIP.
 ]
-#leancode(links: ("ProvabilityLogic/Logic/S/CIP.lean",))[
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/S/CIP.lean"),))[
   ```
   theorem CIP (h : (A 🡒 B) ∈ LogicS) :
     ∃ C : Formula α, (A 🡒 C) ∈ LogicS ∧ (C 🡒 B) ∈ LogicS ∧ C.atoms ⊆ A.atoms ∩ B.atoms
@@ -514,7 +514,7 @@ Finally, we have also mechanized facts on the CIP of $LogicS$ and $LogicD$, whic
     B & equiv Box (a -> Box c) -> Box c
   $
 ] <thm:D_no_CIP>
-#leancode(links: ("ProvabilityLogic/Logic/D/NotCIP.lean",))[
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/D/NotCIP.lean"),))[
   ```
   theorem notCIP {a b c : α} (hab : a ≠ b) (hac : a ≠ c) (hbc : b ≠ c) :
     ∃ A B : Formula α, (A 🡒 B) ∈ LogicD ∧
@@ -556,7 +556,7 @@ In what follows, $T$ is an arithmetical theory with a $Delta_1$-definable axioma
 
 ]
 #leancode(
-  links: ("ProvabilityLogic/ProvabilityLogic/Interpret.lean",),
+  links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/Interpret.lean"),),
   note: [
     For technical reasons, realizations are implemented for an arbitrary provability predicate `𝔅`.
     However, since we consider only the standard provability predicate in this report, we always use `StandardRealization`, which takes `T.standardProvability` for `𝔅`.
@@ -583,7 +583,7 @@ In what follows, $T$ is an arithmetical theory with a $Delta_1$-definable axioma
     ProvLogic(T, U) = { A | #text[$U proves f_(Pr(T)) (A)$ for every realization $f$] }
   $
 ]
-#leancode(links: ("ProvabilityLogic/ProvabilityLogic/Interpret.lean",))[
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/Interpret.lean"),))[
   ```
   def provabilityLogicRelativeTo (T U : ArithmeticTheory) [T.Δ₁] : Logic α :=
     {A | ∀ f : StandardRealization α T, U ⊢ f A}
@@ -601,7 +601,7 @@ Here we present the generalized version (@thm:arithmetical_completeness) using t
   The _height_ $height(T) <= omega$ of a theory $T$ is the least $n in omega$ such that $T proves Pr(T)^n (GoedelNum(bot))$; if no such $n$ exists, we set $height(T) = omega$.
 ]
 #leancode(
-  links: ("Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Height.lean",),
+  links: (("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Height.lean"),),
   note: [
     As with realizations, it is defined for an arbitrary provability predicate `𝔅`, but we consider only the standard one in this report.
   ],
@@ -620,7 +620,7 @@ Note that if $T$ is $Sigma_1$-sound, then $T nproves Pr(T)^n (GoedelNum(bot))$ f
   For $n <= omega$, abusing notation, we define the logic #LogicGLPlusBoxBot($n$) as follows:
   for $n < omega$ it is $sumQuasiNormal(LogicGL, {Box^n bot})$, and for $n = omega$ it is #LogicGL itself.
 ]
-#leancode(links: ("ProvabilityLogic/Logic/GLPlusBoxBot/Basic.lean",))[
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GLPlusBoxBot/Basic.lean"),))[
   ```
   def LogicGLPlusBoxBot {α} : ℕ∞ → Logic α
     | .some n => LogicGL +ᴸ □^[n]⊥
@@ -633,7 +633,7 @@ The main result of our mechanization of provability logic is the following.
 #theorem[@Vis81][
   $ProvLogic(T, T) = LogicGLPlusBoxBot(height(T))$
 ] <thm:arithmetical_completeness>
-#leancode(links: ("ProvabilityLogic/ProvabilityLogic/GLPlusBoxBot/Basic.lean",))[
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/GLPlusBoxBot/Basic.lean"),))[
   ```
   lemma eq_provabilityLogic : LogicGLPlusBoxBot (α := α) T.height = T.provabilityLogic
   ```
@@ -647,7 +647,7 @@ As a corollary, we obtain Solovay's original statement.
   If $T$ is $Sigma_1$-sound, then $ProvLogic(T, T) = LogicGL$.
   In particular, $ProvLogic(PeanoArithmetic, PeanoArithmetic) = LogicGL$.
 ]
-#leancode(links: ("ProvabilityLogic/ProvabilityLogic/GL/Basic.lean",))[
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/GL/Basic.lean"),))[
   ```
   theorem eq_provabilityLogic_sigma1_sound [T.SoundOnHierarchy 𝚺 1] :
     @LogicGL α = T.provabilityLogic
@@ -664,7 +664,7 @@ The reduction of $LogicS$ to $LogicGL$ stated in @prop:S_characterization is ess
   For every formula $A$, $LogicS proves A$ if and only if $NN models f_(Pr(T)) (A)$ for every realization $f$.
   That is, $ProvLogic(T, TrueArithmetic) = LogicS$.
 ]
-#leancode(links: ("ProvabilityLogic/ProvabilityLogic/S/Basic.lean",))[
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/S/Basic.lean"),))[
   ```
   theorem arithmetical_completeness_iff [DecidableEq α] :
     A ∈ LogicS ↔ (∀ f : StandardRealization α T, ℕ↓[ℒₒᵣ] ⊧ f A)
@@ -685,7 +685,7 @@ For the details, see @Bek90 @AB05.
   The _trace_ $trace(A) subset.eq omega$ of a formula $A$ is the set of all $n$ such that there exists a rooted finite $LogicGL$-model of height $n$ whose root does not force $A$.
   The _trace_ of a logic $L$ is defined by $trace(L) := union.big_(A in L) trace(A)$.
 ]
-#leancode(links: ("ProvabilityLogic/ProvabilityLogic/Classification/GeneralTrace.lean",))[
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/Classification/GeneralTrace.lean"),))[
   ```
   def trace (A : Formula α) : Set ℕ := { n |
     ∃ κ : Type u, ∃ _ : Nonempty κ, ∃ M : RootedModel κ α, ∃ _ : Fintype M.World, ∃ _ : M.IsGL,
@@ -708,8 +708,8 @@ For the details, see @Bek90 @AB05.
     Since $F_n$ is hard to use as an identifier, the mechanization names $F_n$ as `TBB` (axiom $Axiom("T")$ for Box Bot).
   ],
   links: (
-    "ProvabilityLogic/Formula/Basic.lean",
-    "ProvabilityLogic/ProvabilityLogic/Classification/LetterlessTrace.lean",
+    ("ProvabilityLogic", "ProvabilityLogic/Formula/Basic.lean"),
+    ("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/Classification/LetterlessTrace.lean"),
   ),
 )[
   ```
@@ -736,8 +736,8 @@ One is proved by an arithmetical argument, and the other by a Kripke-semantical 
   2. It is impossible that $LogicD subset.neq L subset.neq LogicS$.
 ]
 #leancode(links: (
-  "ProvabilityLogic/ProvabilityLogic/Classification/A_D.lean",
-  "ProvabilityLogic/ProvabilityLogic/Classification/D_S.lean",
+  ("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/Classification/A_D.lean"),
+  ("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/Classification/D_S.lean"),
 ))[
   ```
   theorem no_logic_between_LogicA_LogicD :
@@ -758,7 +758,7 @@ The classification theorem is stated as follows.
   2. If $trace(L)$ is cofinite and $L subset.eq.not LogicS$, then $L = LogicGLBetaMinus(trace(L))$.
   3. If $trace(L)$ is cofinite and $L subset.eq LogicS$, then $L$ is one of $LogicGLAlpha(trace(L))$, $LogicD inter LogicGLBetaMinus(trace(L))$, and $LogicS inter LogicGLBetaMinus(trace(L))$.
 ]
-#leancode(links: ("ProvabilityLogic/ProvabilityLogic/Classification/Result.lean",))[
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/Classification/Result.lean"),))[
   ```
   theorem classification_provability_logics [DecidableEq α] :
     letI L : Logic α := T.provabilityLogicRelativeTo U;
@@ -785,7 +785,7 @@ We have mechanized this fact as well.
   3. $L = LogicA$ if and only if $T$ is not $Sigma_1$-sound and $height(T) = omega$.
   4. $L = LogicGLBetaMinus(omega without {n})$ if and only if $height(T) = n < omega$.
 ]
-#leancode(links: ("ProvabilityLogic/ProvabilityLogic/Classification/Result.lean",))[
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/Classification/Result.lean"),))[
   ```
   theorem classification_provabilityLogic_TA [DecidableEq α] [Nonempty α] :
     letI L : Logic α := T.provabilityLogicRelativeTo 𝗧𝗔;
@@ -831,7 +831,7 @@ We briefly describe these results.
   $LogicGLPoint3$ is the normal modal logic obtained from #LogicGL by adding the weak linearity axiom $Box(Boxdot A limp B) lor Box(Boxdot B limp A)$#footnote[In older literature, it was also written as $Logic("GLLin")$ @VS83 @Val86 or $Logic("K4.3W")$ @Seg71.].
 ]
 
-#leancode(links: ("ProvabilityLogic/Logic/SumNormal.lean", "ProvabilityLogic/Logic/GLPoint3/Basic.lean"))[
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/SumNormal.lean"), ("ProvabilityLogic", "ProvabilityLogic/Logic/GLPoint3/Basic.lean")))[
   ```
   inductive Logic.sumNormal (L₁ L₂ : Logic α) : Logic α
     | mem₁ {A}    : L₁ A → sumNormal L₁ L₂ A
@@ -849,7 +849,7 @@ We briefly describe these results.
   A finite $LogicGL$-model is called _finite $LogicGLPoint3$_ when $prec$ is linear, i.e., $x prec y$ and $x prec z$ imply $y prec z$ or $y = z$ or $z prec y$.
 ]
 
-#leancode(links: ("ProvabilityLogic/Kripke/Linearity.lean",))[
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Kripke/Linearity.lean"),))[
   ```
   class IsFiniteGLPoint3 (M : Model κ α) extends Model.IsFiniteGL M where
     linear : ∀ {x y z : M.World}, x ≺ y → x ≺ z → y ≺ z ∨ y = z ∨ z ≺ y
@@ -871,12 +871,22 @@ We briefly describe these results.
 
 Note that the case $Delta = {A}$ is exactly the $Box upright("GL")$ rule.
 
-#leancode(links: ("ProvabilityLogic/Gentzen/GLPoint3/Basic.lean",))[
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Gentzen/GLPoint3/Basic.lean"),))[
   ```
+  inductive GLPoint3.ProofGentzen : Sequent α → Type u
+  | axm (A) : ProofGentzen ({A} ⟹ {A})
+  | botL : ProofGentzen ({⊥} ⟹ ∅)
+  | wkL  {Γ Γ' Δ}  : ProofGentzen (Γ ⟹ Δ) → Γ ⊆ Γ' → ProofGentzen (Γ' ⟹ Δ)
+  | wkR  {Γ Δ Δ'}  : ProofGentzen (Γ ⟹ Δ) → Δ ⊆ Δ' → ProofGentzen (Γ ⟹ Δ')
+  | impL {Γ Δ A B} : ProofGentzen (Γ ⟹ (insert A Δ)) → ProofGentzen (insert B Γ ⟹ Δ) →
+                     ProofGentzen ((insert (A 🡒 B) Γ) ⟹ Δ)
+  | impR {Γ Δ A B} : ProofGentzen ((insert A Γ) ⟹ (insert B Δ)) →
+                     ProofGentzen (Γ ⟹ (insert (A 🡒 B) Δ))
   | boxGLPoint3 {Γ Δ} (hΔ : Δ.Nonempty) :
       (∀ S : FormulaFinset α, S ⊆ Δ → S.Nonempty →
         ProofGentzen ((Γ.box ∪ Γ ∪ S.box) ⟹ (S ∪ (Δ \ S).box))) →
       ProofGentzen (Γ.box ⟹ Δ.box)
+  prefix:120 "⊢ᵍ³! " => GLPoint3.ProofGentzen
   ```
 ]
 
@@ -889,7 +899,7 @@ For these characterizations, equivalences analogous to those for #LogicGL hold.
   3. $A$ is forced at every point of every finite $LogicGLPoint3$-model.
   4. $A$ is forced at the root of every rooted finite $LogicGLPoint3$-model.
 ]
-#leancode(links: ("ProvabilityLogic/Logic/GLPoint3/Completeness.lean",))[```
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GLPoint3/Completeness.lean"),))[```
   theorem provability_TFAE [DecidableEq α] {A : Formula α} : [
     A ∈ LogicGLPoint3,
     ⊢ᵍ³ (∅ ⟹ {A}),
@@ -905,7 +915,7 @@ In particular, on closed formulas $LogicGLPoint3$ and $LogicGL$ do not differ; t
   For a closed formula $A$, $LogicGLPoint3 proves A$ if and only if $LogicGL proves A$.
 ]
 #leancode(
-  links: ("ProvabilityLogic/Logic/GLPoint3/Letterless.lean",),
+  links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GLPoint3/Letterless.lean"),),
 )[
   ```
   theorem eq_LogicGL_on_letterless : @LogicGLPoint3 Empty = @LogicGL Empty
@@ -919,7 +929,7 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
   - A realization $f$ is a _consistency realization_ if $f$ sends every propositional variable to a consistency assertion.
 ]
 
-#leancode(links: ("ProvabilityLogic/ProvabilityLogic/GLPoint3/Basic.lean",))[
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/GLPoint3/Basic.lean"),))[
   ```
   inductive Provability.IsConsistencyAssertion (𝔅 : Provability T₀ T) : FirstOrder.Sentence L → Prop
     | con       : IsConsistencyAssertion 𝔅 (∼(𝔅 ⊥))
@@ -942,15 +952,17 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
 ]
 
 #theorem[@VS83[Theorem 1]][
-  $LogicGLPoint3 proves A$ if and only if $PeanoArithmetic proves f (A)$ for every standard consistency realization $f$ over $PeanoArithmetic$.
+  $LogicGLPoint3 proves A$ if and only if $PeanoArithmetic proves f (A)$ for every consistency realization $f$ over $PeanoArithmetic$.
 ]
-#leancode(links: ("ProvabilityLogic/ProvabilityLogic/GLPoint3/Basic.lean",))[
+#leancode(
+  links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/GLPoint3/Basic.lean"),),
+)[
   ```
   theorem arithmetical_completeness_iff_peano_arithmetic [DecidableEq α] :
     A ∈ LogicGLPoint3 ↔ ∀ f : StandardConsistencyRealization α 𝗣𝗔, 𝗣𝗔 ⊢ f A
   ```
 ]
 
-== Future work
+== Future works on Provability Logic
 
 A cut-free sequent calculus for the logic $LogicD$ has been investigated by Kashima et al. @KKIM25.
