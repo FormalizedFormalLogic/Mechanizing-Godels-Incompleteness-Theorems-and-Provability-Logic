@@ -59,7 +59,7 @@ This fact, known as _Solovay's arithmetical completeness theorem_, was a signifi
 On the other hand, recently, there have been much active works on mechanizing mathematics using interactive theorem provers, guaranteeing the validity of existing and new results, and providing AI/LLM-assisted or automated proving.
 There are many well-known interactive theorem provers such as Rocq @RocqProver, Isabelle @Isabelle, HOL Light @HOLLight @HOLLightTutorial, Agda @Agda, and Lean @dMU21, and mathematics has been mechanized in each of them, including in the field of mathematical logic#footnote[Some of these mechanizations are summarized in @AwesomeLogicFormalization.].
 In particular, for mechanizing Gödel's incompleteness theorems, this line of work began with Shankar in 1986 @Sha86 @Sha97, and continues with O'Connor @OCo05 @OCo09, Harrison @Har06, Paulson @Pau15, and Popescu and Traytel @PT19 @PT21, Kirst and Peters @KP23.
-As for provability logic, modal-logical properties of #LogicGL, such as its semantical completeness and automated solvers, have been mechanized by Goré and Kelly @GK07, Goré, Ramanayake and Shillito @GRS21, Maggesi and Perini Brogi @MPB21 @MPB23, Gignoux @Gig26.
+As for provability logic, modal-logical properties of #LogicGL, such as its semantical completeness and automated solvers, have been mechanized by Harrison @HOLLightTutorial[Chapter 20]#footnote[Harrisonのこの様相論理に関する形式化がどのタイミングで為されたものなのかはよくわからない．], Goré and Kelly @GK07, Goré, Ramanayake and Shillito @GRS21, Maggesi and Perini Brogi @MPB21 @MPB23, Gignoux @Gig26.
 However, these are either abstract or not full mechanizations within arithmetic.
 For instance, O'Connor's implementation assumes several facts needed for the proof of G2 as axioms, and Paulson's mechanization of G2 uses hereditarily finite sets, not arithmetic.
 To the best of our knowledge, no full formalization of the incompleteness theorems entirely within arithmetic is known, and consequently, no mechanization about provability logic has been reported.
@@ -139,7 +139,7 @@ We first set up the basic framework of modal logic.
 
 In this paper, we mainly characterize the logic #LogicGL in three ways: by a Gentzen-style sequent calculus, by Kripke semantics, and by a Hilbert-style proof system.
 Although #LogicGL is usually defined in the Hilbert style, when proving the Kripke completeness, introducing a sequent calculus makes both the mathematical proofs and the implementation of the mechanization simpler.
-Moreover, as applications, the interpolation theorem and the fixed point theorem can be derived easily via the sequent calculus (discussed in @sect:application-of-sequent-calculus).
+Moreover, as applications, the interpolation theorem and the fixed point theorem can be derived easily via the sequent calculus (we will discussed in @sect:application-of-sequent-calculus).
 Hence, in our mechanization we first define the Gentzen-style sequent calculus, and eventually prove the equivalence of all these characterizations (@thm:GL_TFAE).
 
 We first introduce the Gentzen-style sequent calculus.
@@ -217,7 +217,10 @@ Since we are not concerned with modal logic in general, we omit the notion of fr
   - $M, x forces Box A$ iff $M, y forces A$ for every $y in W$ with $x R y$.
 ]
 #leancode(
-  links: (("ProvabilityLogic", "ProvabilityLogic/Kripke/Basic.lean"), ("ProvabilityLogic", "ProvabilityLogic/Kripke/RootedModel.lean")),
+  links: (
+    ("ProvabilityLogic", "ProvabilityLogic/Kripke/Basic.lean"),
+    ("ProvabilityLogic", "ProvabilityLogic/Kripke/RootedModel.lean"),
+  ),
   note: [
     $W$ is given as an arbitrary nonempty type `κ`, and a model is implemented as a pair of a relation and a valuation.
   ],
@@ -276,7 +279,10 @@ Finally, we introduce the Hilbert-style proof system.
   5. Inference rules: modus ponens (MP) and the necessitation rule (Nec).
 ]
 #leancode(
-  links: (("ProvabilityLogic", "ProvabilityLogic/Hilbert/Basic.lean"), ("ProvabilityLogic", "ProvabilityLogic/Logic/GL/Basic.lean")),
+  links: (
+    ("ProvabilityLogic", "ProvabilityLogic/Hilbert/Basic.lean"),
+    ("ProvabilityLogic", "ProvabilityLogic/Logic/GL/Basic.lean"),
+  ),
   note: [
     Łukasiewicz's three axioms would suffice to prove all tautologies of classical propositional logic, but then the axioms listed here would have to be proved syntactically, which is extremely tedious; so we adopt all of them as axioms.
     Axiom $Axiom("4")$ is syntactically derivable from the others (cf. @Boo94[Chapter 1, Theorem 18]), but its proof is a tedious puzzle, so our mechanization adopts it as an axiom.
@@ -384,7 +390,8 @@ We omit the details of these constructions; via these semantic characterizations
 #leancode(
   links: (("ProvabilityLogic", "ProvabilityLogic/Logic/S/Basic.lean"),),
   note: [
-    The statement of the mechanized theorem also includes the equivalence with the characterization via the cut-free sequent calculus of Kashima and Kato @KK23.
+    The last clause is provability of the Gentzen-style sequent calculi with two-level sequent @Kus20 @KK23.
+    About this, we discusses as future work on @sect:provabilitylogic_futurework.
   ],
 )[
   ```
@@ -428,7 +435,10 @@ Moreover, by constructing countermodels via the semantics, the following proper 
   $LogicGL subset.neq LogicD subset.neq LogicS$
 ]
 #leancode(
-  links: (("ProvabilityLogic", "ProvabilityLogic/Logic/D/Basic.lean"),),
+  links: (
+    ("ProvabilityLogic", "ProvabilityLogic/Logic/D/Basic.lean"),
+    ("ProvabilityLogic", "ProvabilityLogic/Logic/S/Basic.lean"),
+  ),
 )[
   ```
   lemma LogicGL_ssubset_LogicD [DecidableEq α] : (LogicGL : Logic α) ⊂ LogicD
@@ -440,12 +450,15 @@ Moreover, by constructing countermodels via the semantics, the following proper 
 === Applications of the sequent calculus <sect:application-of-sequent-calculus>
 
 Sambin and Valentini @SV82 give several further applications of the sequent calculus for $LogicGL$.
-First, since it is a pure sequent calculus, the Craig interpolation property (CIP) can be shown straightforwardly by Maehara's method (cf. @Tak87).
+First, since it is a pure sequent calculus, the Craig interpolation property (CIP) can be shown straightforwardly by Maehara's method @Mae61 (cf. @Tak87).
 
 #theorem[Craig Interpolation Property for #LogicGL][
   If $LogicGL proves A limp B$, then there exists a formula $C$ such that $LogicGL proves A limp C$ and $LogicGL proves C limp B$, and every propositional variable of $C$ occurs in both $A$ and $B$.
 ] <thm:GL_CIP>
-#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GL/CIP.lean"), ("ProvabilityLogic", "ProvabilityLogic/Gentzen/Maehara.lean")))[
+#leancode(links: (
+  ("ProvabilityLogic", "ProvabilityLogic/Logic/GL/CIP.lean"),
+  ("ProvabilityLogic", "ProvabilityLogic/Gentzen/Maehara.lean"),
+))[
   ```
   theorem CIP (h : (A 🡒 B) ∈ LogicGL) :
     ∃ C : Formula α, (A 🡒 C) ∈ LogicGL ∧ (C 🡒 B) ∈ LogicGL ∧ C.atoms ⊆ A.atoms ∩ B.atoms
@@ -831,7 +844,10 @@ We briefly describe these results.
   $LogicGLPoint3$ is the normal modal logic obtained from #LogicGL by adding the weak linearity axiom $Box(Boxdot A limp B) lor Box(Boxdot B limp A)$#footnote[In older literature, it was also written as $Logic("GLLin")$ @VS83 @Val86 or $Logic("K4.3W")$ @Seg71.].
 ]
 
-#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/SumNormal.lean"), ("ProvabilityLogic", "ProvabilityLogic/Logic/GLPoint3/Basic.lean")))[
+#leancode(links: (
+  ("ProvabilityLogic", "ProvabilityLogic/Logic/SumNormal.lean"),
+  ("ProvabilityLogic", "ProvabilityLogic/Logic/GLPoint3/Basic.lean"),
+))[
   ```
   inductive Logic.sumNormal (L₁ L₂ : Logic α) : Logic α
     | mem₁ {A}    : L₁ A → sumNormal L₁ L₂ A
@@ -963,6 +979,49 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
   ```
 ]
 
-== Future works on Provability Logic
+== Related works and Concluding <sect:provabilitylogic_futurework>
 
-A cut-free sequent calculus for the logic $LogicD$ has been investigated by Kashima et al. @KKIM25.
+最後に，我々の証明可能性論理のtheorem proverや形式化に関していくつかの先行研究に関するコメントと，今後の展望などを述べる．
+以下では特に証明可能性論理という分野に限って関連する先行研究の話を述べるため，それ以外の様相論理の分野（例えばtense logicやepismetic logic）の先行研究に関しては割愛する．
+
+=== Polymodal provability logic and reflected calculus
+
+=== Provability logic of Heyting arithmetic
+
+=== Proof theory
+
+#LogicGL の証明論に関しては多くの研究が行われている．
+まず，Gentzen流のシークエント計算に関しては多くの研究が為されてきた @SambinValentini1980 @Lei81 @SV82 @Val83 @Bor83 @Avr84 @Moe01 @GR12 @Bri16．
+特に構文論的な議論として，カット除去アルゴリズムの停止性がmultiset-basedなシークエントによるシークエント計算で成立するかは長らく議論の余地があり，@GR12 で合意が取れたとされている．
+一方，Brighton @Bri16 では，regression treeという手法を用いてカット除去アルゴリズムの停止性の別証明を与えており，この議論は，Gore, Ramanayake, Shilito @GRS21 によってCoqで形式化されている．
+
+他方，non-Gentzen流の，つまり，通常のシークエント計算に更に新しい機構を加えた #LogicGL の証明体系も多くのアプローチが存在している．
+例えば，Negriによる_labelled sequent calculi_ @Neg05 @Neg14，Poggiolesiによる_tree-hypersequent sequent calculus_ @Poggiolesi2009，ManiwaとKashimaによる_nested sequent calculi_ @MK24，更にShamkanovによる_non-wellfounded proof_ または _circular proof_ @Shamkanov2014 などがある#footnote[ここでは，#LogicGL のものに限って言及している．それぞれの体系の一般的な議論などは，それぞれの論文の参考文献を更に参照のこと．]．
+Gentzen流のものも含め，これらのシークエント体系のいくつかの証明能力の等価性に関する議論はGoreとRamanayake @GoreRamanayake2012 やLyon @Lyon2025 などを見ると良い．
+特に，Shamkanovのnon-wellfounded proofではLyndon interpolation theoremが構文論的に証明できるという利点がある @Shamkanov2014[Chapter 4] #footnote[この事実自体は @Shamkanov2011 でも証明されているがその証明はKripke意味論的な技法によるものである．]．
+我々が知る限り，これらの新たな機構をを備えたシークエント計算の証明論に関する形式化は，MagessiとPerini Brogiによるラベル付きシークエント計算のHOL/Lightでの形式化 @MPB21 @MPB23 およびその延長線にあるBilottaのHOLMS project @Bilotta2025 のみである．
+
+
+#LogicGL のタブロー計算は @Boo94[Chapter 10]などで議論されている．
+タブローベースの #LogicGL のautomated theorem proverは @GK07 で実装されており，その実装の効率性などが議論されている．
+
+#let seq(l) = $attach(tr: #l, =>)$
+#let seq1 = seq("1")
+#let seq2 = seq("2")
+#let seq3 = seq("3")
+
+#LogicS や #LogicD の証明論的な研究は最近になって行われてきた．
+Sierra MirandaとStuder @SierraMirandaStuder2026 は，non-wellfounded proofを用いて #LogicS のLyndon interpolation propertyを示している．
+それとは異なるアプローチとして，Kushida @Kus20 では，#LogicS のシークエント計算として2つのレベルのシークエント $seq1$ と $seq2$ を用いるシークエント計算を提案した．
+大雑把に言うと，#seq1 のシークエントに関しては #GentzenGL の証明可能なものと等しく，#seq1 から #seq2 へのリフトアップ機構が備わっており，#seq2 では論理 $Logic("KT")$ と同様の証明が出来るというシステムになっている．
+@Kus20 では構文論的なカット除去のアルゴリズムを与え，Kashima と Kato @KK23 では #LogicS の意味論的な方法を用いてカット除去を示している．
+更に，Kashimaら @KKIM25 はこのアプローチを拡張し，#LogicD に関するシークエント計算を2つ定式化した．
+2つのうちの前者は #LogicS と同様に2つのレベルのシークエントを用いるが，カットが除去出来ないという問題がある．
+もう片方は #seq1, #seq2, #seq3 の3つのレベルのシークエントを用いて，特にカット除去も可能である．
+
+今回の我々の形式化では，#LogicGL のGentzen流のシークエント計算，#LogicGL のラベル付きシークエント計算 ( @sect:labelled-sequent-calculus を見なさい)，#LogicS の2-levelのシークエント計算を形式化している（@prop:S_characterization を見なさい）．
+可能なら，我々は他の機構を備えたシークエント計算も形式化し，これらの証明可能性の等価性も形式化していきたい．
+特に，Shamkanovによるcircular-proofは無限的な構造を含むものの多くの応用先があることがSierra Mirandaらの研究 @SM23 @SierraMirandaStuderZenger2024 @horvatUniformInterpolationInterpretability2025 @SierraMirandaStuder2026 によってわかっており，形式化の技術的にもチャレンジングな課題だと思われる．
+また，今後 #LogicD の3-levelシークエント計算も @KKIM25 に沿って形式化していきたい．
+これにより例えば， #LogicD がCIPを持たないこと @thm:D_no_CIP の構文論的な証明，および簡潔な形式化の実装が与えられるのではないかと期待している．
+
