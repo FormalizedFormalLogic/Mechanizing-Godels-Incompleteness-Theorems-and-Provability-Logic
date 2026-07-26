@@ -991,15 +991,15 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
 === Proof theory
 
 #LogicGL の証明論に関しては多くの研究が行われている．
-まず，Gentzen流のシークエント計算に関しては多くの研究が為されてきた @SambinValentini1980 @Lei81 @SV82 @Val83 @Bor83 @Avr84 @Moe01 @GR12 @Bri16．
+まず，Gentzen流のシークエント計算に関しては多くの研究が為されてきた @SV80 @Lei81 @SV82 @Val83 @Bor83 @Avr84 @Moe01 @GR12 @Bri16．
 特に構文論的な議論として，カット除去アルゴリズムの停止性がmultiset-basedなシークエントによるシークエント計算で成立するかは長らく議論の余地があり，@GR12 で合意が取れたとされている．
 一方，Brighton @Bri16 では，regression treeという手法を用いてカット除去アルゴリズムの停止性の別証明を与えており，この議論は，Gore, Ramanayake, Shilito @GRS21 によってCoqで形式化されている．
 
 他方，non-Gentzen流の，つまり，通常のシークエント計算に更に新しい機構を加えた #LogicGL の証明体系も多くのアプローチが存在している．
-例えば，Negriによる_labelled sequent calculi_ @Neg05 @Neg14，Poggiolesiによる_tree-hypersequent sequent calculus_ @Poggiolesi2009，ManiwaとKashimaによる_nested sequent calculi_ @MK24，更にShamkanovによる_non-wellfounded proof_ または _circular proof_ @Shamkanov2014 などがある#footnote[ここでは，#LogicGL のものに限って言及している．それぞれの体系の一般的な議論などは，それぞれの論文の参考文献を更に参照のこと．]．
-Gentzen流のものも含め，これらのシークエント体系のいくつかの証明能力の等価性に関する議論はGoreとRamanayake @GoreRamanayake2012 やLyon @Lyon2025 などを見ると良い．
-特に，Shamkanovのnon-wellfounded proofではLyndon interpolation theoremが構文論的に証明できるという利点がある @Shamkanov2014[Chapter 4] #footnote[この事実自体は @Shamkanov2011 でも証明されているがその証明はKripke意味論的な技法によるものである．]．
-我々が知る限り，これらの新たな機構をを備えたシークエント計算の証明論に関する形式化は，MagessiとPerini Brogiによるラベル付きシークエント計算のHOL/Lightでの形式化 @MPB21 @MPB23 およびその延長線にあるBilottaのHOLMS project @Bilotta2025 のみである．
+例えば，Negriによる_labelled sequent calculi_ @Neg05 @Neg14，Poggiolesiによる_tree-hypersequent sequent calculus_ @Pog09，ManiwaとKashimaによる_nested sequent calculi_ @MK24，更にShamkanovによる_non-wellfounded proof_ または _circular proof_ @Sha14 などがある#footnote[ここでは，#LogicGL のものに限って言及している．それぞれの体系の一般的な議論などは，それぞれの論文の参考文献を更に参照のこと．]．
+Gentzen流のものも含め，これらのシークエント体系のいくつかの証明能力の等価性に関する議論はGoreとRamanayake @GR12A やLyon @Lyo25 などを見ると良い．
+特に，Shamkanovのnon-wellfounded proofではLyndon interpolation theoremが構文論的に証明できるという利点がある @Sha14[Chapter 4] #footnote[この事実自体は @Sha11 でも証明されているがその証明はKripke意味論的な技法によるものである．]．
+我々が知る限り，これらの新たな機構をを備えたシークエント計算の証明論に関する形式化は，MagessiとPerini Brogiによるラベル付きシークエント計算のHOL/Lightでの形式化 @MPB21 @MPB23 およびその延長線にあるBilottaのHOLMS project @Bil25 のみである．
 
 
 #LogicGL のタブロー計算は @Boo94[Chapter 10]などで議論されている．
@@ -1011,7 +1011,7 @@ Gentzen流のものも含め，これらのシークエント体系のいくつ�
 #let seq3 = seq("3")
 
 #LogicS や #LogicD の証明論的な研究は最近になって行われてきた．
-Sierra MirandaとStuder @SierraMirandaStuder2026 は，non-wellfounded proofを用いて #LogicS のLyndon interpolation propertyを示している．
+Sierra MirandaとStuder @SMS26 は，non-wellfounded proofを用いて #LogicS のLyndon interpolation propertyを示している．
 それとは異なるアプローチとして，Kushida @Kus20 では，#LogicS のシークエント計算として2つのレベルのシークエント $seq1$ と $seq2$ を用いるシークエント計算を提案した．
 大雑把に言うと，#seq1 のシークエントに関しては #GentzenGL の証明可能なものと等しく，#seq1 から #seq2 へのリフトアップ機構が備わっており，#seq2 では論理 $Logic("KT")$ と同様の証明が出来るというシステムになっている．
 @Kus20 では構文論的なカット除去のアルゴリズムを与え，Kashima と Kato @KK23 では #LogicS の意味論的な方法を用いてカット除去を示している．
@@ -1021,7 +1021,7 @@ Sierra MirandaとStuder @SierraMirandaStuder2026 は，non-wellfounded proofを�
 
 今回の我々の形式化では，#LogicGL のGentzen流のシークエント計算，#LogicGL のラベル付きシークエント計算 ( @sect:labelled-sequent-calculus を見なさい)，#LogicS の2-levelのシークエント計算を形式化している（@prop:S_characterization を見なさい）．
 可能なら，我々は他の機構を備えたシークエント計算も形式化し，これらの証明可能性の等価性も形式化していきたい．
-特に，Shamkanovによるcircular-proofは無限的な構造を含むものの多くの応用先があることがSierra Mirandaらの研究 @SM23 @SierraMirandaStuderZenger2024 @horvatUniformInterpolationInterpretability2025 @SierraMirandaStuder2026 によってわかっており，形式化の技術的にもチャレンジングな課題だと思われる．
+特に，Shamkanovによるcircular-proofは無限的な構造を含むものの多くの応用先があることがSierra Mirandaらの研究 @SM23 @SMSZ24 @HSMS25 @SMS26 によってわかっており，形式化の技術的にもチャレンジングな課題だと思われる．
 また，今後 #LogicD の3-levelシークエント計算も @KKIM25 に沿って形式化していきたい．
 これにより例えば， #LogicD がCIPを持たないこと @thm:D_no_CIP の構文論的な証明，および簡潔な形式化の実装が与えられるのではないかと期待している．
 
