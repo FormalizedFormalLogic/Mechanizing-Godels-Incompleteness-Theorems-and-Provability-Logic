@@ -1,5 +1,6 @@
 #import "@preview/ctheorems:1.1.3": *
 #import "@preview/curryst:0.5.0": prooftree, rule
+#import "@preview/itemize:0.2.0" as el
 
 #let auxColor = color.hsl(205deg, 55%, 40%)
 
@@ -26,7 +27,7 @@
   show math.equation: set text(font: font-math)
 
   // show raw: set text(size: 7pt, font: font-code)
-  show raw: set text(font: font-code)
+  show raw: set text(font: font-code, size: 8pt)
 
   show raw.where(block: false): box.with(
     inset: (x: 4pt, y: 0pt),
@@ -53,6 +54,12 @@
     ),
   )
 
+  show: el.default-enum-list.with(
+    fill: black,
+    font: font-base,
+    size: base-text-size,
+  )
+
   body
 
   pagebreak()
@@ -75,9 +82,7 @@
 
   show math.equation: set text(font: font-math)
 
-  show raw: set text(size: 7pt, font: font-code)
-
-  show raw: set text(font: font-code)
+  show raw: set text(size: 6pt, font: font-code)
 
   show raw.where(block: false): box.with(
     inset: (x: 4pt, y: 0pt),
@@ -118,50 +123,49 @@
 }
 
 #let leancode(code, links: (), note: none) = {
-  let code-text = if code.func() == raw {
-    code.text
-  } else {
-    let raw-elem = code.children.find(it => it.func() == raw)
-    if raw-elem != none { raw-elem.text } else { "" }
-  }
+  set raw(lang: "lean")
 
   block(
     width: 100%,
-    stroke: (left: 1pt + luma(0)),
     inset: 0pt,
+    // fill: rgb("#eee"),
     breakable: true,
     clip: true,
   )[
-    #block(
-      width: 100%,
-      fill: luma(245),
-      inset: (x: 8pt, y: 16pt),
-      spacing: 0pt,
-    )[
-      #set par(justify: false, first-line-indent: 0pt)
-      #set text(fill: rgb("#000000"), size: 10pt, font: font-code)
-      #show raw: set text(font: font-code)
-      #raw(code-text, lang: "lean")
-    ]
-
-
-    #block(width: 100%, inset: (x: 12pt, y: 8pt), spacing: 0pt)[
-      #set par(first-line-indent: 0pt)
       #grid(
-        columns: (auto, 1fr),
-        align: (left + horizon, right + horizon),
+        gutter: 8pt,
+        block(
+          width: 100%,
+          // fill: rgb("#eee"),
+          //stroke: (left: 3pt + black),
+          inset: (x: 8pt, y: 16pt),
+          spacing: 0pt,
+        )[
+          #set par(justify: false, first-line-indent: 10pt)
+          #set text(fill: rgb("#040404"), size: 9pt, font: font-code)
+          #show raw: set text(font: font-code)
+          #align(left, code)
+        ],
         if links.len() > 0 {
-          text[
-            #strong[#if links.len() > 1 { "Related Sources" } else { "Related Source" }:]
-            #text(size: 8pt)[#enum(..links.map(l => link(SOURCE + "/" + l)[#text(font: font-code)[#l]]))]
-          ]
+          grid(
+            columns: (1fr, 1fr),
+            gutter: 6pt,
+            align: (right, left),
+            text(10pt, smallcaps[Source:]),
+            text(8pt, enum(..links.map(l => link(SOURCE + "/" + l)[#text(font: font-code)[#l]])))
+          )
         },
+        if note != none {
+          grid(
+            columns: (1fr, 1fr),
+            gutter: 6pt,
+            align: (right, left),
+            text(10pt, smallcaps[Note:]),
+            text(10pt, note)
+          )
+        }
       )
-      #if note != none {
-        text[*Note:* #note]
-      }
     ]
-  ]
 }
 
 #let sqthmbox(

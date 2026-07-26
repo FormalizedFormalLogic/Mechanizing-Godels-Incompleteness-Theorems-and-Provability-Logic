@@ -41,8 +41,8 @@
 #let proves = $class("relation", tack.r)$
 #let nproves = $class("relation", tack.r.not)$
 
-#let models = $class("relation", tack.r.double)$
-#let nmodels = $class("relation", tack.r.double.not)$
+#let models = $class("relation", tack.rr)$
+#let nmodels = $class("relation", tack.rr)$
 
 #let Box = $class("unary", square)$
 #let Dia = $class("unary", diamond)$
@@ -76,3 +76,7 @@
 #let AxiomK = $Axiom("K")$
 #let AxiomL = $Axiom("Löb")$
 #let AxiomT = $Axiom("T")$
+
+#let System(X) = $bold(#X)$
+
+#let LK1 = $System("LK")^1$
