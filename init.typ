@@ -9,7 +9,6 @@
 #let font-math = ("New Computer Modern Math", "libertinus serif")
 #let font-code = "JuliaMono"
 
-#let SOURCE = "https://github.com/FormalizedFormalLogic/Foundation/blob/master"
 
 // リンクのパスの先頭ディレクトリ（リポジトリ名）から宛先リポジトリを解決する
 #let REPO_SOURCES = (
@@ -20,8 +19,7 @@
 // 第1要素がリポジトリ名（REPO_SOURCES のキー），第2要素がリポジトリ内のパス
 #let lean-link(l) = {
   let (repo, path) = l
-  let base = REPO_SOURCES.at(repo, default: SOURCE)
-  link(base + "/" + path)[#path]
+  link(REPO_SOURCES.at(repo) + "/" + path)[#path]
 }
 
 #let init(
