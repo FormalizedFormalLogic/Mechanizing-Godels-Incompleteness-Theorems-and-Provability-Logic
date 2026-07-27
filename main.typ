@@ -2,43 +2,25 @@
 #import "notations.typ": *
 
 #show: thmrules
-#show: init
-
-#align(
-  center,
-  stack(
-    LARGE[Mechanizing Gödel's Incompleteness Theorems \ and Provability Logic],
-    v(10mm),
-    grid(
-      columns: (1fr, 1fr),
-      stack(
-        Large[Shogo Saito],
-        normalsize[Tohoku University \ Mathematical Institute],
-        normalsize[`saito.shogo.q8@dc.tohoku.ac.jp`],
-      ),
-      stack(
-        Large[Mashu Noguchi],
-        normalsize[Kobe Unversity \ Graduate School of System Informatics],
-        normalsize[`me@sno2wman.net`],
-      ),
+#show: init.with(
+  title: [Mechanizing Gödel's Incompleteness Theorems \ and Provability Logic],
+  authors: (
+    (
+      name: "Shogo Saito",
+      affiliation: [Tohoku University \ Mathematical Institute],
+      email: "saito.shogo.q8@dc.tohoku.ac.jp",
     ),
-    v(4mm),
-    large[June 4, 2026],
-    v(4mm),
+    (
+      name: "Mashu Noguchi",
+      affiliation: [Kobe Unversity \ Graduate School of System Informatics],
+      email: "me@sno2wman.net",
+      orcid: "0009-0000-8653-3403",
+    ),
   ),
-)
-
-#align(
-  center,
-  stack(
-    [*Abstract*],
-    v(4mm),
-    box(width: 80%, align(left)[
-      We formalized proofs of Gödel's first and second incompleteness theorems and
-      Solovay's arithmetical completeness of $LogicGL$ and related results in Lean4 theorem prover.
-    ]),
-    v(8mm),
-  ),
+  abstract: [
+    We formalized proofs of Gödel's first and second incompleteness theorems and
+    Solovay's arithmetical completeness of $LogicGL$ and related results in Lean4 theorem prover.
+  ],
 )
 
 = Introduction
