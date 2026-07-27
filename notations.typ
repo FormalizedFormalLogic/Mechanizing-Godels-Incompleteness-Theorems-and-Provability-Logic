@@ -1,17 +1,6 @@
 #import "init.typ": *
 #show: thmrules
 
-#let Huge(x) = rect(stroke: none, text(size: 24.88pt)[#x])
-#let huge(x) = rect(stroke: none, text(size: 20.74pt)[#x])
-#let LARGE(x) = rect(stroke: none, text(size: 17.28pt)[#x])
-#let Large(x) = rect(stroke: none, text(size: 14.4pt)[#x])
-#let large(x) = rect(stroke: none, text(size: 12pt)[#x])
-#let normalsize(x) = rect(stroke: none, text(size: 10.95pt)[#x])
-#let small(x) = rect(stroke: none, text(size: 10pt)[#x])
-#let footnotesize(x) = rect(stroke: none, text(size: 9pt)[#x])
-#let scriptsize(x) = rect(stroke: none, text(size: 8pt)[#x])
-#let tiny(x) = rect(stroke: none, text(size: 6pt)[#x])
-
 #let dand = $⩕$
 #let dor = $⩖$
 
@@ -41,8 +30,8 @@
 #let proves = $class("relation", tack.r)$
 #let nproves = $class("relation", tack.r.not)$
 
-#let models = $class("relation", tack.r.double)$
-#let nmodels = $class("relation", tack.r.double.not)$
+#let models = $class("relation", tack.rr)$
+#let nmodels = $class("relation", tack.rr.not)$
 
 #let Box = $class("unary", square)$
 #let Boxdot = $class("unary", ⊡)$

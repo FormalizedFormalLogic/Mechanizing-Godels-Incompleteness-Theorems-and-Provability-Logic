@@ -24,10 +24,6 @@
   link(base + "/" + path)[#path]
 }
 
-// notations.typ の LARGE/Large/normalsize 相当．
-// notations.typ が init.typ を import するため，循環を避けてここで定義する．
-#let sized(size, it) = rect(stroke: none, text(size: size)[#it])
-
 #let init(
   title: "",
   authors: (),
@@ -81,35 +77,35 @@
   align(
     center,
     stack(
-      text(size: 17.28pt, font: font-alter, weight: "bold", title),
+      block(text(size: 17.28pt, font: font-alter, weight: "bold", title)),
       v(10mm),
       grid(
         columns: authors.map(_ => 1fr),
         ..authors.map(a => stack(
-          sized(14.4pt, a.name),
-          sized(10.95pt, a.affiliation),
-          sized(10.95pt, raw(a.email)),
-          // orcid が与えられた著者にのみ ORCID iD を添える
+          spacing: 1em,
+          block(text(size: 16pt, a.name)),
+          block(text(size: 11pt, a.affiliation)),
+          block(text(size: 11pt, raw(a.email))),
           ..if "orcid" in a {
             (
-              sized(
-                10.95pt,
+              block(text(
+                size: 11pt,
                 link(
                   "https://orcid.org/" + a.orcid,
                   box(baseline: 0.15em, image("assets/ORCID.svg", height: 0.9em)) + raw(a.orcid),
                 ),
-              ),
+              )),
             )
           } else { () },
         )),
       ),
       v(4mm),
-      sized(
-        12pt,
+      block(text(
+        size: 11pt,
         datetime(year: date.at(0), month: date.at(1), day: date.at(2)).display(
           "[month repr:long] [day padding:none], [year]",
         ),
-      ),
+      )),
       v(4mm),
     ),
   )
@@ -119,7 +115,7 @@
     stack(
       [*Abstract*],
       v(4mm),
-      box(width: 80%, align(left, abstract)),
+      box(width: 90%, align(left, abstract)),
       v(8mm),
     ),
   )
