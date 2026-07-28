@@ -1,17 +1,6 @@
 #import "init.typ": *
 #show: thmrules
 
-#let Huge(x) = rect(stroke: none, text(size: 24.88pt)[#x])
-#let huge(x) = rect(stroke: none, text(size: 20.74pt)[#x])
-#let LARGE(x) = rect(stroke: none, text(size: 17.28pt)[#x])
-#let Large(x) = rect(stroke: none, text(size: 14.4pt)[#x])
-#let large(x) = rect(stroke: none, text(size: 12pt)[#x])
-#let normalsize(x) = rect(stroke: none, text(size: 10.95pt)[#x])
-#let small(x) = rect(stroke: none, text(size: 10pt)[#x])
-#let footnotesize(x) = rect(stroke: none, text(size: 9pt)[#x])
-#let scriptsize(x) = rect(stroke: none, text(size: 8pt)[#x])
-#let tiny(x) = rect(stroke: none, text(size: 6pt)[#x])
-
 #let dand = $⩕$
 #let dor = $⩖$
 
@@ -42,22 +31,41 @@
 #let nproves = $class("relation", tack.r.not)$
 
 #let models = $class("relation", tack.rr)$
-#let nmodels = $class("relation", tack.rr)$
+#let nmodels = $class("relation", tack.rr.not)$
 
 #let Box = $class("unary", square)$
+#let Boxdot = $class("unary", ⊡)$
 #let Dia = $class("unary", diamond)$
 #let land = $and$
 #let limp = $->$
+#let liff = $<->$
 #let lor = $or$
 #let lnot = $not$
 
 #let Prop = $upright("Prop")$
 
 #let Logic(L) = $sans(upright(#L))$
+#let sumQuasiNormal(L1, L2) = $#L1 + #L2$
+#let LogicD = Logic("D")
+#let LogicA = Logic("A")
+#let LogicGLPoint3 = Logic("GL.3")
+#let LogicGLAlpha(a) = $Logic("GL")_(#a)$
+#let LogicGLBetaMinus(b) = $Logic("GL")_(#b)^-$
+#let trace(x) = $upright("tr")(#x)$
+#let subfml(A) = $upright("Sub")(#A)$
+#let prebox(X) = $Box^(-1) #X$
+
 #let LogicS4 = Logic("S4")
 #let LogicGL = Logic("GL")
 #let LogicGLPlusBoxBot(n) = $LogicGL + Box^#n bot$
 #let LogicS = Logic("S")
+
+#let Gentzen(L) = $cal("G")_(#L)$
+#let Hilbert(L) = $cal("H")_(#L)$
+#let GentzenGL = Gentzen(LogicGL)
+#let GentzenWithCutGL = $Gentzen(LogicGL) + ("Cut")$
+#let HilbertGL = Hilbert(LogicGL)
+#let GentzenGLPoint3 = Gentzen(LogicGLPoint3)
 
 #let Prov(T) = $attach(br: #T, upright("Prov"))$
 // Use for *standard* provability predicate
