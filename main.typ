@@ -79,7 +79,7 @@ In this section, we describe our mechanization of modal logic, in particular of 
 As the most fundamental and important result in the field of provability logic, we have succeeded in mechanizing Solovay's arithmetical completeness theorem @Sol76.
 We have also mechanized the classification theorem of provability logics due to Beklemishev @Bek90.
 As in the previous section, we keep the introduction of definitions and facts brief.
-For the details of modal logic and provability logic, we refer the reader to the standard textbooks @CZ97 @Boo94 @Smo85 and the surveys @Jd98 @AB05 @BV06 @Ver24.
+For the details of modal logic and provability logic, we refer the reader to the standard textbooks @CZ97 @Boo94 @Smo85 and the surveys @JdJ98 @AB05 @BV06 @Ver24.
 
 == Basics of modal logic
 
@@ -710,7 +710,7 @@ For the details, see @Bek90 @AB05.
   - $LogicGLAlpha(alpha) := sumQuasiNormal(LogicGL, { F_n : n in alpha })$
   - $LogicGLBetaMinus(beta) := sumQuasiNormal(LogicGL, { lnot and.big_(n in omega without beta) F_n })$
 
-  In particular, we call $LogicGLAlpha(omega)$ as $LogicA$#footnote[We follow the naming of @Jd98; it presumably stands for Artemov.].
+  In particular, we call $LogicGLAlpha(omega)$ as $LogicA$#footnote[We follow the naming of @JdJ98; it presumably stands for Artemov.].
 ]
 #leancode(
   note: [
