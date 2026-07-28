@@ -964,7 +964,7 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
 /*
 == On $Logic("Grz")$
 
-ここに書かれている事実は現在Provability Logicに含まれておらずoutdatedであるが，一応メンションしておく．
+The facts described here are not currently included in Provability Logic and are outdated, but we mention them for the record.
 
 #definition[
   #Logic("Grz")
@@ -997,8 +997,8 @@ The proof theory of #LogicGL has been studied extensively.
 First, Gentzen-style sequent calculi have been investigated in numerous works @SV80 @Lei81 @SV82 @Val83 @Bor83 @Avr84 @Sas01 @Moe01 @GR12 @Bri16.
 In particular, as a syntactic issue, whether the termination of the cut-elimination algorithm holds for sequent calculi based on multisets had long been a matter of debate, and the issue is considered to have been resolved by @GR12.
 On the other hand, Brighton @Bri16 gave an alternative proof of the termination of the cut-elimination algorithm using the technique called _regression trees_, and this argument has been mechanized in Rocq by Goré, Ramanayake, and Shillito @GRS21.
-また，Féréeら @FvdGvGS24 では #LogicGL のシークエント計算によるuniform interpolation theorem @Bil16 のRocqでの形式化も行われている．
-特に，この証明はBílková @Bil16 に基づくものであるが，彼らは形式化の最中において @Bil16 の誤りを発見し，それを訂正することが出来ていることに言及しておこう #footnote[@FvdGvGS24[p.2]より引用: During our work on formalising this proof in Coq, we uncovered an incompleteness in it (@Bil16), and our formalisation contains a corrected version of the construction of...]．
+Furthermore, Férée et al. @FvdGvGS24 mechanized in Rocq the uniform interpolation theorem @Bil16 for #LogicGL via sequent calculi.
+In particular, although their proof is based on Bílková @Bil16, we mention that in the course of the mechanization they discovered an error in @Bil16 and were able to correct it #footnote[Quoted from @FvdGvGS24[p.2]: During our work on formalising this proof in Coq, we uncovered an incompleteness in it (@Bil16), and our formalisation contains a corrected version of the construction of...].
 These mechanization can be regarded as a significant result in that it settled a debate over ambiguous pen-and-paper arguments by verifying on a computer strictly.
 
 Besides, there are also many approaches to non-Gentzen-style proof systems for #LogicGL, i.e., systems obtained by adding further machinery to ordinary sequent calculi:
@@ -1033,21 +1033,21 @@ We expect that this would provide, for instance, a syntactic proof of the failur
 
 === Provability logic of Heyting arithmetic
 
-構成的算術，特にHeyting arithmetic $Theory("HA")$ の証明可能性論理は長年の研究対象であった（例えば @BV06[Section 4] を見なさい）．
-近年の発展だけでも @AM18 @AM19 @SM23a @Moj24 @Moj26 などが先行研究が存在する．
+The provability logic of intuitionistic or constructive arithmetic, in particular, Heyting arithmetic $Theory("HA")$, has been a subject of study for long time (see, e.g., @BV06[Section 4]).
+Even among the recent developments alone, there is prior work such as @AM18 @AM19 @SM23a @Moj24 @Moj26.
 
-$Theory("HA")$ の証明可能性論理は少なくとも $Logic("iGL")$ を含むということ（つまり算術的健全であること）は判明している．
-ここで，$Logic("iGL")$ とはintuitionsitc modal logic #Logic("iK") （直観主義命題論理上に $Box$ による 公理 $AxiomK$ とネセシテーションを追加した論理）にLöbの公理 $Box (Box A -> A) -> A$ を加えた論理のことである．
-$Logic("iGL")$ の論理としての先行研究は @Urs79 @Lit14 @vdGI21 を見なさい．
-形式化として言及することとして，ShilitoとGore @GS22 は，van der Giessen と Iemhoff @vdGI21 が与えた $Logic("iGL")$ のシークエント計算のカット除去の証明を洗練させて与えているが，ここでその証明はRocqによって形式化されている．
+It is known that the provability logic of $Theory("HA")$ contains at least $Logic("iGL")$, that is, that $Logic("iGL")$ is arithmetically sound to $Theory("HA")$.
+Here, $Logic("iGL")$ is the logic obtained by adding Löb's axiom $Box (Box A -> A) -> A$ to the intuitionistic modal logic #Logic("iK"), the logic obtained from intuitionistic propositional logic by adding the axiom $AxiomK$ for $Box$ and the necessitation rule.
+As a purely logic researches of $Logic("iGL")$, consult @Urs79 @Lit14 @vdGI21.
+As for mechanization, Shillito and Goré @GS22 gave a refined version of the proof of cut elimination for the sequent calculus for $Logic("iGL")$ due to van der Giessen and Iemhoff @vdGI21, and this proof has been mechanized in Rocq.
 
-他方 #Logic("iK") に strong Löb axiom $(Box A -> A) -> A$ を追加した intuitionistic strong Löb logic #Logic("iSL") と呼ばれる論理も重要である．
-#Logic("iSL") 自体の論理としてのサーベイについては例えば @VL24 を見なさい．
-Shilitoら @SVDGGI23 は #Logic("iSL") のカット除去可能なシークエント計算体系を新たに与えたうえで，Rocqで形式化を行っている．
-Féréeら @FvdGvGS24 は #Logic("iSL") のuniform interpolation theoremのRocqによる形式化を行っている（@subsect:proof_theory_provability_logic も参考のこと）．
+On the other hand, the logic called the intuitionistic strong Löb logic #Logic("iSL"), obtained by adding the strong Löb axiom $(Box A -> A) -> A$ to #Logic("iK"), is also important.
+For a survey of #Logic("iSL") itself as a logic, see, e.g., @VL24.
+Shillito et al. @SVDGGI23 gave a new sequent calculus for #Logic("iSL") admitting cut elimination, and mechanized it in Rocq.
+Férée et al. @FvdGvGS24 mechanized the uniform interpolation theorem for #Logic("iSL") in Rocq (see also @subsect:proof_theory_provability_logic).
 
-Heyting Arithmeticの証明可能性論理は Mojtahedi @Moj26 で提案されているが，これは執筆時現在2026年でも現在査読中である#footnote[arXivの初稿の投稿は2022年．]．
-将来的には，我々はこれらの議論を形式化することで，これらの厳密な検証が出来てより信頼の置ける決着を付けることができれば良いだろうと考えている．
+Finally, the provability logic of Heyting arithmetic is proposed by Mojtahedi's preprint @Moj26, but it is still under review as of 2026, in the time of writing this paper#footnote[The first version was submitted to arXiv in 2022.].
+In the future, we plan to mechanize these arguments will make it possible to verify them rigorously and thus to settle this in a more reliable way.
 
 === Provability logics with many modalities
 
