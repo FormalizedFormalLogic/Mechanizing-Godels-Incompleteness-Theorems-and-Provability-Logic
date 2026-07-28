@@ -144,6 +144,18 @@
             </group>
           </group>
         </else-if>
+        <else-if type="thesis">
+          <group delimiter=" ">
+            <text macro="title" suffix="."/>
+            <group delimiter=", ">
+              <text variable="genre"/>
+              <text macro="publisher"/>
+            </group>
+            <date variable="issued">
+              <date-part name="year" prefix="(" suffix=")"/>
+            </date>
+          </group>
+        </else-if>
         <else-if type="speech">
           <group delimiter=" ">
             <text macro="title" suffix="."/>
