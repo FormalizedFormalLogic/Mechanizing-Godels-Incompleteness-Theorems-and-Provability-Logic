@@ -17,6 +17,7 @@ sort.order{* =
     number
     note
     howpublished
+    type
     address
     organization
     publisher
@@ -32,6 +33,16 @@ sort.cased = off
 delete.field = { keywords }
 delete.field = { abstract }
 delete.field = { file }
+
+# Typst (hayagriva) does not map BibTeX's `school`/`institution` onto the CSL
+# `publisher` variable, so the awarding university of a thesis and the issuing
+# body of a report silently disappear from the bibliography -- even though the
+# ACM style (and CSL in general) reads them from `publisher`.
+# See https://github.com/typst/hayagriva/issues/112 and .../issues/86.
+# Both fields are only meaningful for @*thesis / @techreport entries, whose CSL
+# counterpart is `publisher` anyway, so the rename is unconditional.
+rename.field { school = publisher }
+rename.field { institution = publisher }
 
 print.align.key = 0
 print.line.length = 120
@@ -56,6 +67,13 @@ fmt.name.name = {}
 # abbreviation here, and entries whose sole author's surname has a von part
 # (e.g. "van Benthem" -> "vB", "de Jongh" -> "dJ") must set an explicit
 # `bibkey = {...}` field to override it (checked first, via %s(bibkey) below).
+#
+# The same applies to multi-word surnames. %1.3n truncates *each word* of the
+# surname to 3 characters and joins them with a hyphen that BibTool hard-codes
+# (fmt.inter.name does not apply to key generation), so "Sierra Miranda"
+# becomes "Sie-Mir" rather than "SM". Shortening to %1.1n would only turn that
+# into "S-M" while collapsing every ordinary surname to a single letter, so
+# such entries also need an explicit `bibkey` (e.g. SM23a).
 new.format.type {2 = "%-1v%+1l"}
 key.format =
 {
