@@ -1031,29 +1031,27 @@ In particular, although Shamkanov's circular proofs involve infinitary structure
 We also plan to mechanize the three-level sequent calculus for #LogicD following @KKIM25.
 We expect that this would provide, for instance, a syntactic proof of the failure of the CIP for #LogicD (@thm:D_no_CIP) and a concise implementation of its mechanization.
 
-=== Provability logics with many modalities
-
-A
-
 === Provability logic of Heyting arithmetic
 
 構成的算術，特にHeyting arithmetic $Theory("HA")$ の証明可能性論理は長年の研究対象であった（例えば @BV06[Section 4] を見なさい）．
 近年の発展だけでも @AM18 @AM19 @SM23a @Moj24 @Moj26 などが先行研究が存在する．
 
 $Theory("HA")$ の証明可能性論理は少なくとも $Logic("iGL")$ を含むということ（つまり算術的健全であること）は判明している．
-ここで，$Logic("iGL")$ とはintuitionsitc modal logic #Logic("iK") にLöbの公理 $Box (Box A -> A) -> A$ を加えた論理のことである．
-$Logic("iGL")$ の論理としての先行研究は @Lit14 @vdGI21 を見なさい．
-形式化としてメンションすることとして，ShilitoとGore @GS22 は，van der Giessen と Iemhoff @vdGI21 が与えた $Logic("iGL")$ のシークエント計算のカット除去の証明を洗練させて与えているが，ここでその証明はRocqによって形式化されている．
+ここで，$Logic("iGL")$ とはintuitionsitc modal logic #Logic("iK") （直観主義命題論理上に $Box$ による 公理 $AxiomK$ とネセシテーションを追加した論理）にLöbの公理 $Box (Box A -> A) -> A$ を加えた論理のことである．
+$Logic("iGL")$ の論理としての先行研究は @Urs79 @Lit14 @vdGI21 を見なさい．
+形式化として言及することとして，ShilitoとGore @GS22 は，van der Giessen と Iemhoff @vdGI21 が与えた $Logic("iGL")$ のシークエント計算のカット除去の証明を洗練させて与えているが，ここでその証明はRocqによって形式化されている．
 
-他方 intuitionistic strong Löb logic #Logic("iSL") と呼ばれる論理も重要である．
-ここで，#Logic("iSL") とはと呼ばれる論理であり，
-#Logic("iK") に strong Löb axiom $(Box A -> A) -> A$ を追加した論理である．
+他方 #Logic("iK") に strong Löb axiom $(Box A -> A) -> A$ を追加した intuitionistic strong Löb logic #Logic("iSL") と呼ばれる論理も重要である．
 #Logic("iSL") 自体の論理としてのサーベイについては例えば @VL24 を見なさい．
 Shilitoら @SVDGGI23 は #Logic("iSL") のカット除去可能なシークエント計算体系を新たに与えたうえで，Rocqで形式化を行っている．
 Féréeら @FvdGvGS24 は #Logic("iSL") のuniform interpolation theoremのRocqによる形式化を行っている（@subsect:proof_theory_provability_logic も参考のこと）．
 
-Heyting Arithmeticの証明可能性論理は @Moj26 で提案されているが，これは執筆時現在2026年でも現在査読中である#footnote[arXivの初稿の投稿は2022年．]．
-将来的には，我々はこれらの議論を形式化することで，これらの厳密に定理証明支援系で検証が出来て決着を付けることができれば良いだろうと考えている．
+Heyting Arithmeticの証明可能性論理は Mojtahedi @Moj26 で提案されているが，これは執筆時現在2026年でも現在査読中である#footnote[arXivの初稿の投稿は2022年．]．
+将来的には，我々はこれらの議論を形式化することで，これらの厳密な検証が出来てより信頼の置ける決着を付けることができれば良いだろうと考えている．
+
+=== Provability logics with many modalities
+
+A
 
 === Interpretability Logic
 
