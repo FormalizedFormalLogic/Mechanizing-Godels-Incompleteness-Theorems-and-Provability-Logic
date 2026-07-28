@@ -72,7 +72,7 @@
 
   pagebreak(weak: true)
 
-  bibliography("references.bib", style: "association-for-computing-machinery")
+  bibliography("references.bib")
 }
 
 #let leancode(code, links: (), note: none) = {
@@ -82,9 +82,6 @@
     let raw-elem = code.children.find(it => it.func() == raw)
     if raw-elem != none { raw-elem.text } else { "" }
   }
-
-  set raw(lang: "lean")
-
   align(center, block(
     width: 120%,
     // fill: rgb("#eee"),
@@ -93,11 +90,19 @@
     breakable: true,
     clip: true,
     align(left, grid(
-      block(inset: 1em)[
-        #text(size: 8pt, font: font-code)[
-          #raw(lang: "lean", block: true, syntaxes: "assets/syntaxes/Lean.sublime-syntax", code-text)
-        ]
-      ],
+      block(
+        inset: 1em,
+        text(
+          size: 8pt,
+          font: font-code,
+          raw(
+            lang: "lean",
+            block: true,
+            syntaxes: "assets/syntaxes/Lean.sublime-syntax",
+            code-text
+          )
+        )
+      ),
       if note != none {
           block(
             inset: 1em,
@@ -106,7 +111,7 @@
     ))
   ))
   block(
-    inset: (bottom:0.5em),
+    inset: (bottom: 1em),
     if links.len() > 0 {
       grid(
         columns: (1fr, 1fr),
