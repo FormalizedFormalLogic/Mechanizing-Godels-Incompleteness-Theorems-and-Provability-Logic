@@ -34,6 +34,24 @@ delete.field = { keywords }
 delete.field = { abstract }
 delete.field = { file }
 
+# Fields that Zotero (and Zbl/JFM imports) emit but neither BibTeX nor Typst
+# reads.  `urlyear` in particular is not a field at all -- the access date is
+# `urldate` -- so keeping it only makes entries look as if they recorded one.
+delete.field = { annotation }
+delete.field = { copyright }
+delete.field = { day }
+delete.field = { fjournal }
+delete.field = { fseries }
+delete.field = { jfm }
+delete.field = { lccn }
+delete.field = { numpages }
+delete.field = { shortjournal }
+delete.field = { shorttitle }
+delete.field = { urlyear }
+delete.field = { zbl }
+delete.field = { zbmath }
+delete.field = { zmnumber }
+
 # Typst (hayagriva) does not map BibTeX's `school`/`institution` onto the CSL
 # `publisher` variable, so the awarding university of a thesis and the issuing
 # body of a report silently disappear from the bibliography -- even though the
@@ -43,6 +61,14 @@ delete.field = { file }
 # counterpart is `publisher` anyway, so the rename is unconditional.
 rename.field { school = publisher }
 rename.field { institution = publisher }
+
+# biblatex spellings that Zotero exports but BibTeX-based readers ignore:
+# a `journaltitle` silently drops the journal name from the bibliography.
+rename.field { journaltitle = journal }
+rename.field { location = address }
+rename.field { language = langid }
+rename.field { eprinttype = archiveprefix }
+rename.field { eprintclass = primaryclass }
 
 print.align.key = 0
 print.line.length = 120

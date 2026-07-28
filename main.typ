@@ -61,7 +61,7 @@ For instance, O'Connor's implementation assumes several facts needed for the pro
 To the best of our knowledge, no full formalization of the incompleteness theorems entirely within arithmetic is known, and consequently, no mechanization about provability logic has been reported.
 
 In this paper, we present machine-assisted formalizations of Gödel's 1st and 2nd incompleteness theorems and Solovay's arithmetical completeness theorem.
-Our work is carried out in Lean 4, an interactive theorem prover, together with mathlib4 @mathlib2020, its community-developed mathematics library.
+Our work is carried out in Lean 4, an interactive theorem prover, together with mathlib4 @Mathlib2020, its community-developed mathematics library.
 Lean 4 is based on the Calculus of Inductive Constructions (CIC) @dMU21,
 and features dependent types, quotient types, and support for noncomputable definitions, making it highly expressive.
 In addition, its powerful metaprogramming infrastructure like aesop @LF23 enables efficient proof automation and extensibility.
@@ -79,7 +79,7 @@ In this section, we describe our mechanization of modal logic, in particular of 
 As the most fundamental and important result in the field of provability logic, we have succeeded in mechanizing Solovay's arithmetical completeness theorem @Sol76.
 We have also mechanized the classification theorem of provability logics due to Beklemishev @Bek90.
 As in the previous section, we keep the introduction of definitions and facts brief.
-For the details of modal logic and provability logic, we refer the reader to the standard textbooks @CZ97 @Boo94 @Smo85 and the surveys @JdJ98 @AB05 @BV06 @Ver24.
+For the details of modal logic and provability logic, we refer the reader to the standard textbooks @CZ97 @Boo94 @Smo85 and the surveys @Jd98 @AB05 @BV06 @Ver24.
 
 == Basics of modal logic
 
@@ -710,7 +710,7 @@ For the details, see @Bek90 @AB05.
   - $LogicGLAlpha(alpha) := sumQuasiNormal(LogicGL, { F_n : n in alpha })$
   - $LogicGLBetaMinus(beta) := sumQuasiNormal(LogicGL, { lnot and.big_(n in omega without beta) F_n })$
 
-  In particular, we call $LogicGLAlpha(omega)$ as $LogicA$#footnote[We follow the naming of @JdJ98; it presumably stands for Artemov.].
+  In particular, we call $LogicGLAlpha(omega)$ as $LogicA$#footnote[We follow the naming of @Jd98; it presumably stands for Artemov.].
 ]
 #leancode(
   note: [
@@ -1011,8 +1011,8 @@ The proof theory of #LogicGL has been studied extensively.
 First, Gentzen-style sequent calculi have been investigated in numerous works @SV80 @Lei81 @SV82 @Val83 @Bor83 @Avr84 @Sas01 @Moe01 @GR12 @Bri16.
 In particular, as a syntactic issue, whether the termination of the cut-elimination algorithm holds for sequent calculi based on multisets had long been a matter of debate, and the issue is considered to have been resolved by @GR12.
 On the other hand, Brighton @Bri16 gave an alternative proof of the termination of the cut-elimination algorithm using the technique called _regression trees_, and this argument has been mechanized in Rocq by Goré, Ramanayake, and Shillito @GRS21.
-Furthermore, Férée et al. @FvdGvGS24 mechanized in Rocq the uniform interpolation theorem @Bil16 for #LogicGL via sequent calculi.
-In particular, although their proof is based on Bílková @Bil16, we mention that in the course of the mechanization they discovered an error in @Bil16 and were able to correct it #footnote[Quoted from @FvdGvGS24[p.2]: During our work on formalising this proof in Coq, we uncovered an incompleteness in it (@Bil16), and our formalisation contains a corrected version of the construction of...].
+Furthermore, Férée et al. @FvdGvGS24 mechanized in Rocq the uniform interpolation theorem @Blk16 for #LogicGL via sequent calculi.
+In particular, although their proof is based on Bílková @Blk16, we mention that in the course of the mechanization they discovered an error in @Blk16 and were able to correct it #footnote[Quoted from @FvdGvGS24[p.2]: During our work on formalising this proof in Coq, we uncovered an incompleteness in it (@Blk16), and our formalisation contains a corrected version of the construction of...].
 These mechanization can be regarded as a significant result in that it settled a debate over ambiguous pen-and-paper arguments by verifying on a computer strictly.
 
 Besides, there are also many approaches to non-Gentzen-style proof systems for #LogicGL, i.e., systems obtained by adding further machinery to ordinary sequent calculi:
@@ -1041,14 +1041,14 @@ The latter uses three levels of sequents #seq1, #seq2, and #seq3, and in particu
 
 In the present work, we have mechanized the Gentzen-style sequent calculus for #LogicGL, the labelled sequent calculus for #LogicGL (see @sect:labelled-sequent-calculus), and the two-level sequent calculus for #LogicS (see @prop:S_characterization).
 For the future work, we plan to mechanize sequent calculi with other machinery as well, together with the equivalence of their provability.
-In particular, although Shamkanov's circular proofs involve infinitary structures, the studies by Sierra Miranda et al. @SM23 @SMSZ24 @HSMS25 @SMS26 have revealed that they have many applications, so their mechanization seems to be a technically challenging but worthwhile task.
+In particular, although Shamkanov's circular proofs involve infinitary structures, the studies by Sierra Miranda et al. @Sie-Mir23 @SMSZ24 @HSMS25 @SMS26 have revealed that they have many applications, so their mechanization seems to be a technically challenging but worthwhile task.
 We also plan to mechanize the three-level sequent calculus for #LogicD following @KKIM25.
 We expect that this would provide, for instance, a syntactic proof of the failure of the CIP for #LogicD (@thm:D_no_CIP) and a concise implementation of its mechanization.
 
 === Provability logic of Heyting arithmetic
 
 The provability logic of intuitionistic or constructive arithmetic, in particular, Heyting arithmetic $Theory("HA")$, has been a subject of study for long time (see, e.g., @BV06[Section 4]).
-Even among the recent developments alone, there is prior work such as @AM18 @AM19 @SM23a @Moj24 @Moj26.
+Even among the recent developments alone, there is prior work such as @AM18 @AM19 @Sie-Mir23A @Moj24 @Moj26.
 
 It is known that the provability logic of $Theory("HA")$ contains at least $Logic("iGL")$, that is, that $Logic("iGL")$ is arithmetically sound to $Theory("HA")$.
 Here, $Logic("iGL")$ is the logic obtained by adding Löb's axiom $Box (Box A -> A) -> A$ to the intuitionistic modal logic #Logic("iK"), the logic obtained from intuitionistic propositional logic by adding the axiom $AxiomK$ for $Box$ and the necessitation rule.
@@ -1057,7 +1057,7 @@ As for mechanization, Shillito and Goré @GS22 gave a refined version of the pro
 
 On the other hand, the logic called the intuitionistic strong Löb logic #Logic("iSL"), obtained by adding the strong Löb axiom $(Box A -> A) -> A$ to #Logic("iK"), is also important.
 For a survey of #Logic("iSL") itself as a logic, see, e.g., @VL24.
-Shillito et al. @SVDGGI23 gave a new sequent calculus for #Logic("iSL") admitting cut elimination, and mechanized it in Rocq.
+Shillito et al. @SvdGGI23 gave a new sequent calculus for #Logic("iSL") admitting cut elimination, and mechanized it in Rocq.
 Férée et al. @FvdGvGS24 mechanized the uniform interpolation theorem for #Logic("iSL") in Rocq (see also @subsect:proof_theory_provability_logic).
 
 Finally, the provability logic of Heyting arithmetic is proposed by Mojtahedi's preprint @Moj26, but it is still under review as of 2026, in the time of writing this paper#footnote[The first version was submitted to arXiv in 2022.].

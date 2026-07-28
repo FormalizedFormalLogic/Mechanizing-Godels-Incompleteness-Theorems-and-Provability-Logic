@@ -177,6 +177,11 @@
         </else>
       </choose>
       <text variable="DOI" prefix=". https://doi.org/"/>
+      <choose>
+        <if type="bill book graphic legal_case legislation motion_picture report song article-journal chapter paper-conference thesis speech" match="any">
+          <text variable="URL" prefix=". "/>
+        </if>
+      </choose>
     </layout>
   </bibliography>
 </style>
