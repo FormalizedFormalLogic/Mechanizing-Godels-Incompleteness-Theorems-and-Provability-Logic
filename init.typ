@@ -1,4 +1,4 @@
-#import "@preview/fine-lncs:0.6.5": author, institute, lncs, theorem, proof
+#import "@preview/fine-lncs:0.6.5": author, institute, lncs, proof, theorem
 #import "@preview/ctheorems:1.1.3": *
 #import "@preview/curryst:0.5.0": prooftree, rule
 
@@ -29,13 +29,12 @@
   keywords: (),
   body,
 ) = {
-
   show: lncs.with(
     title: title,
     authors: authors,
     abstract: abstract,
     keywords: keywords,
-    bibliography: bibliography("references.bib"),
+    bibliography: bibliography("references.bib", style: "assets/springer-lecture-notes-in-computer-science.csl"),
   )
 
   set heading(numbering: "1.1")
@@ -71,8 +70,6 @@
   body
 
   pagebreak(weak: true)
-
-  bibliography("references.bib")
 }
 
 #let leancode(code, links: (), note: none) = {
@@ -98,17 +95,18 @@
           raw(
             lang: "lean",
             block: true,
-            syntaxes: "assets/syntaxes/Lean.sublime-syntax",
-            code-text
-          )
-        )
+            syntaxes: "assets/Lean.sublime-syntax",
+            code-text,
+          ),
+        ),
       ),
       if note != none {
-          block(
-            inset: 1em,
-            text(8pt)[#smallcaps[Note:] #note])
-      }
-    ))
+        block(
+          inset: 1em,
+          text(8pt)[#smallcaps[Note:] #note],
+        )
+      },
+    )),
   ))
   block(
     inset: (bottom: 1em),
@@ -117,10 +115,9 @@
         columns: (1fr, 1fr),
         gutter: 6pt,
         align: (right, left),
-        text(8pt, smallcaps[Source:]),
-        text(8pt, enum(..links.map(lean-link)))
+        text(8pt, smallcaps[Source:]), text(8pt, enum(..links.map(lean-link))),
       )
-    }
+    },
   )
 }
 

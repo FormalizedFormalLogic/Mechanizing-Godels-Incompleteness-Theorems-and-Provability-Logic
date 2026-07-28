@@ -34,6 +34,24 @@ delete.field = { keywords }
 delete.field = { abstract }
 delete.field = { file }
 
+# Fields that Zotero (and Zbl/JFM imports) emit but neither BibTeX nor Typst
+# reads.  `urlyear` in particular is not a field at all -- the access date is
+# `urldate` -- so keeping it only makes entries look as if they recorded one.
+delete.field = { annotation }
+delete.field = { copyright }
+delete.field = { day }
+delete.field = { fjournal }
+delete.field = { fseries }
+delete.field = { jfm }
+delete.field = { lccn }
+delete.field = { numpages }
+delete.field = { shortjournal }
+delete.field = { shorttitle }
+delete.field = { urlyear }
+delete.field = { zbl }
+delete.field = { zbmath }
+delete.field = { zmnumber }
+
 # Typst (hayagriva) does not map BibTeX's `school`/`institution` onto the CSL
 # `publisher` variable, so the awarding university of a thesis and the issuing
 # body of a report silently disappear from the bibliography -- even though the
@@ -44,14 +62,28 @@ delete.field = { file }
 rename.field { school = publisher }
 rename.field { institution = publisher }
 
+# biblatex spellings that Zotero exports but BibTeX-based readers ignore:
+# a `journaltitle` silently drops the journal name from the bibliography.
+rename.field { journaltitle = journal }
+rename.field { location = address }
+rename.field { language = langid }
+rename.field { eprinttype = archiveprefix }
+rename.field { eprintclass = primaryclass }
+
 print.align.key = 0
 print.line.length = 120
 print.use.tab = off
 
 preserve.key.case = on
 
-# Unify key format
-key.base = upper
+# Unify key format.
+#
+# The target is the label scheme of alpha.bst / amsalpha.bst: initials of the
+# von and last name parts, or the first three letters of the surname when the
+# author has neither a von part nor a compound surname, plus the last two
+# digits of the year.  Collisions are disambiguated with a lower-case letter
+# ("SM23a", "SM23b"), hence key.base below.
+key.base = lower
 key.number.separator = {}
 fmt.name.name = {}
 # von part (e.g. "de" in "de Jongh") lower-case, last name initial upper-case: "de Jongh" -> "dJ"
@@ -74,6 +106,12 @@ fmt.name.name = {}
 # becomes "Sie-Mir" rather than "SM". Shortening to %1.1n would only turn that
 # into "S-M" while collapsing every ordinary surname to a single letter, so
 # such entries also need an explicit `bibkey` (e.g. SM23a).
+#
+# One more caveat, this time about the input rather than the format: BibTool
+# counts a non-ASCII letter as no character at all when truncating, so a
+# surname written in UTF-8 as "Bílková" abbreviates to "Blk" instead of "Bil".
+# Spelling accents the TeX way -- "B{\'i}lkov{\'a}", as the rest of this
+# bibliography does -- gives the expected "Bil".
 new.format.type {2 = "%-1v%+1l"}
 key.format =
 {
