@@ -4,12 +4,11 @@
 #let auxColor = color.hsl(205deg, 55%, 40%)
 
 #let base-text-size = 11pt
-#let font-base = "libertinus serif"
-#let font-alter = font-base
+#let font-base = "Nimbus Roman"
+#let font-alter = "Nimbus Sans"
 #let font-math = ("New Computer Modern Math", "libertinus serif")
 #let font-code = "JuliaMono"
 
-#let SOURCE = "https://github.com/FormalizedFormalLogic/Foundation/blob/master"
 
 // リンクのパスの先頭ディレクトリ（リポジトリ名）から宛先リポジトリを解決する
 #let REPO_SOURCES = (
@@ -20,21 +19,33 @@
 // 第1要素がリポジトリ名（REPO_SOURCES のキー），第2要素がリポジトリ内のパス
 #let lean-link(l) = {
   let (repo, path) = l
-  let base = REPO_SOURCES.at(repo, default: SOURCE)
-  link(base + "/" + path)[#text(font: font-code)[#path]]
+  link(REPO_SOURCES.at(repo) + "/" + path)[#path]
 }
 
-#let init(body) = {
+#let init(
+  title: "",
+  authors: (),
+  date: (datetime.today().year(), datetime.today().month(), datetime.today().day()),
+  abstract: "",
+  body,
+) = {
   set page(
     "a4",
     numbering: "1",
     number-align: center,
   )
+  set document(
+    title: title,
+    author: authors.map(a => a.name),
+    date: datetime(year: date.at(0), month: date.at(1), day: date.at(2)),
+  )
 
   set heading(numbering: "1.1")
+  show heading: set text(font: font-alter)
 
   set text(size: base-text-size, font: font-base)
 
+  show strong: set text(font: font-alter)
   show math.equation: set text(font: font-math)
 
   // show raw: set text(size: 7pt, font: font-code)
@@ -46,16 +57,12 @@
     radius: 4pt,
   )
 
-  show raw.where(block: true): block.with(
-    inset: 10pt,
-    radius: 4pt,
-  )
-
   show link: set text(fill: auxColor)
 
   show: thmrules.with(qed-symbol: [#text[❏]])
 
-  set document()
+  // For theorem environment
+  show figure.where(kind: "thmenv"): set par(first-line-indent: (all: false, amount: 1em))
 
   set par(
     justify: true,
@@ -65,68 +72,57 @@
     ),
   )
 
+  align(
+    center,
+    stack(
+      block(text(size: 17.28pt, font: font-alter, weight: "bold", title)),
+      v(10mm),
+      grid(
+        columns: authors.map(_ => 1fr),
+        ..authors.map(a => stack(
+          spacing: 1em,
+          block(text(size: 16pt, a.name)),
+          block(text(size: 11pt, a.affiliation)),
+          block(text(size: 11pt, raw(a.email))),
+          ..if "orcid" in a {
+            (
+              block(text(
+                size: 11pt,
+                link(
+                  "https://orcid.org/" + a.orcid,
+                  box(baseline: 0.15em, image("assets/ORCID.svg", height: 0.9em)) + raw(a.orcid),
+                ),
+              )),
+            )
+          } else { () },
+        )),
+      ),
+      v(4mm),
+      block(text(
+        size: 11pt,
+        datetime(year: date.at(0), month: date.at(1), day: date.at(2)).display(
+          "[month repr:long] [day padding:none], [year]",
+        ),
+      )),
+      v(4mm),
+    ),
+  )
+
+  align(
+    center,
+    stack(
+      [*Abstract*],
+      v(4mm),
+      box(width: 90%, align(left, abstract)),
+      v(8mm),
+    ),
+  )
+
   body
 
   pagebreak(weak: true)
 
   bibliography("references.bib", style: "association-for-computing-machinery")
-}
-
-#let abst(
-  title: "",
-  subtitle: "",
-  author: "",
-  date: (datetime.today().year(), datetime.today().month(), datetime.today().day()),
-  body,
-) = {
-  set page(numbering: "1", number-align: center)
-
-  set heading(numbering: "1.1")
-
-  set text(size: base-text-size, font: font-base)
-
-  show math.equation: set text(font: font-math)
-
-  show raw: set text(size: 7pt, font: font-code)
-
-  show raw: set text(font: font-code)
-
-  show raw.where(block: false): box.with(
-    inset: (x: 4pt, y: 0pt),
-    outset: (y: 3pt),
-    radius: 4pt,
-  )
-
-  show raw.where(block: true): block.with(
-    inset: 10pt,
-    radius: 4pt,
-  )
-
-  show link: set text(fill: auxColor)
-
-  set par(justify: true)
-
-  show: thmrules.with(qed-symbol: [#text  [❏]])
-
-  set document(title: title)
-
-  grid(
-    columns: 1fr,
-    align: (center + horizon),
-    rect(stroke: none)[
-      #block(text(weight: 700, 1.75em, title))
-    ],
-    v(.5cm),
-    rect(stroke: none)[
-      #pad(
-        top: 1em,
-        x: 1em,
-        author,
-      )
-    ],
-    v(1cm),
-  )
-  body
 }
 
 #let leancode(code, links: (), note: none) = {
@@ -139,37 +135,41 @@
 
   block(
     width: 100%,
-    stroke: (left: 1pt + luma(0)),
     inset: 0pt,
     breakable: true,
   )[
     #block(
       width: 100%,
-      fill: luma(250),
-      inset: (x: 4pt, y: 8pt),
+      inset: (x: 12pt, y: 8pt),
+      stroke: (left: 2pt + auxColor),
       spacing: 0pt,
     )[
-      #set par(justify: false, first-line-indent: 0pt)
-      #set text(fill: rgb("#000000"), size: 10pt, font: font-code)
-      #show raw: set text(font: font-code)
-      #raw(code-text, lang: "lean", block: true, syntaxes: "assets/syntaxes/Lean.sublime-syntax")
+      // #set par(justify: false, first-line-indent: 0pt)
+      // #show raw: set text(font: font-code)
+      #text(size: 1em, font: font-code)[
+        #raw(lang: "lean", block: true, syntaxes: "assets/syntaxes/Lean.sublime-syntax", code-text)
+      ]
     ]
 
-
-    #block(width: 100%, inset: (x: 12pt, y: 4pt), spacing: 0pt)[
+    #block(
+      width: 100%,
+      inset: (x: 12pt, y: 8pt),
+      spacing: 0pt,
+      stroke: (left: 2pt + luma(220)),
+    )[
       #set par(first-line-indent: 0pt)
       #grid(
         columns: (auto, 1fr),
         align: (left + horizon, right + horizon),
         if links.len() > 0 {
-          text[
+          text(size: 0.9em)[
             #strong[#if links.len() > 1 { "Related Sources" } else { "Related Source" }:]
-            #text(size: 8pt)[#enum(..links.map(lean-link))]
+            #enum(..links.map(lean-link))
           ]
         },
       )
       #if note != none {
-        text[*Note:* #note]
+        text(size: 0.9em)[*Note:* #note]
       }
     ]
   ]
@@ -183,7 +183,8 @@
   "theorem",
   title,
   base: base,
-  inset: (left: 0pt, top: 0pt, bottom: 0pt),
+  stroke: (left: 2pt + luma(0)),
+  inset: (left: 12pt, top: 8pt, bottom: 8pt),
   titlefmt: body => [
     #text(font: font-alter, size: base-text-size)[*#body*]
   ],
@@ -197,49 +198,18 @@
   breakable: true,
 )
 
-#let barthmbox(
-  title,
-  dash: "solid",
-) = thmbox(
-  "theorem",
-  title,
-  radius: 0pt,
-  inset: (left: 0pt, top: 0pt, bottom: 0pt),
-  titlefmt: body => [
-    #text(font: font-alter, size: base-text-size)[*#body*]
-  ],
-  namefmt: name => [
-    #text(font: font-alter, size: base-text-size)[*(#name)*]
-  ],
-  separator: [
-    #h(.4em)
-  ],
-  base_level: 1,
-  breakable: true,
-)
 
+#let definition = sqthmbox("Definition")
+#let notation = sqthmbox("Notation", dash: "dotted")
 #let lemma = sqthmbox("Lemma")
-
 #let theorem = sqthmbox("Theorem")
-
 #let proposition = sqthmbox("Proposition")
-
-
 #let fact = sqthmbox("Fact")
-
 #let corollary = sqthmbox("Corollary", base: "theorem")
-
-#let definition = barthmbox("Definition")
-
-#let notation = barthmbox("Notation", dash: "dotted")
-
-#let remark = barthmbox("Remark", dash: "dotted")
-
-#let example = barthmbox("Example")
-
-#let problem = barthmbox("Problem")
-
-#let conjecture = barthmbox("Conjecture")
+#let remark = sqthmbox("Remark", dash: "dotted")
+#let example = sqthmbox("Example")
+#let problem = sqthmbox("Problem")
+#let conjecture = sqthmbox("Conjecture")
 
 #let proof = thmproof(
   "proof",

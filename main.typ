@@ -2,43 +2,25 @@
 #import "notations.typ": *
 
 #show: thmrules
-#show: init
-
-#align(
-  center,
-  stack(
-    LARGE[Mechanizing Gödel's Incompleteness Theorems \ and Provability Logic],
-    v(10mm),
-    grid(
-      columns: (1fr, 1fr),
-      stack(
-        Large[Shogo Saito],
-        normalsize[Tohoku University \ Mathematical Institute],
-        normalsize[`saito.shogo.q8@dc.tohoku.ac.jp`],
-      ),
-      stack(
-        Large[Mashu Noguchi],
-        normalsize[Kobe Unversity \ Graduate School of System Informatics],
-        normalsize[`me@sno2wman.net`],
-      ),
+#show: init.with(
+  title: [Mechanizing Gödel's Incompleteness Theorems \ and Provability Logic],
+  authors: (
+    (
+      name: "Shogo Saito",
+      affiliation: [Tohoku University \ Mathematical Institute],
+      email: "saito.shogo.q8@dc.tohoku.ac.jp",
     ),
-    v(4mm),
-    large[June 4, 2026],
-    v(4mm),
+    (
+      name: "Mashu Noguchi",
+      affiliation: [Kobe Unversity \ Graduate School of System Informatics],
+      email: "me@sno2wman.net",
+      orcid: "0009-0000-8653-3403",
+    ),
   ),
-)
-
-#align(
-  center,
-  stack(
-    [*Abstract*],
-    v(4mm),
-    box(width: 80%, align(left)[
-      We formalized proofs of Gödel's first and second incompleteness theorems and
-      Solovay's arithmetical completeness of $LogicGL$ and related results in Lean4 theorem prover.
-    ]),
-    v(8mm),
-  ),
+  abstract: [
+    We formalized proofs of Gödel's first and second incompleteness theorems and
+    Solovay's arithmetical completeness of $LogicGL$ and related results in Lean4 theorem prover.
+  ],
 )
 
 = Introduction
@@ -70,7 +52,7 @@ Lean 4 is based on the Calculus of Inductive Constructions (CIC) @dMU21,
 and features dependent types, quotient types, and support for noncomputable definitions, making it highly expressive.
 In addition, its powerful metaprogramming infrastructure like aesop @LF23 enables efficient proof automation and extensibility.
 
-Our mechanization is currently hosted as a repository on GitHub, and the version we refer to is #link(SOURCE).
+Our mechanization is currently hosted as a repository on GitHub, and the version we refer to is #link(REPO_SOURCES.at("Foundation")).
 In this report, we will briefly and informally introduce the mathematical facts without omitting the essentials, and show the code of our mechanization corresponding to those facts.
 However, for the sake of readability, note that in some places we have modified the hosted code.
 Moreover, owing to motivations other than the incompleteness theorems and provability logic that this report focuses on, some implementations are stated as more general definitions.
