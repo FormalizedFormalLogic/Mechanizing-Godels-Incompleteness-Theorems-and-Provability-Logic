@@ -1047,7 +1047,7 @@ Shillito et al. @SVDGGI23 gave a new sequent calculus for #Logic("iSL") admittin
 Férée et al. @FvdGvGS24 mechanized the uniform interpolation theorem for #Logic("iSL") in Rocq (see also @subsect:proof_theory_provability_logic).
 
 Finally, the provability logic of Heyting arithmetic is proposed by Mojtahedi's preprint @Moj26, but it is still under review as of 2026, in the time of writing this paper#footnote[The first version was submitted to arXiv in 2022.].
-In the future, we plan to mechanize these arguments will make it possible to verify them rigorously and thus to settle this in a more reliable way.
+In the future, we plan to mechanize these arguments, which will make it possible to verify them rigorously and thus to settle this in a more reliable way.
 
 === Provability logics with many modalities
 
