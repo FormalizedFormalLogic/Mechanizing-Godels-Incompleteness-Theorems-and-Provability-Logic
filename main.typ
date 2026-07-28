@@ -5,22 +5,36 @@
 #show: init.with(
   title: [Mechanizing Gödel's Incompleteness Theorems \ and Provability Logic],
   authors: (
-    (
-      name: "Shogo Saito",
-      affiliation: [Tohoku University \ Mathematical Institute],
-      email: "saito.shogo.q8@dc.tohoku.ac.jp",
+    author(
+      "Shogo Saito",
+      insts: 
+        institute(
+          "Tohoku University",
+          addr: "Sendai, Japan",
+          email: "saito.shogo.q8@dc.tohoku.ac.jp",
+        ),
     ),
-    (
-      name: "Mashu Noguchi",
-      affiliation: [Kobe Unversity \ Graduate School of System Informatics],
-      email: "me@sno2wman.net",
-      orcid: "0009-0000-8653-3403",
+    author(
+      "Mashu Noguchi",
+      insts:
+        institute(
+          "Kobe University",
+          addr: "Kobe, Japan",
+          email: "me@sno2wman.net",
+        ),
+      oicd: "0009-0000-8653-3403"
     ),
   ),
   abstract: [
     We formalized proofs of Gödel's first and second incompleteness theorems and
     Solovay's arithmetical completeness of $LogicGL$ and related results in Lean4 theorem prover.
   ],
+  keywords: (
+    "incompleteness theorems",
+    "provability logic",
+    "formalization of mathematics",
+    "Lean",
+  ),
 )
 
 = Introduction
