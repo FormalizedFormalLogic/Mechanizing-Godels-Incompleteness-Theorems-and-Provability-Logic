@@ -80,3 +80,4 @@
 #let System(X) = $bold(#X)$
 
 #let LK1 = $System("LK")^1$
+#let LOR = $cal(L)_"OR"$

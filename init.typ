@@ -127,19 +127,14 @@
 
   block(
     width: 100%,
-    inset: 0pt,
-    // fill: rgb("#eee"),
     breakable: true,
+    inset: (y: 16pt),
     clip: true,
   )[
       #grid(
         gutter: 8pt,
         block(
           width: 100%,
-          // fill: rgb("#eee"),
-          //stroke: (left: 3pt + black),
-          inset: (x: 8pt, y: 16pt),
-          spacing: 0pt,
         )[
           #set par(justify: false, first-line-indent: 10pt)
           #set text(fill: rgb("#040404"), size: 9pt, font: font-code)

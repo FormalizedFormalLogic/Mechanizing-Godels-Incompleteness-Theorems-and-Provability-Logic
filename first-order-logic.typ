@@ -15,7 +15,10 @@ To express this formally, formulas are defined from the generalized form _semifo
 
 #leancode(links: (
   "Foundation/FirstOrder/Basic/Syntax/Formula.lean#L24-L32",
-))[
+  ),
+  note:[
+    We write `Formula L ξ` for `Semiformula L ξ 0`, and `Sentence L` for sentences, namely `Formula L Empty`.
+  ])[
   ```
   inductive Semiformula (L : Language) (ξ : Type*) :
       ℕ → Type _ where
@@ -32,8 +35,7 @@ To express this formally, formulas are defined from the generalized form _semifo
   ```
 ]
 
-We write `Formula L ξ` for `Semiformula L ξ 0`, and `Sentence L` for sentences, namely `Formula L Empty`.
-In particular, arithmetic sentences are sentences over the language of arithmetic `ℒₒᵣ`, which consists of the symbols
+In particular, arithmetic formulas are formulas over the language of arithmetic $LOR$, which consists of the symbols
 of ordered ring ${0, 1, +, dot, =, <}$.
 
 == First-Order Sequent Calculus
@@ -48,10 +50,9 @@ A sequent is a finite list of formulas, and `Derivation Γ` is a type for proofs
   abbrev Sequent (L : Language) := List (Proposition L)
 
   inductive Derivation : Sequent L → Type _
-  | identity (r : L.Rel k) (v) :
-      Derivation [.rel r v, .nrel r v]
-  | cut : Derivation (φ :: Γ) →
-      Derivation (∼φ :: Δ) → Derivation (Γ ++ Δ)
+  | identity (r : L.Rel k) (v) : Derivation [.rel r v, .nrel r v]
+  | cut : Derivation (φ :: Γ) → Derivation (∼φ :: Δ) →
+      Derivation (Γ ++ Δ)
   | contraction : Derivation Δ → Δ ⊆ Γ → Derivation Γ
   | verum : Derivation [⊤]
   | or : Derivation (φ :: ψ :: Γ) → Derivation (φ ⋎ ψ :: Γ)
@@ -74,11 +75,12 @@ The proof with axiom $T$ is defined as a pair consisting of a list of formulas i
   structure Theory.Proof (T : Theory L) (σ : Sentence L) where
     axioms : List (Sentence L)
     axioms_mem : ∀ ψ ∈ axioms, ψ ∈ T
-    derivation : OneSidedLK.Pullback Derivation Rewriting.emb (σ :: ∼axioms)
+    derivation :
+      OneSidedLK.Pullback Derivation Rewriting.emb (σ :: ∼axioms)
   ```
 ]
 
-== Semantics
+== Semantics and The Completeness Theorem
 
 The semantics is the usual Tarski semantics for first-order logic.
 An $L$-structure on a type `M` interprets each function symbol as a function on `M` and each relation symbol as a relation on `M`.
@@ -87,7 +89,12 @@ Terms are evaluated from assignments for bound and free variables, and formulas 
 #leancode(links: (
   "Foundation/FirstOrder/Basic/Semantics/Semantics.lean#L15-L18",
   "Foundation/FirstOrder/Basic/Semantics/Semantics.lean#L212-L220",
-))[
+  ),
+  note: [
+    For a sentence `σ`, the notation `M↓[L] ⊧ σ` means that `σ` is true in the `L`-structure on `M`.
+    Similarly, `M↓[L] ⊧* T` means that every sentence in the theory `T` is true in `M`.
+  ]
+)[
   ```
   class Structure (L : Language) (M : Type*) where
     func : {k : ℕ} → L.Func k → (Fin k → M) → M
@@ -104,5 +111,22 @@ Terms are evaluated from assignments for bound and free variables, and formulas 
   ```
 ]
 
-For a closed sentence `σ`, the notation `M↓[L] ⊧ σ` means that `σ` is true in the `L`-structure on `M`.
-Similarly, `M↓[L] ⊧* T` means that every sentence in the theory `T` is true in `M`.
+The completeness theorem is proved by a bit non-standard way #footnote[A forcing argument.].
+
+#leancode(links: (
+  "https://github.com/FormalizedFormalLogic/Foundation/blob/8dcdb31964545f3909fccd40eed4d59836f7df95/Foundation/FirstOrder/Completeness/CounterModel.lean#L253",
+  ),
+)[
+  ```
+  theorem Proof.complete_iff : T ⊨ φ ↔ T ⊢ φ
+  ```
+]
+
+This theorem is important for our mechanization of the incompleteness theorems, as it allows us to reduce the syntactic provability,
+which is often too complex, to the semantic truth in a model, which is often easier to handle.
+
+== Arithmetic
+
+== Bootstrapping
+
+== Incompleteness Theorems
