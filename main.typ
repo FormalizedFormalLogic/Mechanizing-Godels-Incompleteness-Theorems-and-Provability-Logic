@@ -3,26 +3,24 @@
 
 #show: thmrules
 #show: init.with(
-  title: [Mechanizing Gödel's Incompleteness Theorems \ and Provability Logic],
+  title: [Mechanizing Gödel's Incompleteness Theorems and Provability Logic],
   authors: (
     author(
       "Shogo Saito",
-      insts: 
-        institute(
-          "Tohoku University",
-          addr: "Sendai, Japan",
-          email: "saito.shogo.q8@dc.tohoku.ac.jp",
-        ),
+      insts: institute(
+        "Tohoku University",
+        addr: "Sendai, Japan",
+        email: "saito.shogo.q8@dc.tohoku.ac.jp",
+      ),
     ),
     author(
       "Mashu Noguchi",
-      insts:
-        institute(
-          "Kobe University",
-          addr: "Kobe, Japan",
-          email: "me@sno2wman.net",
-        ),
-      oicd: "0009-0000-8653-3403"
+      insts: institute(
+        "Kobe University",
+        addr: "Kobe, Japan",
+        email: "me@sno2wman.net",
+      ),
+      oicd: "0009-0000-8653-3403",
     ),
   ),
   abstract: [
@@ -409,6 +407,37 @@ We omit the details of these constructions; via these semantic characterizations
   ```
 ]
 
+#definition[Boxdot translation][
+  The _boxdot translation_ $A^Boxdot$ of a formula $A$ is obtained by replacing every occurrence of $Box$ with $Boxdot$, i.e., it is defined recursively as follows.
+  - $p^Boxdot = p$
+  - $bot^Boxdot = bot$
+  - $(A limp B)^Boxdot = A^Boxdot limp B^Boxdot$
+  - $(Box A)^Boxdot = Boxdot (A^Boxdot)$
+]
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Formula/Basic.lean"),))[
+  ```
+  def Formula.boxdotTranslate : Formula α → Formula α
+    | #a    => #a
+    | ⊥     => ⊥
+    | A 🡒 B => (boxdotTranslate A) 🡒 (boxdotTranslate B)
+    | □A    => ⊡(boxdotTranslate A)
+  postfix:90 "ᵇ" => Formula.boxdotTranslate
+  ```
+]
+
+On boxdot-translated formulas, $LogicGL$ and $LogicS$ do not differ.
+Our mechanized proof is semantic, via the tail model of @prop:S_characterization, and hence does not go through arithmetical completeness.
+
+#proposition[
+  For every formula $A$, $LogicGL proves A^Boxdot$ if and only if $LogicS proves A^Boxdot$.
+] <prop:boxdot_S_boxdot_GL>
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/S/Boxdot.lean"),))[
+  ```
+  theorem LogicS.iff_provable_boxdot_GL_provable_boxdot_S [DecidableEq α] :
+    (Aᵇ) ∈ LogicGL ↔ (Aᵇ) ∈ LogicS
+  ```
+]
+
 #proposition[cf. @Bek90][
   The following are equivalent, where $prebox(X) = {B | Box B in X}$ for a set of formulas $X$.
 
@@ -554,7 +583,7 @@ Hence, regarding the practical utility, Maggesi and Perini Brogi's mechanization
 Moreover, we remark that interpolation for labelled sequent calculi in general is discussed, e.g., in @vdGJK26[Section 5], but whether it is possible for the labelled sequent calculus for #LogicGL seems to be open at present.
 From this, we conclude that labelled calculi are not so effective for mechanizing the properties of #LogicGL described in @sect:application-of-sequent-calculus.
 
-== Arithmetical completeness theorems
+== Arithmetical completeness theorems <sect:arithmetical_completeness>
 
 In this section, we describe the main results of our mechanization of provability logic: the mechanization of Solovay's arithmetical completeness theorem @Sol76 and its generalization.
 
@@ -811,7 +840,7 @@ We have mechanized this fact as well.
   ```
 ]
 
-== On some remaining `sorry`s
+=== On some remaining `sorry`s
 
 Although the mechanization of the classification theorem itself does not depend on them, some facts of provability logic currently remain with `sorry`.
 We note them here.
@@ -834,6 +863,224 @@ The other is the uniform arithmetical completeness theorem.
 #theorem[Uniform Arithmetical Completeness Theorem][
   For every $Sigma_1$-sound theory $T$, a uniform arithmetical interpretation $f$ can be constructed.
   That is, for every formula $A$, $LogicGL proves A$ if and only if $T proves f_(Pr(T)) (A)$.
+]
+
+== On $LogicGrz$
+
+The Grzegorczyk logic $LogicGrz$ is also closely related to #LogicGL.
+Unlike #LogicGL, it is an extension of $LogicS4$, so that $Box$ behaves reflexively; nevertheless, as we describe below, it is tightly connected to #LogicGL and #LogicS through the boxdot translation, and this connection yields an arithmetical completeness theorem for $LogicGrz$ with respect to a _strong_ arithmetical interpretation.
+
+We first introduce the Hilbert-style proof system, which is the usual definition of $LogicGrz$.
+
+#definition[
+  The Hilbert-style proof system $HilbertGrz$ for $LogicGrz$ is obtained from $HilbertGL$ by replacing the axiom $AxiomL$ with the following two axioms.
+
+  1. Axiom $AxiomT$: $Box A limp A$
+  2. Axiom $AxiomGrz$: $Box(Box(A limp Box A) limp A) limp A$
+
+  As for #LogicGL, we define the logic $LogicGrz := { A | HilbertGrz proves A }$.
+]
+#leancode(
+  links: (
+    ("ProvabilityLogic", "ProvabilityLogic/Hilbert/Grz/Basic.lean"),
+    ("ProvabilityLogic", "ProvabilityLogic/Logic/Grz/Basic.lean"),
+  ),
+  note: [
+    As in $HilbertGL$, the propositional part is taken axiomatically, and the axiom $Axiom("4")$ is adopted as an axiom although it is derivable from $AxiomT$ and $AxiomGrz$.
+  ],
+)[
+  ```
+  inductive LogicGrz.ProofHilbert : Formula α → Type u
+  | ...
+  | modalK   {A B} : ProofHilbert $ □(A 🡒 B) 🡒 (□A 🡒 □B)
+  | modal4   {A}   : ProofHilbert $ □A 🡒 □□A
+  | modalT   {A}   : ProofHilbert $ □A 🡒 A
+  | modalGrz {A}   : ProofHilbert $ □(□(A 🡒 □A) 🡒 A) 🡒 A
+  | mdp      {A B} : ProofHilbert (A 🡒 B) → ProofHilbert A → ProofHilbert B
+  | nec      {A}   : ProofHilbert A → ProofHilbert (□A)
+  notation:50 "⊢ʰ[Grz]! " A:51 => LogicGrz.ProofHilbert A
+
+  abbrev LogicGrz.ProvableHilbert (A : Formula α) := Nonempty (⊢ʰ[Grz]! A)
+  notation:50 "⊢ʰ[Grz] " A:51 => LogicGrz.ProvableHilbert A
+
+  abbrev LogicGrz {α} : Logic α := { A | ⊢ʰ[Grz] A }
+  ```
+]
+
+Next we introduce the Kripke semantics.
+
+#definition[$LogicGrz$-model][
+  Let $R$ be a binary relation on $W$, and let $R^(eq.not) = { x R y | x != y }$ be its irreflexiviation of $R$.
+  $R$ is _weakly converse well-founded_ if $R^(eq.not)$ is conversely well-founded.
+  Equivalently, $R$ admits no infinite ascending chain $x_0 R x_1 R dots.c$ consisting of pairwise distinct points.
+
+  Using this notion, we define the following.
+  - A model is a _$LogicGrz$-model_ if $R$ is reflexive, transitive, and weakly converse well-founded.
+  - A finite model whose $R$ is reflexive, transitive, and antisymmetric (i.e., a finite partial order) is called a _finite $LogicGrz$-model_.
+  We note that every finite $LogicGrz$-model is a $LogicGrz$-model.
+]
+#leancode(links: (
+  ("ProvabilityLogic", "ProvabilityLogic/ToFoundation/Vorspiel/Rel/WCWF.lean"),
+  ("ProvabilityLogic", "ProvabilityLogic/Kripke/Basic.lean"),
+))[
+  ```
+  def Rel.IrreflGen (r : Rel α α) : Rel α α := fun x y => r x y ∧ x ≠ y
+
+  abbrev WeaklyConverseWellFounded {α} (rel : Rel α α) := ConverseWellFounded rel.IrreflGen
+
+  class IsWeaklyConverseWellFounded (α) (rel : Rel α α) : Prop where
+    wcwf : WeaklyConverseWellFounded rel
+
+  class Model.IsGrz (M : Model κ α) extends
+    Std.Refl M.Rel, IsTrans _ M.Rel, IsWeaklyConverseWellFounded _ M.Rel
+
+  class Model.IsFiniteGrz (M : Model κ α) extends
+      Std.Refl M.Rel, IsTrans _ M.Rel, Std.Antisymm M.Rel where
+    [finite : Finite M.World]
+
+  instance [M.IsFiniteGrz] : M.IsGrz
+  ```
+]
+
+Finally we introduce the sequent calculus.
+Sequent calculi for $LogicGrz$ were formulated by Avron @Avr84 and by Borga and Gentilini @BG86; the former gives a semantic cut elimination, the latter a syntactic one.
+
+#definition[
+  The sequent calculus $GentzenGrz$ for $LogicGrz$ is obtained from $GentzenGL$ by replacing the rule $(Box_LogicGL)$ with the following two rules.
+
+  #align(center, grid(
+    columns: 2,
+    column-gutter: 4em,
+    prooftree(rule(name: [($Box$T)], $Box B, Gamma => Delta$, $B, Gamma => Delta$)),
+    prooftree(rule(
+      name: [($Box_LogicGrz$)],
+      $Box Gamma => Box A$,
+      $Box(A limp Box A), Box Gamma => A$,
+    )),
+  ))
+
+  As for $GentzenGL$, this system contains no cut rule, and $GentzenWithCutGrz$ denotes the system extended with the cut rule.
+]
+#leancode(
+  links: (
+    ("ProvabilityLogic", "ProvabilityLogic/Gentzen/Grz/Basic.lean"),
+    ("ProvabilityLogic", "ProvabilityLogic/Gentzen/Grz/WithCut.lean"),
+  ),
+  note: [
+    In @Avr84, the rule $(Box_LogicGrz)$ carries arbitrary side formulas.
+    As with $(Box_LogicGL)$, we adopt the more economical presentation in which the conclusion is exactly $Box Gamma => Box A$, and recover the side formulas afterwards by the weakening rules.
+  ],
+)[
+  ```
+  inductive LogicGrz.ProofGentzen : LogicGL.Sequent α → Type u
+  | ...
+  | boxT   {Γ Δ : FormulaFinset α} {B} :
+      ProofGentzen (insert B Γ ⟹ Δ) → ProofGentzen (insert (□B) Γ ⟹ Δ)
+  | boxGrz {Γ : FormulaFinset α} {A}   :
+      ProofGentzen (insert (□(A 🡒 □A)) (□Γ) ⟹ {A}) → ProofGentzen (□Γ ⟹ {□A})
+  notation:120 "⊢ᵍ[Grz]! " S:121 => LogicGrz.ProofGentzen S
+
+  abbrev LogicGrz.ProvableGentzen (S : LogicGL.Sequent α) : Prop := Nonempty (⊢ᵍ[Grz]! S)
+  notation:120 "⊢ᵍ[Grz] " S:121 => LogicGrz.ProvableGentzen S
+
+  inductive LogicGrz.GentzenWithCutProof : LogicGL.Sequent α → Type u
+  | ...
+  | cut {Γ₁ Γ₂ Δ₁ Δ₂ A} :
+      GentzenWithCutProof (Γ₁ ⟹ insert A Δ₁) → GentzenWithCutProof (insert A Γ₂ ⟹ Δ₂) →
+      GentzenWithCutProof (Γ₁ ∪ Γ₂ ⟹ Δ₁ ∪ Δ₂)
+  notation:120 "⊢ᵍᶜ[Grz]! " S:121 => LogicGrz.GentzenWithCutProof S
+
+  abbrev LogicGrz.GentzenWithCutProvable (S : LogicGL.Sequent α) : Prop := Nonempty (⊢ᵍᶜ[Grz]! S)
+  notation:120 "⊢ᵍᶜ[Grz] " S:121 => LogicGrz.GentzenWithCutProvable S
+  ```
+]
+
+We mechaized the finite model property of $LogicGrz$ with respect to the Kripke semantics, and as its corollaries we mechanized the cut elimination for $GentzenGrz$ and its equivalence with the Hilbert-style system.
+
+#theorem[Characterization of $LogicGrz$][
+  The following are equivalent.
+
+  1. $LogicGrz proves A$.
+  2. $HilbertGrz proves A$.
+  3. $GentzenGrz proves => A$.
+  4. $GentzenWithCutGrz proves => A$.
+  5. $A$ is forced at every point of every finite $LogicGrz$-model.
+  6. $A$ is forced at the root of every rooted finite $LogicGrz$-model.
+] <thm:Grz_TFAE>
+#leancode(links: (
+  ("ProvabilityLogic", "ProvabilityLogic/Logic/Grz/Basic.lean"),
+  ("ProvabilityLogic", "ProvabilityLogic/Gentzen/Grz/Kripke.lean"),
+))[
+  ```
+  theorem LogicGrz.provability_TFAE [DecidableEq α] {A : Formula α} : [
+    A ∈ LogicGrz,
+    ⊢ʰ[Grz] A,
+    ⊢ᵍ[Grz] (∅ ⟹ {A}),
+    ⊢ᵍᶜ[Grz] (∅ ⟹ {A}),
+    ∀ {κ : Type u}, [Nonempty κ] → ∀ M : Model κ α, [M.IsFiniteGrz] → M ⊧ A,
+    ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGrz] → M.root.1 ⊩ A
+  ].TFAE
+  ```
+]
+
+Furthermore, $LogicGrz$ is related to #LogicGL and #LogicS through the boxdot translation as follows.
+
+#theorem[
+  For every formula $A$, the following hold.
+  1. $LogicGrz proves A$ if and only if $LogicGL proves A^Boxdot$.
+  2. $LogicGrz proves A$ if and only if $LogicS proves A^Boxdot$ (cf. @prop:boxdot_S_boxdot_GL).
+] <thm:Grz_boxdot>
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/Grz/Boxdot.lean"),))[
+  ```
+  theorem iff_provable_boxdot_GL_provable_Grz : Aᵇ ∈ LogicGL ↔ A ∈ LogicGrz
+
+  theorem iff_provable_boxdot_S_provable_Grz : Aᵇ ∈ LogicS ↔ A ∈ LogicGrz
+  ```
+]
+
+Using this fact, Goldblatt @Gol78 and Boolos @Boo80 showed that $LogicGrz$ is arithmetical complete with respect to the _strong_ arithmetical interpretation, in which $Box$ is read as "provable and true" rather than merely "provable".
+
+#definition[Strong interpretation][
+  Given a realization $f$, the _strong (arithmetical) interpretation_ $f^s_(Pr(T))(A)$ is defined exactly as the interpretation $f_(Pr(T))(A)$ of @sect:arithmetical_completeness except for the modal clause, which reads
+  $
+    f^s_(Pr(T)) (Box A) = f^s_(Pr(T)) (A) land Pr(T) (GoedelNum(f^s_(Pr(T)) (A))).
+  $
+  Equivalently, $f^s_(Pr(T))(A)$ is $T$-provably equivalent to $f_(Pr(T))(A^Boxdot)$, and this is how the arithmetical completeness of $LogicGrz$ is reduced to that of #LogicGL and #LogicS.
+]
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/StrongInterpret.lean"),))[
+  ```
+  def Formula.strongInterpret (f : Realization α 𝔅) : Formula α → FirstOrder.Sentence L
+    | #a    => f.val a
+    | ⊥     => ⊥
+    | A 🡒 B => (A.strongInterpret f) 🡒 (B.strongInterpret f)
+    | □A    => (A.strongInterpret f) ⋏ 𝔅 (A.strongInterpret f)
+
+  lemma Formula.iff_interpret_boxdot_strongInterpret [𝔅.HBL2] :
+    T ⊢ f (Aᵇ) ↔ T ⊢ A.strongInterpret f
+
+  lemma Formula.iff_models_interpret_boxdot_strongInterpret [𝔅.HBL2] [𝔅.SoundOn M] :
+    M↓[L] ⊧ f (Aᵇ) ↔ M↓[L] ⊧ A.strongInterpret f
+  ```
+]
+
+#theorem[Arithmetical completeness of $LogicGrz$ @Gol78 @Boo80][
+  Let $T$ be a theory with $height(T) = omega$ (in particular, any $Sigma_1$-sound $T$).
+  Then $LogicGrz proves A$ if and only if $T proves f^s_(Pr(T)) (A)$ for every realization $f$.
+  Moreover, if $T$ is sound, then $LogicGrz proves A$ if and only if $NN models f^s_(Pr(T)) (A)$ for every realization $f$.
+] <thm:Grz_arithmetical_completeness>
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/Grz/Basic.lean"),))[
+  ```
+  theorem LogicGrz.arithmetical_completeness_iff_of_infinity_height
+    (height : T.height = (⊤ : ℕ∞)) [DecidableEq α] :
+    A ∈ LogicGrz ↔ (∀ f : StandardRealization α T, T ⊢ A.strongInterpret f)
+
+  theorem LogicGrz.arithmetical_completeness_iff_of_sigma1_sound
+    [T.SoundOnHierarchy 𝚺 1] [DecidableEq α] :
+    A ∈ LogicGrz ↔ (∀ f : StandardRealization α T, T ⊢ A.strongInterpret f)
+
+  theorem LogicGrz.arithmetical_completeness_model_iff [DecidableEq α] :
+    A ∈ LogicGrz ↔ (∀ f : StandardRealization α T, ℕ↓[ℒₒᵣ] ⊧ A.strongInterpret f)
+  ```
 ]
 
 == On $LogicGLPoint3$
@@ -985,31 +1232,6 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
   ```
 ]
 
-/*
-== On $Logic("Grz")$
-
-The facts described here are not currently included in Provability Logic and are outdated, but we mention them for the record.
-
-#definition[
-  #Logic("Grz")
-]
-
-#definition[Boxdot Translation][
-]
-
-#theorem[
-  $Logic("Grz") proves A^Boxdot <==> LogicGL proves A$．
-]
-
-#definition[Strong Interpretation][
-]
-
-#theorem[Arithmetical Completeness of $Logic("Grz")$ @Gol78 @Boo80][
-  Let $T$ is reasonable consistent extension of $PeanoArithmetic$.
-  Then, $Logic("Grz") proves A$ if and only if strong interpretation of $A$ based on $Pr(T)(x)$ is provable in $T$.
-]
-*/
-
 == Related works and Milestones <sect:provabilitylogic_futurework>
 
 Finally, we mention on some prior work related to theorem provers and mechanizations for provability logic, and describe future directions.
@@ -1057,7 +1279,7 @@ We expect that this would provide, for instance, a syntactic proof of the failur
 
 === Provability logic of Heyting arithmetic
 
-The provability logic of intuitionistic or constructive arithmetic, in particular, Heyting arithmetic $Theory("HA")$, has been a subject of study for long time (see, e.g., @BV06[Section 4]).
+The provability logic of intuitionistic or constructive arithmetic, in particular, Heyting arithmetic $Theory("HA")$, has been a subject of study for long time (see, @AB05[Section 9] @BV06[Section 4]).
 Even among the recent developments alone, there is prior work such as @AM18 @AM19 @SM23a @Moj24 @Moj26.
 
 It is known that the provability logic of $Theory("HA")$ contains at least $Logic("iGL")$, that is, that $Logic("iGL")$ is arithmetically sound to $Theory("HA")$.

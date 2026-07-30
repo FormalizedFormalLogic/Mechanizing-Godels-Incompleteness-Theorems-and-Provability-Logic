@@ -59,13 +59,19 @@
 #let LogicGL = Logic("GL")
 #let LogicGLPlusBoxBot(n) = $LogicGL + Box^#n bot$
 #let LogicS = Logic("S")
+#let LogicGrz = Logic("Grz")
 
 #let Gentzen(L) = $cal("G")_(#L)$
-#let Hilbert(L) = $cal("H")_(#L)$
 #let GentzenGL = Gentzen(LogicGL)
-#let GentzenWithCutGL = $Gentzen(LogicGL) + ("Cut")$
-#let HilbertGL = Hilbert(LogicGL)
 #let GentzenGLPoint3 = Gentzen(LogicGLPoint3)
+#let GentzenGrz = Gentzen(LogicGrz)
+
+#let GentzenWithCutGL = $Gentzen(LogicGL) + ("Cut")$
+#let GentzenWithCutGrz = $Gentzen(LogicGrz) + ("Cut")$
+
+#let Hilbert(L) = $cal("H")_(#L)$
+#let HilbertGL = Hilbert(LogicGL)
+#let HilbertGrz = Hilbert(LogicGrz)
 
 #let Prov(T) = $attach(br: #T, upright("Prov"))$
 // Use for *standard* provability predicate
@@ -84,3 +90,4 @@
 #let AxiomK = $Axiom("K")$
 #let AxiomL = $Axiom("Löb")$
 #let AxiomT = $Axiom("T")$
+#let AxiomGrz = $Axiom("Grz")$
