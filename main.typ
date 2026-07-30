@@ -863,7 +863,6 @@ The other is the uniform arithmetical completeness theorem.
 
 The Grzegorczyk logic $LogicGrz$ is also closely related to #LogicGL.
 Unlike #LogicGL, it is an extension of $LogicS4$, so that $Box$ behaves reflexively; nevertheless, as we describe below, it is tightly connected to #LogicGL and #LogicS through the boxdot translation, and this connection yields an arithmetical completeness theorem for $LogicGrz$ with respect to a _strong_ arithmetical interpretation.
-Sequent calculi for $LogicGrz$ were formulated by Avron @Avr84 and by Borga and Gentilini @BG86; the former gives a semantic cut elimination, the latter a syntactic one.
 
 We first introduce the Hilbert-style proof system, which is the usual definition of $LogicGrz$.
 
@@ -937,7 +936,8 @@ Next we introduce the Kripke semantics.
   ```
 ]
 
-Finally we introduce the sequent calculus, following @Avr84 @SS21[Figure 1].
+Finally we introduce the sequent calculus.
+Sequent calculi for $LogicGrz$ were formulated by Avron @Avr84 and by Borga and Gentilini @BG86; the former gives a semantic cut elimination, the latter a syntactic one.
 
 #definition[
   The sequent calculus $GentzenGrz$ for $LogicGrz$ is obtained from $GentzenGL$ by replacing the rule $(Box_LogicGL)$ with the following two rules.
@@ -961,7 +961,7 @@ Finally we introduce the sequent calculus, following @Avr84 @SS21[Figure 1].
     ("ProvabilityLogic", "ProvabilityLogic/Gentzen/Grz/WithCut.lean"),
   ),
   note: [
-    In @Avr84 @SS21, the rule $(Box_LogicGrz)$ carries arbitrary side formulas.
+    In @Avr84, the rule $(Box_LogicGrz)$ carries arbitrary side formulas.
     As with $(Box_LogicGL)$, we adopt the more economical presentation in which the conclusion is exactly $Box Gamma => Box A$, and recover the side formulas afterwards by the weakening rules.
   ],
 )[
@@ -989,7 +989,7 @@ Finally we introduce the sequent calculus, following @Avr84 @SS21[Figure 1].
   ```
 ]
 
-We proved the finite model property of $LogicGrz$ with respect to the Kripke semantics, and as its corollaries we mechanized the cut elimination for $GentzenGrz$ and its equivalence with the Hilbert-style system.
+We mechaized the finite model property of $LogicGrz$ with respect to the Kripke semantics, and as its corollaries we mechanized the cut elimination for $GentzenGrz$ and its equivalence with the Hilbert-style system.
 
 #theorem[Characterization of $LogicGrz$][
   The following are equivalent.
@@ -1032,7 +1032,7 @@ Furthermore, $LogicGrz$ is related to #LogicGL and #LogicS through the boxdot tr
   ```
 ]
 
-Using this fact, Goldblatt and Boolos @Gol78 @Boo80 showed that $LogicGrz$ enjoys an arithmetical completeness theorem with respect to the _strong_ arithmetical interpretation, in which $Box$ is read as "provable and true" rather than merely "provable".
+Using this fact, Goldblatt @Gol78 and Boolos @Boo80 showed that $LogicGrz$ is arithmetical complete with respect to the _strong_ arithmetical interpretation, in which $Box$ is read as "provable and true" rather than merely "provable".
 
 #definition[Strong interpretation][
   Given a realization $f$, the _strong (arithmetical) interpretation_ $f^s_(Pr(T))(A)$ is defined exactly as the interpretation $f_(Pr(T))(A)$ of @sect:arithmetical_completeness except for the modal clause, which reads
@@ -1269,7 +1269,7 @@ We expect that this would provide, for instance, a syntactic proof of the failur
 
 === Provability logic of Heyting arithmetic
 
-The provability logic of intuitionistic or constructive arithmetic, in particular, Heyting arithmetic $Theory("HA")$, has been a subject of study for long time (see, e.g., @BV06[Section 4]).
+The provability logic of intuitionistic or constructive arithmetic, in particular, Heyting arithmetic $Theory("HA")$, has been a subject of study for long time (see, @AB05[Section 9] @BV06[Section 4]).
 Even among the recent developments alone, there is prior work such as @AM18 @AM19 @SM23a @Moj24 @Moj26.
 
 It is known that the provability logic of $Theory("HA")$ contains at least $Logic("iGL")$, that is, that $Logic("iGL")$ is arithmetically sound to $Theory("HA")$.
