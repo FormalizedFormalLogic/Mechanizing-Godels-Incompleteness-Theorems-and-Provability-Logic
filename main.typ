@@ -168,14 +168,14 @@ Our sequent calculus for #LogicGL is due to Sambin and Valentini @SV82.
     ))),
   ))
 ]
-#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Gentzen/Basic.lean"),))[
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Gentzen/GL/Basic.lean"),))[
   ```
-  structure Sequent (α : Type u) where
+  structure LogicGL.Sequent (α : Type u) where
     ant : FormulaFinset α
     suc : FormulaFinset α
   infix:50 " ⟹ " => Sequent.mk
 
-  inductive ProofGentzen : Sequent α → Type u
+  inductive LogicGL.ProofGentzen : Sequent α → Type u
   | axm (A) : ProofGentzen ({A} ⟹ {A})
   | botL : ProofGentzen ({⊥} ⟹ ∅)
   | wkL  {Γ Γ' Δ}  : ProofGentzen (Γ ⟹ Δ) → Γ ⊆ Γ' → ProofGentzen (Γ' ⟹ Δ)
@@ -185,12 +185,15 @@ Our sequent calculus for #LogicGL is due to Sambin and Valentini @SV82.
   | impR {Γ Δ A B} : ProofGentzen ((insert A Γ) ⟹ (insert B Δ)) →
                      ProofGentzen (Γ ⟹ (insert (A 🡒 B) Δ))
   | boxGL {Γ A} : ProofGentzen ((insert (□A) (Γ ∪ Γ.box)) ⟹ {A}) → ProofGentzen (Γ.box ⟹ {□A})
-  prefix:120 "⊢ᵍ! " => ProofGentzen
+  notation:120 "⊢ᵍ[GL]! " S:121 => LogicGL.ProofGentzen S
+
+  abbrev LogicGL.ProvableGentzen (S : Sequent α) : Prop := Nonempty (⊢ᵍ[GL]! S)
+  notation:120 "⊢ᵍ[GL] " S:121 => LogicGL.ProvableGentzen S
   ```
 ]
 
 Note that this system contains no cut rule.
-We also define the system extended with the cut rule (denoted by `⊢ᵍᶜ` in the mechanization), and the equivalence corresponding to the cut-elimination theorem of Sambin and Valentini @SV82 is also mechanized as a part of @thm:GL_TFAE.
+We also define the system extended with the cut rule (`LogicGL.GentzenWithCutProvable`, denoted by `⊢ᵍᶜ[GL]` in the mechanization), and the equivalence corresponding to the cut-elimination theorem of Sambin and Valentini @SV82 is also mechanized as a part of @thm:GL_TFAE.
 
 Next, we introduce Kripke semantics.
 Since we are not concerned with modal logic in general, we omit the notion of frames and work only with models.
@@ -276,7 +279,7 @@ Finally, we introduce the Hilbert-style proof system.
 ]
 #leancode(
   links: (
-    ("ProvabilityLogic", "ProvabilityLogic/Hilbert/Basic.lean"),
+    ("ProvabilityLogic", "ProvabilityLogic/Hilbert/GL/Basic.lean"),
     ("ProvabilityLogic", "ProvabilityLogic/Logic/GL/Basic.lean"),
   ),
   note: [
@@ -285,7 +288,7 @@ Finally, we introduce the Hilbert-style proof system.
   ],
 )[
   ```
-  inductive ProofHilbert : Formula α → Type u
+  inductive LogicGL.ProofHilbert : Formula α → Type u
   | implyK   {A B}   : ProofHilbert $ A 🡒 B 🡒 A
   | implyS   {A B C} : ProofHilbert $ (A 🡒 B 🡒 C) 🡒 (A 🡒 B) 🡒 (A 🡒 C)
   | dne      {A}     : ProofHilbert $ ∼∼A 🡒 A
@@ -300,9 +303,12 @@ Finally, we introduce the Hilbert-style proof system.
   | modalL   {A}     : ProofHilbert $ □(□A 🡒 A) 🡒 □A
   | mdp      {A B}   : ProofHilbert (A 🡒 B) → ProofHilbert A → ProofHilbert B
   | nec      {A}     : ProofHilbert A → ProofHilbert (□A)
-  prefix:50 "⊢ʰ! " => ProofHilbert
+  notation:50 "⊢ʰ[GL]! " A:51 => LogicGL.ProofHilbert A
 
-  abbrev LogicGL {α} : Logic α := { A | ⊢ʰ A }
+  abbrev LogicGL.ProvableHilbert (A : Formula α) := Nonempty (⊢ʰ[GL]! A)
+  notation:50 "⊢ʰ[GL] " A:51 => LogicGL.ProvableHilbert A
+
+  abbrev LogicGL {α} : Logic α := { A | ⊢ʰ[GL] A }
   ```
 ]
 
@@ -322,11 +328,11 @@ As the equivalence of these characterizations, we mechanized the following.
 ] <thm:GL_TFAE>
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GL/Basic.lean"),))[
   ```
-  theorem provability_TFAE [DecidableEq α] {A : Formula α} : [
+  theorem LogicGL.provability_TFAE [DecidableEq α] {A : Formula α} : [
     A ∈ LogicGL,
-    ⊢ʰ A,
-    ⊢ᵍ (∅ ⟹ {A}),
-    ⊢ᵍᶜ (∅ ⟹ {A}),
+    ⊢ʰ[GL] A,
+    ⊢ᵍ[GL] (∅ ⟹ {A}),
+    ⊢ᵍᶜ[GL] (∅ ⟹ {A}),
     ⊢ˡ (∅ ⸴ ∅ ⟹ˡ {(0 : LabelledGentzen.Label) ∶ A}),
     ∀ {κ : Type u}, [Nonempty κ] → ∀ M : Model κ α, [M.IsFiniteGL] → M ⊧ A,
     ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGL] → M.root.1 ⊩ A,
@@ -391,14 +397,14 @@ We omit the details of these constructions; via these semantic characterizations
   ],
 )[
   ```
-  theorem provability_TFAE [DecidableEq α] : [
+  theorem LogicS.provability_TFAE [DecidableEq α] : [
     A ∈ LogicS,
     ∀ {κ : Type u}, [Nonempty κ] → ∀ (M : Model κ α), [M.IsFiniteGL] → ∀ (tail : M.World),
       ∃ k : ℕ, ∀ n : ℕ, k ≤ n → Forces (M := (M.toTail tail).toModel) (toTail.chainPoint n) A,
     ∀ {κ : Type u}, [Nonempty κ] → ∀ (M : RootedModel κ α), [M.IsFiniteGL] →
       M.root.1 ⊩ (⋀A.subfmlsS 🡒 A),
     (⋀A.subfmlsS 🡒 A) ∈ LogicGL,
-    ⊢ᴳ (∅ ⟹[1] {A})
+    ⊢ᵍ[S] (∅ ⟹[1] {A})
   ].TFAE
   ```
 ]
@@ -413,7 +419,7 @@ We omit the details of these constructions; via these semantic characterizations
 ] <prop:D_characterization>
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/D/Basic.lean"),))[
   ```
-  theorem provability_TFAE [DecidableEq α] : [
+  theorem LogicD.provability_TFAE [DecidableEq α] : [
     A ∈ LogicD,
     ∀ {κ : Type u}, [Nonempty κ] → ∀ (M : Model κ α), [M.IsFiniteGL] → ∀ r o,
       (M.toPseudoTail r o).root.1 ⊩ A,
@@ -453,10 +459,10 @@ First, since it is a pure sequent calculus, the Craig interpolation property (CI
 ] <thm:GL_CIP>
 #leancode(links: (
   ("ProvabilityLogic", "ProvabilityLogic/Logic/GL/CIP.lean"),
-  ("ProvabilityLogic", "ProvabilityLogic/Gentzen/Maehara.lean"),
+  ("ProvabilityLogic", "ProvabilityLogic/Gentzen/GL/Maehara.lean"),
 ))[
   ```
-  theorem CIP (h : (A 🡒 B) ∈ LogicGL) :
+  theorem LogicGL.CIP (h : (A 🡒 B) ∈ LogicGL) :
     ∃ C : Formula α, (A 🡒 C) ∈ LogicGL ∧ (C 🡒 B) ∈ LogicGL ∧ C.atoms ⊆ A.atoms ∩ B.atoms
   ```
 ]
@@ -489,12 +495,12 @@ We have also mechanized the fixed point theorem of $LogicGL$ via the sequent cal
   links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GL/Fixedpoint.lean"),),
 )[
   ```
-  theorem fixpointTheorem {A : Formula α} {p q : α}
+  theorem LogicGL.fixpointTheorem {A : Formula α} {p q : α}
     (hpq : p ≠ q) (hA : A.ModalizedIn p) (hq : q ∉ A.atoms) :
     ∃ D : Formula α, D.atoms ⊆ A.atoms \ {p} ∧ ((A⟦p ↦ D⟧) 🡘 D) ∈ LogicGL
 
-  theorem fixpoint_uniqueness (hA : A.ModalizedIn p) :
-    ⊢ᵍ ({⊡(A 🡘 #p), ⊡((A⟦p ↦ #q⟧) 🡘 #q)} ⟹ {(#p : Formula α) 🡘 #q})
+  theorem LogicGL.ProvableGentzen.fixpoint_uniqueness (hA : A.ModalizedIn p) :
+    ⊢ᵍ[GL] ({⊡(A 🡘 #p), ⊡((A⟦p ↦ #q⟧) 🡘 #q)} ⟹ {(#p : Formula α) 🡘 #q})
   ```
 ]
 
@@ -509,7 +515,7 @@ Finally, we have also mechanized facts on the CIP of $LogicS$ and $LogicD$, whic
 ]
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/S/CIP.lean"),))[
   ```
-  theorem CIP (h : (A 🡒 B) ∈ LogicS) :
+  theorem LogicS.CIP (h : (A 🡒 B) ∈ LogicS) :
     ∃ C : Formula α, (A 🡒 C) ∈ LogicS ∧ (C 🡒 B) ∈ LogicS ∧ C.atoms ⊆ A.atoms ∩ B.atoms
   ```
 ]
@@ -525,7 +531,7 @@ Finally, we have also mechanized facts on the CIP of $LogicS$ and $LogicD$, whic
 ] <thm:D_no_CIP>
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/D/NotCIP.lean"),))[
   ```
-  theorem notCIP {a b c : α} (hab : a ≠ b) (hac : a ≠ c) (hbc : b ≠ c) :
+  theorem LogicD.notCIP {a b c : α} (hab : a ≠ b) (hac : a ≠ c) (hbc : b ≠ c) :
     ∃ A B : Formula α, (A 🡒 B) ∈ LogicD ∧
       ¬ ∃ C : Formula α, (A 🡒 C) ∈ LogicD ∧ (C 🡒 B) ∈ LogicD ∧
         C.atoms ⊆ A.atoms ∩ B.atoms
@@ -885,7 +891,7 @@ Note that the case $Delta = {A}$ is exactly the $(Box_LogicGL)$ rule.
 
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Gentzen/GLPoint3/Basic.lean"),))[
   ```
-  inductive GLPoint3.ProofGentzen : Sequent α → Type u
+  inductive LogicGLPoint3.ProofGentzen : LogicGL.Sequent α → Type u
   | axm (A) : ProofGentzen ({A} ⟹ {A})
   | botL : ProofGentzen ({⊥} ⟹ ∅)
   | wkL  {Γ Γ' Δ}  : ProofGentzen (Γ ⟹ Δ) → Γ ⊆ Γ' → ProofGentzen (Γ' ⟹ Δ)
@@ -898,7 +904,11 @@ Note that the case $Delta = {A}$ is exactly the $(Box_LogicGL)$ rule.
       (∀ S : FormulaFinset α, S ⊆ Δ → S.Nonempty →
         ProofGentzen ((Γ.box ∪ Γ ∪ S.box) ⟹ (S ∪ (Δ \ S).box))) →
       ProofGentzen (Γ.box ⟹ Δ.box)
-  prefix:120 "⊢ᵍ³! " => GLPoint3.ProofGentzen
+  notation:120 "⊢ᵍ[GLPoint3]! " S:121 => LogicGLPoint3.ProofGentzen S
+
+  abbrev LogicGLPoint3.ProvableGentzen (S : LogicGL.Sequent α) : Prop :=
+    Nonempty (⊢ᵍ[GLPoint3]! S)
+  notation:120 "⊢ᵍ[GLPoint3] " S:121 => LogicGLPoint3.ProvableGentzen S
   ```
 ]
 
@@ -912,9 +922,9 @@ For these characterizations, equivalences analogous to those for #LogicGL hold.
   4. $A$ is forced at the root of every rooted finite $LogicGLPoint3$-model.
 ]
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GLPoint3/Completeness.lean"),))[```
-  theorem provability_TFAE [DecidableEq α] {A : Formula α} : [
+  theorem LogicGLPoint3.provability_TFAE [DecidableEq α] {A : Formula α} : [
     A ∈ LogicGLPoint3,
-    ⊢ᵍ³ (∅ ⟹ {A}),
+    ⊢ᵍ[GLPoint3] (∅ ⟹ {A}),
     ∀ {κ : Type u}, [Nonempty κ] → ∀ M : Model κ α, [M.IsFiniteGLPoint3] → M ⊧ A,
     ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGLPoint3] → M.root.1 ⊩ A
   ].TFAE
@@ -930,7 +940,7 @@ In particular, on closed formulas $LogicGLPoint3$ and $LogicGL$ do not differ; t
   links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GLPoint3/Letterless.lean"),),
 )[
   ```
-  theorem eq_LogicGL_on_letterless : @LogicGLPoint3 Empty = @LogicGL Empty
+  theorem LogicGLPoint3.eq_LogicGL_on_letterless : @LogicGLPoint3 Empty = @LogicGL Empty
   ```
 ]
 
