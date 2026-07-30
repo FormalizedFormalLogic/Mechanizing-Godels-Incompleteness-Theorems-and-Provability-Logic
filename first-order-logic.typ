@@ -13,8 +13,24 @@ Free variables are named by an external type `ξ`, while bound variables are rep
 
 To express this formally, formulas are defined from the generalized form _semiformula_ @Buss1998.
 
+#definition[Semiterm and Semiformula][
+  Fix a set of free-variables $xi$, and let $cal(L)$ be a first-order language.
+  - _Semiterms_ of language $cal(L)$ are defined inductively as follows:
+    $
+      t ::= \&x | \#z | f(t, ..., t)
+    $
+    where $x in xi$ is a _free-variable_, $z in Nat$ is a _bound-variable_, and $f$ is a function symbol in $cal(L)$.
+  - _Semiformulas_ of language $cal(L)$ are defined inductively as follows:
+    $
+      A ::= top | bot | R(t_1, ..., t_n) | overline(R)(t_1, ..., t_n) | A and A | A or A | forall A | exists A
+    $
+    where $R$ is a relation symbol in $cal(L)$, and $t_i$ are _semiterms_ of $cal(L)$.
+    Two quantifiers bounds bound-variable $\#0$
+    
+]
+
 #leancode(links: (
-  "Foundation/FirstOrder/Basic/Syntax/Formula.lean#L24-L32",
+  ("Foundation", "Foundation/FirstOrder/Basic/Syntax/Formula.lean#L24-L32"),
   ),
   note:[
     We write `Formula L ξ` for `Semiformula L ξ 0`, and `Sentence L` for sentences, namely `Formula L Empty`.
@@ -44,7 +60,7 @@ For derivability we use a one-sided sequent calculus for classical first-order l
 A sequent is a finite list of formulas, and `Derivation Γ` is a type for proofs of the sequent `Γ`.
 
 #leancode(links: (
-  "Foundation/FirstOrder/Basic/Calculus.lean#L28-L41",
+  ("Foundation", "Foundation/FirstOrder/Basic/Calculus.lean#L28-L41"),
 ))[
   ```
   abbrev Sequent (L : Language) := List (Proposition L)
@@ -69,7 +85,7 @@ Here, the notation `Γ⁺` is a increment of the free variables in `Γ`, which g
 The proof with axiom $T$ is defined as a pair consisting of a list of formulas in $T$, a proof that the disjunctions of negations of these formulas and the goal sentence is derivable in the one-sided sequent calculus.
 
 #leancode(links: (
-  "Foundation/FirstOrder/Basic/Calculus.lean#L28-L41",
+  ("Foundation", "Foundation/FirstOrder/Basic/Calculus.lean#L28-L41"),
 ))[
   ```
   structure Theory.Proof (T : Theory L) (σ : Sentence L) where
@@ -87,8 +103,8 @@ An $L$-structure on a type `M` interprets each function symbol as a function on 
 Terms are evaluated from assignments for bound and free variables, and formulas are then evaluated recursively.
 
 #leancode(links: (
-  "Foundation/FirstOrder/Basic/Semantics/Semantics.lean#L15-L18",
-  "Foundation/FirstOrder/Basic/Semantics/Semantics.lean#L212-L220",
+  ("Foundation", "Foundation/FirstOrder/Basic/Semantics/Semantics.lean#L15-L18"),
+  ("Foundation", "Foundation/FirstOrder/Basic/Semantics/Semantics.lean#L212-L220"),
   ),
   note: [
     For a sentence `σ`, the notation `M↓[L] ⊧ σ` means that `σ` is true in the `L`-structure on `M`.
@@ -114,7 +130,7 @@ Terms are evaluated from assignments for bound and free variables, and formulas 
 The completeness theorem is proved by a bit non-standard way #footnote[A forcing argument.].
 
 #leancode(links: (
-  "https://github.com/FormalizedFormalLogic/Foundation/blob/8dcdb31964545f3909fccd40eed4d59836f7df95/Foundation/FirstOrder/Completeness/CounterModel.lean#L253",
+  ("Foundation", "Foundation/FirstOrder/Completeness/CounterModel.lean#L253"),
   ),
 )[
   ```

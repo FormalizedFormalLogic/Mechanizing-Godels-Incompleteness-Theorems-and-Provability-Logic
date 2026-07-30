@@ -1,7 +1,6 @@
 #import "@preview/fine-lncs:0.6.5": author, institute, lncs, theorem, proof
 #import "@preview/ctheorems:1.1.3": *
 #import "@preview/curryst:0.5.0": prooftree, rule
-#import "@preview/itemize:0.2.0" as el
 
 #let auxColor = color.hsl(205deg, 55%, 40%)
 
@@ -46,7 +45,7 @@
   show math.equation: set text(font: font-math)
 
   // show raw: set text(size: 7pt, font: font-code)
-  show raw: set text(font: font-code, size: 8pt)
+  show raw: set text(font: font-code)
 
   show raw.where(block: false): box.with(
     inset: (x: 4pt, y: 0pt),
@@ -69,12 +68,6 @@
     ),
   )
 
-  show: el.default-enum-list.with(
-    fill: black,
-    font: font-base,
-    size: base-text-size,
-  )
-
   body
 
   pagebreak(weak: true)
@@ -89,13 +82,13 @@
     let raw-elem = code.children.find(it => it.func() == raw)
     if raw-elem != none { raw-elem.text } else { "" }
   }
+  block(inset: 0.5em)
   align(center, block(
     width: 120%,
     // fill: rgb("#eee"),
     stroke: 0.5pt + black,
     inset: (x: 1em),
     breakable: true,
-    inset: (y: 16pt),
     clip: true,
     align(left, grid(
       block(
@@ -130,6 +123,7 @@
       )
     }
   )
+  block(inset: 0.5em)
 }
 
 
