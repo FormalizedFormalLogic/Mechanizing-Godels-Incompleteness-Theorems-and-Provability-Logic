@@ -3,3 +3,5 @@
 *.pdf
 
 .envrc
+
+CLAUDE.local.md
