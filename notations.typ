@@ -89,3 +89,5 @@
 
 #let LK1 = $System("LK")^1$
 #let LOR = $cal(L)_"OR"$
+#let ISigma1 = $sans("I")Sigma_1$
+#let Robinson = $sans("Q")$

@@ -5,6 +5,7 @@
 #let auxColor = color.hsl(205deg, 55%, 40%)
 
 #let base-text-size = 10pt
+#let font-text = ("New Computer Modern", "Shippori Mincho B1")
 #let font-math = ("New Computer Modern Math", "libertinus serif")
 #let font-code = "JuliaMono"
 
@@ -40,7 +41,7 @@
 
   set heading(numbering: "1.1")
 
-  set text(size: base-text-size)
+  set text(size: base-text-size, font: font-text)
 
   show math.equation: set text(font: font-math)
 
