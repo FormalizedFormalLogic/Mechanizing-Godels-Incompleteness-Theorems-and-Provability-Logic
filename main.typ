@@ -142,7 +142,7 @@ Our sequent calculus for #LogicGL is due to Sambin and Valentini @SV82.
 #definition[
   A _sequent_ $Gamma => Delta$ is a pair of finite sets of formulas.
   The sequent calculus $GentzenGL$ for #LogicGL consists of the following rules,
-  where in the weakening rules (wkL) and (wkR) we assume $Gamma subset.eq Gamma'$ and $Delta subset.eq Delta'$ respectively. We write $GentzenGL proves Gamma => Delta$ if the sequent $Gamma => Delta$ is provable in $GentzenGL$.
+  where in the weakening rules (WL) and (WR) we assume $Gamma subset.eq Gamma'$ and $Delta subset.eq Delta'$ respectively. We write $GentzenGL proves Gamma => Delta$ if the sequent $Gamma => Delta$ is provable in $GentzenGL$.
 
   #align(center, grid(
     columns: 2,
@@ -198,7 +198,7 @@ Since we are not concerned with modal logic in general, we omit the notion of fr
 
 #definition[
   Let $W$ be a nonempty set, whose elements are called _worlds_ or _points_.
-  A _Kripke model_ is a pair $M = chevron.l W, R, V chevron.r$, where $R subset.eq W times W$ (the _accessibility relation_) and $V colon W -> Prop -> 2$ (the _valuation_).
+  A _Kripke model_ is a triple $M = chevron.l W, R, V chevron.r$, where $R subset.eq W times W$ (the _accessibility relation_) and $V colon W -> Prop -> 2$ (the _valuation_).
   When there is no danger of confusion, we write $x prec y$ for $x R y$.
 
   We use the following terminology for models.
@@ -317,12 +317,12 @@ As the equivalence of these characterizations, we mechanized the following.
 
   1. $LogicGL proves A$.
   2. $HilbertGL proves A$.
-  2. $GentzenGL proves => A$.
-  3. $GentzenWithCutGL proves => A$.
-  4. $=> 0 : A$ is provable in the labelled sequent calculus (see @sect:labelled-sequent-calculus).
-  5. $A$ is forced at every point of every finite $LogicGL$-model.
-  6. $A$ is forced at the root of every rooted finite $LogicGL$-model.
-  7. $A$ is forced at the root of every rooted finite $LogicGL$-model that is a tree.
+  3. $GentzenGL proves => A$.
+  4. $GentzenWithCutGL proves => A$.
+  5. $=> 0 : A$ is provable in the labelled sequent calculus (see @sect:labelled-sequent-calculus).
+  6. $A$ is forced at every point of every finite $LogicGL$-model.
+  7. $A$ is forced at the root of every rooted finite $LogicGL$-model.
+  8. $A$ is forced at the root of every rooted finite $LogicGL$-model that is a tree.
 ] <thm:GL_TFAE>
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GL/Basic.lean"),))[
   ```
@@ -386,12 +386,13 @@ We omit the details of these constructions; via these semantic characterizations
   2. On the chain of the tail model constructed from any finite $LogicGL$-model and any point $t$ of it, $A$ is eventually always forced.
   3. $and.big_(Box B in subfml(A)) (Box B limp B) limp A$ is forced at the root of every rooted finite $LogicGL$-model.
   4. $LogicGL proves and.big_(Box B in subfml(A)) (Box B limp B) limp A$
+  5. $=> A$ is provable in the two-level sequent calculus for $LogicS$ @Kus20 @KK23.
 ] <prop:S_characterization>
 #leancode(
   links: (("ProvabilityLogic", "ProvabilityLogic/Logic/S/Basic.lean"),),
   note: [
-    The last clause is provability of the Gentzen-style sequent calculi with two-level sequent @Kus20 @KK23.
-    About this, we discusses as future work on @sect:provabilitylogic_futurework.
+    The last clause corresponds to provability in the two-level sequent calculus @Kus20 @KK23.
+    We discuss this calculus as future work in @sect:provabilitylogic_futurework.
   ],
 )[
   ```
@@ -551,7 +552,7 @@ Finally, we have also mechanized facts on the CIP of $LogicS$ and $LogicD$, whic
 
 #theorem[@Bek89][
   $LogicD$ does not have the CIP.
-  In particular, for the following $A$ and $B$, $LogicD proves not A -> B$ but there exists no interpolant for it,
+  In particular, for the following $A$ and $B$, $LogicD proves A -> B$ but there exists no interpolant for it,
   where $a,b,c$ are distinct propositional variables.
   $
     A & equiv Box (Box b or a) -> Box b \
@@ -1085,7 +1086,7 @@ Using this fact, Goldblatt @Gol78 and Boolos @Boo80 showed that $LogicGrz$ is ar
 
 == On $LogicGLPoint3$
 
-A sequent calculus for $LogicGLPoint3$ was given by Valentini @VS83 @Val86.
+A sequent calculus for $LogicGLPoint3$ was given by Valentini and Solitro @VS83 and Valentini @Val86.
 In particular, @VS83 shows that $LogicGLPoint3$ enjoys a certain arithmetical completeness with respect to the class of arithmetical sentences called consistency assertions.
 We briefly describe these results.
 
@@ -1283,7 +1284,7 @@ Even among the recent developments alone, there is prior work such as @AM18 @AM1
 
 Here, we define #LogiciK and #LogiciGL.
 Intuitionistic modal logic #LogiciK is obtained from intuitionistic propositional logic by adding the axiom $AxiomK$ for $Box$ and the necessitation rule, remark that not contained $Dia$,
-and intuitionistic Gödel-Löb logic obtained by Löb's axiom $Box (Box A -> A) -> A$ to #LogiciK.
+and intuitionistic Gödel-Löb logic obtained by Löb's axiom $Box (Box A -> A) -> Box A$ to #LogiciK.
 It is known that the provability logic of #HeytingArithmetic contains at least #LogiciGL, that is, #LogiciGL is arithmetically sound to #HeytingArithmetic.
 As a purely logic researches of #LogiciGL, consult @Urs79 @Lit14 @vdGI21.
 As for mechanization, Shillito and Goré @GS22 gave a refined version of the proof of cut elimination for the sequent calculus for #LogiciGL due to van der Giessen and Iemhoff @vdGI21, and this proof has been mechanized in Rocq.
