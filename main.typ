@@ -1256,7 +1256,6 @@ As far as we know, the only mechanizations of the proof theory of sequent calcul
 
 Tableau method for #LogicGL are discussed in @Boo94[Chapter 10] for instance.
 A tableau-based automated theorem prover for #LogicGL is implemented by Goré and Kelly @GK07, where the efficiency of the implementation is also discussed.
-
 #let seq(l) = $attach(tr: #l, =>)$
 #let seq1 = seq("1")
 #let seq2 = seq("2")
@@ -1265,7 +1264,7 @@ A tableau-based automated theorem prover for #LogicGL is implemented by Goré an
 The proof theory of #LogicS and #LogicD has been developed only recently.
 Sierra Miranda and Studer @SMS26 proved the Lyndon interpolation property of #LogicS using non-wellfounded proofs.
 As a different approach, Kushida @Kus20 proposed a sequent calculus for #LogicS that uses two levels of sequents $seq1$ and $seq2$.
-Roughly speaking, the provable #seq1;-sequents coincide with those provable in #GentzenGL, the system is equipped with a lift-up mechanism from #seq1 to #seq2, and on the level of #seq2 one can reason as in the logic $Logic("KT")$.
+Roughly speaking, the provable #seq1;-sequents coincide with those provable in #GentzenGL, the system is equipped with a lift-up mechanism from #seq1 to #seq2, and on the level of #seq2 one can reason as in the logic #LogicKT.
 While @Kus20 gives a syntactic cut-elimination algorithm, Kashima and Kato @KK23 proved the cut elimination for #LogicS by a semantical method.
 Furthermore, Kashima et al. @KKIM25 extended this approach and formulated two sequent calculi for #LogicD.
 The former uses two levels of sequents as for #LogicS, but has the drawback that the cut rule cannot be eliminated.
@@ -1279,26 +1278,46 @@ We expect that this would provide, for instance, a syntactic proof of the failur
 
 === Provability logic of Heyting arithmetic
 
-The provability logic of intuitionistic or constructive arithmetic, in particular, Heyting arithmetic $Theory("HA")$, has been a subject of study for long time (see, @AB05[Section 9] @BV06[Section 4]).
+The provability logic of intuitionistic or constructive arithmetic, in particular, Heyting arithmetic #HeytingArithmetic, has been a subject of study for long time (see, @AB05[Section 9] @BV06[Section 4]).
 Even among the recent developments alone, there is prior work such as @AM18 @AM19 @SM23a @Moj24 @Moj26.
 
-It is known that the provability logic of $Theory("HA")$ contains at least $Logic("iGL")$, that is, that $Logic("iGL")$ is arithmetically sound to $Theory("HA")$.
-Here, $Logic("iGL")$ is the logic obtained by adding Löb's axiom $Box (Box A -> A) -> A$ to the intuitionistic modal logic #Logic("iK"), the logic obtained from intuitionistic propositional logic by adding the axiom $AxiomK$ for $Box$ and the necessitation rule.
-As a purely logic researches of $Logic("iGL")$, consult @Urs79 @Lit14 @vdGI21.
-As for mechanization, Shillito and Goré @GS22 gave a refined version of the proof of cut elimination for the sequent calculus for $Logic("iGL")$ due to van der Giessen and Iemhoff @vdGI21, and this proof has been mechanized in Rocq.
+Here, we define #LogiciK and #LogiciGL.
+Intuitionistic modal logic #LogiciK is obtained from intuitionistic propositional logic by adding the axiom $AxiomK$ for $Box$ and the necessitation rule, remark that not contained $Dia$,
+and intuitionistic Gödel-Löb logic obtained by Löb's axiom $Box (Box A -> A) -> A$ to #LogiciK.
+It is known that the provability logic of #HeytingArithmetic contains at least #LogiciGL, that is, #LogiciGL is arithmetically sound to #HeytingArithmetic.
+As a purely logic researches of #LogiciGL, consult @Urs79 @Lit14 @vdGI21.
+As for mechanization, Shillito and Goré @GS22 gave a refined version of the proof of cut elimination for the sequent calculus for #LogiciGL due to van der Giessen and Iemhoff @vdGI21, and this proof has been mechanized in Rocq.
 
-On the other hand, the logic called the intuitionistic strong Löb logic #Logic("iSL"), obtained by adding the strong Löb axiom $(Box A -> A) -> A$ to #Logic("iK"), is also important.
-For a survey of #Logic("iSL") itself as a logic, see, e.g., @VL24.
-Shillito et al. @SvdGGI23 gave a new sequent calculus for #Logic("iSL") admitting cut elimination, and mechanized it in Rocq.
-Férée et al. @FvdGvGS24 mechanized the uniform interpolation theorem for #Logic("iSL") in Rocq (see also @subsect:proof_theory_provability_logic).
+On the other hand, the logic called the intuitionistic strong Löb logic #LogiciSL, obtained by adding the strong Löb axiom $(Box A -> A) -> A$ to #LogiciK, is also important.
+For a survey of #LogiciSL itself as a logic, see, e.g., @VL24.
+Shillito et al. @SvdGGI23 gave a new sequent calculus for #LogiciSL admitting cut elimination, and mechanized it in Rocq.
+Férée et al. @FvdGvGS24 mechanized the uniform interpolation theorem for #LogiciSL in Rocq (see also @subsect:proof_theory_provability_logic).
 
-Finally, the provability logic of Heyting arithmetic is proposed by Mojtahedi's preprint @Moj26, but it is still under review as of 2026, in the time of writing this paper#footnote[The first version was submitted to arXiv in 2022.].
+Finally, the provability logic of Heyting arithmetic is announced by Mojtahedi's preprint @Moj26.
+However, in the time of writing this paper, this preprint is still under review as of 2026 #footnote[The first version was submitted to arXiv in 2022.].
 In the future, we plan to mechanize these arguments, which will make it possible to verify them rigorously and thus to settle this in a more reliable way.
 
-=== Provability logics with many modalities
+=== Enriched Languages
 
-A
+There are also extensions in the direction of adding further modal operators in order to express various notions related to provability.
+Here we mention two directions for which mechanizations can be found: polymodal provability logic and interpretability logic.
 
-=== Interpretability Logic
+Japaridze @Jap86 @Jap88 extended the modality of #LogicGL to infinitely many modal operators $[1], [2], ...$ together with their duals $chevron.l 1 chevron.r, chevron.l 2 chevron.r, ...$, and introduced the logic #LogicGLP.
+For the meaning of these modal operators, we may consult @AB05[Chapter 8.3].
+#LogicGLP is useful in the proof-theoretic analysis of arithmetic and is moreover decidable, but it is also known to be Kripke incomplete.
+It is complete with respect to topological semantics, but that semantics has the drawback of being technically hard to work with.
+It turned out that the strictly positive fragment of #LogicGLP admits a technically much simpler formulation without losing much expressive power, and nowadays such system are called _reflection calculus_ #LogicRC (see @Bek12).
+At the time of writing, prior work on the mechanization of reflection calculi has been carried out mainly by Joosten's group.
+Together with Joosten, de Almeida Borges proposed the _worm calculus_ #LogicWC @dABJ18, a variable-free subsystem of the #LogicRC built up solely from $top$ and modal operators indexed by ordinals, and mechanized it in Rocq @dAB18.
+They further proposed the _quantified reflection calculus with one modality_ #LogicQRC1 @dABJ20, a system that admits quantifiers while remaining reasonably tractable, and mechanized its soundness and completeness in Rocq @dAB22 @dAB23 #footnote[Only the mechanization of soundness direction is reported in @dAB22, but as far as we can tell from de Almeida Borges' doctoral thesis @dAB23, completeness and decidability have been mechanized since then.].
+On the other hand, Santiago-Fernández et al. @SJF24 formulated a term-rewriting-like system (a tree rewriting system) for derivations of #LogicRC, and its mechanization in Rocq appears to be in progress at @SF25.
 
-C
+Another extension of provability logic, there is the _interpretability logic_ proposed by Visser @Vis90.
+Interpretability logic is the extension of provability logic with addition binary modal operators $interpret$ representing interpretability (informally explanation of $A interpret B$ is that extended theory $T + f(A)$ is interpretable in $T + f(B)$).
+There are several semantics for interpretability logic, including _de Jongh–Veltman semantics_ @dJV90, _Visser semantics_, and _Verbrugge semantics_ as known as _generalized Veltman semantics_ (cf: @JRMV24).
+The later ones can handle completeness and definability for more axioms, but they have the drawback that the arguments become very involved.
+As prior work, mechanization of frame definability for Verbrugge semantics has been carried out in Agda by Rovira @Rov20.
+
+For now our progress, we have mechanized syntactic proofs and frame definability for some additional axioms and weak interpretability logics based on work by Kurahashi and Okawa @KO21 #footnote[See: #link("https://github.com/FormalizedFormalLogic/InterpretabilityLogic")].
+However, we have not yet established modal completeness with respect to frames, and as for the arithmetical completeness theorem, we have not been able to mechanize it at all.
+
