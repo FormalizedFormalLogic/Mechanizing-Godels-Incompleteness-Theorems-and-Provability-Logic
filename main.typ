@@ -1272,8 +1272,10 @@ We expect that this would provide, for instance, a syntactic proof of the failur
 The provability logic of intuitionistic or constructive arithmetic, in particular, Heyting arithmetic $Theory("HA")$, has been a subject of study for long time (see, @AB05[Section 9] @BV06[Section 4]).
 Even among the recent developments alone, there is prior work such as @AM18 @AM19 @SM23a @Moj24 @Moj26.
 
-It is known that the provability logic of $Theory("HA")$ contains at least $Logic("iGL")$, that is, that $Logic("iGL")$ is arithmetically sound to $Theory("HA")$.
-Here, $Logic("iGL")$ is the logic obtained by adding Löb's axiom $Box (Box A -> A) -> A$ to the intuitionistic modal logic #Logic("iK"), the logic obtained from intuitionistic propositional logic by adding the axiom $AxiomK$ for $Box$ and the necessitation rule.
+Here, we define $Logic("iK")$ and $Logic("iGL")$.
+Intuitionistic modal logic $Logic("iK")$ is obtained from intuitionistic propositional logic by adding the axiom $AxiomK$ for $Box$ and the necessitation rule, remark that not contained $Dia$,
+and intuitionistic Gödel-Löb logic obtained by Löb's axiom $Box (Box A -> A) -> A$ to $Logic("iK")$.
+It is known that the provability logic of $Theory("HA")$ contains at least $Logic("iGL")$, that is, $Logic("iGL")$ is arithmetically sound to $Theory("HA")$.
 As a purely logic researches of $Logic("iGL")$, consult @Urs79 @Lit14 @vdGI21.
 As for mechanization, Shillito and Goré @GS22 gave a refined version of the proof of cut elimination for the sequent calculus for $Logic("iGL")$ due to van der Giessen and Iemhoff @vdGI21, and this proof has been mechanized in Rocq.
 
@@ -1282,13 +1284,34 @@ For a survey of #Logic("iSL") itself as a logic, see, e.g., @VL24.
 Shillito et al. @SvdGGI23 gave a new sequent calculus for #Logic("iSL") admitting cut elimination, and mechanized it in Rocq.
 Férée et al. @FvdGvGS24 mechanized the uniform interpolation theorem for #Logic("iSL") in Rocq (see also @subsect:proof_theory_provability_logic).
 
-Finally, the provability logic of Heyting arithmetic is proposed by Mojtahedi's preprint @Moj26, but it is still under review as of 2026, in the time of writing this paper#footnote[The first version was submitted to arXiv in 2022.].
+Finally, the provability logic of Heyting arithmetic is announced by Mojtahedi's preprint @Moj26.
+However, in the time of writing this paper, this preprint is still under review as of 2026 #footnote[The first version was submitted to arXiv in 2022.].
 In the future, we plan to mechanize these arguments, which will make it possible to verify them rigorously and thus to settle this in a more reliable way.
 
-=== Provability logics with many modalities
+=== Enriched Languages
 
-A
+様相演算子をさらに増やして，証明可能性に関わる様々な概念を表現する方向性の拡張もある．
+ここでは形式化が確認できるpolymodal provability logicとinterpretability logicという2つの方向性についてメンションしておく．
 
-=== Interpretability Logic
+Japaridze @zotero-item-2845 は $Logic("GL")$ の様相を更に拡張して無限個の様相演算子 $[1], [2], ...$ およびそのdual $chevron.l 1 chevron.r, chevron.l 2 chevron.r, ...$ を入れた論理 $Logic("GLP")$ を導入した．
+ここでは，その様相演算子が何を意味するかは例えば @AB05[Chapter 8.3] を参照してほしい．
+さて，#Logic("GLP") は算術の証明論的な分析において有用であり，更に決定可能であるが，一方でKripke完全ではないことも知られている．
+位相的意味論に対して完全であることは分かっているが，それは技術的に取り扱いが面倒という欠点がある．
+#Logic("GLP") のstrictly positive fragment は，技術的に取り扱いが簡単な定式化であるが表現力をそれほど損なわないということがわかり，今日ではそれらの体系はreflection calculusと呼ばれている．
+reflection caclulusに関しては例えば @Beklemishev などを参考にしなさい．
+執筆時現在では，Reflection calculus周りの形式化の先行研究はJoostenのグループが主に行っている．
+de Almeida Borges はJoostenと共にWorm calculus $Logic("WC")$ という @AlmeidaBorges_Joosten2018_WormCalculus という $top$ と順序数に対応した様相演算子からのみ構成されるvariable-freeなreflection caculusの部分体系を提案し，Rooqで形式化している@AlmeidaBorges2018_WormsCoq．
+また彼らは更に quantifed reflection calculus with one modality $Logic("QRC"_1)$ という量化子を含んでいながらある程度扱いやすい体系も提案しており @BorgesJoosten，これらの健全性や完全性などもRocqで形式化している @AlmeidaBorges2022_QRC1Coq @Joosten #footnote[@AlmeidaBorges2022_QRC1Coq では健全性の形式化のみが報告されているが，de Almeida Borgesの博論 @Joosten を見る限りでは，その後完全性や決定可能性も形式化されているようである．]．
+一方，Santiago-Fernandez ら @Santiago-FernandezJoostenFernandez-Duque はreflection calculusの導出に対する項書換え系のようなもの (tree rewriting system) などを定式化しており，これのRocqによる形式化が @SantiagoFernandez2025_TRC にて進行中に見える．
 
-C
+#let interpret = $class("binary", triangle.r.small)$
+
+Another extension of provability logic, there is the _interpretability logic_ proposed by Visser @Visser1990.
+Interpretability logic is the extension of provability logic with addition binary modal operators $interpret$ representing interpretability (informally explanation of $A interpret B$ is that extended theory $T + f(A)$ is interpretable in $T + f(B)$).
+There are several semantics for interpretability logic, including _de Jongh–Veltman semantics_ @deJonghVeltman1990, _Visser semantics_, and _Verbrugge semantics_ as known as _generalized Veltman semantics_ (cf: @JoostenRoviraMikecVukovic2024).
+The later ones can handle completeness and definability for more axioms, but they have the drawback that the arguments become very involved.
+As prior work, mechanization of frame definability for Verbrugge semantics has been carried out in Agda by Rovira @Rovira2020.
+
+For now our progress, we have mechanized syntactic proofs and frame definability for some additional axioms and weak interpretability logics based on work by Kurahashi and Okawa @KurahashiOkawa2021.
+However, we have not yet established modal completeness with respect to frames, and as for the arithmetical completeness theorem, we have not been able to mechanize it at all.
+
