@@ -24,8 +24,8 @@
     ),
   ),
   abstract: [
-    We formalized proofs of Gödel's first and second incompleteness theorems and
-    Solovay's arithmetical completeness of $LogicGL$ and related results in Lean4 theorem prover.
+    We mechanized proofs of Gödel's first and second incompleteness theorems,
+    Solovay's arithmetical completeness theorem for $LogicGL$, and related results in the Lean 4 theorem prover.
   ],
   keywords: (
     "incompleteness theorems",
@@ -50,7 +50,7 @@ However, it follows from G2, that abstracting the behavior of the provability pr
 Solovay @Sol76 showed that the modal logic called #LogicGL precisely captures the behavior of the standard provability predicate.
 This fact, known as _Solovay's arithmetical completeness theorem_, was a significant result that opened up the subfield of modal logic called _provability logic_.
 
-On the other hand, recently, there have been much active works on mechanizing mathematics using interactive theorem provers, guaranteeing the validity of existing and new results, and providing AI/LLM-assisted or automated proving.
+On the other hand, recently, there has been much active work on mechanizing mathematics using interactive theorem provers, guaranteeing the validity of existing and new results, and providing AI/LLM-assisted or automated proving.
 There are many well-known interactive theorem provers such as Rocq @RocqProver, Isabelle @Isabelle, HOL Light @HOLLight @HOLLightTutorial, Agda @Agda, and Lean @dMU21, and mathematics has been mechanized in each of them, including in the field of mathematical logic#footnote[Some of these mechanizations are summarized in @AwesomeLogicFormalization.].
 In particular, for mechanizing Gödel's incompleteness theorems, this line of work began with Shankar in 1986 @Sha86 @Sha97, and continues with O'Connor @OCo05 @OCo09, Harrison @Har06, Paulson @Pau15, and Popescu and Traytel @PT19 @PT21, Kirst and Peters @KP23.
 As for provability logic, modal-logical properties of #LogicGL, such as its semantical completeness and automated solvers, have been mechanized by Harrison @HOLLightTutorial[Chapter 20]#footnote[We don't know when Harrison's mechanization of modal logic was carried out.], Goré and Kelly @GK07, Goré, Ramanayake and Shillito @GRS21, Maggesi and Perini Brogi @MPB21 @MPB23, Gignoux @Gig26.
@@ -58,16 +58,16 @@ However, these are either abstract or not full mechanizations within arithmetic.
 For instance, O'Connor's implementation assumes several facts needed for the proof of G2 as axioms, and Paulson's mechanization of G2 uses hereditarily finite sets, not arithmetic.
 To the best of our knowledge, no full formalization of the incompleteness theorems entirely within arithmetic is known, and consequently, no mechanization about provability logic has been reported.
 
-In this paper, we present machine-assisted formalizations of Gödel's 1st and 2nd incompleteness theorems and Solovay's arithmetical completeness theorem.
+In the present paper, we describe our mechanizations of Gödel's first and second incompleteness theorems and Solovay's arithmetical completeness theorem.
 Our work is carried out in Lean 4, an interactive theorem prover, together with mathlib4 @Mathlib2020, its community-developed mathematics library.
 Lean 4 is based on the Calculus of Inductive Constructions (CIC) @dMU21,
 and features dependent types, quotient types, and support for noncomputable definitions, making it highly expressive.
 In addition, its powerful metaprogramming infrastructure like aesop @LF23 enables efficient proof automation and extensibility.
 
 Our mechanization is currently hosted as a repository on GitHub, and the version we refer to is #link(REPO_SOURCES.at("Foundation")).
-In this report, we will briefly and informally introduce the mathematical facts without omitting the essentials, and show the code of our mechanization corresponding to those facts.
+In the present paper, we will briefly and informally introduce the mathematical facts without omitting the essentials, and show the code of our mechanization corresponding to those facts.
 However, for the sake of readability, note that in some places we have modified the hosted code.
-Moreover, owing to motivations other than the incompleteness theorems and provability logic that this report focuses on, some implementations are stated as more general definitions.
+Moreover, owing to motivations other than the incompleteness theorems and provability logic that the present paper focuses on, some implementations are stated as more general definitions.
 We add comments where we deem it necessary, but for the actual working (verified) code, refer to the repository.
 
 
@@ -131,9 +131,9 @@ We first set up the basic framework of modal logic.
   ```
 ]
 
-In this paper, we mainly characterize the logic #LogicGL in three ways: by a Gentzen-style sequent calculus, by Kripke semantics, and by a Hilbert-style proof system.
+In the present paper, we mainly characterize the logic #LogicGL in three ways: by a Gentzen-style sequent calculus, by Kripke semantics, and by a Hilbert-style proof system.
 Although #LogicGL is usually defined in the Hilbert style, when proving the Kripke completeness, introducing a sequent calculus makes both the mathematical proofs and the implementation of the mechanization simpler.
-Moreover, as applications, the interpolation theorem and the fixed point theorem can be derived easily via the sequent calculus (we will discussed in @sect:application-of-sequent-calculus).
+Moreover, as applications, the interpolation theorem and the fixed point theorem can be derived easily via the sequent calculus (we will discuss this in @sect:application-of-sequent-calculus).
 Hence, in our mechanization we first define the Gentzen-style sequent calculus, and eventually prove the equivalence of all these characterizations (@thm:GL_TFAE).
 
 We first introduce the Gentzen-style sequent calculus.
@@ -142,7 +142,7 @@ Our sequent calculus for #LogicGL is due to Sambin and Valentini @SV82.
 #definition[
   A _sequent_ $Gamma => Delta$ is a pair of finite sets of formulas.
   The sequent calculus $GentzenGL$ for #LogicGL consists of the following rules,
-  where in the weakening rules (wkL) and (wkR) we assume $Gamma subset.eq Gamma'$ and $Delta subset.eq Delta'$ respectively. We write $GentzenGL proves Gamma => Delta$ if the sequent $Gamma => Delta$ is provable in $GentzenGL$.
+  where in the weakening rules (WL) and (WR) we assume $Gamma subset.eq Gamma'$ and $Delta subset.eq Delta'$ respectively. We write $GentzenGL proves Gamma => Delta$ if the sequent $Gamma => Delta$ is provable in $GentzenGL$.
 
   #align(center, grid(
     columns: 2,
@@ -198,7 +198,7 @@ Since we are not concerned with modal logic in general, we omit the notion of fr
 
 #definition[
   Let $W$ be a nonempty set, whose elements are called _worlds_ or _points_.
-  A _Kripke model_ is a pair $M = chevron.l W, R, V chevron.r$, where $R subset.eq W times W$ (the _accessibility relation_) and $V colon W -> Prop -> 2$ (the _valuation_).
+  A _Kripke model_ is a triple $M = chevron.l W, R, V chevron.r$, where $R subset.eq W times W$ (the _accessibility relation_) and $V colon W -> Prop -> 2$ (the _valuation_).
   When there is no danger of confusion, we write $x prec y$ for $x R y$.
 
   We use the following terminology for models.
@@ -267,7 +267,7 @@ Finally, we introduce the Hilbert-style proof system.
 
 #definition[
   The Hilbert-style proof system $HilbertGL$ for #LogicGL consists of the following axioms and inference rules.
-  We write $HilbertGL proves A$ if $A$ is provable in $HilbertGL$, and define logic $LogicGL := { A : HilbertGL proves A }$.
+  We write $HilbertGL proves A$ if $A$ is provable in $HilbertGL$, and define the logic $LogicGL := { A : HilbertGL proves A }$.
 
   1. Tautologies of classical propositional logic (cf. @CZ97)
   2. Axiom $AxiomK$: $Box(A limp B) limp (Box A limp Box B)$
@@ -317,12 +317,12 @@ As the equivalence of these characterizations, we mechanized the following.
 
   1. $LogicGL proves A$.
   2. $HilbertGL proves A$.
-  2. $GentzenGL proves => A$.
-  3. $GentzenWithCutGL proves => A$.
-  4. $=> 0 : A$ is provable in the labelled sequent calculus (see @sect:labelled-sequent-calculus).
-  5. $A$ is forced at every point of every finite $LogicGL$-model.
-  6. $A$ is forced at the root of every rooted finite $LogicGL$-model.
-  7. $A$ is forced at the root of every rooted finite $LogicGL$-model that is a tree.
+  3. $GentzenGL proves => A$.
+  4. $GentzenWithCutGL proves => A$.
+  5. $=> 0 : A$ is provable in the labelled sequent calculus (see @sect:labelled-sequent-calculus).
+  6. $A$ is forced at every point of every finite $LogicGL$-model.
+  7. $A$ is forced at the root of every rooted finite $LogicGL$-model.
+  8. $A$ is forced at the root of every rooted finite $LogicGL$-model that is a tree.
 ] <thm:GL_TFAE>
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GL/Basic.lean"),))[
   ```
@@ -386,12 +386,13 @@ We omit the details of these constructions; via these semantic characterizations
   2. On the chain of the tail model constructed from any finite $LogicGL$-model and any point $t$ of it, $A$ is eventually always forced.
   3. $and.big_(Box B in subfml(A)) (Box B limp B) limp A$ is forced at the root of every rooted finite $LogicGL$-model.
   4. $LogicGL proves and.big_(Box B in subfml(A)) (Box B limp B) limp A$
+  5. $=> A$ is provable in the two-level sequent calculus for $LogicS$ @Kus20 @KK23.
 ] <prop:S_characterization>
 #leancode(
   links: (("ProvabilityLogic", "ProvabilityLogic/Logic/S/Basic.lean"),),
   note: [
-    The last clause is provability of the Gentzen-style sequent calculi with two-level sequent @Kus20 @KK23.
-    About this, we discusses as future work on @sect:provabilitylogic_futurework.
+    The last clause corresponds to provability in the two-level sequent calculus @Kus20 @KK23.
+    We discuss this calculus as future work in @sect:provabilitylogic_futurework.
   ],
 )[
   ```
@@ -459,8 +460,8 @@ Our mechanized proof is semantic, via the tail model of @prop:S_characterization
   ```
 ]
 
-The mere inclusions between these logics hold trivially by definition.
-Moreover, by constructing countermodels via the semantics, the following proper inclusions hold.
+The inclusions $LogicGL subset.eq LogicD subset.eq LogicS$ hold trivially by definition.
+Moreover, constructing countermodels via the semantics shows that these inclusions are proper.
 
 #proposition[
   $LogicGL subset.neq LogicD subset.neq LogicS$
@@ -496,6 +497,7 @@ First, since it is a pure sequent calculus, the Craig interpolation property (CI
   ```
 ]
 
+// TODO: 不動点定理を de Jongh と Sambin に帰属させるべきかは要事実確認
 The CIP of $LogicGL$ is important in particular because it yields the fixed point theorem of #LogicGL @Smo78 @Boo79.
 We have also mechanized the fixed point theorem of $LogicGL$ via the sequent calculus.
 
@@ -576,12 +578,12 @@ The termination of Maggesi and Perini Brogi's _implementation_ of the calculus i
 That is, by the mathematical fact proved in @Neg14, the computation is guaranteed to terminate under the assumption that their implementation is correct.
 On the other hand, when defining the proof search, we guarantee its termination inside the theorem prover itself, since Lean requires the definition to be well-founded.
 In this respect, our mechanization gives a stronger guarantee.
-However, Maggesi and Perini Brogi's mechanization has a practical utility: although the termination is not guaranteed, it can actually be executed and used as a tactic, which automates simple proofs of #LogicGL appearing in their mechanization.
+However, Maggesi and Perini Brogi's mechanization has practical utility: although the termination is not guaranteed, it can actually be executed and used as a tactic, which automates simple proofs of #LogicGL appearing in their mechanization.
 In contrast, due to the implementation constraints in the well-foundedness proof, our labelled sequent calculus cannot be used, e.g., as a Lean tactic, and its properties are mechanized purely as mathematical facts.
 Hence, regarding the practical utility, Maggesi and Perini Brogi's mechanization has the advantage.
 
 Moreover, we remark that interpolation for labelled sequent calculi in general is discussed, e.g., in @vdGJK26[Section 5], but whether it is possible for the labelled sequent calculus for #LogicGL seems to be open at present.
-From this, we conclude that labelled calculi are not so effective for mechanizing the properties of #LogicGL described in @sect:application-of-sequent-calculus.
+This suggests that labelled calculi are less suitable for mechanizing the properties of #LogicGL described in @sect:application-of-sequent-calculus.
 
 == Arithmetical completeness theorems <sect:arithmetical_completeness>
 
@@ -591,7 +593,7 @@ First, we define arithmetical interpretations, which translate modal formulas in
 In what follows, $T$ is an arithmetical theory with a $Delta_1$-definable axiomatization extending $Theory("I")Sigma_1$, and we consider only the standard provability predicate $Pr(T)$ of $T$.
 
 #definition[
-  A map $f colon Prop -> upright("Sent")_upright("A")$ is called an _arithmetical realization_ (or simply a _realization_).
+  A map $f colon Prop -> upright("Sent")_upright("A")$, where $upright("Sent")_upright("A")$ denotes the set of arithmetical sentences, is called an _arithmetical realization_ (or simply a _realization_).
   Given a realization $f$, the _(standard) arithmetical interpretation_ is the extension of $f$ translating each modal formula $A$ into an arithmetical sentence $f_(Pr(T))(A)$ as follows.
   - $f_(Pr(T)) (p) & = f(p)$
   - $f_(Pr(T)) (bot) & = bot$
@@ -603,7 +605,7 @@ In what follows, $T$ is an arithmetical theory with a $Delta_1$-definable axioma
   links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/Interpret.lean"),),
   note: [
     For technical reasons, realizations are implemented for an arbitrary provability predicate `𝔅`.
-    However, since we consider only the standard provability predicate in this report, we always use `StandardRealization`, which takes `T.standardProvability` for `𝔅`.
+    However, since we consider only the standard provability predicate in the present paper, we always use `StandardRealization`, which takes `T.standardProvability` for `𝔅`.
   ],
 )[
   ```
@@ -647,7 +649,7 @@ Here we present the generalized version (@thm:arithmetical_completeness) using t
 #leancode(
   links: (("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Height.lean"),),
   note: [
-    As with realizations, it is defined for an arbitrary provability predicate `𝔅`, but we consider only the standard one in this report.
+    As with realizations, it is defined for an arbitrary provability predicate `𝔅`, but we consider only the standard one in the present paper.
   ],
 )[
   ```
@@ -745,7 +747,7 @@ For the details, see @Bek90 @AB05.
   - $LogicGLAlpha(alpha) := sumQuasiNormal(LogicGL, { F_n : n in alpha })$
   - $LogicGLBetaMinus(beta) := sumQuasiNormal(LogicGL, { lnot and.big_(n in omega without beta) F_n })$
 
-  In particular, we call $LogicGLAlpha(omega)$ as $LogicA$#footnote[We follow the naming of @JdJ98; it presumably stands for Artemov.].
+  In particular, we call $LogicGLAlpha(omega)$ simply $LogicA$#footnote[We follow the naming of @JdJ98; it presumably stands for Artemov.].
 ]
 #leancode(
   note: [
@@ -842,7 +844,7 @@ We have mechanized this fact as well.
 
 === On some remaining `sorry`s
 
-Although the mechanization of the classification theorem itself does not depend on them, some facts of provability logic currently remain with `sorry`.
+Although the mechanization of the classification theorem itself does not depend on them, the mechanizations of some facts of provability logic still contain `sorry`s.
 We note them here.
 
 The first is the statement that $LogicD$ is indeed a provability logic, which is currently not `sorry`-free.
@@ -861,8 +863,8 @@ Proving it requires arguments involving partial truth definitions, which we have
 The other is the uniform arithmetical completeness theorem.
 
 #theorem[Uniform Arithmetical Completeness Theorem][
-  For every $Sigma_1$-sound theory $T$, a uniform arithmetical interpretation $f$ can be constructed.
-  That is, for every formula $A$, $LogicGL proves A$ if and only if $T proves f_(Pr(T)) (A)$.
+  For every $Sigma_1$-sound theory $T$, there exists a uniform arithmetical interpretation $f$ such that
+  for every formula $A$, $LogicGL proves A$ if and only if $T proves f_(Pr(T)) (A)$.
 ]
 
 == On $LogicGrz$
@@ -910,9 +912,9 @@ We first introduce the Hilbert-style proof system, which is the usual definition
 Next we introduce the Kripke semantics.
 
 #definition[$LogicGrz$-model][
-  Let $R$ be a binary relation on $W$, and let $R^(eq.not) = { x R y | x != y }$ be its irreflexiviation of $R$.
+  Let $R$ be a binary relation on $W$, and let $R^(eq.not) = { (x, y) | x R y "and" x != y }$ be the irreflexivization of $R$.
   $R$ is _weakly converse well-founded_ if $R^(eq.not)$ is conversely well-founded.
-  Equivalently, $R$ admits no infinite ascending chain $x_0 R x_1 R dots.c$ consisting of pairwise distinct points.
+  If $R$ is transitive, this is equivalent to saying that $R$ admits no infinite ascending chain $x_0 R x_1 R dots.c$ consisting of pairwise distinct points.
 
   Using this notion, we define the following.
   - A model is a _$LogicGrz$-model_ if $R$ is reflexive, transitive, and weakly converse well-founded.
@@ -995,7 +997,7 @@ Sequent calculi for $LogicGrz$ were formulated by Avron @Avr84 and by Borga and 
   ```
 ]
 
-We mechaized the finite model property of $LogicGrz$ with respect to the Kripke semantics, and as its corollaries we mechanized the cut elimination for $GentzenGrz$ and its equivalence with the Hilbert-style system.
+We mechanized the finite model property of $LogicGrz$ with respect to the Kripke semantics, and as its corollaries we mechanized the cut elimination for $GentzenGrz$ and its equivalence with the Hilbert-style system.
 
 #theorem[Characterization of $LogicGrz$][
   The following are equivalent.
@@ -1085,7 +1087,7 @@ Using this fact, Goldblatt @Gol78 and Boolos @Boo80 showed that $LogicGrz$ is ar
 
 == On $LogicGLPoint3$
 
-A sequent calculus for $LogicGLPoint3$ was given by Valentini @VS83 @Val86.
+A sequent calculus for $LogicGLPoint3$ was given by Valentini and Solitro @VS83 and Valentini @Val86.
 In particular, @VS83 shows that $LogicGLPoint3$ enjoys a certain arithmetical completeness with respect to the class of arithmetical sentences called consistency assertions.
 We briefly describe these results.
 
@@ -1111,7 +1113,7 @@ We briefly describe these results.
 ]
 
 #definition[
-  A finite $LogicGL$-model is called _finite $LogicGLPoint3$_ when $prec$ is linear, i.e., $x prec y$ and $x prec z$ imply $y prec z$ or $y = z$ or $z prec y$.
+  A finite $LogicGL$-model is called a _finite $LogicGLPoint3$-model_ when $prec$ is linear, i.e., $x prec y$ and $x prec z$ imply $y prec z$ or $y = z$ or $z prec y$.
 ]
 
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Kripke/Linearity.lean"),))[
@@ -1194,7 +1196,7 @@ In particular, on closed formulas $LogicGLPoint3$ and $LogicGL$ do not differ; t
 Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect to consistency assertions.
 
 #definition[
-  - A sentence $sigma$ is a _consistency assertion_ if it is generated from $lnot Pr(T)(GoedelNum(bot))$ and $Pr(T)(GoedelNum(bot))$ by closing under $Pr(T)(x)$, $lnot$, $land$, $lor$, and $limp$.
+  - A sentence $sigma$ is a _consistency assertion_ if it is generated from $lnot Pr(T)(GoedelNum(bot))$ and $Pr(T)(GoedelNum(bot))$ by closing under $Pr(T)(dot.c)$, $lnot$, $land$, $lor$, and $limp$.
   - A realization $f$ is a _consistency realization_ if $f$ sends every propositional variable to a consistency assertion.
 ]
 
@@ -1221,7 +1223,7 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
 ]
 
 #theorem[@VS83[Theorem 1]][
-  $LogicGLPoint3 proves A$ if and only if $PeanoArithmetic proves f (A)$ for every consistency realization $f$ over $PeanoArithmetic$.
+  $LogicGLPoint3 proves A$ if and only if $PeanoArithmetic proves f_(Pr(PeanoArithmetic)) (A)$ for every consistency realization $f$ over $PeanoArithmetic$.
 ]
 #leancode(
   links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/GLPoint3/Basic.lean"),),
@@ -1232,10 +1234,10 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
   ```
 ]
 
-== Related works and Milestones <sect:provabilitylogic_futurework>
+== Related work and milestones <sect:provabilitylogic_futurework>
 
-Finally, we mention on some prior work related to theorem provers and mechanizations for provability logic, and describe future directions.
-In the following, we restrict our attention to prior work in the field of provability logic, and omit in the other areas of modal logic (e.g., tense logic and epistemic logic).
+Finally, we mention some prior work related to theorem provers and mechanizations for provability logic, and describe future directions.
+In the following, we restrict our attention to prior work in the field of provability logic, and omit prior work in other areas of modal logic (e.g., tense logic and epistemic logic).
 
 === Proof theory <subsect:proof_theory_provability_logic>
 
@@ -1245,17 +1247,17 @@ In particular, as a syntactic issue, whether the termination of the cut-eliminat
 On the other hand, Brighton @Bri16 gave an alternative proof of the termination of the cut-elimination algorithm using the technique called _regression trees_, and this argument has been mechanized in Rocq by Goré, Ramanayake, and Shillito @GRS21.
 Furthermore, Férée et al. @FvdGvGS24 mechanized in Rocq the uniform interpolation theorem @Bil16 for #LogicGL via sequent calculi.
 In particular, although their proof is based on Bílková @Bil16, we mention that in the course of the mechanization they discovered an error in @Bil16 and were able to correct it #footnote[Quoted from @FvdGvGS24[p.2]: During our work on formalising this proof in Coq, we uncovered an incompleteness in it (@Bil16), and our formalisation contains a corrected version of the construction of...].
-These mechanization can be regarded as a significant result in that it settled a debate over ambiguous pen-and-paper arguments by verifying on a computer strictly.
+These mechanizations can be regarded as significant results in that they settled a debate over ambiguous pen-and-paper arguments by strict computer verification.
 
-Besides, there are also many approaches to non-Gentzen-style proof systems for #LogicGL, i.e., systems obtained by adding further machinery to ordinary sequent calculi:
+In addition, there are also many approaches to non-Gentzen-style proof systems for #LogicGL, i.e., systems obtained by adding further machinery to ordinary sequent calculi:
 e.g., the _labelled sequent calculi_ by Negri @Neg05 @Neg14, the _tree-hypersequent calculus_ by Poggiolesi @Pog09, the _nested sequent calculi_ by Maniwa and Kashima @MK24, and the _non-wellfounded proofs_ (or _circular proofs_) by Shamkanov @Sha14#footnote[Here we mention only the systems for #LogicGL. For general discussions of each formalism, we refer the reader to the references of the respective papers.].
 For discussions on the equivalence of the provability of several of these sequent systems, including the Gentzen-style ones, see Goré and Ramanayake @GR12a and Lyon @Lyo25.
 In particular, Shamkanov's non-wellfounded proofs have the advantage that the Lyndon interpolation theorem can be proved syntactically @Sha14[Chapter 4]#footnote[This fact itself is also proved in @Sha11, but the proof there relies on Kripke-semantical techniques.].
 As far as we know, the only mechanizations of the proof theory of sequent calculi equipped with such additional machinery are the mechanization of the labelled sequent calculus in HOL Light by Maggesi and Perini Brogi @MPB21 @MPB23 and, along that line, Bilotta's HOLMS project @Bil25.
 
 
-Tableau method for #LogicGL are discussed in @Boo94[Chapter 10] for instance.
-A tableau-based automated theorem prover for #LogicGL is implemented by Goré and Kelly @GK07, where the efficiency of the implementation is also discussed.
+Tableau methods for #LogicGL are discussed in @Boo94[Chapter 10] for instance.
+A tableau-based automated theorem prover for #LogicGL was implemented by Goré and Kelly @GK07, where the efficiency of the implementation is also discussed.
 #let seq(l) = $attach(tr: #l, =>)$
 #let seq1 = seq("1")
 #let seq2 = seq("2")
@@ -1267,25 +1269,25 @@ As a different approach, Kushida @Kus20 proposed a sequent calculus for #LogicS 
 Roughly speaking, the provable #seq1;-sequents coincide with those provable in #GentzenGL, the system is equipped with a lift-up mechanism from #seq1 to #seq2, and on the level of #seq2 one can reason as in the logic #LogicKT.
 While @Kus20 gives a syntactic cut-elimination algorithm, Kashima and Kato @KK23 proved the cut elimination for #LogicS by a semantical method.
 Furthermore, Kashima et al. @KKIM25 extended this approach and formulated two sequent calculi for #LogicD.
-The former uses two levels of sequents as for #LogicS, but has the drawback that the cut rule cannot be eliminated.
+The former uses two levels of sequents as in the case of #LogicS, but has the drawback that the cut rule cannot be eliminated.
 The latter uses three levels of sequents #seq1, #seq2, and #seq3, and in particular admits cut elimination.
 
 In the present work, we have mechanized the Gentzen-style sequent calculus for #LogicGL, the labelled sequent calculus for #LogicGL (see @sect:labelled-sequent-calculus), and the two-level sequent calculus for #LogicS (see @prop:S_characterization).
-For the future work, we plan to mechanize sequent calculi with other machinery as well, together with the equivalence of their provability.
+For future work, we plan to mechanize sequent calculi with other machinery as well, together with the equivalence of their provability.
 In particular, although Shamkanov's circular proofs involve infinitary structures, the studies by Sierra Miranda et al. @SM23 @SMSZ24 @HSMS25 @SMS26 have revealed that they have many applications, so their mechanization seems to be a technically challenging but worthwhile task.
 We also plan to mechanize the three-level sequent calculus for #LogicD following @KKIM25.
-We expect that this would provide, for instance, a syntactic proof of the failure of the CIP for #LogicD (@thm:D_no_CIP) and a concise implementation of its mechanization.
+We expect that this will provide, for instance, a syntactic proof of the failure of the CIP for #LogicD (@thm:D_no_CIP) and a concise implementation of its mechanization.
 
 === Provability logic of Heyting arithmetic
 
-The provability logic of intuitionistic or constructive arithmetic, in particular, Heyting arithmetic #HeytingArithmetic, has been a subject of study for long time (see, @AB05[Section 9] @BV06[Section 4]).
+The provability logic of intuitionistic or constructive arithmetic, in particular, Heyting arithmetic #HeytingArithmetic, has been a subject of study for a long time (see @AB05[Section 9] @BV06[Section 4]).
 Even among the recent developments alone, there is prior work such as @AM18 @AM19 @SM23a @Moj24 @Moj26.
 
 Here, we define #LogiciK and #LogiciGL.
-Intuitionistic modal logic #LogiciK is obtained from intuitionistic propositional logic by adding the axiom $AxiomK$ for $Box$ and the necessitation rule, remark that not contained $Dia$,
-and intuitionistic Gödel-Löb logic obtained by Löb's axiom $Box (Box A -> A) -> A$ to #LogiciK.
-It is known that the provability logic of #HeytingArithmetic contains at least #LogiciGL, that is, #LogiciGL is arithmetically sound to #HeytingArithmetic.
-As a purely logic researches of #LogiciGL, consult @Urs79 @Lit14 @vdGI21.
+Intuitionistic modal logic #LogiciK is obtained from intuitionistic propositional logic by adding the axiom $AxiomK$ for $Box$ and the necessitation rule (note that the language does not contain $Dia$),
+and intuitionistic Gödel-Löb logic #LogiciGL is obtained by adding Löb's axiom $Box (Box A -> A) -> Box A$ to #LogiciK.
+It is known that the provability logic of #HeytingArithmetic contains at least #LogiciGL, that is, #LogiciGL is arithmetically sound with respect to #HeytingArithmetic.
+For purely logical studies of #LogiciGL, consult @Urs79 @Lit14 @vdGI21.
 As for mechanization, Shillito and Goré @GS22 gave a refined version of the proof of cut elimination for the sequent calculus for #LogiciGL due to van der Giessen and Iemhoff @vdGI21, and this proof has been mechanized in Rocq.
 
 On the other hand, the logic called the intuitionistic strong Löb logic #LogiciSL, obtained by adding the strong Löb axiom $(Box A -> A) -> A$ to #LogiciK, is also important.
@@ -1293,9 +1295,9 @@ For a survey of #LogiciSL itself as a logic, see, e.g., @VL24.
 Shillito et al. @SvdGGI23 gave a new sequent calculus for #LogiciSL admitting cut elimination, and mechanized it in Rocq.
 Férée et al. @FvdGvGS24 mechanized the uniform interpolation theorem for #LogiciSL in Rocq (see also @subsect:proof_theory_provability_logic).
 
-Finally, the provability logic of Heyting arithmetic is announced by Mojtahedi's preprint @Moj26.
-However, in the time of writing this paper, this preprint is still under review as of 2026 #footnote[The first version was submitted to arXiv in 2022.].
-In the future, we plan to mechanize these arguments, which will make it possible to verify them rigorously and thus to settle this in a more reliable way.
+Finally, the provability logic of Heyting arithmetic has been announced in Mojtahedi's preprint @Moj26.
+However, at the time of writing, this preprint is still under review#footnote[The first version was submitted to arXiv in 2022.].
+In the future, we plan to mechanize these arguments, which will make it possible to verify them rigorously and thus to settle this problem in a more reliable way.
 
 === Enriched Languages
 
@@ -1306,18 +1308,18 @@ Japaridze @Jap86 @Jap88 extended the modality of #LogicGL to infinitely many mod
 For the meaning of these modal operators, we may consult @AB05[Chapter 8.3].
 #LogicGLP is useful in the proof-theoretic analysis of arithmetic and is moreover decidable, but it is also known to be Kripke incomplete.
 It is complete with respect to topological semantics, but that semantics has the drawback of being technically hard to work with.
-It turned out that the strictly positive fragment of #LogicGLP admits a technically much simpler formulation without losing much expressive power, and nowadays such system are called _reflection calculus_ #LogicRC (see @Bek12).
+It turned out that the strictly positive fragment of #LogicGLP admits a technically much simpler formulation without losing much expressive power, and nowadays such a system is called _reflection calculus_ #LogicRC (see @Bek12).
 At the time of writing, prior work on the mechanization of reflection calculi has been carried out mainly by Joosten's group.
-Together with Joosten, de Almeida Borges proposed the _worm calculus_ #LogicWC @dABJ18, a variable-free subsystem of the #LogicRC built up solely from $top$ and modal operators indexed by ordinals, and mechanized it in Rocq @dAB18.
+Together with Joosten, de Almeida Borges proposed the _worm calculus_ #LogicWC @dABJ18, a variable-free subsystem of #LogicRC built up solely from $top$ and modal operators indexed by ordinals, and mechanized it in Rocq @dAB18.
 They further proposed the _quantified reflection calculus with one modality_ #LogicQRC1 @dABJ20, a system that admits quantifiers while remaining reasonably tractable, and mechanized its soundness and completeness in Rocq @dAB22 @dAB23 #footnote[Only the mechanization of soundness direction is reported in @dAB22, but as far as we can tell from de Almeida Borges' doctoral thesis @dAB23, completeness and decidability have been mechanized since then.].
-On the other hand, Santiago-Fernández et al. @SJF24 formulated a term-rewriting-like system (a tree rewriting system) for derivations of #LogicRC, and its mechanization in Rocq appears to be in progress at @SF25.
+On the other hand, Santiago-Fernández et al. @SJF24 formulated a term-rewriting-like system (a tree rewriting system) for derivations of #LogicRC, and its mechanization in Rocq appears to be in progress in @SF25.
 
-Another extension of provability logic, there is the _interpretability logic_ proposed by Visser @Vis90.
-Interpretability logic is the extension of provability logic with addition binary modal operators $interpret$ representing interpretability (informally explanation of $A interpret B$ is that extended theory $T + f(A)$ is interpretable in $T + f(B)$).
-There are several semantics for interpretability logic, including _de Jongh–Veltman semantics_ @dJV90, _Visser semantics_, and _Verbrugge semantics_ as known as _generalized Veltman semantics_ (cf: @JRMV24).
-The later ones can handle completeness and definability for more axioms, but they have the drawback that the arguments become very involved.
+As another extension of provability logic, there is the _interpretability logic_ proposed by Visser @Vis90.
+Interpretability logic is the extension of provability logic with an additional binary modal operator $interpret$ representing interpretability (informally, $A interpret B$ means that the extended theory $T + f(A)$ is interpretable in $T + f(B)$).
+There are several semantics for interpretability logic, including _de Jongh–Veltman semantics_ @dJV90 and _Verbrugge semantics_ as known as _generalized Veltman semantics_ (cf. @JRMV24).
+The latter one can handle completeness and definability for more axioms, but it has the drawback that the arguments become very involved.
 As prior work, mechanization of frame definability for Verbrugge semantics has been carried out in Agda by Rovira @Rov20.
 
-For now our progress, we have mechanized syntactic proofs and frame definability for some additional axioms and weak interpretability logics based on work by Kurahashi and Okawa @KO21 #footnote[See: #link("https://github.com/FormalizedFormalLogic/InterpretabilityLogic")].
+As for our own progress, we have mechanized syntactic proofs and frame definability for some additional axioms and weak interpretability logics based on work by Kurahashi and Okawa @KO21 #footnote[See: #link("https://github.com/FormalizedFormalLogic/InterpretabilityLogic")].
 However, we have not yet established modal completeness with respect to frames, and as for the arithmetical completeness theorem, we have not been able to mechanize it at all.
 
