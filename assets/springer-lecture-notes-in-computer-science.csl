@@ -70,6 +70,7 @@
     </sort>
     <layout prefix="[" suffix="]" delimiter=", ">
       <text variable="citation-number"/>
+      <text variable="locator" prefix=":"/>
     </layout>
   </citation>
   <bibliography entry-spacing="0" second-field-align="flush">
