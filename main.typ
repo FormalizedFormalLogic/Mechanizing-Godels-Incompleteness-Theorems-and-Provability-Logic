@@ -497,7 +497,8 @@ First, since it is a pure sequent calculus, the Craig interpolation property (CI
   ```
 ]
 
-The CIP of $LogicGL$ is important in particular because it yields the fixed point theorem of #LogicGL due to de Jongh and Sambin (cf. @Smo78 @Boo79).
+// TODO: 不動点定理を de Jongh と Sambin に帰属させるべきかは要事実確認
+The CIP of $LogicGL$ is important in particular because it yields the fixed point theorem of #LogicGL @Smo78 @Boo79.
 We have also mechanized the fixed point theorem of $LogicGL$ via the sequent calculus.
 
 #definition[
@@ -552,7 +553,7 @@ Finally, we have also mechanized facts on the CIP of $LogicS$ and $LogicD$, whic
 
 #theorem[@Bek89][
   $LogicD$ does not have the CIP.
-  In particular, for the following $A$ and $B$, $LogicD proves A -> B$ but there exists no interpolant for it,
+  In particular, for the following $A$ and $B$, $LogicD proves not A -> B$ but there exists no interpolant for it,
   where $a,b,c$ are distinct propositional variables.
   $
     A & equiv Box (Box b or a) -> Box b \
@@ -862,7 +863,7 @@ Proving it requires arguments involving partial truth definitions, which we have
 The other is the uniform arithmetical completeness theorem.
 
 #theorem[Uniform Arithmetical Completeness Theorem][
-  For every $Sigma_1$-sound theory $T$, there exists a single realization $f$ such that
+  For every $Sigma_1$-sound theory $T$, there exists a uniform arithmetical interpretation $f$ such that
   for every formula $A$, $LogicGL proves A$ if and only if $T proves f_(Pr(T)) (A)$.
 ]
 
@@ -1195,7 +1196,7 @@ In particular, on closed formulas $LogicGLPoint3$ and $LogicGL$ do not differ; t
 Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect to consistency assertions.
 
 #definition[
-  - A sentence $sigma$ is a _consistency assertion_ if it is generated from $lnot Pr(T)(GoedelNum(bot))$ and $Pr(T)(GoedelNum(bot))$ by closing under $Pr(T)(GoedelNum(dot.c))$, $lnot$, $land$, $lor$, and $limp$.
+  - A sentence $sigma$ is a _consistency assertion_ if it is generated from $lnot Pr(T)(GoedelNum(bot))$ and $Pr(T)(GoedelNum(bot))$ by closing under $Pr(T)(dot.c)$, $lnot$, $land$, $lor$, and $limp$.
   - A realization $f$ is a _consistency realization_ if $f$ sends every propositional variable to a consistency assertion.
 ]
 
@@ -1294,7 +1295,7 @@ For a survey of #LogiciSL itself as a logic, see, e.g., @VL24.
 Shillito et al. @SvdGGI23 gave a new sequent calculus for #LogiciSL admitting cut elimination, and mechanized it in Rocq.
 Férée et al. @FvdGvGS24 mechanized the uniform interpolation theorem for #LogiciSL in Rocq (see also @subsect:proof_theory_provability_logic).
 
-Finally, a characterization of the provability logic of Heyting arithmetic has been announced in Mojtahedi's preprint @Moj26.
+Finally, the provability logic of Heyting arithmetic has been announced in Mojtahedi's preprint @Moj26.
 However, at the time of writing, this preprint is still under review#footnote[The first version was submitted to arXiv in 2022.].
 In the future, we plan to mechanize these arguments, which will make it possible to verify them rigorously and thus to settle this problem in a more reliable way.
 
@@ -1315,8 +1316,8 @@ On the other hand, Santiago-Fernández et al. @SJF24 formulated a term-rewriting
 
 As another extension of provability logic, there is the _interpretability logic_ proposed by Visser @Vis90.
 Interpretability logic is the extension of provability logic with an additional binary modal operator $interpret$ representing interpretability (informally, $A interpret B$ means that the extended theory $T + f(A)$ is interpretable in $T + f(B)$).
-There are several semantics for interpretability logic, including _de Jongh–Veltman semantics_ @dJV90, _Visser semantics_, and _Verbrugge semantics_ as known as _generalized Veltman semantics_ (cf. @JRMV24).
-The latter two can handle completeness and definability for more axioms, but they have the drawback that the arguments become very involved.
+There are several semantics for interpretability logic, including _de Jongh–Veltman semantics_ @dJV90 and _Verbrugge semantics_ as known as _generalized Veltman semantics_ (cf. @JRMV24).
+The latter one can handle completeness and definability for more axioms, but it has the drawback that the arguments become very involved.
 As prior work, mechanization of frame definability for Verbrugge semantics has been carried out in Agda by Rovira @Rov20.
 
 As for our own progress, we have mechanized syntactic proofs and frame definability for some additional axioms and weak interpretability logics based on work by Kurahashi and Okawa @KO21 #footnote[See: #link("https://github.com/FormalizedFormalLogic/InterpretabilityLogic")].
