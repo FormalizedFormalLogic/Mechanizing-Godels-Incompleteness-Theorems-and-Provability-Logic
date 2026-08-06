@@ -91,3 +91,5 @@
 #let LOR = $cal(L)_"OR"$
 #let ISigma1 = $sans("I")Sigma_1$
 #let Robinson = $sans("Q")$
+#let R0 = $sans("R"_0)$
+#let Con(T) = $sans("Con")_(#T)$

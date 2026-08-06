@@ -1,31 +1,33 @@
 #import "./notations.typ": *
 
-= First-Order Logic and Arithmetic
+= Mechanization of the incompleteness theorems
 
-This section introduces the first-order framework used in our formalization.
-We first describe the representation of syntax, derivability, and semantics, and then turn to the arithmetical notions needed to state the incompleteness theorems.
+私達が mechanize した結果は次の二つである．
 
-== Syntax
-
-We represent first-order syntax using a locally nameless representation.
-Thus variables are divided into two kinds: free variables, written informally as $\&x$, and bound variables, written $\#x$.
-Free variables are named by an external type `ξ`, while bound variables are represented by de Bruijn indices.
-
-To express this formally, formulas are defined from the generalized form _semiformula_ @Buss1998.
-
-#definition[Semiterm and Semiformula][
-  Fix a set of free-variables $xi$, and let $cal(L)$ be a first-order language.
-  - _Semiterms_ of language $cal(L)$ are defined inductively as follows:
-    $
-      t ::= \&x | \#z | f(t, ..., t)
-    $
-    where $x in xi$ is a _free-variable_, $z in Nat$ is a _bound-variable_, and $f$ is a function symbol in $cal(L)$.
-  - _Semiformulas_ of language $cal(L)$ are defined inductively as follows:
-    $
-      A ::= top | bot | R(t_1, ..., t_n) | overline(R)(t_1, ..., t_n) | A and A | A or A | forall A | exists A
-    $
-    where $R$ is a relation symbol in $cal(L)$, and $t_i$ are _semiterms_ of $cal(L)$.
+#theorem[Gödel's First Incompleteness Theorem][
+  Let $T$ be a $Delta_1$-definable, $Sigma_1$-sound $LOR$-theory stronger than $R0$,
+  Then $T$ is incomplete,
+  that is, there exists a $LOR$-sentence $phi$ such that $T nproves phi$ and $T nproves not phi$.
 ]
+
+#theorem[Gödel's Second Incompleteness Theorem][
+  Let $T$ be a $Delta_1$-definable, $Sigma_1$-sound $LOR$-theory stronger than $ISigma1$.
+  Then $T nproves Con(T)$,
+  where $Con(T)$ is a consistency statement of $T$.
+]
+
+証明の大筋は既存の標準的な手法（例えば @HajekPudlak2016 を参照）を大きく逸脱しない．
+そのため，詳細な説明は省略するが，いくつか technical, methodological な点について注釈する．
+
+=== Syntax
+一階述語論理の term や formula の表現のために，我々は locally nameless representation を採用する．
+同様の手法は @HvD20 でも用いられている．
+
+これは標準的な logic の言葉では term や formula を拡大した概念である _semiterm_ および _semiformula_ @Buss1998 を用いることに対応する．
+変数記号は2種類(free-variables, denoted by $\&x, "for" x in xi$ and bound-variables, denoted by $\#z, "for" z in [n]$) に分けられ，
+semiterm とはこれらを変数として生成される term である．
+semiformula は通常のように semiterm から生成される formula であるが，量化子によって束縛されない bound-variables を含みうる．
+私達は type $xi$ の free-variables と $n$ 個の bound-variables を含みうる semiformula の為す型を `Semiterm ξ n` として形式化した．
 
 #leancode(links: (
   ("Foundation", "Foundation/FirstOrder/Basic/Syntax/Formula.lean#L24-L32"),
@@ -47,150 +49,35 @@ To express this formally, formulas are defined from the generalized form _semifo
   ```
 ]
 
-量化子はその位置から見て $0$-番目の bound variables を束縛する；
-すなわち， $forall A$ なる論理式の最外の $forall$ は，
-$A$ に $n$ 個のネストした quantifier があるならば bounded-variable $\#n$ を束縛する．
+Semiformula を用いた形式化は， formula の定義のための単なる技術的技工であるだけでなく，practical な利点も持つ．
+例えば， $M$-parameter を持つ論理式 $A[x, y, z]$, というような，証明論やモデル論で頻出する制限は，
+ただ一つの type `Semiformula M 3` によって与えることができる．
 
-以降 bound or free-variable $x, y$, (semi)term $t, u$, (semi)formula $phi$ について，
-論理式の代入を $phi[t \/ x, u \/ y]$ のように表記する．
+=== On internal argument
+多くの場合， incompleteness theorems (特に G2) の証明に於いて障害となるのは，
+しばしば arithmetization や bootstrapping と呼ばれる，メタ数学（項，論理式，証明可能性，初等的な証明論，etc.）の internalization,
+すなわち，形式化した証明体系（ここでは $ISigma1$）の内部でこれらの概念を形式的に定義・証明することである．
+この作業をナイーブに syntactical に行おうとする試みは，次に述べる理由によって阻害される#footnote[
+  しかし， これを達成する意義は十分にある．
+  これらの syntactic な操作は constructive で，かつ非常に弱い base theory (e.g. $sans("S")^1_2$)で行うことができる．
+]．
 
-== First-Order Sequent Calculus
+/ 証明体系の煩雑さ: 十分に複雑な論理式を扱うにあたって，証明体系は手に負えないほど複雑になりうる．
+  Lean 上で形式的に扱うのでさえ困難な作業を，その内部で定義された，更に制限された形式体系で行うのは苦痛である．
+  更に，私達はその内部で形式化されたメタ数学概念（e.g. 形式化された証明可能性）を扱わなくてはならない．これはほとんど現実的ではない．
+/ _internalization_ の non-cannonical 性:
+  Bootstrapping の対象は主にメタ数学の形式化である．
+  このために概念のコード化，しばしば Gödel numberization という作業を行う．
+  不運なことに，これらに canonnical な選択や数学的に自然な唯一の方法というものはなく，
+  単純に複雑な，そして膨大な組み合わせ論（しばしば大量のアドホックな構成を持つ）を用いなければならない．
+  これは証明を複雑にし，先に述べた理由によって mechanization を困難にする．
 
-規則の簡易さのため，ここでは one-sided な場合の sequent calculus を用いる．
+ここで用いた打開策は completeness theorem を用いた model-theoretic argument によって syntax の bureaucracy を回避することである．
+これは前者の問題をほぼ解決する．後者の問題は完全には解決されないが，その複雑さはいくらか緩和される．
 
-#definition[$LK1$][
-  The _one-sided sequent calculus $LK1$_ consists of the following rules:
-  #align(center, table(
-    columns: (auto, auto, auto, auto),
-    stroke: none,
-    inset: 8pt,
-    align: center,
-    [
-      #prooftree(
-        rule(
-          name: "identity",
-          $proves phi, not phi$
-        )
-      )
-    ],
-    [
-      #prooftree(
-        rule(
-          name: "cut",
-          $proves Gamma, Delta$,
-          $proves Gamma, phi$,
-          $proves not phi, Delta$,
-        )
-      )
-    ],
-    [
-      #prooftree(
-        rule(
-          name: "contraction",
-          $proves Gamma$,
-          $proves Delta$,
-        )
-      )
-      ($Delta subset.eq Gamma$)
-    ],
-    [
-      #prooftree(
-        rule(
-          name: "verum",
-          $proves top$
-        )
-      )
-    ],
-    [
-      #prooftree(
-        rule(
-          name: $or$,
-          $proves phi or psi, Gamma$,
-          $proves phi, psi, Gamma$,
-        )
-      )
-    ],
-    [
-      #prooftree(
-        rule(
-          name: $and$,
-          $proves phi and psi, Gamma$,
-          $proves phi, Gamma$,
-          $proves psi, Gamma$,
-        )
-      )
-    ],
-    [
-      #prooftree(
-        rule(
-          name: $forall$,
-          $proves forall phi, Gamma$,
-          $proves "free"(phi), Gamma^+$,
-        )
-      )
-    ],
-    [
-      #prooftree(
-        rule(
-          name: $exists$,
-          $proves exists phi, Gamma$,
-          $proves phi[t], Gamma$,
-        )
-      )
-    ]
-  ))
-  A _$cal(L)$-theory_ is a set of $cal(L)$-sentences.
-  For a theory $T$ and a sentence $sigma$, _$T$ proves $sigma$_, denoted $T proves sigma$,
-  if there is a finite list of sentences $phi_1, ..., phi_n$ in $T$ such that a sequent
-  $proves not phi_1, ..., not phi_n, sigma$ is provable in $LK1$.
-]
+== Proof sketch
 
-#leancode(links: (
-  ("Foundation", "Foundation/FirstOrder/Basic/Calculus.lean#L28-L41"),
-  ("Foundation", "Foundation/FirstOrder/Basic/Calculus.lean#L28-L41"),
-))[
-  ```
-  abbrev Sequent (L : Language) := List (Proposition L)
-
-  inductive Derivation : Sequent L → Type _
-  | identity (r : L.Rel k) (v) : Derivation [.rel r v, .nrel r v]
-  | cut : Derivation (φ :: Γ) → Derivation (∼φ :: Δ) →
-      Derivation (Γ ++ Δ)
-  | contraction : Derivation Δ → Δ ⊆ Γ → Derivation Γ
-  | verum : Derivation [⊤]
-  | or : Derivation (φ :: ψ :: Γ) → Derivation (φ ⋎ ψ :: Γ)
-  | and : Derivation (φ :: Γ) → Derivation (ψ :: Γ) →
-      Derivation (φ ⋏ ψ :: Γ)
-  | all : Derivation (φ.free :: Γ⁺) → Derivation ((∀¹ φ) :: Γ)
-  | exs : Derivation (φ/[t] :: Γ) → Derivation ((∃¹ φ) :: Γ)
-
-  structure Theory.Proof (T : Theory L) (σ : Sentence L) where
-    axioms : List (Sentence L)
-    axioms_mem : ∀ ψ ∈ axioms, ψ ∈ T
-    derivation :
-      OneSidedLK.Pullback Derivation Rewriting.emb (σ :: ∼axioms)
-  ```
-]
-
-$forall$-規則の uppersequent $"free"(phi), Gamma^+$ はその eigenvariable を常にフレッシュに取るための手続きである．
-$phi^+$ は $phi$ に現れる free-variable $\&x$ をすべて $\&(x+1)$ に置き換えたもの，
-$Gamma^+ := phi_1^+, ..., phi_n^+$, ($Gamma = phi_1, ..., phi_n$)， $"free"(phi) := phi^+[\&0 \/ \#0]$ と定義する．
-
-The completeness theorem is proved by a bit non-standard way #footnote[A forcing argument.].
-
-#leancode(links: (
-  ("Foundation", "Foundation/FirstOrder/Completeness/CounterModel.lean#L253"),
-  ),
-)[
-  ```
-  theorem Proof.complete_iff : T ⊨ φ ↔ T ⊢ φ
-  ```
-]
-
-This theorem is technically important for our mechanization of the incompleteness theorems, as it allows us to reduce the syntactic provability,
-which is often too complex, to the semantic truth in a model, which is often easier to handle.
-
-== Arithmetic
+=== Arithmetic
 
 第二不完全性定理を証明するにあたって基礎となる体系として，ここでは $ISigma1$ を選ぶ．
 これは実際には過剰に強い理論であり， より強い結果を得たいならば理論を弱めて
@@ -206,18 +93,18 @@ Buss's theory $sans("S")^1_2$ でも標準的な証明はほとんど同様に#f
 $ISigma1$ では @thm:recursive-def が成立するため帰納的な述語及び関数の定義が扱うことが楽である．
 
 #theorem[$ISigma1$][
-  Let $Phi_(bold(C))(arrow(v), x)$ be a predicate over $bold(V)$ which takes a class $bold(C) subset.eq bold(V)$ as a parameter.
+  Let $Phi(bold(C); arrow(v), x)$ be a predicate over $bold(V)$ which takes a class $bold(C) subset.eq bold(V)$ as a parameter.
   Assume that this satisfies following conditions.
-  1. Definability: A predicate $P(c, arrow(v), x) := Phi_{z | z in c}(arrow(v), x)$ is $Delta_1$-definable.
-  2. Monotonicity: $bold(C) subset.eq bold(C')$ and $Phi_bold(C)(arrow(v), x)$ implies $Phi_bold(C')(arrow(v), x)$.
-  3. Finite: If $Phi_bold(C)(arrow(v), x)$ holds, then there is $m in V$, such that $Phi_{z in bold(C) | z < m}(arrow(v), x)$ holds.
+  / Definability: A predicate $P(c, arrow(v), x) := Phi({z | z in c}; arrow(v), x)$ is $Delta_1$-definable.
+  / Monotonicity: $bold(C) subset.eq bold(C')$ and $Phi(bold(C); arrow(v), x)$ implies $Phi(bold(C'); arrow(v), x)$.
+  / Finiteness: If $Phi(bold(C); arrow(v), x)$ holds, then there is $m in V$, such that $Phi({z in bold(C) | z < m}; arrow(v), x)$ holds.
 
   Then we have a $Sigma_1$-definable predicate $"Fix"_Phi (arrow(v), x)$ such that
   $
-    "Fix"_Phi (arrow(v), x) <==> Phi_{x | "Fix"_Phi (arrow(v), x)}(arrow(v), x)
+    "Fix"_Phi (arrow(v), x) <==> Phi({z | "Fix"_Phi (arrow(v), z)}; arrow(v), x)
   $
   Additionally, if it satisfies following condition, $"Fix"_Phi (arrow(v), x)$ is $Delta_1$-definable.
-  4. Strongly finite: If $Phi_bold(C)(arrow(v), x)$ holds, then $Phi_{z in bold(C) | z < x}(arrow(v), x)$ holds.
+  / Strong finiteness: If $Phi(bold(C); arrow(v), x)$ holds, then $Phi({z in bold(C) | z < x}; arrow(v), x)$ holds.
 
 ]<thm:recursive-def>
 
