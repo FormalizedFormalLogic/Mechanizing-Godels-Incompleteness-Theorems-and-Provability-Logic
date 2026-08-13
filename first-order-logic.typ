@@ -4,7 +4,7 @@
 
 We mechanized the following two results.
 
-#theorem[Gödel's First Incompleteness Theorem @God31 @Vaught1962 @JonesShepherdson1983][
+#theorem[Gödel's First Incompleteness Theorem @God31 @Vau62 @JS83][
   Let $T$ be a $Delta_1$-definable, $Sigma_1$-sound $LOR$-theory stronger than $R0$,
   Then $T$ is incomplete,
   that is, there exists a $LOR$-sentence $phi$ such that $T nproves phi$ and $T nproves not phi$.
@@ -16,14 +16,14 @@ We mechanized the following two results.
   where $Con(T)$ is a consistency statement of $T$.
 ]<thm:G2>
 
-The proofs largely follow the standard approach in the literature (see, for example, @HajekPudlak2016).
+The proofs largely follow the standard approach in the literature (see, for example, @HP16).
 We therefore omit the details and instead comment on several technical and methodological aspects of the formalization.
 
 === Syntax
 We use a locally nameless representation for terms and formulas of first-order logic.
 A similar approach is adopted in @HvD20.
 
-In standard logical terminology, this amounts to using _semiterms_ and _semiformulas_, which generalize terms and formulas, respectively @Buss1998.
+In standard logical terminology, this amounts to using _semiterms_ and _semiformulas_, which generalize terms and formulas, respectively @Bus98a.
 Variable symbols are divided into two classes: free variables, denoted by $\&x, "for" x in xi$, and bound variables, denoted by $\#z, "for" z in [n]$.
 A semiterm is a term generated using variables of these two kinds.
 A semiformula is generated from semiterms in the usual way, but may contain bound variables that are not bound by any quantifier.
@@ -96,7 +96,7 @@ $
   fal(x)[x < num(n) <-> or.big_(i < n) (x = num(i))]
 $
 
-The key theorem is that every $Sigma_1$-sound theory extending $R0$ has a weak representation of every recursively enumerable (r.e.) predicate @Vaught1962,@JonesShepherdson1983.
+The key theorem is that every $Sigma_1$-sound theory extending $R0$ has a weak representation of every recursively enumerable (r.e.) predicate @Vau62,@JS83.
 More precisely:
 
 #theorem[
@@ -133,10 +133,10 @@ Theorem @thm:G1 now follows from @thm:repr by the standard diagonal argument.
 We take $ISigma1$ as the base theory for our proof of the second incompleteness theorem.
 This theory is in fact unnecessarily strong. For a sharper result, one could weaken the base theory to Buss's theory $sans("S")^1_2$, over which the standard proof can be carried out with few changes#footnote[
   In many proofs, including ours, derivability condition D3 is established using formalized $Sigma_1$-completeness.
-  Whether this principle holds in $sans("S")^1_2$ remains an open problem @Bek2006.
+  Whether this principle holds in $sans("S")^1_2$ remains an open problem @BV06a.
   One must therefore prove the sharper formalized $Sigma^"b"_1$-completeness theorem.
 ].
-Moreover, Nelson's interpretation $Robinson triangle.small.r sans("S")^1_2$ extends the second incompleteness theorem to a broad class of theories that interpret Robinson arithmetic $Robinson$ @Vis2011.
+Moreover, Nelson's interpretation $Robinson triangle.small.r sans("S")^1_2$ extends the second incompleteness theorem to a broad class of theories that interpret Robinson arithmetic $Robinson$ @Vis11.
 Although this is an appealing direction, we do not pursue it because it would make the formalization prohibitively complex.
 Working in $ISigma1$ makes recursive definitions of predicates and functions easier to handle, since @thm:recursive-def is available.
 
@@ -147,11 +147,11 @@ In practice, this can often be inferred automatically from the stated definition
 To automate the substantial amount of such reasoning required by the proofs, we make extensive use of Aesop @LF23 whenever no explicit defining formula is needed.
 
 Let $Bit(x, y)$ be the predicate asserting that the $x$-th digit in the binary expansion of $y$ is $1$.
-Ackermann coding, obtained from the membership relation defined below, provides a means of representing hereditarily finite sets within arithmetic @Pettigrew2009.
+Ackermann coding, obtained from the membership relation defined below, provides a means of representing hereditarily finite sets within arithmetic @Pet09.
 $
   x in y <==> Bit(x, y)
 $
-To work with $Bit(x, y)$ in weak arithmetic, we also mechanized the well-known fact that the graph of exponentiation is representable by a $Delta_0$-formula and that its inductive properties are provable in $Ind(Delta_0)$ @GaifmanDimitracopoulos1982.
+To work with $Bit(x, y)$ in weak arithmetic, we also mechanized the well-known fact that the graph of exponentiation is representable by a $Delta_0$-formula and that its inductive properties are provable in $Ind(Delta_0)$ @GD82.
 
 The following theorem is useful for handling recursively defined structures, such as terms and formulas, over $Universe$.
 It states that predicates defined recursively with parameters from $Universe$ can be constructed together with the requisite definability properties.
