@@ -60,10 +60,10 @@ A naive, purely syntactic approach to this task encounters the following difficu
   These syntactic operations are constructive and can be developed over very weak base theories, such as $sans("S")^1_2$.
 ].
 
-/ Complexity of the deductive system: When sufficiently complex formulas are involved, the deductive system can become unmanageably intricate.
+/ Bureaucracy of the deductive system: When sufficiently complex formulas are involved, the deductive system can become unmanageably intricate.
   A task that is already difficult to formalize directly in Lean becomes exceedingly burdensome when it must instead be carried out within a still more restrictive formal system defined in Lean.
   Moreover, we must manipulate metamathematical notions that have themselves been formalized internally, such as formalized provability. This is scarcely practical.
-/ Non-canonicity of _internalization_:
+/ Non-canonicity of bootstrapping:
   Bootstrapping is primarily concerned with the formalization of metamathematics.
   This requires encoding the relevant notions, the _Gödel numbering_.
   Unfortunately, there is neither a canonical choice of encoding nor a unique mathematically natural construction.
