@@ -290,7 +290,6 @@ Second incompleteness theorem の証明に於いて crux となるのは provabi
   ),
 )[
   ```
-
 /-- Gödel's second incompleteness theorem -/
 theorem consistent_unprovable [Consistent T] : T ⊬ T.consistent.val
 
