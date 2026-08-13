@@ -2,7 +2,7 @@
 
 = Mechanization of the incompleteness theorems
 
-私達が mechanize した結果は次の二つである．
+We mechanized the following two results.
 
 #theorem[Gödel's First Incompleteness Theorem @God31 @Vaught1962 @JonesShepherdson1983][
   Let $T$ be a $Delta_1$-definable, $Sigma_1$-sound $LOR$-theory stronger than $R0$,
@@ -16,18 +16,18 @@
   where $Con(T)$ is a consistency statement of $T$.
 ]<thm:G2>
 
-証明の大筋は既存の標準的な手法（例えば @HajekPudlak2016 を参照）を大きく逸脱しない．
-そのため，詳細な説明は省略するが，いくつか technical, methodological な点について注釈する．
+The proofs largely follow the standard approach in the literature (see, for example, @HajekPudlak2016).
+We therefore omit the details and instead comment on several technical and methodological aspects of the formalization.
 
 === Syntax
-一階述語論理の term や formula の表現のために，我々は locally nameless representation を採用する．
-同様の手法は @HvD20 でも用いられている．
+We use a locally nameless representation for terms and formulas of first-order logic.
+A similar approach is adopted in @HvD20.
 
-これは標準的な logic の言葉では term や formula を拡大した概念である _semiterm_ および _semiformula_ @Buss1998 を用いることに対応する．
-変数記号は2種類(free-variables, denoted by $\&x, "for" x in xi$ and bound-variables, denoted by $\#z, "for" z in [n]$) に分けられ，
-semiterm とはこれらを変数として生成される term である．
-semiformula は通常のように semiterm から生成される formula であるが，量化子によって束縛されない bound-variables を含みうる．
-私達は type $xi$ の free-variables と $n$ 個の bound-variables を含みうる semiformula の為す型を `Semiterm ξ n` として形式化した．
+In standard logical terminology, this amounts to using _semiterms_ and _semiformulas_, which generalize terms and formulas, respectively @Buss1998.
+Variable symbols are divided into two classes: free variables, denoted by $\&x, "for" x in xi$, and bound variables, denoted by $\#z, "for" z in [n]$.
+A semiterm is a term generated using variables of these two kinds.
+A semiformula is generated from semiterms in the usual way, but may contain bound variables that are not bound by any quantifier.
+We formalized the type of semiformulas that may contain free variables of type $xi$ and $n$ bound variables as `Semiformula L ξ n`.
 
 #leancode(links: (
   ("Foundation", "Foundation/FirstOrder/Basic/Syntax/Formula.lean#L24-L32"),
@@ -49,44 +49,41 @@ semiformula は通常のように semiterm から生成される formula であ�
   ```
 ]
 
-Semiformula を用いた形式化は， formula の定義のための単なる技術的技工であるだけでなく，practical な利点も持つ．
-例えば， $M$-parameter を持つ論理式 $A[x, y, z]$, というような，証明論やモデル論で頻出する制限は，
-ただ一つの type `Semiformula M 3` によって与えることができる．
+Formalization using semiformulas is more than a technical device for defining formulas; it also offers practical advantages.
+For example, a condition frequently encountered in proof theory and model theory, such as a formula $A[x, y, z]$ with parameters from $M$, can be expressed by the single type `Semiformula M 3`.
 
 === On internal argument
-多くの場合， incompleteness theorems (特に G2) の証明に於いて障害となるのは，
-しばしば arithmetization や bootstrapping と呼ばれる，メタ数学（項，論理式，証明可能性，初等的な証明論，etc.）の internalization,
-すなわち，形式化した証明体系（ここでは $ISigma1$）の内部でこれらの概念を形式的に定義・証明することである．
-この作業をナイーブに syntactical に行おうとする試みは，次に述べる理由によって阻害される#footnote[
-  しかし， これを達成する意義は十分にある．
-  これらの syntactic な操作は constructive で，かつ非常に弱い base theory (e.g. $sans("S")^1_2$)で行うことができる．
-]．
+In proofs of the incompleteness theorems, especially G2, the principal obstacle is often the internalization of metamathematics---terms, formulas, provability, elementary proof theory, and so forth---a process commonly called arithmetization or bootstrapping.
+In other words, these notions must be formally defined and their properties proved within the formalized deductive system itself, which in our case is $ISigma1$.
+A naive, purely syntactic approach to this task encounters the following difficulties#footnote[
+  Nevertheless, carrying out such a construction is worthwhile.
+  These syntactic operations are constructive and can be developed over very weak base theories, such as $sans("S")^1_2$.
+].
 
-/ 証明体系の煩雑さ: 十分に複雑な論理式を扱うにあたって，証明体系は手に負えないほど複雑になりうる．
-  Lean 上で形式的に扱うのでさえ困難な作業を，その内部で定義された，更に制限された形式体系で行うのは苦痛である．
-  更に，私達はその内部で形式化されたメタ数学概念（e.g. 形式化された証明可能性）を扱わなくてはならない．これはほとんど現実的ではない．
-/ _internalization_ の non-cannonical 性:
-  Bootstrapping の対象は主にメタ数学の形式化である．
-  このために概念のコード化，しばしば Gödel numberization という作業を行う．
-  不運なことに，これらに canonnical な選択や数学的に自然な唯一の方法というものはなく，
-  単純に複雑な，そして膨大な組み合わせ論（しばしば大量のアドホックな構成を持つ）を用いなければならない．
-  これは証明を複雑にし，先に述べた理由によって mechanization を困難にする．
+/ Complexity of the deductive system: When sufficiently complex formulas are involved, the deductive system can become unmanageably intricate.
+  A task that is already difficult to formalize directly in Lean becomes exceedingly burdensome when it must instead be carried out within a still more restrictive formal system defined in Lean.
+  Moreover, we must manipulate metamathematical notions that have themselves been formalized internally, such as formalized provability. This is scarcely practical.
+/ Non-canonicity of _internalization_:
+  Bootstrapping is primarily concerned with the formalization of metamathematics.
+  This requires encoding the relevant notions, the _Gödel numbering_.
+  Unfortunately, there is neither a canonical choice of encoding nor a unique mathematically natural construction.
+  One must instead develop a large body of intrinsically complicated combinatorics, often involving numerous ad hoc constructions...
+  This complicates the proofs and, for the reasons just discussed, makes mechanization difficult.
 
-ここで用いた打開策は completeness theorem を用いた model-theoretic argument によって syntax の bureaucracy を回避することである．
-これは前者の問題をほぼ解決する．後者の問題は解決されないが，その複雑さはいくらか緩和される．
+Our solution is to avoid syntactic bureaucracy by employing a model-theoretic argument via the completeness theorem.
+This largely resolves the first problem. Although it does not eliminate the second, it mitigates its complexity to some extent.
 
-$ISigma1$のような，論理式の complexity に関する条件を扱う場面は，私達が扱うような制限された数学では多くの場面で必要になるが，
-model-theoretic argument では実際に論理式を与える必要はなく，単にその述語の定義可能性を判定するだけで良い．
-後に述べるように，この部分は Aesop @LF23 を用いてほぼ自動で行えるように設計した．
-このように， syntax, 特に(not-internal)論理式の bureaucracy は
-_ほぼ_除去することは可能だが，それでもなお具体的な論理式を与えることが必要になる場面は残る．
-例えば second incoimpleteness theorem の statement は $T nproves Con(T)$ だが，
-これを主張するために model-independent な論理式 $Con(T)$ を explicit に与える必要がある．
+In the weak mathematics considered here, one frequently needs to track restrictions on formula complexity, as in $ISigma1$.
+With a model-theoretic argument, however, it is unnecessary to exhibit an actual formula; it suffices to establish that the predicate in question is definable in appropriate complexity.
+As discussed below, we designed this part of the development so that it can be handled almost automatically using Aesop @LF23.
+Thus, the bureaucratic overhead of syntax, especially that associated with (external) formulas, can be _almost_ eliminated.
+There nevertheless remain situations in which a concrete formula must be supplied.
+For example, the second incompleteness theorem asserts $T nproves Con(T)$, and stating this result requires an explicit, model-independent formula $Con(T)$.
 
 #let num(x) = $overline(#x)$
 
 == First incompleteness theorem
-理論 $R0$ は $cal(L)_"OR" = {0, 1, +, dot, <, =}$ の自由変数を持たない全てのグラフとリテラル
+The theory $R0$ consists of the following variable-free graphs and literals in $cal(L)_"OR" = {0, 1, +, dot, <, =}$,
 
 $
   num(n) + num(m) =& num(n + m) wide&& "for all" n, m in Nat  \
@@ -94,13 +91,13 @@ $
   num(n) <& num(m) wide&& "for all" n, m in Nat "such that" n < m \
   num(n) eq.not& num(m) wide&& "for all" n, m in Nat "such that" n eq.not m\
 $
-と次の規則からなる．
+together with the following axiom scheme:
 $
   fal(x)[x < num(n) <-> or.big_(i < n) (x = num(i))]
 $
 
-Key theorem は $R0$ @Vaught1962,@JonesShepherdson1983 を含む $Sigma_1$-sound な理論が recursively enumerable (r.e.) な predicate に対する weak representation を常に持つことである．
-すなわち，
+The key theorem is that every $Sigma_1$-sound theory extending $R0$ has a weak representation of every recursively enumerable (r.e.) predicate @Vaught1962,@JonesShepherdson1983.
+More precisely:
 
 #theorem[
   Let $T supset.eq R0$ be a $Sigma_1$-sound theory and let $S$ be a r.e. set.
@@ -110,11 +107,11 @@ Key theorem は $R0$ @Vaught1962,@JonesShepherdson1983 を含む $Sigma_1$-sound
   $
 ]<thm:repr>
 
-$godel(bullet)$ を論理式の Gödel coding とする．
-集合 $D$ を $godel(phi[x]) in D <==> T proves not phi[godel(phi[x])]$ を満たすような集合とする．
-後に示すが， $Nat models Pr(T)[godel(phi)] <==> T proves phi$ を満たすような可証性述語 $Pr(T)[x]$ が $Sigma_1$-formula
-として定義できるので， $D$ は r.e. である．
-従って @thm:repr と典型的な diagonal argument により @thm:G1 が従う．
+Let $godel(bullet)$ denote a Gödel coding of formulas.
+Define the set $D$ by $godel(phi[x]) in D <==> T proves not phi[godel(phi[x])]$.
+As shown below, there is a provability predicate $Pr(T)[x]$, definable by a $Sigma_1$-formula, such that
+$Nat models Pr(T)[godel(phi)] <==> T proves phi$; hence $D$ is r.e.
+Theorem @thm:G1 now follows from @thm:repr by the standard diagonal argument.
 
 #leancode(links: (
   ("Foundation", "https://github.com/FormalizedFormalLogic/Foundation/blob/ee84d9d25d88aec25a0c6b5203881e8515437f40/Foundation/FirstOrder/Incompleteness/First.lean#L16"),
@@ -133,37 +130,31 @@ $godel(bullet)$ を論理式の Gödel coding とする．
 #let Universe = $bold(upright(V))$
 #let Bit = $"Bit"$
 
-第二不完全性定理を証明するにあたって基礎となる体系として，ここでは $ISigma1$ を選ぶ．
-これは実際には過剰に強い理論であり， より強い結果を得たいならば理論を弱めて
-Buss's theory $sans("S")^1_2$ でも標準的な証明はほとんど同様に#footnote[
-  Derivability condition D3 は多くの証明（私達が採用した証明も含む）では，
-  formalized $Sigma_1$-completeness によって証明されるが，
-  これは $sans("S")^1_2$ で成立するかは未解決な問題である @Bek2006．
-  このため，よりシャープな formalized $Sigma^"b"_1$-completeness を証明する必要がある．
-]実行可能である．
-加えて， Nelson による interpretation $Robinson triangle.small.r sans("S")^1_2$ を用いれば，
-第二不完全性定理は Robinson arithmetic $Robinson$ を interpret する広範な理論に拡大できる @Vis2011．
-これは魅力的な方向性ではあるが，形式化があまりにも複雑になることからこの道は選ばない．
-$ISigma1$ では @thm:recursive-def が成立するため帰納的な述語及び関数の定義が扱うことが楽である．
+We take $ISigma1$ as the base theory for our proof of the second incompleteness theorem.
+This theory is in fact unnecessarily strong. For a sharper result, one could weaken the base theory to Buss's theory $sans("S")^1_2$, over which the standard proof can be carried out with few changes#footnote[
+  In many proofs, including ours, derivability condition D3 is established using formalized $Sigma_1$-completeness.
+  Whether this principle holds in $sans("S")^1_2$ remains an open problem @Bek2006.
+  One must therefore prove the sharper formalized $Sigma^"b"_1$-completeness theorem.
+].
+Moreover, Nelson's interpretation $Robinson triangle.small.r sans("S")^1_2$ extends the second incompleteness theorem to a broad class of theories that interpret Robinson arithmetic $Robinson$ @Vis2011.
+Although this is an appealing direction, we do not pursue it because it would make the formalization prohibitively complex.
+Working in $ISigma1$ makes recursive definitions of predicates and functions easier to handle, since @thm:recursive-def is available.
 
-前述したように，算術の内部の議論は arbitrary に固定した $ISigma1$ のモデルの上で行う．
-以降それを $Universe$ と表記することにする．
+As noted above, our internal arithmetical arguments are carried out in an arbitrarily fixed model of $ISigma1$, which we henceforth denote by $Universe$.
 
-$Universe$ 上では $Sigma_1$-論理式に制限した induction しか使用できないため，
-テクニカルな面で重要なのは $Universe$ 上の relation や function の （$Sigma_i$, $Pi_i$, $Delta_i$-） definability である．
-Practical には，多くの場合，これはその記述された定義から自動的に判定できる．
-証明にあたって必要になるであろう，この膨大な作業を機械化するため， defining formula を具体的に与える必要がない場合には，Aesop @LF23 を用いた証明自動化を広範に用いている．
+Because only induction restricted to $Sigma_1$-formulas is available over $Universe$, the ($Sigma_i$-, $Pi_i$-, and $Delta_i$-) definability of relations and functions on $Universe$ is technically important.
+In practice, this can often be inferred automatically from the stated definition.
+To automate the substantial amount of such reasoning required by the proofs, we make extensive use of Aesop @LF23 whenever no explicit defining formula is needed.
 
-述語 $Bit(x, y)$ を， "$x$-th number of the binary expansion of $y$ is $1$" を意味する述語とする．
-このとき，次のように定義する membership relation から定まる Ackermann coding は hereditary finite set を算術の内部で扱うための coding を与える @Pettigrew2009.
+Let $Bit(x, y)$ be the predicate asserting that the $x$-th digit in the binary expansion of $y$ is $1$.
+Ackermann coding, obtained from the membership relation defined below, provides a means of representing hereditarily finite sets within arithmetic @Pettigrew2009.
 $
   x in y <==> Bit(x, y)
 $
-$Bit(x, y)$ を weak arithmetic で扱うために， exponential のグラフが $Delta_0$-formula で表現可能，
-その inductive property が $Ind(Delta_0)$ で証明可能であるというよく知られた事実 @GaifmanDimitracopoulos1982 も mechanise した．
+To work with $Bit(x, y)$ in weak arithmetic, we also mechanized the well-known fact that the graph of exponentiation is representable by a $Delta_0$-formula and that its inductive properties are provable in $Ind(Delta_0)$ @GaifmanDimitracopoulos1982.
 
-次の定理は，項や論理式といった再帰的に定義された構造を $Universe$ 上で扱うにあたって便利な定理である．
-これは， $Universe$-parameter をもつ再帰的に定義できる述語がその定義可能性も含めて適切に与えられることを主張する．
+The following theorem is useful for handling recursively defined structures, such as terms and formulas, over $Universe$.
+It states that predicates defined recursively with parameters from $Universe$ can be constructed together with the requisite definability properties.
 
 #theorem[Recursive definition][
   Let $Phi(bold(C); arrow(v), x)$ be a predicate over $Universe$ which takes a class $bold(C) subset.eq Universe$ as a parameter.
@@ -179,7 +170,7 @@ $Bit(x, y)$ を weak arithmetic で扱うために， exponential のグラフ�
   / Strong finiteness: If $Phi(bold(C); arrow(v), x)$ holds, then $Phi({z in bold(C) | z < x}; arrow(v), x)$ holds.
 ]<thm:recursive-def>
 
-この述語について次の structural induction も成立する．
+This predicate also satisfies the following structural induction principle.
 
 #theorem[Induction of recursive definition][
   Assume that $Phi$ satisfies the strong finiteness property.
@@ -194,11 +185,10 @@ $Bit(x, y)$ を weak arithmetic で扱うために， exponential のグラフ�
   $
 ]
 
-$sans("IsFormula")[x]$ や $Pr(T)[x]$ などの述語を explicit に得るために， definability-property によって保証される defining formula も
-explicit に与える必要がある． Mechanization においては，
-まずその論理式，すなわち recursive definition の syntactic essence に `Blueprint k` という名称を与える．
-これは model independent である．
-そののち， `Construction (φ : Blueprint k)` を定義する．これは `Blueprint k` の model-theoretic realization である．
+To obtain explicit predicates such as $sans("IsFormula")[x]$ and $Pr(T)[x]$, we must also provide the defining formulas whose existence is guaranteed by the corresponding definability properties.
+In the mechanization, we first call such a formula---the syntactic essence of a recursive definition---a `Blueprint k`.
+A blueprint is independent of any model.
+We then define `Construction (φ : Blueprint k)`, the model-theoretic realization of a `Blueprint k`.
 
 #leancode(
   links: (
@@ -230,10 +220,10 @@ explicit に与える必要がある． Mechanization においては，
   ```
 ]
 
-項，論理式，証明といったメタ数学的構造はいずれも recursive に構成されるから，`Blueprint`及び`Construction`を用いて構成できる．
-加えてこれらは well-founded に構成されるから strong finiteness property を満たす．
-従って，これらの述語が $Delta_1$-definable であること，適切な structural induction を満たすことが統一的に導ける．
-これらの事実から，代入などの基本的な syntactic operation が $Universe$ 上で定義できることは明らかである．
+Metamathematical structures such as terms, formulas, and proofs are all recursively generated and can therefore be constructed using `Blueprint` and `Construction`.
+Moreover, because these structures are generated in a well-founded manner, they satisfy the strong finiteness property.
+It follows uniformly that the corresponding predicates are $Delta_1$-definable and satisfy appropriate structural induction principles.
+These facts immediately yield definitions over $Universe$ of basic syntactic operations such as substitution.
 #leancode(
   links: (
     ("Foundation", "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Formula/Basic.lean#L1218"),
@@ -249,8 +239,8 @@ explicit に与える必要がある． Mechanization においては，
   ```
 ]
 
-Second incompleteness theorem の証明に於いて crux となるのは provability predicate $Pr(T)(x)$ の Derivability Condition である．
-証明は例によってルーチンである．
+The crucial ingredient in the proof of the second incompleteness theorem is that the provability predicate $Pr(T)(x)$ satisfies the derivability conditions.
+Their verification is routine.
 
 #leancode(
   links: (
@@ -282,7 +272,7 @@ Second incompleteness theorem の証明に於いて crux となるのは provabi
   ```
 ]
 
-最後に，provability condition を用いた標準的な証明と全く同様の，よく知られた議論を用いて第二不完全性定理が導かれる．
+Finally, the second incompleteness theorem follows by the usual argument from the derivability conditions.
 
 #leancode(
   links: (
