@@ -20,7 +20,7 @@
 #let lean-link(index, l) = {
   let (repo, path) = l
   link(REPO_SOURCES.at(repo) + "/" + path)[
-    #text(8pt)[#(index + 1)]
+    #(index + 1)
   ]
 }
 
@@ -118,7 +118,7 @@
         columns: (1fr, auto),
         gutter: 6pt,
         align: (right, left),
-        text(8pt, smallcaps[Source:]),
+        smallcaps[Source:],
         for (index, li) in links.enumerate() {
           lean-link(index, li)
         },
