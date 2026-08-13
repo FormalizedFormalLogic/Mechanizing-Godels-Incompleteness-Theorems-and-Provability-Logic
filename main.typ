@@ -70,6 +70,10 @@ However, for the sake of readability, note that in some places we have modified 
 Moreover, owing to motivations other than the incompleteness theorems and provability logic that the present paper focuses on, some implementations are stated as more general definitions.
 We add comments where we deem it necessary, but for the actual working (verified) code, refer to the repository.
 
+=== On AI usage
+Almost all of our codes concerning the incompleteness theorems and Solovay's arithmetical completeness theorem were written in
+2023 - 2025, and free from AI-generated contents.
+
 #include "first-order-logic.typ"
 
 = Provability Logic
