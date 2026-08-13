@@ -156,39 +156,41 @@ To work with $Bit(x, y)$ in weak arithmetic, we also mechanized the well-known f
 The following theorem is useful for handling recursively defined structures, such as terms and formulas, over $Universe$.
 It states that predicates defined recursively with parameters from $Universe$ can be constructed together with the requisite definability properties.
 
-#theorem[Recursive definition][
-  Let $Phi(bold(C); arrow(v), x)$ be a predicate over $Universe$ which takes a class $bold(C) subset.eq Universe$ as a parameter.
+#let Fix = $bold("Fix")$
+
+#theorem[Recursive definition (in $ISigma1$)][
+  Let $Phi: cal(P)(Universe) -> cal(P)(Universe)$ be a class-valued function
   Assume that this satisfies following conditions.
-  / Definability: A predicate $P(c, arrow(v), x) := Phi({z | z in c}; arrow(v), x)$ is $Delta_1$.
-  / Monotonicity: $bold(C) subset.eq bold(C')$ and $Phi(bold(C); arrow(v), x)$ implies $Phi(bold(C'); arrow(v), x)$.
-  / Finiteness: If $Phi(bold(C); arrow(v), x)$ holds, then there is $m in V$, such that $Phi({z in bold(C) | z < m}; arrow(v), x)$ holds.
-  Then we have a $Sigma_1$-predicate $"Fix"_Phi (arrow(v), x)$ such that
+  / Definability: A predicate $P(x, c) := x in Phi({z | z in c})$ is $Delta_1$-definable with parameters.
+  / Monotonicity: $bold(C) subset.eq bold(C')$ implies $Phi(bold(C)) subset.eq Phi(bold(C'))$.
+  / Finiteness: If $x in Phi(bold(C))$ holds, then $x in Phi({z in bold(C) | z < m})$ holds for some $m in Universe$.
+  Then we have a $Sigma_1$-definable class $Fix_Phi$ such that
   $
-    "Fix"_Phi (arrow(v), x) <==> Phi({z | "Fix"_Phi (arrow(v), z)}; arrow(v), x)
+    Fix_Phi = Phi(Fix_Phi)
   $
-  Additionally, if it satisfies following condition, $"Fix"_Phi (arrow(v), x)$ is $Delta_1$.
-  / Strong finiteness: If $Phi(bold(C); arrow(v), x)$ holds, then $Phi({z in bold(C) | z < x}; arrow(v), x)$ holds.
+  Additionally, if it satisfies following condition, $Fix_Phi$ is $Delta_1$.
+  / Strong finiteness: If $x in Phi(bold(C))$ holds, then $x in Phi({z in bold(C) | z < x})$ holds.
 ]<thm:recursive-def>
 
 This predicate also satisfies the following structural induction principle.
 
-#theorem[Induction of recursive definition][
+#theorem[Induction of recursive definition (in $ISigma1$)][
   Assume that $Phi$ satisfies the strong finiteness property.
-  The predicate $"Fix"_Phi$ above satisfies the induction principle of following form.
-  Let $psi$ be a $Sigma_1$ or $Pi_1$-predicate (which may contains parameters from $Universe$) and $arrow(v) in Universe$:
+  The predicate $Fix_Phi$ above satisfies the induction principle of following form.
+  Let $psi$ be a $Sigma_1$ or $Pi_1$-predicate (which may contains parameters from $Universe$):
   $
-    fal(bold(C) subset.eq Universe)[fal(y in bold(C))("Fix"_Phi (arrow(v), y) and psi(y)) -> fal(x in Universe)[Phi(bold(C), arrow(v), x) -> psi(x)]]
+    fal(bold(C) subset.eq Fix_Phi)[fal(x in bold(C))psi(x) -> fal(x in Phi(bold(C)))psi(x)]
   $
   implies
   $
-    fal(x in Universe)["Fix"_Phi (arrow(v), x) -> psi(x)]
+    fal(x in Fix_Phi)psi(x)
   $
 ]
 
 To obtain explicit predicates such as $sans("IsFormula")[x]$ and $Pr(T)[x]$, we must also provide the defining formulas whose existence is guaranteed by the corresponding definability properties.
 In the mechanization, we first call such a formula---the syntactic essence of a recursive definition---a `Blueprint k`.
 A blueprint is independent of any model.
-We then define `Construction (φ : Blueprint k)`, the model-theoretic realization of a `Blueprint k`.
+We then define `Construction V φ`, the model-theoretic realization of a `φ : Blueprint k`.
 
 #leancode(
   links: (
@@ -220,7 +222,7 @@ We then define `Construction (φ : Blueprint k)`, the model-theoretic realizatio
   ```
 ]
 
-Metamathematical structures such as terms, formulas, and proofs are all recursively generated and can therefore be constructed using `Blueprint` and `Construction`.
+Syntactic structures such as terms, formulas, and proofs are all recursively generated and can therefore be constructed using `Blueprint` and `Construction`.
 Moreover, because these structures are generated in a well-founded manner, they satisfy the strong finiteness property.
 It follows uniformly that the corresponding predicates are $Delta_1$-definable and satisfy appropriate structural induction principles.
 These facts immediately yield definitions over $Universe$ of basic syntactic operations such as substitution.
