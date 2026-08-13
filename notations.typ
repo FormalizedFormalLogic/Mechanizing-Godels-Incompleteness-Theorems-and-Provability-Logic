@@ -105,3 +105,24 @@
 #let AxiomL = $Axiom("Löb")$
 #let AxiomT = $Axiom("T")$
 #let AxiomGrz = $Axiom("Grz")$
+
+#let System(X) = $bold(#X)$
+
+#let LK1 = $System("LK")^1$
+#let LOR = $cal(L)_"OR"$
+#let Ind(x) = $sans("I")#x$
+#let ISigma1 = $Ind(Sigma_1)$
+#let Robinson = $sans("Q")$
+#let R0 = $sans("R"_0)$
+#let Con(T) = $sans("Con")_(#T)$
+
+#let sepWithCommaMath(..args) = args.pos().join[,]
+
+#let brak(..args) = $lr(chevron.l sepWithCommaMath(..args) chevron.r)$
+#let quant(Q, ..args) = $#Q sepWithCommaMath(..args) space.narrow$
+#let fal(..args) = $quant(forall, ..args)$
+#let exs(..args) = $quant(exists, ..args)$
+#let nexs(..args) = $quant(exists.not, ..args)$
+#let exsUniq(..args) = $quant(exists!, ..args)$
+
+#let godel(x) = $lr(⌜ #x ⌝)$

@@ -1,4 +1,5 @@
 #import "@preview/fine-lncs:0.6.5": author, institute, lncs, proof, theorem
+#import "@preview/fine-lncs:0.6.5": author, institute, lncs, theorem, proof
 #import "@preview/ctheorems:1.1.3": *
 #import "@preview/curryst:0.5.0": prooftree, rule
 
@@ -79,6 +80,7 @@
     let raw-elem = code.children.find(it => it.func() == raw)
     if raw-elem != none { raw-elem.text } else { "" }
   }
+  block(inset: 0.5em)
   align(center, block(
     width: 120%,
     // fill: rgb("#eee"),
@@ -109,7 +111,6 @@
     )),
   ))
   block(
-    inset: (bottom: 1em),
     if links.len() > 0 {
       grid(
         columns: (1fr, 1fr),
@@ -119,6 +120,7 @@
       )
     },
   )
+  block(inset: 0.5em)
 }
 
 
