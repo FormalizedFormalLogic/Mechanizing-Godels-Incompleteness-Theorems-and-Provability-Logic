@@ -80,6 +80,7 @@
     let raw-elem = code.children.find(it => it.func() == raw)
     if raw-elem != none { raw-elem.text } else { "" }
   }
+  block(inset: 0.5em)
   align(center, block(
     width: 120%,
     // fill: rgb("#eee"),
@@ -110,7 +111,6 @@
     )),
   ))
   block(
-    inset: (bottom: 1em),
     if links.len() > 0 {
       grid(
         columns: (1fr, 1fr),
@@ -120,6 +120,7 @@
       )
     },
   )
+  block(inset: 0.5em)
 }
 
 
