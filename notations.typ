@@ -36,6 +36,7 @@
 #let Box = $class("unary", square)$
 #let Boxdot = $class("unary", ⊡)$
 #let Dia = $class("unary", diamond)$
+#let interpret = $class("binary", triangle.r.small)$
 #let land = $and$
 #let limp = $->$
 #let liff = $<->$
@@ -59,13 +60,31 @@
 #let LogicGL = Logic("GL")
 #let LogicGLPlusBoxBot(n) = $LogicGL + Box^#n bot$
 #let LogicS = Logic("S")
+#let LogicGrz = Logic("Grz")
+#let LogicKT = Logic("KT")
+
+// Intuitionistic modal logics
+#let LogiciK = Logic("iK")
+#let LogiciGL = Logic("iGL")
+#let LogiciSL = Logic("iSL")
+
+// Polymodal provability logic and its strictly positive fragments
+#let LogicGLP = Logic("GLP")
+#let LogicRC = Logic("RC")
+#let LogicWC = Logic("WC")
+#let LogicQRC1 = $Logic("QRC"_1)$
 
 #let Gentzen(L) = $cal("G")_(#L)$
-#let Hilbert(L) = $cal("H")_(#L)$
 #let GentzenGL = Gentzen(LogicGL)
-#let GentzenWithCutGL = $Gentzen(LogicGL) + ("Cut")$
-#let HilbertGL = Hilbert(LogicGL)
 #let GentzenGLPoint3 = Gentzen(LogicGLPoint3)
+#let GentzenGrz = Gentzen(LogicGrz)
+
+#let GentzenWithCutGL = $Gentzen(LogicGL) + ("Cut")$
+#let GentzenWithCutGrz = $Gentzen(LogicGrz) + ("Cut")$
+
+#let Hilbert(L) = $cal("H")_(#L)$
+#let HilbertGL = Hilbert(LogicGL)
+#let HilbertGrz = Hilbert(LogicGrz)
 
 #let Prov(T) = $attach(br: #T, upright("Prov"))$
 // Use for *standard* provability predicate
@@ -79,11 +98,13 @@
 #let Theory(T) = $sans(upright(#T))$
 #let PeanoArithmetic = Theory("PA")
 #let TrueArithmetic = Theory("TA")
+#let HeytingArithmetic = Theory("HA")
 
 #let Axiom(A) = $upright(#A)$
 #let AxiomK = $Axiom("K")$
 #let AxiomL = $Axiom("Löb")$
 #let AxiomT = $Axiom("T")$
+#let AxiomGrz = $Axiom("Grz")$
 
 #let System(X) = $bold(#X)$
 

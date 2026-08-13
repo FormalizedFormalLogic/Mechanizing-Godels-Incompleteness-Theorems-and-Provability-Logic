@@ -1,3 +1,4 @@
+#import "@preview/fine-lncs:0.6.5": author, institute, lncs, proof, theorem
 #import "@preview/fine-lncs:0.6.5": author, institute, lncs, theorem, proof
 #import "@preview/ctheorems:1.1.3": *
 #import "@preview/curryst:0.5.0": prooftree, rule
@@ -5,7 +6,6 @@
 #let auxColor = color.hsl(205deg, 55%, 40%)
 
 #let base-text-size = 10pt
-#let font-text = ("New Computer Modern", "Shippori Mincho B1")
 #let font-math = ("New Computer Modern Math", "libertinus serif")
 #let font-code = "JuliaMono"
 
@@ -30,18 +30,17 @@
   keywords: (),
   body,
 ) = {
-
   show: lncs.with(
     title: title,
     authors: authors,
     abstract: abstract,
     keywords: keywords,
-    bibliography: bibliography("references.bib"),
+    bibliography: bibliography("references.bib", style: "assets/springer-lecture-notes-in-computer-science.csl"),
   )
 
   set heading(numbering: "1.1")
 
-  set text(size: base-text-size, font: font-text)
+  set text(size: base-text-size)
 
   show math.equation: set text(font: font-math)
 
@@ -72,8 +71,6 @@
   body
 
   pagebreak(weak: true)
-
-  bibliography("references.bib")
 }
 
 #let leancode(code, links: (), note: none) = {
@@ -83,7 +80,6 @@
     let raw-elem = code.children.find(it => it.func() == raw)
     if raw-elem != none { raw-elem.text } else { "" }
   }
-  block(inset: 0.5em)
   align(center, block(
     width: 120%,
     // fill: rgb("#eee"),
@@ -100,17 +96,18 @@
           raw(
             lang: "lean",
             block: true,
-            syntaxes: "assets/syntaxes/Lean.sublime-syntax",
-            code-text
-          )
-        )
+            syntaxes: "assets/Lean.sublime-syntax",
+            code-text,
+          ),
+        ),
       ),
       if note != none {
-          block(
-            inset: 1em,
-            text(8pt)[#smallcaps[Note:] #note])
-      }
-    ))
+        block(
+          inset: 1em,
+          text(8pt)[#smallcaps[Note:] #note],
+        )
+      },
+    )),
   ))
   block(
     inset: (bottom: 1em),
@@ -119,12 +116,10 @@
         columns: (1fr, 1fr),
         gutter: 6pt,
         align: (right, left),
-        text(8pt, smallcaps[Source:]),
-        text(8pt, enum(..links.map(lean-link)))
+        text(8pt, smallcaps[Source:]), text(8pt, enum(..links.map(lean-link))),
       )
-    }
+    },
   )
-  block(inset: 0.5em)
 }
 
 
