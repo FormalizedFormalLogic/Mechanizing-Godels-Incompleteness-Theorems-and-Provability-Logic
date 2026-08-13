@@ -17,9 +17,11 @@
 )
 // リンクはタプル ("Foundation", "Foundation/FirstOrder/...") で指定する:
 // 第1要素がリポジトリ名（REPO_SOURCES のキー），第2要素がリポジトリ内のパス
-#let lean-link(l) = {
+#let lean-link(index, l) = {
   let (repo, path) = l
-  link(REPO_SOURCES.at(repo) + "/" + path)[#path]
+  link(REPO_SOURCES.at(repo) + "/" + path)[
+    #text(8pt)[#(index + 1)]
+  ]
 }
 
 #let init(
@@ -113,10 +115,13 @@
   block(
     if links.len() > 0 {
       grid(
-        columns: (1fr, 1fr),
+        columns: (1fr, auto),
         gutter: 6pt,
         align: (right, left),
-        text(8pt, smallcaps[Source:]), text(8pt, enum(..links.map(lean-link))),
+        text(8pt, smallcaps[Source:]),
+        for (index, li) in links.enumerate() {
+          lean-link(index, li)
+        },
       )
     },
   )
