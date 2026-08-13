@@ -81,7 +81,7 @@ model-theoretic argument では実際に論理式を与える必要はなく，�
 このように， syntax, 特に(not-internal)論理式の bureaucracy は
 _ほぼ_除去することは可能だが，それでもなお具体的な論理式を与えることが必要になる場面は残る．
 例えば second incoimpleteness theorem の statement は $T nproves Con(T)$ だが，
-これを主張するために model-independent な論理式 $Con(T)$ を具体的に与える必要がある．
+これを主張するために model-independent な論理式 $Con(T)$ を explicit に与える必要がある．
 
 #let num(x) = $overline(#x)$
 
@@ -114,7 +114,7 @@ $godel(bullet)$ を論理式の Gödel coding とする．
 集合 $D$ を $godel(phi[x]) in D <==> T proves not phi[godel(phi[x])]$ を満たすような集合とする．
 後に示すが， $Nat models Pr(T)[godel(phi)] <==> T proves phi$ を満たすような可証性述語 $Pr(T)[x]$ が $Sigma_1$-formula
 として定義できるので， $D$ は r.e. である．
-従って @thm:repr と簡単な diagonal argument により @thm:G1 が従う．
+従って @thm:repr と典型的な diagonal argument により @thm:G1 が従う．
 
 #leancode(links: (
   ("Foundation", "https://github.com/FormalizedFormalLogic/Foundation/blob/ee84d9d25d88aec25a0c6b5203881e8515437f40/Foundation/FirstOrder/Incompleteness/First.lean#L16"),
@@ -155,7 +155,7 @@ Practical には，多くの場合，これはその記述された定義から�
 証明にあたって必要になるであろう，この膨大な作業を機械化するため， defining formula を具体的に与える必要がない場合には，Aesop @LF23 を用いた証明自動化を広範に用いている．
 
 述語 $Bit(x, y)$ を， "$x$-th number of the binary expansion of $y$ is $1$" を意味する述語とする．
-このとき，次のように定義する包含関係から定まる Ackermann coding は hereditary finite set を算術の内部で扱うための coding を与える @Pettigrew2009.
+このとき，次のように定義する membership relation から定まる Ackermann coding は hereditary finite set を算術の内部で扱うための coding を与える @Pettigrew2009.
 $
   x in y <==> Bit(x, y)
 $
@@ -165,23 +165,135 @@ $Bit(x, y)$ を weak arithmetic で扱うために， exponential のグラフ�
 次の定理は，項や論理式といった再帰的に定義された構造を $Universe$ 上で扱うにあたって便利な定理である．
 これは， $Universe$-parameter をもつ再帰的に定義できる述語がその定義可能性も含めて適切に与えられることを主張する．
 
-#theorem[Recursive definitions inside of $ISigma1$][
+#theorem[Recursive definition][
   Let $Phi(bold(C); arrow(v), x)$ be a predicate over $Universe$ which takes a class $bold(C) subset.eq Universe$ as a parameter.
   Assume that this satisfies following conditions.
-  / Definability: A predicate $P(c, arrow(v), x) := Phi({z | z in c}; arrow(v), x)$ is $Delta_1$-definable.
+  / Definability: A predicate $P(c, arrow(v), x) := Phi({z | z in c}; arrow(v), x)$ is $Delta_1$.
   / Monotonicity: $bold(C) subset.eq bold(C')$ and $Phi(bold(C); arrow(v), x)$ implies $Phi(bold(C'); arrow(v), x)$.
   / Finiteness: If $Phi(bold(C); arrow(v), x)$ holds, then there is $m in V$, such that $Phi({z in bold(C) | z < m}; arrow(v), x)$ holds.
-
-  Then we have a $Sigma_1$-definable predicate $"Fix"_Phi (arrow(v), x)$ such that
+  Then we have a $Sigma_1$-predicate $"Fix"_Phi (arrow(v), x)$ such that
   $
     "Fix"_Phi (arrow(v), x) <==> Phi({z | "Fix"_Phi (arrow(v), z)}; arrow(v), x)
   $
-  Additionally, if it satisfies following condition, $"Fix"_Phi (arrow(v), x)$ is $Delta_1$-definable.
+  Additionally, if it satisfies following condition, $"Fix"_Phi (arrow(v), x)$ is $Delta_1$.
   / Strong finiteness: If $Phi(bold(C); arrow(v), x)$ holds, then $Phi({z in bold(C) | z < x}; arrow(v), x)$ holds.
 ]<thm:recursive-def>
 
-コード上では
+この述語について次の structural induction も成立する．
 
-== Bootstrapping
+#theorem[Induction of recursive definition][
+  Assume that $Phi$ satisfies the strong finiteness property.
+  The predicate $"Fix"_Phi$ above satisfies the induction principle of following form.
+  Let $psi$ be a $Sigma_1$ or $Pi_1$-predicate (which may contains parameters from $Universe$) and $arrow(v) in Universe$:
+  $
+    fal(bold(C) subset.eq Universe)[fal(y in bold(C))("Fix"_Phi (arrow(v), y) and psi(y)) -> fal(x in Universe)[Phi(bold(C), arrow(v), x) -> psi(x)]]
+  $
+  implies
+  $
+    fal(x in Universe)["Fix"_Phi (arrow(v), x) -> psi(x)]
+  $
+]
 
-== Incompleteness Theorems
+$sans("IsFormula")[x]$ や $Pr(T)[x]$ などの述語を explicit に得るために， definability-property によって保証される defining formula も
+explicit に与える必要がある． Mechanization においては，
+まずその論理式，すなわち recursive definition の syntactic essence に `Blueprint k` という名称を与える．
+これは model independent である．
+そののち， `Construction (φ : Blueprint k)` を定義する．これは `Blueprint k` の model-theoretic realization である．
+
+#leancode(
+  links: (
+    ("Foundation", "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean"),
+  ),
+)[
+  ```
+  structure Blueprint (k : ℕ) where
+    core : 𝚫₁.Semisentence (k + 2)
+
+  structure Construction {k : ℕ} (φ : Blueprint k) where
+    Φ : (Fin k → V) → Set V → V → Prop
+    defined : 𝚫₁.Defined (fun v ↦ Φ (v ·.succ.succ) {x | x ∈ v 1} (v 0)) φ.core
+    monotone {C C' : Set V} (h : C ⊆ C') {v x} : Φ v C x → Φ v C' x
+
+  class Construction.Finite {k : ℕ} {φ : Blueprint k} (c : Construction V φ) where
+    finite {C : Set V} {v x} : c.Φ v C x → ∃ m, c.Φ v {y ∈ C | y < m} x
+
+  class Construction.StrongFinite {k : ℕ} {φ : Blueprint k} (c : Construction V φ) where
+    strong_finite {C : Set V} {v x} : c.Φ v C x → c.Φ v {y ∈ C | y < x} x
+
+  variable (c : Construction V φ)
+
+  def Construction.Fixpoint (v) (x : V) : Prop
+
+  theorem Construction.induction [c.StrongFinite] {P : V → Prop} (hP : Γ-[1]-Predicate P)
+      (H : ∀ C : Set V, (∀ x ∈ C, c.Fixpoint v x ∧ P x) → ∀ x, c.Φ v C x → P x) :
+      ∀ x, c.Fixpoint v x → P x
+  ```
+]
+
+項，論理式，証明といったメタ数学的構造はいずれも recursive に構成されるから，`Blueprint`及び`Construction`を用いて構成できる．
+加えてこれらは well-founded に構成されるから strong finiteness property を満たす．
+従って，これらの述語が $Delta_1$-definable であること，適切な structural induction を満たすことが統一的に導ける．
+これらの事実から，代入などの基本的な syntactic operation が $Universe$ 上で定義できることは明らかである．
+#leancode(
+  links: (
+    ("Foundation", "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Formula/Basic.lean#L1218"),
+    ("Foundation", "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Proof/Basic.lean#L519")
+  ),
+)[
+  ```
+  variable {L : Language} [L.Encodable] [L.LORDefinable]
+
+  instance IsSemiformula.definable : 𝚫₁-Relation[V] (IsSemiformula L)
+
+  instance Proof.definable {T : Theory L} [T.Δ₁] : 𝚫₁-Relation[V] (Proof T)
+  ```
+]
+
+Second incompleteness theorem の証明に於いて crux となるのは provability predicate $Pr(T)(x)$ の Derivability Condition である．
+証明は例によってルーチンである．
+
+#leancode(
+  links: (
+    ("Foundation", "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/DerivabilityCondition/D1.lean#L23"),
+    ("Foundation", "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/DerivabilityCondition/D2.lean#L20"),
+    ("Foundation", "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/DerivabilityCondition/D3.lean#L160")
+  ),
+)[
+  ```
+  variable {L : Language} [L.Encodable] [L.LORDefinable]
+
+  /-- Hilbert–Bernays provability condition D1 -/
+  theorem internalize_provability {φ} : T ⊢ φ → Provable T (⌜φ⌝ : V)
+
+  /-- Hilbert–Bernays provability condition D2 -/
+  theorem modus_ponens {φ ψ : Proposition L}
+      (hφψ : Provable T (⌜φ 🡒 ψ⌝ : V)) (hφ : Provable T (⌜φ⌝ : V)) :
+      Provable T (⌜ψ⌝ : V)
+
+  /-- A formalized 𝚺₁-completeness -/
+  theorem sigma_one_complete {σ : ArithmeticSentence} (hσ : Hierarchy 𝚺 1 σ) :
+      V↓[ℒₒᵣ] ⊧ σ → Provable T (⌜σ⌝ : V) := fun h ↦ by
+    simpa [tprovable_iff_provable]
+      using! Bootstrapping.Arithmetic.sigma_one_provable_of_models T hσ h
+
+  /-- Hilbert–Bernays provability condition D3 -/
+  theorem provable_internalize {σ : ArithmeticSentence} :
+      Provable T (⌜σ⌝ : V) → Provable T (⌜provabilityPred T σ⌝ : V)
+  ```
+]
+
+最後に，provability condition を用いた標準的な証明と全く同様の，よく知られた議論を用いて第二不完全性定理が導かれる．
+
+#leancode(
+  links: (
+    ("Foundation", "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/Second.lean#L18"),
+  ),
+)[
+  ```
+
+/-- Gödel's second incompleteness theorem -/
+theorem consistent_unprovable [Consistent T] : T ⊬ T.consistent.val
+
+theorem inconsistent_unprovable [ArithmeticTheory.SoundOnHierarchy T 𝚺 1] : T ⊬ ∼T.consistent.val
+  ```
+]
