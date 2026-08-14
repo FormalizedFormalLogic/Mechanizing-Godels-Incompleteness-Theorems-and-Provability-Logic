@@ -71,8 +71,18 @@ Moreover, owing to motivations other than the incompleteness theorems and provab
 We add comments where we deem it necessary, but for the actual working (verified) code, refer to the repository.
 
 === On AI usage
-Almost all of our codes concerning the incompleteness theorems and Solovay's arithmetical completeness theorem were written in
-2023 - 2025, and free from AI-generated contents.
+
+新規性および公平さの観点から，AI/LLMを用いた点について注意しておくべきであるため，ここで宣言しておく．
+
+我々の元々の不完全性定理の形式化，および，Solovayの算術的完全性定理に関する形式化は2023年から2025年の間に一旦は果たされており，その時点まででは我々はAI生成されたコードは含まれていない．
+そのことは，以下のコミット時点を参照しなさい．
+
+他方，2026年の6月以降，特に第二著者はFormalizedFormalLogic/ProvabilityLogicにおいて，AI/LLMを用いたLeanのvibe-codingを採用している．
+著者は証明可能性論理側のコードのリファクタリング，および，2026年に行われた様相論理のシークエント計算や証明可能性論理の分類定理の形式化という新規の事実において，AnthoropicのClaudeを利用した．
+ただしClaudeが自律的に全てを形式化したというわけではなく，著者がまず主定理を示すための全体的な方向性および，ステートメントの形式化を与えてから，実際の証明を書くことに関してコード生成をClaudeに委任している．
+また証明においても，例えば論理式の構造やシークエント計算の規則に関する帰納法を行え，といったディレクションを適宜行っている．
+pureな数理論理学的な経験則として，帰納法を回すことで証明されるような事実は，基本的には特別なアイデアは不要で計算を愚直に行なえば良く，特定の場合のみ考慮して後は省略とする場合が多い．
+当然ながら形式化においてはそれらすべての場合を省略せずに考慮する必要があるが，それらのコードを人間が書くということに意義は無く，もっと他に注力するべき作業があると考えている．
 
 #include "first-order-logic.typ"
 
