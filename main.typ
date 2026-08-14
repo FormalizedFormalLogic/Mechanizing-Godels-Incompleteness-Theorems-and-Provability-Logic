@@ -70,20 +70,24 @@ However, for the sake of readability, note that in some places we have modified 
 Moreover, owing to motivations other than the incompleteness theorems and provability logic that the present paper focuses on, some implementations are stated as more general definitions.
 We add comments where we deem it necessary, but for the actual working (verified) code, refer to the repository.
 
-=== On AI usage
+=== Declaring AI using
 
-新規性および公平さの観点から，AI/LLMを用いた点について注意しておくべきであるため，ここで宣言しておく．
+新規性および公平さの観点から，AI/LLMを用いた点について注意しておくべきであるため，ここで述べておく．
 
 我々の元々の不完全性定理の形式化，および，Solovayの算術的完全性定理に関する形式化は2023年から2025年の間に一旦は果たされており，その時点まででは我々はAI生成されたコードは含まれていない．
-そのことは，以下のコミット時点を参照しなさい．
+そのことは，以下のコミット時点を参照しなさい． // TODO: コミットハッシュとリンクを挿入する
 
-他方，2026年の6月以降，特に第二著者はFormalizedFormalLogic/ProvabilityLogicにおいて，AI/LLMを用いたLeanのvibe-codingを採用している．
-著者は証明可能性論理側のコードのリファクタリング，および，2026年に行われた様相論理のシークエント計算や証明可能性論理の分類定理の形式化という新規の事実において，AnthoropicのClaudeを利用した．
-ただしClaudeが自律的に全てを形式化したというわけではなく，著者がまず主定理を示すための全体的な方向性および，ステートメントの形式化を与えてから，実際の証明を書くことに関してコード生成をClaudeに委任している．
+他方，2026年の6月以降，特に第二著者は#link(REPO_SOURCES.at("ProvabilityLogic"))[FormalizedFormalLogic/ProvabilityLogic]において，AI/LLMを用いたLeanのvibe-codingを採用している．
+著者は証明可能性論理側のコードのリファクタリング，および，2026年に行われた様相論理のシークエント計算や証明可能性論理の分類定理の形式化という新規の事実において，AnthropicのClaudeなどの対話的なコーディングエージェントを利用した．
+これらの生成されたコードのメインの部分に関して，`sorry`や追加の非自明な公理，および `native_decide` といったLean上で数学を形式化するにあたって非妥当と見做される方法を用いずに行っていることは確かめている（ただしいくつかの部分は `sorry` をまだ含む．これらの部分は今回示した主な事実とはisolatedであり，形式化の妥当性を汚染するものではない．詳しくは @subsect:remaining-sorry-provability-logic を参照のこと．）
+これらのAI生成されたコードを含む最終的な成果物に関しての，全ての責任は著者らが負うことを宣言しておく．
+
+我々のコードに関するAIの利用について説明しておく．
+現状では，Claudeが自律的に全てを形式化したというわけではなく，著者がまず主定理を示すための全体的な方向性およびステートメントの形式化を与えてから，実際の証明を書くことに関してコード生成をClaudeに委任している．
 また証明においても，例えば論理式の構造やシークエント計算の規則に関する帰納法を行え，といったディレクションを適宜行っている．
 pureな数理論理学的な経験則として，帰納法を回すことで証明されるような事実は，基本的には特別なアイデアは不要で計算を愚直に行なえば良く，特定の場合のみ考慮して後は省略とする場合が多い．
 当然ながら形式化においてはそれらすべての場合を省略せずに考慮する必要があるが，それらのコードを人間が書くことに時間が取られる意義は薄く，もっと他に注力するべき作業があると考えたため，AIによるコード生成および形式化を積極的に取り入れている．
-実際のベネフィットとして，FormalizedFormalLogic/ProvabilityLogicの全体的なリファクタリングおよび分類定理の形式化は開始から実作業としては3週間でおおよそ完了しており，大幅に効率的・高速に形式化が行えていると第二著者は考えている．
+実際のベネフィットとして，#link(REPO_SOURCES.at("ProvabilityLogic"))[FormalizedFormalLogic/ProvabilityLogic]の全体的なリファクタリングおよび分類定理の形式化は開始から実作業としては3週間でおおよそ完了しており，大幅な効率的・高速に形式化が行えていると第二著者は考えている．
 
 #include "first-order-logic.typ"
 
@@ -858,7 +862,7 @@ We have mechanized this fact as well.
   ```
 ]
 
-=== On some remaining `sorry`s
+=== On some remaining `sorry`s <subsect:remaining-sorry-provability-logic>
 
 Although the mechanization of the classification theorem itself does not depend on them, the mechanizations of some facts of provability logic still contain `sorry`s.
 We note them here.
