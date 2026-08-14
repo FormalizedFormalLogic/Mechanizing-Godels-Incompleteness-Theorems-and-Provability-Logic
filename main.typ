@@ -35,6 +35,15 @@
   ),
 )
 
+#remark[
+  Since the word "formalize" is used in two different senses, which may cause confusion, we strictly distinguish between the words _formalize_ and _mechanize_.
+
+  / _formalize_: the formalization of mathematics as a technique in the context of mathematical logic and metamathematics.
+  / _mechanize_: the formalization of mathematics in an interactive theorem prover, verifiable on an actual computer.
+
+  Following this convention, what we have done can be stated succinctly: _mechanizing formalized mathematics_.
+]
+
 = Introduction
 
 _Gödel's incompleteness theorems_ are among the most significant results in mathematical logic.
