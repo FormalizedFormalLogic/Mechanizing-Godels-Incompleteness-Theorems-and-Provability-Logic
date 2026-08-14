@@ -70,24 +70,32 @@ However, for the sake of readability, note that in some places we have modified 
 Moreover, owing to motivations other than the incompleteness theorems and provability logic that the present paper focuses on, some implementations are stated as more general definitions.
 We add comments where we deem it necessary, but for the actual working (verified) code, refer to the repository.
 
-=== Declaring AI using
+=== Declaration of AI usage
 
-新規性および公平さの観点から，AI/LLMを用いた点について注意しておくべきであるため，ここで述べておく．
+In the interest of novelty and fairness, we declare here how AI/LLMs were used in our development.
 
-我々の元々の不完全性定理の形式化，および，Solovayの算術的完全性定理に関する形式化は2023年から2025年の間に一旦は果たされており，その時点まででは我々はAI生成されたコードは含まれていない．
-そのことは，以下のコミット時点を参照しなさい． // TODO: コミットハッシュとリンクを挿入する
+Our mechanization of the incompleteness theorems and of Solovay's arithmetical completeness theorem was carried out between 2023 and 2025, and up to that point it contained no AI-generated code.
+This can be verified from the following commits, at which each result first became `sorry`-free.
+#footnote[The first two commits were made in #link("https://github.com/FormalizedFormalLogic/Arithmetization")[FormalizedFormalLogic/Arithmetization], later merged into Foundation as a subtree.]
 
-他方，2026年の6月以降，特に第二著者は#link(REPO_SOURCES.at("ProvabilityLogic"))[FormalizedFormalLogic/ProvabilityLogic]において，AI/LLMを用いたLeanのvibe-codingを採用している．
-著者は証明可能性論理側のコードのリファクタリング，および，2026年に行われた様相論理のシークエント計算や証明可能性論理の分類定理の形式化という新規の事実において，AnthropicのClaudeなどの対話的なコーディングエージェントを利用した．
-これらの生成されたコードのメインの部分に関して，`sorry`や追加の非自明な公理，および `native_decide` といったLean上で数学を形式化するにあたって非妥当と見做される方法を用いずに行っていることは確かめている（ただしいくつかの部分は `sorry` をまだ含む．これらの部分は今回示した主な事実とはisolatedであり，形式化の妥当性を汚染するものではない．詳しくは @subsect:remaining-sorry-provability-logic を参照のこと．）
-これらのAI生成されたコードを含む最終的な成果物に関しての，全ての責任は著者らが負うことを宣言しておく．
+#let commit-link(hash) = link("https://github.com/FormalizedFormalLogic/Foundation/commit/" + hash)[#raw(hash.slice(
+  0,
+  8,
+))]
+- Gödel's first incompleteness theorem: #commit-link("e9325d82f6e4284b8dca530c8f9719650d7a21cf") (2024/09/04).
+- Gödel's second incompleteness theorem: #commit-link("2da7151e1da0ce40ae222fec1651756f8ee7acce") (2024/09/04).
+- Solovay's arithmetical completeness theorem: #commit-link("4a34d75c074c7614a1f16661ac73fd0725263c32") (2025/04/06).
 
-我々のコードに関するAIの利用について説明しておく．
-現状では，Claudeが自律的に全てを形式化したというわけではなく，著者がまず主定理を示すための全体的な方向性およびステートメントの形式化を与えてから，実際の証明を書くことに関してコード生成をClaudeに委任している．
-また証明においても，例えば論理式の構造やシークエント計算の規則に関する帰納法を行え，といったディレクションを適宜行っている．
-pureな数理論理学的な経験則として，帰納法を回すことで証明されるような事実は，基本的には特別なアイデアは不要で計算を愚直に行なえば良く，特定の場合のみ考慮して後は省略とする場合が多い．
-当然ながら形式化においてはそれらすべての場合を省略せずに考慮する必要があるが，それらのコードを人間が書くことに時間が取られる意義は薄く，もっと他に注力するべき作業があると考えたため，AIによるコード生成および形式化を積極的に取り入れている．
-実際のベネフィットとして，#link(REPO_SOURCES.at("ProvabilityLogic"))[FormalizedFormalLogic/ProvabilityLogic]の全体的なリファクタリングおよび分類定理の形式化は開始から実作業としては3週間でおおよそ完了しており，大幅な効率的・高速に形式化が行えていると第二著者は考えている．
+Since June 2026, however, the second author has adopted AI/LLM-assisted _vibe coding_ in Lean for #link(REPO_SOURCES.at("ProvabilityLogic"))[FormalizedFormalLogic/ProvabilityLogic], using interactive coding agents such as Anthropic's Claude both for refactoring the code and for mechanizing the new results, namely the sequent calculi for modal logics and the classification theorem of provability logics.
+We have verified that the main parts of the generated code do not rely on any device regarded as illegitimate for mechanizing mathematics in Lean, such as `sorry`, additional nontrivial axioms, or `native_decide`#footnote[Some parts still contain `sorry`s; they are isolated from the main results of this paper and do not compromise the validity of the mechanization. See @subsect:remaining-sorry-provability-logic.].
+*The authors take full responsibility for the final artifact, including its AI-generated code.*
+
+We describe how the AI is used in our development.
+Claude does not mechanize everything autonomously: the author first fixes the overall strategy for proving the main theorems and writes their formal statements, and only then delegates the actual proofs to Claude.
+Within the proofs as well, the author gives appropriate directions and tactics, e.g., to proceed by induction on the structure of formulas or on the rules of a sequent calculus.
+As a rule of thumb in pure mathematical logic, a fact proved by such an induction requires no special idea: one simply carries out the calculation, and on paper one typically works out a few representative cases and omits the rest.
+In a mechanization, every case must be treated without omission; we saw little value in a human spending time on such code, so we actively delegated it to the AI.
+In practice, the overall refactoring of #link(REPO_SOURCES.at("ProvabilityLogic"))[FormalizedFormalLogic/ProvabilityLogic] and the mechanization of the classification theorem were mostly completed in about three weeks of actual work, which the second author regards as a substantial gain in speed and efficiency.
 
 #include "first-order-logic.typ"
 
