@@ -36,8 +36,7 @@ We formalized the type of semiformulas that may contain free variables of type $
     We write `Formula L ξ` for `Semiformula L ξ 0`, and `Sentence L` for sentences, namely `Formula L Empty`.
   ])[
   ```
-  inductive Semiformula (L : Language) (ξ : Type*) :
-      ℕ → Type _ where
+  inductive Semiformula (L : Language) (ξ : Type*) : ℕ → Type _ where
   |  verum : Semiformula L ξ n
   | falsum : Semiformula L ξ n
   |    rel : {arity : ℕ} → L.Rel arity → (Fin arity → Semiterm L ξ n) → Semiformula L ξ n
@@ -158,38 +157,38 @@ It states that predicates defined recursively with parameters from $Universe$ ca
 
 #let Fix = $bold("Fix")$
 
-#theorem[Recursive definition (in $ISigma1$)][
-  Let $Phi: cal(P)(Universe) -> cal(P)(Universe)$ be a class-valued function
-  Assume that this satisfies following conditions.
+#theorem[Version of the Knaster-Tarski theorem][
+  Let $Phi: cal(P)(Universe) -> cal(P)(Universe)$ be a class-valued function.
+  Assume that this satisfies the following conditions.
   / Definability: A predicate $P(x, c) := x in Phi({z | z in c})$ is $Delta_1$-definable with parameters.
   / Monotonicity: $bold(C) subset.eq bold(C')$ implies $Phi(bold(C)) subset.eq Phi(bold(C'))$.
   / Finiteness: If $x in Phi(bold(C))$ holds, then $x in Phi({z in bold(C) | z < m})$ holds for some $m in Universe$.
-  Then we have a $Sigma_1$-definable class $Fix_Phi$ such that
+  Then we have a $Sigma_1$ class $Fix_Phi$ such that
   $
-    Fix_Phi = Phi(Fix_Phi)
+    Phi(Fix_Phi) = Fix_Phi
   $
   Additionally, if it satisfies following condition, $Fix_Phi$ is $Delta_1$.
   / Strong finiteness: If $x in Phi(bold(C))$ holds, then $x in Phi({z in bold(C) | z < x})$ holds.
 ]<thm:recursive-def>
 
-This predicate also satisfies the following structural induction principle.
+Practically important point is that the defining formulas of $Fix_Phi$ can be explicitly constructible from the defining formulas of $P(x, c)$.
+This satisfies the following structural induction principle.
 
-#theorem[Induction of recursive definition (in $ISigma1$)][
+#theorem[Structural induction][
   Assume that $Phi$ satisfies the strong finiteness property.
   The predicate $Fix_Phi$ above satisfies the induction principle of following form.
   Let $psi$ be a $Sigma_1$ or $Pi_1$-predicate (which may contains parameters from $Universe$):
   $
     fal(bold(C) subset.eq Fix_Phi)[fal(x in bold(C))psi(x) -> fal(x in Phi(bold(C)))psi(x)]
-  $
-  implies
-  $
+    quad "implies" quad
     fal(x in Fix_Phi)psi(x)
   $
 ]
 
 To obtain explicit predicates such as $sans("IsFormula")[x]$ and $Pr(T)[x]$, we must also provide the defining formulas whose existence is guaranteed by the corresponding definability properties.
-In the mechanization, we first call such a formula---the syntactic essence of a recursive definition---a `Blueprint k`.
-A blueprint is independent of any model.
+In the mechanization, we first call such a formula
+---the defining formula of $P(x, c)$ in @thm:recursive-def ---a `Blueprint k` (`k` is a number of parameters).
+Obviously it is purely syntactic and independent of any model.
 We then define `Construction V φ`, the model-theoretic realization of a `φ : Blueprint k`.
 
 #leancode(

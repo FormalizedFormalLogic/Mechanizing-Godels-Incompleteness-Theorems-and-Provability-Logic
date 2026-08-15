@@ -112,7 +112,8 @@
       },
     )),
   ))
-  block(
+  align(center, block(
+    width: 120%,
     if links.len() > 0 {
       grid(
         columns: (1fr, auto),
@@ -124,7 +125,7 @@
         },
       )
     },
-  )
+  ))
   block(inset: 0.5em)
 }
 
