@@ -85,7 +85,7 @@ Almost all of our codes concerning the incompleteness theorems and Solovay's ari
 
 #include "first-order-logic.typ"
 
-= Provability Logic
+= Provability Logic <sect:provability_logic>
 
 In this section, we describe our mechanization of modal logic, in particular of provability logic.
 As the most fundamental and important result in the field of provability logic, we have succeeded in mechanizing Solovay's arithmetical completeness theorem @Sol76.

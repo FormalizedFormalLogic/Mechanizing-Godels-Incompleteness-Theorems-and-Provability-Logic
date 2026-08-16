@@ -315,6 +315,233 @@ Finally, the second incompleteness theorem follows by the usual argument from th
   ```
 ]
 
+== Provability abstraction
+
+素の証明可能性述語を扱うのは技術的に扱いが面倒で取り回しが悪い．
+そのため，我々は証明可能性述語を抽象化したprovability abstractionという概念を導入する．
+このprovability abstractionは，証明可能性を様相として捉える証明可能性論理（@sect:provability_logic で議論する）と非常に関係が深い．
+これらの抽象化を用いることで，我々は不完全性定理を純粋な構文論的な操作によって抽象的に形式化出来る．
+抽象化された導出可能性条件などを満たす "provability" を具体的に構成することによって，我々は実際のコンクリートな不完全性定理の主張を即座に得ることが出来る．
+
+#let Bew = $class("unary", frak("B"))$
+
+#definition[Provability abstraction][
+  言語 $cal(L)$ は言語 $cal(L)_0$ に対するGödel numberingが可能であるとする．
+  $cal(L)_0$-理論 $T_0$ と $cal(L)$-理論 $T$ に対し，unary な $cal(L)_0$-論理式 $Bew(x)$ が $T_0, T$ のprovabilityであるとは，任意の $cal(L)$-文に対して以下が成立することとする．
+  $
+    T proves sigma ==> T_0 proves Bew(GoedelNum(sigma))
+  $
+  つまり，$Bew(x)$ は最低限の導出可能性条件 $bold("D1")$ を持つものとする．
+  以下では $Bew(GoedelNum(sigma))$ は単に $Bew sigma$ と書くことにする．
+  更に，以下の性質を定める．
+
+  - $bold("D2")$: 任意の $cal(L)$-文 $sigma, pi$ に対して，$T_0 proves Bew (sigma -> pi) -> Bew sigma -> Bew pi$．
+  - $bold("D3")$: $T_0$ と $T$ は同じ $cal(L)$-理論とする．任意の $cal(L)$-文 $sigma$ に対して，$T_0 proves Bew sigma -> Bew Bew sigma$．
+  - $bold("Kre")$: $T_0$ と $T$ は同じ $cal(L)$-理論とする．任意の $cal(L)$-文 $sigma$ に対して，$T proves Bew sigma ==> T proves sigma$．
+  - $bold("Ros")$: 任意の $cal(L)$-文 $sigma$ に対して，$T proves not sigma ==> T_0 proves not Bew sigma$．
+  // - $bold("FC")$ (on $cal(L)$-文 $sigma$): $T_0 proves sigma -> Bew sigma$．
+  // - $bold("S")$ (on $L_0$-structure $M$) : 任意の $cal(L)$-文 $sigma$ に対して，$M models Bew sigma ==> T proves sigma$．
+]
+
+#leancode[
+  ```
+  structure Provability [L.ReferenceableBy L₀] (T₀ : Theory L₀) (T : Theory L) where
+    prov : Semisentence L₀ 1
+    bew_def {σ : Sentence L} : T ⊢ σ → T₀ ⊢ prov/[⌜σ⌝]
+
+  variable {L₀ L : Language} [L.ReferenceableBy L₀] {T₀ : Theory L₀} {T : Theory L}
+
+  @[coe] def pr (𝔅 : Provability T₀ T) (σ : Sentence L) : Sentence L₀ := 𝔅.prov/[⌜σ⌝]
+  instance : CoeFun (Provability T₀ T) (fun _ ↦ Sentence L → Sentence L₀) := ⟨pr⟩
+
+  class HBL2 [L.ReferenceableBy L₀] {T₀ : Theory L₀} {T : Theory L} (𝔅 : Provability T₀ T) where
+    D2 {σ τ : Sentence L} : T₀ ⊢ 𝔅 (σ 🡒 τ) 🡒 𝔅 σ 🡒 𝔅 τ
+
+  class HBL3 [L.ReferenceableBy L] {T₀ T : Theory L} (𝔅 : Provability T₀ T) where
+    D3 {σ : Sentence L} : T₀ ⊢ 𝔅 σ 🡒 𝔅 (𝔅 σ)
+
+  class Kreisel [L.ReferenceableBy L] {T₀ T : Theory L} (𝔅 : Provability T₀ T) where
+    KR {σ : Sentence L} : T ⊢ 𝔅 σ → T ⊢ σ
+
+  class Rosser [L.ReferenceableBy L₀] {T₀ : Theory L₀} {T : Theory L} (𝔅 : Provability T₀ T) where
+    Ros {σ : Sentence L} : T ⊢ ∼σ → T₀ ⊢ ∼𝔅 σ
+  ```
+]
+
+$bold("D2")$ と $bold("D3")$ を満たす $Bew$ は標準的(standard)と呼ばれる．
+@sect:provability_logic で議論する証明可能性論理は主にstandardなprovabilityによって議論する．
+条件 $bold("Kre")$ はVisser @Vis21 でKreisel's conditionと呼ばれて導入された導出可能性条件である #footnote[Visserはこの条件の由来を @Kre54 に帰している．また正確には，Visserは両側を要請していた．]．
+いま，この抽象化のモチベーションとして，純粋に構文論的な方法によって議論を形式化(formalize)したいので，model / structureに関与したくない．
+天下り的に構成を先取りすると，実際に後で構成するstandardな $Bew$ は $Sigma_1$-述語であるから，条件 $bold("Kre")$ は理論 $T$ の $Sigma_1$-健全性および完全性の純粋に構文論的な対応物と見做せる．
+
+さて，実際にはprovabilityの抽象化のみでは不十分で，理論の対角化可能性についても抽象化する必要がある．
+
+#definition[Diagonalization abstraction][
+  言語 $cal(L)$ は $cal(L)$ 自身に対するGödel numberingが可能であるとする．
+  $cal(L)$-理論 $T$ がdiagonalizableであるとは，$cal(L)$-semisentence を受け取り $cal(L)$-sentenceを返す写像 $upright("fixpoint")_T$ であって，
+  任意の $cal(L)$-semisentence $theta$ に対し $T proves upright("fixpoint")_T (theta) <-> theta (GoedelNum(upright("fixpoint")_T (theta)))$ が構成できることを言う．$upright("fixpoint")_T (theta)$ を $theta$ の不動点と呼ぶ．
+
+  $cal(L)$-理論 $T_0, T$ で，$T_0$ はdiagonalizableであり，$Bew$ を $T_0, T$ のprovabilityとしたとき，$not Bew (x)$ の不動点をGödel文と呼んで $upright("G")_Bew$ と表す．
+]
+
+#leancode[
+  ```
+  class Diagonalization [L.ReferenceableBy L] (T : Theory L) where
+    fixedpoint : Semisentence L 1 → Sentence L
+    diag (θ) : T ⊢ fixedpoint θ 🡘 θ/[⌜fixedpoint θ⌝]
+
+  variable {L : Language} [L.ReferenceableBy L] {T₀ T : Theory L} [Diagonalization T₀]
+
+  def gödel (𝔅 : Provability T₀ T) : Sentence L := fixedpoint T₀ “x. ¬!𝔅.prov x”
+  ```
+]
+
+これらの道具立てを用意することによって，不完全性定理やそれらの系などを構文論的な操作によって証明することが可能である．
+以降では，$cal(L)$-理論 $T_0 subset.eq T$ とし， $T_0$ はdiagonalizable，$T$ は consistentとする．
+また $Bew$ を $T_0, T$-provabilityとしよう．
+まず，第1不完全性定理は以下のように示される．
+
+#proposition[Abstract version of G1][
+  1. $T nproves upright("G")_Bew$．
+  2. $Bew$ が $bold("Kre")$ を満たすなら $T nproves not upright("G")_Bew$．故に $upright("G")_Bew$ は $T$ の独立命題であり，そして $T$ は不完全である．
+]
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean#L194",
+    ),
+  ),
+)[
+  ```
+  variable {L : Language} [L.ReferenceableBy L] [L.DecidableEq]
+  variable {T₀ T : Theory L} [Diagonalization T₀] [T₀ ⪯ T] [Consistent T]
+  variable {𝔅 : Provability T₀ T}
+
+  theorem unprovable_gödel : T ⊬ (gödel 𝔅)
+
+  theorem unrefutable_gödel [𝔅.Kreisel] : T ⊬ ∼(gödel 𝔅)
+
+  theorem gödel_independent [𝔅.Kreisel] : Independent T (gödel 𝔅)
+
+  theorem first_incompleteness [𝔅.Kreisel] : Incomplete T
+  ```
+]
+
+更に，第2不完全性定理に関しても以下のように形式化出来る．
+
+#proposition[Abstract version of G2][
+  $Bew$ は $bold("D2")$ と $bold("D3")$ を満たすと仮定する．
+  いま，$not Bew bot$ という文は自然な無矛盾性の表現の1つである．これを $upright("Con")_Bew$ とする．
+  さてこのとき以下が成立する．
+  1. $T nproves upright("Con")_Bew$．
+  2. $Bew$ が $bold("Kre")$ を満たすなら $T nproves not upright("Con")_Bew$．故に $upright("Con")_Bew$ も $T$ の独立命題である．
+]
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean#L35",
+    ),
+  ),
+)[
+  ```
+  variable {L₀ L : Language} [L.ReferenceableBy L₀] {T₀ : Theory L₀} {T : Theory L}
+
+  def con (𝔅 : Provability T₀ T) : Sentence L₀ := ∼𝔅 ⊥
+
+  variable {L : Language} [L.ReferenceableBy L] [L.DecidableEq]
+  variable {T₀ T : Theory L} [Diagonalization T₀] [T₀ ⪯ T]
+  variable {𝔅 : Provability T₀ T} [𝔅.HBL]
+
+  theorem con_unprovable [Consistent T] : T ⊬ 𝔅.con
+
+  theorem con_unrefutable [Consistent T] [𝔅.Kreisel] : T ⊬ ∼𝔅.con
+
+  theorem con_independent [Consistent T] [𝔅.Kreisel] : Independent T 𝔅.con
+  ```
+]
+
+より発展的な事実としてLöbの定理，およびその系として形式化(formalized)された不完全性定理やLöbの定理も形式化出来る．
+
+#proposition[Abstract version of Löb's Theorem and formalized theorems][
+  $Bew$ は $bold("D2")$ と $bold("D3")$ を満たすとする．このとき以下が成立する．
+  文 $sigma$ は任意の $cal(L)$-文 $sigma$ とする．
+
+  / Löb's theorem: $T proves Bew sigma -> sigma$ ならば $T proves sigma$．
+  / Formalized Löb's theorem: $T_0 proves Bew (Bew sigma -> sigma) -> Bew sigma$．
+
+  更に$Bew$ が $bold("Kre")$ を満たすとすると，以下が成立する．
+
+  / Formalized G1: $T nproves upright("Con")_Bew -> not Bew not upright("G")_Bew$
+  / Formalized G2: $T nproves upright("Con")_Bew -> not Bew not upright("Con")_Bew$
+]
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean#L286",
+    ),
+  ),
+)[
+  ```
+  variable {L : Language} [L.ReferenceableBy L] [L.DecidableEq]
+  variable {T₀ T : Theory L} [Diagonalization T₀] [T₀ ⪯ T]
+  variable {𝔅 : Provability T₀ T} [𝔅.HBL]
+
+  theorem löb_theorem {σ : Sentence L}　(H : T ⊢ 𝔅 σ 🡒 σ) : T ⊢ σ
+
+  theorem formalized_löb_theorem {σ : Sentence L} : T₀ ⊢ 𝔅 (𝔅 σ 🡒 σ) 🡒 𝔅 σ
+
+  lemma formalized_unrefutable_gödel [Consistent T] [𝔅.Kreisel] : T ⊬ 𝔅.con 🡒 ∼𝔅 (∼(gödel 𝔅))
+
+  lemma formalized_unprovable_not_con [Consistent T] [𝔅.Kreisel] : T ⊬ 𝔅.con 🡒 ∼𝔅 (∼𝔅.con)
+  ```
+]
+
+$bold("D1"), bold("D2"), bold("D3")$ および形式化されたLöbの定理が，それぞれ様相論理のネセシテーション規則，公理 $AxiomK$，公理 $Axiom("4")$，公理 $Axiom("L")$ と概ね対応していることに注意しておこう．
+この事実は標準的な $Bew$ で算術的健全性が成立する観察を与える．
+
+最後に条件 $bold("Ros")$ を用いたRosserによる不完全性定理の改良の抽象化を示しておこう．
+
+#proposition[Abstract version of Gödel-Rosser theorem][
+  $Bew$ は $bold("Ros")$ を満たすとする．
+  この $Bew$ によるGödel文を，特別にRosser文 $upright("R")_Bew$ と呼ぶことにする．
+  このとき，以下が成立する．
+
+  / Gödel-Rosser: $T nproves upright("R")_Bew$ かつ $T nproves not upright("R")_Bew$．つまり $upright("R")_Bew$ は独立命題．特に後者に関して $bold("Kre")$ を要請しない．
+  / Kreisel's remark: $T proves upright("Con")_Bew$．
+]
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean#L323",
+    ),
+  ),
+)[
+  ```
+  variable {L : Language} [L.ReferenceableBy L]
+  variable {T₀ T : Theory L} [Diagonalization T₀] [T₀ ⪯ T] [Consistent T]
+  variable {𝔅 : Provability T₀ T} [𝔅.Rosser]
+
+  theorem unrefutable_rosser : T ⊬ ∼(gödel 𝔅)
+
+  theorem rosser_independent : Independent T (gödel 𝔅)
+
+  theorem rosser_first_incompleteness (𝔅 : Provability T₀ T) : Incomplete T
+
+  theorem kreisel_remark : T ⊢ 𝔅.con
+  ```
+]
+
+$bold("Kre")$ を要請しないことはつまり先程のアナロジーを踏まえると $T$ の $Sigma_1$-健全性を要請しない，ということである．
+実際に，この抽象化を具体的した結果として得られる，後述する具体的なGödel-Rosserの定理のステートメントには $Sigma_1$-健全性を要請しない．
+
 == Some further results related to the incompleteness theorems
 
 Using the tools developed so far, we have also proved several theorems related to Gödel's incompleteness theorems.
