@@ -856,7 +856,7 @@ We have mechanized this fact as well.
   ```
 ]
 
-=== On some remaining `sorry`s
+=== On some remaining `sorry`s <subsect:remaining_sorry_in_provlogic>
 
 Although the mechanization of the classification theorem itself does not depend on them, the mechanizations of some facts of provability logic still contain `sorry`s.
 We note them here.
