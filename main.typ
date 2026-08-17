@@ -622,8 +622,8 @@ In what follows, $T$ is an arithmetical theory with a $Delta_1$-definable axioma
 #leancode(
   links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/Interpret.lean"),),
   note: [
-    By the coercion, `Formula.interpret f 𝔅 A` can be written as `f 𝔅 A`, which corresponds to $f_Bew (A)$.
-    Similarly, `A.standardInterpret f T` corresponds to the standard interpretation $f_(Bew_T) (A)$.
+    The interpretation `A.interpret f 𝔅` corresponds to $f_Bew (A)$.
+    By the coercion, the standard interpretation `A.standardInterpret f T` can be written as `f T A`, which corresponds to $f_T (A)$.
   ],
 )[
   ```
@@ -637,12 +637,12 @@ In what follows, $T$ is an arithmetical theory with a $Delta_1$-definable axioma
     | A 🡒 B => (A.interpret f 𝔅) 🡒 (B.interpret f 𝔅)
     | □A    => 𝔅 (A.interpret f 𝔅)
 
-  instance : CoeFun (Realization α L)
-    (fun _ ↦ ∀ {T₀ T : FirstOrder.Theory L}, Provability T₀ T → Formula α → FirstOrder.Sentence L) :=
-    ⟨Formula.interpret⟩
-
   noncomputable abbrev Formula.standardInterpret (f : Realization α _)
     (T : FirstOrder.ArithmeticTheory) [T.Δ₁] := Formula.interpret f T.standardProvability
+
+  noncomputable instance : CoeFun (Realization α ℒₒᵣ)
+    (fun _ ↦ (T : FirstOrder.ArithmeticTheory) → [T.Δ₁] → Formula α → FirstOrder.Sentence ℒₒᵣ) :=
+    ⟨Formula.standardInterpret⟩
   ```
 ]
 
@@ -656,7 +656,7 @@ In what follows, $T$ is an arithmetical theory with a $Delta_1$-definable axioma
   ```
   def LO.FirstOrder.ArithmeticTheory.provabilityLogicRelativeTo
     (T U : FirstOrder.ArithmeticTheory) [T.Δ₁] : Logic α :=
-    {A | ∀ f : Realization α ℒₒᵣ, U ⊢ A.standardInterpret f T}
+    {A | ∀ f : Realization α ℒₒᵣ, U ⊢ f T A}
 
   abbrev LO.FirstOrder.ArithmeticTheory.provabilityLogic
     (T : FirstOrder.ArithmeticTheory) [T.Δ₁] : Logic α := T.provabilityLogicRelativeTo T
@@ -736,7 +736,7 @@ The reduction of $LogicS$ to $LogicGL$ stated in @prop:S_characterization is ess
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/S/Basic.lean"),))[
   ```
   theorem LogicS.arithmetical_completeness_iff [DecidableEq α] :
-    A ∈ LogicS ↔ (∀ f : Realization α ℒₒᵣ, ℕ↓[ℒₒᵣ] ⊧ A.standardInterpret f T)
+    A ∈ LogicS ↔ (∀ f : Realization α ℒₒᵣ, ℕ↓[ℒₒᵣ] ⊧ f T A)
 
   theorem LogicS.eq_provabilityLogicRelativeTo_TA [DecidableEq α] :
     @LogicS α = T.provabilityLogicRelativeTo 𝗧𝗔
@@ -1082,11 +1082,11 @@ Using this fact, Goldblatt @Gol78 and Boolos @Boo80 showed that $LogicGrz$ is ar
     | □A    => (A.strongInterpret f 𝔅) ⋏ 𝔅 (A.strongInterpret f 𝔅)
 
   lemma Formula.iff_interpret_boxdot_strongInterpret [𝔅.HBL2] :
-    T ⊢ f 𝔅 (Aᵇ) ↔ T ⊢ A.strongInterpret f 𝔅
+    T ⊢ (Aᵇ).interpret f 𝔅 ↔ T ⊢ A.strongInterpret f 𝔅
 
   lemma Formula.iff_models_interpret_boxdot_strongInterpret
     {M} [Nonempty M] [Structure L M] [M↓[L] ⊧* T] [𝔅.HBL2] [𝔅.SoundOn M] :
-    M↓[L] ⊧ f 𝔅 (Aᵇ) ↔ M↓[L] ⊧ A.strongInterpret f 𝔅
+    M↓[L] ⊧ (Aᵇ).interpret f 𝔅 ↔ M↓[L] ⊧ A.strongInterpret f 𝔅
   ```
 ]
 
