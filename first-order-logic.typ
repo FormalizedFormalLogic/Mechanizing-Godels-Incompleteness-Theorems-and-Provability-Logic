@@ -317,12 +317,12 @@ Finally, the second incompleteness theorem follows by the usual argument from th
 
 == Provability abstraction <subsect:provability_abstraction>
 
-素の証明可能性述語を扱うのは技術的に扱いが面倒で取り回しが悪い．
+生の証明可能性述語を扱うのは技術的に扱いが面倒で取り回しが悪い．
 そのため，我々は証明可能性述語を抽象化したprovability abstractionという概念を導入する．
 このprovability abstractionは，証明可能性を様相として捉える証明可能性論理（@sect:provability_logic で議論する）と非常に関係が深い．
 これらの抽象化を用いることで，我々は不完全性定理を純粋な構文論的な操作によって抽象的に形式化出来る．
 抽象化された導出可能性条件などを満たす "provability" を具体的に構成することによって，我々は実際のコンクリートな不完全性定理の主張を即座に得ることが出来る．
-このようなabstractなprovabilityによる形式化の議論は Popescu and Traytel @PT19 @PT21 らの研究がある．
+このようなabstractなprovabilityによる不完全性定理の形式化の議論は Popescu and Traytel @PT19 @PT21 らの先行研究がある．
 
 #definition[Provability abstraction][
   言語 $cal(L)$ は言語 $cal(L)_0$ に対するGödel numberingが可能であるとする．
@@ -403,7 +403,7 @@ $bold("D2")$ と $bold("D3")$ を満たす $Bew$ は標準的(standard)と呼ば
 #proposition[Abstract version of G1][
   1. $T nproves upright("G")_Bew$．
   2. $Bew$ が $bold("Kre")$ を満たすなら $T nproves not upright("G")_Bew$．故に $upright("G")_Bew$ は $T$ の独立命題であり，そして $T$ は不完全である．
-]
+] <prop:abstract_G1>
 
 #leancode(
   links: (
@@ -436,7 +436,7 @@ $bold("D2")$ と $bold("D3")$ を満たす $Bew$ は標準的(standard)と呼ば
   さてこのとき以下が成立する．
   1. $T nproves upright("Con")_Bew$．
   2. $Bew$ が $bold("Kre")$ を満たすなら $T nproves not upright("Con")_Bew$．故に $upright("Con")_Bew$ も $T$ の独立命題である．
-]
+] <prop:abstract_G2>
 
 #leancode(
   links: (
@@ -463,7 +463,9 @@ $bold("D2")$ と $bold("D3")$ を満たす $Bew$ は標準的(standard)と呼ば
   ```
 ]
 
-より発展的な事実としてLöbの定理，およびその系として形式化(formalized)された不完全性定理やLöbの定理も形式化出来る．
+ここで，$upright("Con")_Bew$ だけが無矛盾性を表す自然な表現ではないという観点も存在する．
+そのような点についてのG2のvariantについては後述する．
+さて，より発展的な事実としてLöbの定理，およびその系として形式化(formalized)された不完全性定理やLöbの定理も形式化出来る．
 
 #proposition[Abstract version of Löb's Theorem and formalized theorems][
   $Bew$ は $bold("D2")$ と $bold("D3")$ を満たすとする．このとき以下が成立する．
@@ -501,10 +503,12 @@ $bold("D2")$ と $bold("D3")$ を満たす $Bew$ は標準的(standard)と呼ば
   ```
 ]
 
-$bold("D1"), bold("D2"), bold("D3")$ および形式化されたLöbの定理が，それぞれ様相論理のネセシテーション規則，公理 $AxiomK$，公理 $Axiom("4")$，公理 $Axiom("L")$ と概ね対応していることに注意しておこう．
+$bold("D1"), bold("D2"), bold("D3")$ およびformalized Löb's theoremが，それぞれ様相論理のネセシテーション規則，公理 $AxiomK$，公理 $Axiom("4")$，公理 $Axiom("L")$ と概ね対応していることに注意しておこう．
 この事実は標準的な $Bew$ で算術的健全性が成立する観察を与える．
 
-最後に条件 $bold("Ros")$ を用いたRosserによる不完全性定理の改良の抽象化を示しておこう．
+抽象化において $bold("Kre")$ の導入を述べた理由を踏まえると，@prop:abstract_G1 で示した抽象的なG1について $bold("Kre")$ が要請されていることはおおまかには $T$ の $Sigma_1$-健全性を要請することと等しいと言える．
+しかし $Bew$ に $bold("Kre")$ ではなく別の条件 $bold("Ros")$ を要請すれば $T$ がconsistentであるという要請のみでabstractなG1を示すことが出来る．
+これはまさにRosserによって改良化された不完全性定理 @Ros36 の抽象化になっている．
 
 #proposition[Abstract version of Gödel-Rosser theorem][
   $Bew$ は $bold("Ros")$ を満たすとする．
@@ -538,8 +542,43 @@ $bold("D1"), bold("D2"), bold("D3")$ および形式化されたLöbの定理が
   ```
 ]
 
-$bold("Kre")$ を要請しないことはつまり先程のアナロジーを踏まえると $T$ の $Sigma_1$-健全性を要請しない，ということである．
 実際に，この抽象化を具体的した結果として得られる，後述する具体的なGödel-Rosserの定理のステートメントには $Sigma_1$-健全性を要請しない．
+
+反証可能性 $Wid$ (widerlegbar) についても述べおこう．
+G2について，@prop:abstract_G2 で導入したformalized consistency $not Bew bot$ 以外にも，異なる方法で形式的な無矛盾性を表現することが可能である．
+例えば「任意の文に対して，証明可能かつ反証可能であることはない」という言明もまた無矛盾性を自然に表していると言える．
+この無矛盾性を形式化することで得られるG2は通常Jeroslow @Jer73 に帰する．
+さてこのJeroslowのG2をprovability abstraction上で素朴に形式化しようとすると，$Bew$ のみでは微妙に面倒な形式化(formalize)を要求される．
+なぜなら，$Bew$ は実際には論理式のGödel数を受け取る算術上の述語であるから，反証可能性，つまり否定文を扱うとなると文 $sigma$ のGödel数から $not sigma$ のGödel数を受け取る関数を取り扱わなければならず，その抽象化をprovability abstraction内で議論するのはやや面倒である．
+そこで我々はこのような否定のGödel数を計算する関数の抽象化ではなく，refutabilityそのものを抽象化する．
+これによってJeroslowのG2を簡潔に形式化出来る．
+
+#definition[Refutability abstraction][
+  $cal(L)_0$-理論 $T_0$ と $cal(L)$-理論 $T$ に対し，unary な $cal(L)_0$-semisentence $Wid(x)$ が $T_0, T$ のrefutabilityであるとは，任意の $cal(L)$-文に対して以下が成立することとする．
+  $
+    T proves not sigma ==> T_0 proves Wid(GoedelNum(sigma))
+  $
+
+  やはり $Bew$ と同様に $Wid(GoedelNum(sigma))$ は $Wid sigma$ と略して書く．
+  $Wid$ が $cal("L")$-文 $sigma$ に対してsoundであるとは，$T proves Wid sigma ==> T proves not sigma$ が成立することとする．
+
+  $Wid$ を $T_0, T$-refutabilityとして，$T_0$ がdiagonalizableであるとき，$Wid(x)$ の不動点を Jeroslow文と呼んで $upright("J")_Wid$ で表す．
+]
+
+Jeroslow文に関して，すぐに次のことはわかる．
+
+#proposition[
+  $T$ が無矛盾かつ，$Wid$ が $upright("J")_Wid$ に対してsoundであるとき，$T nproves upright("J")_Wid$．
+]
+
+さて，Jeroslowの不完全性定理について述べる．
+
+#proposition[Abstract version of Jeroslow's G2 @Jer73][
+  "証明できてかつ反証可能であることはない" という事態 (_safe_) の形式化を表すsemisentence $upright("Safe")_(Bew,Wid) (x) equiv not (Bew x and Wid x)$ とし，すべての文がsafeであるという意味での無矛盾性 (_formalized law of non-contradiction_) を表す文 $upright("FLoN")_(Bew, Wid) equiv forall x, upright("Safe")_(Bew, Wid)(x)$ とする．
+
+  このとき， $T$ が無矛盾かつ $T_0 proves upright("J")_Wid -> Bew (upright("J")_Wid)$ なら，$T nproves upright("FLoN")_(Bew, Wid)$．
+]
+
 
 == Some further results related to the incompleteness theorems
 
