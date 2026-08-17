@@ -315,15 +315,14 @@ Finally, the second incompleteness theorem follows by the usual argument from th
   ```
 ]
 
-== Provability abstraction
+== Provability abstraction <subsect:provability_abstraction>
 
 素の証明可能性述語を扱うのは技術的に扱いが面倒で取り回しが悪い．
 そのため，我々は証明可能性述語を抽象化したprovability abstractionという概念を導入する．
 このprovability abstractionは，証明可能性を様相として捉える証明可能性論理（@sect:provability_logic で議論する）と非常に関係が深い．
 これらの抽象化を用いることで，我々は不完全性定理を純粋な構文論的な操作によって抽象的に形式化出来る．
 抽象化された導出可能性条件などを満たす "provability" を具体的に構成することによって，我々は実際のコンクリートな不完全性定理の主張を即座に得ることが出来る．
-
-#let Bew = $class("unary", frak("B"))$
+このようなabstractなprovabilityによる形式化の議論は Popescu and Traytel @PT19 @PT21 らの研究がある．
 
 #definition[Provability abstraction][
   言語 $cal(L)$ は言語 $cal(L)_0$ に対するGödel numberingが可能であるとする．

@@ -604,51 +604,62 @@ This suggests that labelled calculi are less suitable for mechanizing the proper
 In this section, we describe the main results of our mechanization of provability logic: the mechanization of Solovay's arithmetical completeness theorem @Sol76 and its generalization.
 
 First, we define arithmetical interpretations, which translate modal formulas into arithmetical sentences.
-In what follows, $T$ is an arithmetical theory with a $Delta_1$-definable axiomatization extending $Theory("I")Sigma_1$, and we consider only the standard provability predicate $Pr(T)$ of $T$.
+In what follows, $T$ is an arithmetical theory with a $Delta_1$-definable axiomatization extending $Theory("I")Sigma_1$.
+更に $Bew$ は @subsect:provability_abstraction の意味でのprovabilityを表すとする．
+定義上は $Bew$ は自由に取ることが出来るが，基本的には $T$ のstandardなprovability $Bew_T$ を考える．
 
 #definition[
   A map $f colon Prop -> upright("Sent")_upright("A")$, where $upright("Sent")_upright("A")$ denotes the set of arithmetical sentences, is called an _arithmetical realization_ (or simply a _realization_).
-  Given a realization $f$, the _(standard) arithmetical interpretation_ is the extension of $f$ translating each modal formula $A$ into an arithmetical sentence $f_(Pr(T))(A)$ as follows.
-  - $f_(Pr(T)) (p) & = f(p)$
-  - $f_(Pr(T)) (bot) & = bot$
-  - $f_(Pr(T)) (A limp B) & = f_(Pr(T)) (A) limp f_(Pr(T)) (B)$
-  - $f_(Pr(T)) (Box A) & = Pr(T) (GoedelNum(f_(Pr(T))(A)))$
+  Given a realization $f$ and a provability $Bew$, the _arithmetical interpretation_ of $A$ by $Bew$, denoted $f_Bew (A)$, is the extension of $f$ translating each modal formula $A$ into an arithmetical sentence as follows.
 
-]
+  - $f_Bew (p) & = f(p)$
+  - $f_Bew (bot) & = bot$
+  - $f_Bew (A limp B) & = f_Bew (A) limp f_Bew (B)$
+  - $f_Bew (Box A) & = Bew (f_Bew (A))$
+
+  特に $Bew_T$ によるinterpretation $f_(Bew_T) (A)$ を _standard interpretation_ of $A$ と呼び，$f_T (A)$ と書く．
+] <def:arithmetical_interpretation>
 #leancode(
   links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/Interpret.lean"),),
   note: [
-    For technical reasons, realizations are implemented for an arbitrary provability predicate `𝔅`.
-    However, since we consider only the standard provability predicate in the present paper, we always use `StandardRealization`, which takes `T.standardProvability` for `𝔅`.
+    By the coercion, `Formula.interpret f 𝔅 A` can be written as `f 𝔅 A`, which corresponds to $f_Bew (A)$.
+    Similarly, `A.standardInterpret f T` corresponds to the standard interpretation $f_(Bew_T) (A)$.
   ],
 )[
   ```
-  structure Realization (α : Type*) (𝔅 : Provability T₀ T) where
+  structure Realization (α : Type*) (L : FirstOrder.Language) where
     val : α → FirstOrder.Sentence L
 
-  abbrev StandardRealization (α : Type*) (T : FirstOrder.ArithmeticTheory) [T.Δ₁] :=
-    Realization α T.standardProvability
-
-  def interpret (f : Realization α 𝔅) : Formula α → FirstOrder.Sentence L
+  def Formula.interpret (f : Realization α L) {T₀ T : FirstOrder.Theory L} (𝔅 : Provability T₀ T) :
+    Formula α → FirstOrder.Sentence L
     | #a    => f.val a
     | ⊥     => ⊥
-    | A 🡒 B => (A.interpret f) 🡒 (B.interpret f)
-    | □A    => 𝔅 (A.interpret f)
+    | A 🡒 B => (A.interpret f 𝔅) 🡒 (B.interpret f 𝔅)
+    | □A    => 𝔅 (A.interpret f 𝔅)
+
+  instance : CoeFun (Realization α L)
+    (fun _ ↦ ∀ {T₀ T : FirstOrder.Theory L}, Provability T₀ T → Formula α → FirstOrder.Sentence L) :=
+    ⟨Formula.interpret⟩
+
+  noncomputable abbrev Formula.standardInterpret (f : Realization α _)
+    (T : FirstOrder.ArithmeticTheory) [T.Δ₁] := Formula.interpret f T.standardProvability
   ```
 ]
 
 #definition[
   The _(standard) provability logic of $T$ relative to $U$_, written $ProvLogic(T, U)$, is defined as follows.
   $
-    ProvLogic(T, U) = { A | #text[$U proves f_(Pr(T)) (A)$ for every realization $f$] }
+    ProvLogic(T, U) = { A | #text[$U proves f_(Bew_T) (A)$ for every realization $f$] }
   $
 ]
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/Interpret.lean"),))[
   ```
-  def provabilityLogicRelativeTo (T U : ArithmeticTheory) [T.Δ₁] : Logic α :=
-    {A | ∀ f : StandardRealization α T, U ⊢ f A}
+  def LO.FirstOrder.ArithmeticTheory.provabilityLogicRelativeTo
+    (T U : FirstOrder.ArithmeticTheory) [T.Δ₁] : Logic α :=
+    {A | ∀ f : Realization α ℒₒᵣ, U ⊢ A.standardInterpret f T}
 
-  abbrev provabilityLogic (T : ArithmeticTheory) [T.Δ₁] : Logic α := T.provabilityLogicRelativeTo T
+  abbrev LO.FirstOrder.ArithmeticTheory.provabilityLogic
+    (T : FirstOrder.ArithmeticTheory) [T.Δ₁] : Logic α := T.provabilityLogicRelativeTo T
   ```
 ]
 
@@ -657,14 +668,11 @@ That is, for appropriate choices of $T$ and $U$, the provability logic $ProvLogi
 Here we present the generalized version (@thm:arithmetical_completeness) using the notion of the _height_ of a theory due to Visser @Vis81.
 
 #definition[Height of a theory][
-  For $n >= 0$, $Pr(T)^n$ denotes the $n$-fold iteration of the provability predicate $Pr(T)$ (where $Pr(T)^0(x) equiv x$).
-  The _height_ $height(T) <= omega$ of a theory $T$ is the least $n in omega$ such that $T proves Pr(T)^n (GoedelNum(bot))$; if no such $n$ exists, we set $height(T) = omega$.
+  For $n >= 0$, $Bew^n$ denotes the $n$-fold iteration of the provability $Bew$ (where $Bew^0 sigma equiv sigma$).
+  The _height_ $height(T) <= omega$ of a theory $T$ is the least $n in omega$ such that $T proves Bew_T^n bot$; if no such $n$ exists, we set $height(T) = omega$.
 ]
 #leancode(
   links: (("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Height.lean"),),
-  note: [
-    As with realizations, it is defined for an arbitrary provability predicate `𝔅`, but we consider only the standard one in the present paper.
-  ],
 )[
   ```
   noncomputable def Provability.height (𝔅 : Provability T₀ T) : ENat := ENat.find (T ⊢ 𝔅^[·] ⊥)
@@ -674,7 +682,7 @@ Here we present the generalized version (@thm:arithmetical_completeness) using t
   ```
 ]
 
-Note that if $T$ is $Sigma_1$-sound, then $T nproves Pr(T)^n (GoedelNum(bot))$ for every $n in omega$, and hence $height(T) = omega$.
+Note that if $T$ is $Sigma_1$-sound, then $T nproves Bew_T^n bot$ for every $n in omega$, and hence $height(T) = omega$.
 
 #definition[
   For $n <= omega$, abusing notation, we define the logic #LogicGLPlusBoxBot($n$) as follows:
@@ -695,7 +703,8 @@ The main result of our mechanization of provability logic is the following.
 ] <thm:arithmetical_completeness>
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/GLPlusBoxBot/Basic.lean"),))[
   ```
-  lemma eq_provabilityLogic : LogicGLPlusBoxBot (α := α) T.height = T.provabilityLogic
+  lemma LogicGLPlusBoxBot.eq_provabilityLogic :
+    LogicGLPlusBoxBot (α := α) T.height = T.provabilityLogic
   ```
 ]
 
@@ -709,10 +718,10 @@ As a corollary, we obtain Solovay's original statement.
 ]
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/GL/Basic.lean"),))[
   ```
-  theorem eq_provabilityLogic_sigma1_sound [T.SoundOnHierarchy 𝚺 1] :
+  theorem LogicGL.eq_provabilityLogic_sigma1_sound [T.SoundOnHierarchy 𝚺 1] :
     @LogicGL α = T.provabilityLogic
 
-  theorem eq_provabilityLogic_peano_arithmetic : @LogicGL α = (𝗣𝗔.provabilityLogic)
+  theorem LogicGL.eq_provabilityLogic_peano_arithmetic : @LogicGL α = (𝗣𝗔.provabilityLogic)
   ```
 ]
 
@@ -721,15 +730,15 @@ The reduction of $LogicS$ to $LogicGL$ stated in @prop:S_characterization is ess
 
 #theorem[Solovay's (second) arithmetical completeness theorem @Sol76][
   Let $T$ be a sound theory.
-  For every formula $A$, $LogicS proves A$ if and only if $NN models f_(Pr(T)) (A)$ for every realization $f$.
+  For every formula $A$, $LogicS proves A$ if and only if $NN models f_(Bew_T) (A)$ for every realization $f$.
   That is, $ProvLogic(T, TrueArithmetic) = LogicS$.
 ]
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/S/Basic.lean"),))[
   ```
-  theorem arithmetical_completeness_iff [DecidableEq α] :
-    A ∈ LogicS ↔ (∀ f : StandardRealization α T, ℕ↓[ℒₒᵣ] ⊧ f A)
+  theorem LogicS.arithmetical_completeness_iff [DecidableEq α] :
+    A ∈ LogicS ↔ (∀ f : Realization α ℒₒᵣ, ℕ↓[ℒₒᵣ] ⊧ A.standardInterpret f T)
 
-  theorem eq_provabilityLogicRelativeTo_TA [DecidableEq α] :
+  theorem LogicS.eq_provabilityLogicRelativeTo_TA [DecidableEq α] :
     @LogicS α = T.provabilityLogicRelativeTo 𝗧𝗔
   ```
 ]
@@ -877,8 +886,8 @@ Proving it requires arguments involving partial truth definitions, which we have
 The other is the uniform arithmetical completeness theorem.
 
 #theorem[Uniform Arithmetical Completeness Theorem][
-  For every $Sigma_1$-sound theory $T$, there exists a uniform arithmetical interpretation $f$ such that
-  for every formula $A$, $LogicGL proves A$ if and only if $T proves f_(Pr(T)) (A)$.
+  For every $Sigma_1$-sound theory $T$, there exists a uniform realization $f$ such that
+  for every formula $A$, $LogicGL proves A$ if and only if $T proves f_(Bew_T) (A)$.
 ]
 
 == On $LogicGrz$
@@ -1057,45 +1066,47 @@ Furthermore, $LogicGrz$ is related to #LogicGL and #LogicS through the boxdot tr
 Using this fact, Goldblatt @Gol78 and Boolos @Boo80 showed that $LogicGrz$ is arithmetical complete with respect to the _strong_ arithmetical interpretation, in which $Box$ is read as "provable and true" rather than merely "provable".
 
 #definition[Strong interpretation][
-  Given a realization $f$, the _strong (arithmetical) interpretation_ $f^s_(Pr(T))(A)$ is defined exactly as the interpretation $f_(Pr(T))(A)$ of @sect:arithmetical_completeness except for the modal clause, which reads
+  Given a realization $f$ and a provability $Bew$, the _strong (arithmetical) interpretation_ $f^upright("s")_(Bew)(A)$ is defined exactly as the interpretation $f_(Bew)(A)$ of @def:arithmetical_interpretation except for the modal clause, which reads
   $
-    f^s_(Pr(T)) (Box A) = f^s_(Pr(T)) (A) land Pr(T) (GoedelNum(f^s_(Pr(T)) (A))).
+    f^upright("s")_(Bew) (Box A) = f^upright("s")_(Bew) (A) land Bew (f^upright("s")_(Bew) (A)).
   $
-  Equivalently, $f^s_(Pr(T))(A)$ is $T$-provably equivalent to $f_(Pr(T))(A^Boxdot)$, and this is how the arithmetical completeness of $LogicGrz$ is reduced to that of #LogicGL and #LogicS.
+  Equivalently, $f^upright("s")_(Bew)(A)$ is $T$-provably equivalent to $f_(Bew)(A^Boxdot)$, and this is how the arithmetical completeness of $LogicGrz$ is reduced to that of #LogicGL and #LogicS.
 ]
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/StrongInterpret.lean"),))[
   ```
-  def Formula.strongInterpret (f : Realization α 𝔅) : Formula α → FirstOrder.Sentence L
+  def Formula.strongInterpret (f : Realization α L) {T₀ T : FirstOrder.Theory L}
+    (𝔅 : Provability T₀ T) : Formula α → FirstOrder.Sentence L
     | #a    => f.val a
     | ⊥     => ⊥
-    | A 🡒 B => (A.strongInterpret f) 🡒 (B.strongInterpret f)
-    | □A    => (A.strongInterpret f) ⋏ 𝔅 (A.strongInterpret f)
+    | A 🡒 B => (A.strongInterpret f 𝔅) 🡒 (B.strongInterpret f 𝔅)
+    | □A    => (A.strongInterpret f 𝔅) ⋏ 𝔅 (A.strongInterpret f 𝔅)
 
   lemma Formula.iff_interpret_boxdot_strongInterpret [𝔅.HBL2] :
-    T ⊢ f (Aᵇ) ↔ T ⊢ A.strongInterpret f
+    T ⊢ f 𝔅 (Aᵇ) ↔ T ⊢ A.strongInterpret f 𝔅
 
-  lemma Formula.iff_models_interpret_boxdot_strongInterpret [𝔅.HBL2] [𝔅.SoundOn M] :
-    M↓[L] ⊧ f (Aᵇ) ↔ M↓[L] ⊧ A.strongInterpret f
+  lemma Formula.iff_models_interpret_boxdot_strongInterpret
+    {M} [Nonempty M] [Structure L M] [M↓[L] ⊧* T] [𝔅.HBL2] [𝔅.SoundOn M] :
+    M↓[L] ⊧ f 𝔅 (Aᵇ) ↔ M↓[L] ⊧ A.strongInterpret f 𝔅
   ```
 ]
 
 #theorem[Arithmetical completeness of $LogicGrz$ @Gol78 @Boo80][
   Let $T$ be a theory with $height(T) = omega$ (in particular, any $Sigma_1$-sound $T$).
-  Then $LogicGrz proves A$ if and only if $T proves f^s_(Pr(T)) (A)$ for every realization $f$.
-  Moreover, if $T$ is sound, then $LogicGrz proves A$ if and only if $NN models f^s_(Pr(T)) (A)$ for every realization $f$.
+  Then $LogicGrz proves A$ if and only if $T proves f^upright("s")_(Bew_T) (A)$ for every realization $f$.
+  Moreover, if $T$ is sound, then $LogicGrz proves A$ if and only if $NN models f^upright("s")_(Bew_T) (A)$ for every realization $f$.
 ] <thm:Grz_arithmetical_completeness>
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/Grz/Basic.lean"),))[
   ```
   theorem LogicGrz.arithmetical_completeness_iff_of_infinity_height
     (height : T.height = (⊤ : ℕ∞)) [DecidableEq α] :
-    A ∈ LogicGrz ↔ (∀ f : StandardRealization α T, T ⊢ A.strongInterpret f)
+    A ∈ LogicGrz ↔ (∀ f : Realization α ℒₒᵣ, T ⊢ A.strongInterpret f T.standardProvability)
 
   theorem LogicGrz.arithmetical_completeness_iff_of_sigma1_sound
     [T.SoundOnHierarchy 𝚺 1] [DecidableEq α] :
-    A ∈ LogicGrz ↔ (∀ f : StandardRealization α T, T ⊢ A.strongInterpret f)
+    A ∈ LogicGrz ↔ (∀ f : Realization α ℒₒᵣ, T ⊢ A.strongInterpret f T.standardProvability)
 
   theorem LogicGrz.arithmetical_completeness_model_iff [DecidableEq α] :
-    A ∈ LogicGrz ↔ (∀ f : StandardRealization α T, ℕ↓[ℒₒᵣ] ⊧ A.strongInterpret f)
+    A ∈ LogicGrz ↔ (∀ f : Realization α ℒₒᵣ, ℕ↓[ℒₒᵣ] ⊧ A.strongInterpret f T.standardProvability)
   ```
 ]
 
@@ -1210,7 +1221,7 @@ In particular, on closed formulas $LogicGLPoint3$ and $LogicGL$ do not differ; t
 Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect to consistency assertions.
 
 #definition[
-  - A sentence $sigma$ is a _consistency assertion_ if it is generated from $lnot Pr(T)(GoedelNum(bot))$ and $Pr(T)(GoedelNum(bot))$ by closing under $Pr(T)(dot.c)$, $lnot$, $land$, $lor$, and $limp$.
+  - A sentence $sigma$ is a _consistency assertion_ if it is generated from $lnot Bew bot$ and $Bew bot$ by closing under $Bew$, $lnot$, $land$, $lor$, and $limp$.
   - A realization $f$ is a _consistency realization_ if $f$ sends every propositional variable to a consistency assertion.
 ]
 
@@ -1225,11 +1236,15 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
     | or {σ τ}  : IsConsistencyAssertion 𝔅 σ → IsConsistencyAssertion 𝔅 τ → IsConsistencyAssertion 𝔅 (σ ⋎ τ)
     | imp {σ τ} : IsConsistencyAssertion 𝔅 σ → IsConsistencyAssertion 𝔅 τ → IsConsistencyAssertion 𝔅 (σ 🡒 τ)
 
-  def Realization.IsConsistencyRealization {𝔅 : Provability T₀ T} (f : Realization α 𝔅) : Prop :=
+  def Realization.IsConsistencyRealization (f : Realization α L) (𝔅 : Provability T₀ T) : Prop :=
     ∀ a, 𝔅.IsConsistencyAssertion (f.val a)
 
   abbrev ConsistencyRealization (α : Type*) (𝔅 : Provability T₀ T) :=
-    {f : Realization α 𝔅 // f.IsConsistencyRealization}
+    {f : Realization α L // f.IsConsistencyRealization 𝔅}
+
+  instance {𝔅 : Provability T₀ T} :
+    CoeFun (ConsistencyRealization α 𝔅) (fun _ => Formula α → FirstOrder.Sentence L) :=
+    ⟨fun f => Formula.interpret f.1 𝔅⟩
 
   abbrev StandardConsistencyRealization (α : Type*) (T : FirstOrder.ArithmeticTheory) [T.Δ₁] :=
     ConsistencyRealization α T.standardProvability
@@ -1237,13 +1252,13 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
 ]
 
 #theorem[@VS83[Theorem 1]][
-  $LogicGLPoint3 proves A$ if and only if $PeanoArithmetic proves f_(Pr(PeanoArithmetic)) (A)$ for every consistency realization $f$ over $PeanoArithmetic$.
+  $LogicGLPoint3 proves A$ if and only if $PeanoArithmetic proves f_(Bew_PeanoArithmetic) (A)$ for every consistency realization $f$ over $PeanoArithmetic$.
 ]
 #leancode(
   links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/GLPoint3/Basic.lean"),),
 )[
   ```
-  theorem arithmetical_completeness_iff_peano_arithmetic [DecidableEq α] :
+  theorem LogicGLPoint3.arithmetical_completeness_iff_peano_arithmetic [DecidableEq α] :
     A ∈ LogicGLPoint3 ↔ ∀ f : StandardConsistencyRealization α 𝗣𝗔, 𝗣𝗔 ⊢ f A
   ```
 ]
