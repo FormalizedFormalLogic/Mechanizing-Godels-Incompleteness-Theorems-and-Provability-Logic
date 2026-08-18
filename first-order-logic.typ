@@ -547,8 +547,8 @@ refutability (Widerlegbar) $Wid$ についても述べておこう．
 G2について，@prop:abstract_G2 で導入したformalized consistency $not Bew bot$ 以外にも，異なる方法で形式的な無矛盾性を表現することが可能である．
 例えば「任意の文に対して，証明可能かつ反証可能であることはない」という言明もまた無矛盾性を自然に表していると言える．
 この無矛盾性を形式化することで得られるG2は通常Jeroslow @Jer73 に帰する #footnote[無矛盾性をどのように形式化するかによって要請される条件の微妙な相違やG2のステートメントの様々なversionが得られるという緊張関係については，例えばKurahashi @Kur20 などを参照しなさい．]．
-さてこのJeroslowのG2をprovability abstraction上で素朴に形式化しようとすると，$Bew$ のみでは微妙に面倒な形式化(formalize)を要求される．
-なぜなら，$Bew$ は実際には論理式のGödel数を受け取る算術上の述語であるから，反証可能性，つまり否定文を扱うとなると文 $sigma$ のGödel数から $not sigma$ のGödel数を得る関数を取り扱わなければならず，その抽象化をprovability abstraction内で議論するのはやや面倒である．
+さてこのJeroslowのG2をprovability abstraction上で素朴に形式化しようとすると，$Bew$ のみでは微妙に面倒な形式化(formalize)が要求される．
+なぜなら，$Bew$ は実際には論理式のGödel数を受け取る算術上の述語であるから，反証可能性，つまり否定文を扱うとなると文 $sigma$ のGödel数から $not sigma$ のGödel数を得る"関数"を取り扱わなければならず，その抽象化をprovability abstraction内で議論するのはやや面倒である．
 そこで我々はこのような否定のGödel数を計算する関数の抽象化ではなく，refutabilityそのものを抽象化する．
 これによってJeroslowのG2を簡潔に形式化出来る．
 
@@ -644,6 +644,7 @@ Jeroslow文に関して，すぐに次のことはわかる．
   ```
 ]
 
+この抽象化を具体的にすること，つまり，所望のprovability $Bew$ や refutability $Wid$ を実際に構成することが次節以降の目標になる．
 
 == Some further results related to the incompleteness theorems
 
