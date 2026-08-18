@@ -367,7 +367,7 @@ Finally, the second incompleteness theorem follows by the usual argument from th
   ```
 ]
 
-$bold("D2")$ と $bold("D3")$ を満たす $Bew$ は標準的(standard)と呼ばれる．
+後述する標準的な方法により構成する standard なprovability $Bew_T$ は $bold("D2")$ と $bold("D3")$ を満たす．
 @sect:provability_logic で議論する証明可能性論理は主にstandardなprovabilityによって議論する．
 条件 $bold("Kre")$ はVisser @Vis21 でKreisel's conditionと呼ばれて導入された導出可能性条件である #footnote[Visserはこの条件の由来を @Kre54 に帰している．また正確には，Visserは両側を要請していた．]．
 いま，この抽象化のモチベーションとして，純粋に構文論的な方法によって議論を形式化(formalize)したいので，model / structureに関与したくない．
@@ -504,19 +504,18 @@ $bold("D2")$ と $bold("D3")$ を満たす $Bew$ は標準的(standard)と呼ば
 ]
 
 $bold("D1"), bold("D2"), bold("D3")$ およびformalized Löb's theoremが，それぞれ様相論理のネセシテーション規則，公理 $AxiomK$，公理 $Axiom("4")$，公理 $Axiom("L")$ と概ね対応していることに注意しておこう．
-この事実は標準的な $Bew$ で算術的健全性が成立する観察を与える．
+この事実は標準的なprovability $Bew_T$ で算術的健全性が成立する観察を与える．
 
 抽象化において $bold("Kre")$ の導入を述べた理由を踏まえると，@prop:abstract_G1 で示した抽象的なG1について $bold("Kre")$ が要請されていることはおおまかには $T$ の $Sigma_1$-健全性を要請することと等しいと言える．
 しかし $Bew$ に $bold("Kre")$ ではなく別の条件 $bold("Ros")$ を要請すれば $T$ がconsistentであるという要請のみでabstractなG1を示すことが出来る．
-これはまさにRosserによって改良化された不完全性定理 @Ros36 の抽象化になっている．
+これはまさにRosserによって改良化された不完全性定理 @Ros36 の抽象化になる．
 
 #proposition[Abstract version of Gödel-Rosser theorem][
   $Bew$ は $bold("Ros")$ を満たすとする．
   この $Bew$ によるGödel文を，特別にRosser文 $upright("R")_Bew$ と呼ぶことにする．
-  このとき，以下が成立する．
-
-  / Gödel-Rosser: $T nproves upright("R")_Bew$ かつ $T nproves not upright("R")_Bew$．つまり $upright("R")_Bew$ は独立命題．特に後者に関して $bold("Kre")$ を要請しない．
-  / Kreisel's remark: $T proves upright("Con")_Bew$．
+  このとき $T nproves upright("R")_Bew$ かつ $T nproves not upright("R")_Bew$ が成立する．
+  つまり $upright("R")_Bew$ は独立命題．特に後者に関して $bold("Kre")$ を要請しない．
+  しかし，この $Bew$ による無矛盾性 $upright("Con")_Bew$ について，$T proves upright("Con")_Bew$ である #footnote[日本の数理論理学のコミュニティでは Kreisel's remarkとかと呼ばれる．]．
 ]
 
 #leancode(
@@ -542,14 +541,14 @@ $bold("D1"), bold("D2"), bold("D3")$ およびformalized Löb's theoremが，そ
   ```
 ]
 
-実際に，この抽象化を具体的した結果として得られる，後述する具体的なGödel-Rosserの定理のステートメントには $Sigma_1$-健全性を要請しない．
+実際に，この抽象化を具体化した結果として得られる，後述する具体的なGödel-Rosserの定理のステートメントには $Sigma_1$-健全性を要請しない．
 
-反証可能性 $Wid$ (widerlegbar) についても述べおこう．
+refutability (Widerlegbar) $Wid$ についても述べておこう．
 G2について，@prop:abstract_G2 で導入したformalized consistency $not Bew bot$ 以外にも，異なる方法で形式的な無矛盾性を表現することが可能である．
 例えば「任意の文に対して，証明可能かつ反証可能であることはない」という言明もまた無矛盾性を自然に表していると言える．
-この無矛盾性を形式化することで得られるG2は通常Jeroslow @Jer73 に帰する．
+この無矛盾性を形式化することで得られるG2は通常Jeroslow @Jer73 に帰する #footnote[無矛盾性をどのように形式化するかによって要請される条件の微妙な相違やG2のステートメントの様々なversionが得られるという緊張関係については，例えばKurahashi @Kur20 などを参照しなさい．]．
 さてこのJeroslowのG2をprovability abstraction上で素朴に形式化しようとすると，$Bew$ のみでは微妙に面倒な形式化(formalize)を要求される．
-なぜなら，$Bew$ は実際には論理式のGödel数を受け取る算術上の述語であるから，反証可能性，つまり否定文を扱うとなると文 $sigma$ のGödel数から $not sigma$ のGödel数を受け取る関数を取り扱わなければならず，その抽象化をprovability abstraction内で議論するのはやや面倒である．
+なぜなら，$Bew$ は実際には論理式のGödel数を受け取る算術上の述語であるから，反証可能性，つまり否定文を扱うとなると文 $sigma$ のGödel数から $not sigma$ のGödel数を得る関数を取り扱わなければならず，その抽象化をprovability abstraction内で議論するのはやや面倒である．
 そこで我々はこのような否定のGödel数を計算する関数の抽象化ではなく，refutabilityそのものを抽象化する．
 これによってJeroslowのG2を簡潔に形式化出来る．
 
@@ -560,9 +559,34 @@ G2について，@prop:abstract_G2 で導入したformalized consistency $not Be
   $
 
   やはり $Bew$ と同様に $Wid(GoedelNum(sigma))$ は $Wid sigma$ と略して書く．
-  $Wid$ が $cal("L")$-文 $sigma$ に対してsoundであるとは，$T proves Wid sigma ==> T proves not sigma$ が成立することとする．
+  $Wid$ が $cal(L)$-文 $sigma$ に対してsoundであるとは，$T proves Wid sigma ==> T proves not sigma$ が成立することとする．
 
   $Wid$ を $T_0, T$-refutabilityとして，$T_0$ がdiagonalizableであるとき，$Wid(x)$ の不動点を Jeroslow文と呼んで $upright("J")_Wid$ で表す．
+]
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Refutability.lean#L15",
+    ),
+  ),
+)[
+  ```
+  structure Refutability [L.ReferenceableBy L₀] (T₀ : Theory L₀) (T : Theory L) where
+    refu : Semisentence L₀ 1
+    refu_def {σ : Sentence L} : T ⊢ ∼σ → T₀ ⊢ refu/[⌜σ⌝]
+
+  @[coe] def Refutability.rf (𝔚 : Refutability T₀ T) (σ : Sentence L) : Sentence L₀ := 𝔚.refu/[⌜σ⌝]
+  instance : CoeFun (Refutability T₀ T) (fun _ ↦ Sentence L → Sentence L₀) := ⟨Refutability.rf⟩
+
+  variable {L : Language} [L.ReferenceableBy L] {T₀ T : Theory L} [Diagonalization T₀]
+
+  class Refutability.SoundOn (𝔚 : Refutability T₀ T) (σ : Sentence L) where
+    sound_on : T ⊢ 𝔚 σ → T ⊢ ∼σ
+
+  def jeroslow (𝔚 : Refutability T₀ T) : Sentence L := fixedpoint T₀ 𝔚.refu
+  ```
 ]
 
 Jeroslow文に関して，すぐに次のことはわかる．
@@ -571,12 +595,53 @@ Jeroslow文に関して，すぐに次のことはわかる．
   $T$ が無矛盾かつ，$Wid$ が $upright("J")_Wid$ に対してsoundであるとき，$T nproves upright("J")_Wid$．
 ]
 
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Refutability.lean#L73",
+    ),
+  ),
+)[
+  ```
+  lemma unprovable_jeroslow [T₀ ⪯ T] [Consistent T] [𝔚.SoundOn (jeroslow 𝔚)] : T ⊬ jeroslow 𝔚
+  ```
+]
+
 さて，Jeroslowの不完全性定理について述べる．
 
 #proposition[Abstract version of Jeroslow's G2 @Jer73][
   "証明できてかつ反証可能であることはない" という事態 (_safe_) の形式化を表すsemisentence $upright("Safe")_(Bew,Wid) (x) equiv not (Bew x and Wid x)$ とし，すべての文がsafeであるという意味での無矛盾性 (_formalized law of non-contradiction_) を表す文 $upright("FLoN")_(Bew, Wid) equiv forall x, upright("Safe")_(Bew, Wid)(x)$ とする．
 
   このとき， $T$ が無矛盾かつ $T_0 proves upright("J")_Wid -> Bew (upright("J")_Wid)$ なら，$T nproves upright("FLoN")_(Bew, Wid)$．
+]
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Refutability.lean#L90",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean#L84",
+    ),
+  ),
+)[
+  ```
+  variable [L.DecidableEq] [L.ReferenceableBy L] {T₀ T : Theory L}
+  variable [Diagonalization T₀] [T₀ ⪯ T] {𝔅 : Provability T₀ T} {𝔚 : Refutability T₀ T}
+
+  def safe (𝔅 : Provability T₀ T) (𝔚 : Refutability T₀ T) : Semisentence L 1 :=
+    “x. ¬(!𝔅.prov x ∧ !𝔚.refu x)”
+
+  def flon (𝔅 : Provability T₀ T) (𝔚 : Refutability T₀ T) : Sentence L := “∀ x, !(safe 𝔅 𝔚) x”
+
+  class FormalizedCompleteOn (𝔅 : Provability T₀ T) (σ) where
+    formalized_complete_on : T₀ ⊢ σ 🡒 𝔅 σ
+
+  lemma unprovable_flon [Consistent T] [𝔅.FormalizedCompleteOn (jeroslow 𝔚)] : T ⊬ flon 𝔅 𝔚
+  ```
 ]
 
 
