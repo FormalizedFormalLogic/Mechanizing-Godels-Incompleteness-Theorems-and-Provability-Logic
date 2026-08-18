@@ -35,6 +35,15 @@
   ),
 )
 
+#remark[
+  Since the word "formalize" is used in two different senses, which may cause confusion, we strictly distinguish between the words _formalize_ and _mechanize_.
+
+  / _formalize_: the formalization of mathematics as a technique in the context of mathematical logic and metamathematics.
+  / _mechanize_: the formalization of mathematics in an interactive theorem prover, verifiable on an actual computer.
+
+  Following this convention, what we have done can be stated succinctly: _mechanizing formalized mathematics_.
+]
+
 = Introduction
 
 _Gödel's incompleteness theorems_ are among the most significant results in mathematical logic.
@@ -86,7 +95,7 @@ This can be verified from the following commits, at which each result first beca
 - Solovay's arithmetical completeness theorem: #commit-link("4a34d75c074c7614a1f16661ac73fd0725263c32") (2025/04/06).
 
 On the other hand, since June 2026, the second author has adopted AI/LLM-assisted _vibe coding_ in Lean for #link(REPO_SOURCES.at("ProvabilityLogic"))[FormalizedFormalLogic/ProvabilityLogic], using interactive coding agents such as Anthropic's Claude both for refactoring the code and for mechanizing the new results, namely the sequent calculi for modal logics and the classification theorem of provability logics.
-We have verified that the main parts of the generated code do not rely on any device regarded as illegitimate for mechanizing mathematics in Lean, such as `sorry`, additional nontrivial axioms, or `native_decide`#footnote[Some parts still contain `sorry`s; they are isolated from the main results of this paper and do not compromise the validity of the mechanization. See @subsect:remaining-sorry-provability-logic.].
+We have verified that the main parts of the generated code do not rely on any device regarded as illegitimate for mechanizing mathematics in Lean, such as `sorry`, additional nontrivial axioms, or `native_decide`#footnote[Some parts still contain `sorry`s; they are isolated from the main results of this paper and do not compromise the validity of the mechanization. See @subsect:remaining_sorry_in_provlogic.].
 @subsect:vibe-formalizing で，我々がこのプロジェクトにおいてどのようにAI/LLMを用いた形式証明の執筆・生成作業を行ったかを軽く報告する．
 
 *The authors take full responsibility for the final artifact, including its AI-generated code.*
@@ -864,7 +873,7 @@ We have mechanized this fact as well.
   ```
 ]
 
-=== On some remaining `sorry`s <subsect:remaining-sorry-provability-logic>
+=== On some remaining `sorry`s <subsect:remaining_sorry_in_provlogic>
 
 Although the mechanization of the classification theorem itself does not depend on them, the mechanizations of some facts of provability logic still contain `sorry`s.
 We note them here.
