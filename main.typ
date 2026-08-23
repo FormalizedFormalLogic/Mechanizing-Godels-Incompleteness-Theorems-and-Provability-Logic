@@ -605,8 +605,8 @@ In this section, we describe the main results of our mechanization of provabilit
 
 First, we define arithmetical interpretations, which translate modal formulas into arithmetical sentences.
 In what follows, $T$ is an arithmetical theory with a $Delta_1$-definable axiomatization extending $Theory("I")Sigma_1$.
-更に $Bew$ は @subsect:provability_abstraction の意味でのprovabilityを表すとする．
-定義上は $Bew$ は自由に取ることが出来るが，基本的には $T$ のstandardなprovability $Bew_T$ を考える．
+Moreover, $Bew$ denotes a provability in the sense of @subsect:provability_abstraction.
+Although the definition allows $Bew$ to be arbitrary, we mainly consider the standard provability $Bew_T$ of $T$.
 
 #definition[
   A map $f colon Prop -> upright("Sent")_upright("A")$, where $upright("Sent")_upright("A")$ denotes the set of arithmetical sentences, is called an _arithmetical realization_ (or simply a _realization_).
@@ -617,7 +617,7 @@ In what follows, $T$ is an arithmetical theory with a $Delta_1$-definable axioma
   - $f_Bew (A limp B) & = f_Bew (A) limp f_Bew (B)$
   - $f_Bew (Box A) & = Bew (f_Bew (A))$
 
-  特に $Bew_T$ によるinterpretation $f_(Bew_T) (A)$ を _standard interpretation_ of $A$ と呼び，$f_T (A)$ と書く．
+  In particular, the interpretation $f_(Bew_T) (A)$ by $Bew_T$ is called the _standard interpretation_ of $A$ and is written $f_T (A)$.
 ] <def:arithmetical_interpretation>
 #leancode(
   links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/Interpret.lean"),),

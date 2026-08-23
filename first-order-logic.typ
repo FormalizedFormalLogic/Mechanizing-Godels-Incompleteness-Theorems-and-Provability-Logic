@@ -317,29 +317,30 @@ Finally, the second incompleteness theorem follows by the usual argument from th
 
 == Provability abstraction <subsect:provability_abstraction>
 
-生の証明可能性述語を扱うのは技術的に扱いが面倒で取り回しが悪い．
-そのため，我々は証明可能性述語を抽象化したprovability abstractionという概念を導入する．
-このprovability abstractionは，証明可能性を様相として捉える証明可能性論理（@sect:provability_logic で議論する）と非常に関係が深い．
-これらの抽象化を用いることで，我々は不完全性定理を純粋な構文論的な操作によって抽象的に形式化出来る．
-抽象化された導出可能性条件などを満たす "provability" を具体的に構成することによって，我々は実際のコンクリートな不完全性定理の主張を即座に得ることが出来る．
-このようなabstractなprovabilityによる不完全性定理の形式化の議論は Popescu and Traytel @PT19 @PT21 らの先行研究がある．
+Working directly with a raw provability predicate is technically cumbersome.
+We therefore introduce the notion of _provability abstraction_, an abstraction of the provability predicate.
+This notion is closely related to provability logic, which treats provability as a modality (see @sect:provability_logic).
+With these abstractions, the incompleteness theorems can be mechanized abstractly, by purely syntactic manipulations.
+Concretely constructing a "provability" satisfying the abstract derivability conditions then immediately yields the concrete statements of the incompleteness theorems.
+Mechanizing the incompleteness theorems via such an abstract provability has previously been studied by Popescu and Traytel @PT19 @PT21.
 
 #definition[Provability abstraction][
-  言語 $cal(L)$ は言語 $cal(L)_0$ に対するGödel numberingが可能であるとする．
-  $cal(L)_0$-理論 $T_0$ と $cal(L)$-理論 $T$ に対し，unary な $cal(L)_0$-論理式 $Bew(x)$ が $T_0, T$ のprovabilityであるとは，任意の $cal(L)$-文に対して以下が成立することとする．
+  Suppose that the language $cal(L)$ admits a Gödel numbering in the language $cal(L)_0$.
+  For an $cal(L)_0$-theory $T_0$ and an $cal(L)$-theory $T$, a unary $cal(L)_0$-semisentence $Bew(x)$ is called a _provability_ of $T_0, T$ if the following holds for every $cal(L)$-sentence $sigma$.
   $
     T proves sigma ==> T_0 proves Bew(GoedelNum(sigma))
   $
-  つまり，$Bew(x)$ は最低限の導出可能性条件 $bold("D1")$ を持つものとする．
-  以下では $Bew(GoedelNum(sigma))$ は単に $Bew sigma$ と書くことにする．
-  更に，以下の性質を定める．
+  That is, $Bew(x)$ is required to satisfy at least the derivability condition $bold("D1")$.
+  In what follows, we simply write $Bew sigma$ for $Bew(GoedelNum(sigma))$.
+  We further define the following properties, where $sigma$ and $pi$ range over $cal(L)$-sentences.
+  The conditions $bold("D3")$ and $bold("Kre")$ are defined only when $T_0$ and $T$ are theories in the same language, i.e., when $cal(L)_0 = cal(L)$.
 
-  - $bold("D2")$: 任意の $cal(L)$-文 $sigma, pi$ に対して，$T_0 proves Bew (sigma -> pi) -> Bew sigma -> Bew pi$．
-  - $bold("D3")$: $T_0$ と $T$ は同じ $cal(L)$-理論とする．任意の $cal(L)$-文 $sigma$ に対して，$T_0 proves Bew sigma -> Bew Bew sigma$．
-  - $bold("Kre")$: $T_0$ と $T$ は同じ $cal(L)$-理論とする．任意の $cal(L)$-文 $sigma$ に対して，$T proves Bew sigma ==> T proves sigma$．
-  - $bold("Ros")$: 任意の $cal(L)$-文 $sigma$ に対して，$T proves not sigma ==> T_0 proves not Bew sigma$．
-  // - $bold("FC")$ (on $cal(L)$-文 $sigma$): $T_0 proves sigma -> Bew sigma$．
-  // - $bold("S")$ (on $L_0$-structure $M$) : 任意の $cal(L)$-文 $sigma$ に対して，$M models Bew sigma ==> T proves sigma$．
+  - $bold("D2")$: $T_0 proves Bew (sigma -> pi) -> Bew sigma -> Bew pi$.
+  - $bold("D3")$: $T_0 proves Bew sigma -> Bew Bew sigma$.
+  - $bold("Kre")$: $T proves Bew sigma ==> T proves sigma$.
+  - $bold("Ros")$: $T proves not sigma ==> T_0 proves not Bew sigma$.
+  // - $bold("FC")$ (on an $cal(L)$-sentence $sigma$): $T_0 proves sigma -> Bew sigma$.
+  // - $bold("S")$ (on an $L_0$-structure $M$) : $M models Bew sigma ==> T proves sigma$.
 ]
 
 #leancode[
@@ -367,20 +368,20 @@ Finally, the second incompleteness theorem follows by the usual argument from th
   ```
 ]
 
-後述する標準的な方法により構成する standard なprovability $Bew_T$ は $bold("D2")$ と $bold("D3")$ を満たす．
-@sect:provability_logic で議論する証明可能性論理は主にstandardなprovabilityによって議論する．
-条件 $bold("Kre")$ はVisser @Vis21 でKreisel's conditionと呼ばれて導入された導出可能性条件である #footnote[Visserはこの条件の由来を @Kre54 に帰している．また正確には，Visserは両側を要請していた．]．
-いま，この抽象化のモチベーションとして，純粋に構文論的な方法によって議論を形式化(formalize)したいので，model / structureに関与したくない．
-天下り的に構成を先取りすると，実際に後で構成するstandardな $Bew$ は $Sigma_1$-述語であるから，条件 $bold("Kre")$ は理論 $T$ の $Sigma_1$-健全性および完全性の純粋に構文論的な対応物と見做せる．
+The standard provability $Bew_T$, constructed later in the standard way, satisfies $bold("D2")$ and $bold("D3")$.
+The provability logic discussed in @sect:provability_logic is developed mainly in terms of the standard provability.
+The condition $bold("Kre")$ is a derivability condition introduced by Visser @Vis21 under the name _Kreisel's condition_ #footnote[Visser attributes the origin of this condition to @Kre54. To be precise, Visser required both directions.].
+Our motivation for this abstraction is to formalize the arguments in a purely syntactic way, without involving models or structures.
+Anticipating the later construction, the standard $Bew$ that we actually construct is a $Sigma_1$-predicate, so the condition $bold("Kre")$ can be regarded as a purely syntactic counterpart of the $Sigma_1$-soundness and $Sigma_1$-completeness of $T$.
 
-さて，実際にはprovabilityの抽象化のみでは不十分で，理論の対角化可能性についても抽象化する必要がある．
+In fact, abstracting provability alone does not suffice: we also need to abstract the diagonalizability of a theory.
 
 #definition[Diagonalization abstraction][
-  言語 $cal(L)$ は $cal(L)$ 自身に対するGödel numberingが可能であるとする．
-  $cal(L)$-理論 $T$ がdiagonalizableであるとは，$cal(L)$-semisentence を受け取り $cal(L)$-sentenceを返す写像 $upright("fixpoint")_T$ であって，
-  任意の $cal(L)$-semisentence $theta$ に対し $T proves upright("fixpoint")_T (theta) <-> theta (GoedelNum(upright("fixpoint")_T (theta)))$ が構成できることを言う．$upright("fixpoint")_T (theta)$ を $theta$ の不動点と呼ぶ．
+  Suppose that the language $cal(L)$ admits a Gödel numbering in $cal(L)$ itself.
+  An $cal(L)$-theory $T$ is called _diagonalizable_ if one can construct a map $upright("fixpoint")_T$, sending an $cal(L)$-semisentence to an $cal(L)$-sentence,
+  such that $T proves upright("fixpoint")_T (theta) <-> theta (GoedelNum(upright("fixpoint")_T (theta)))$ for any $cal(L)$-semisentence $theta$. We call $upright("fixpoint")_T (theta)$ the _fixed point_ of $theta$.
 
-  $cal(L)$-理論 $T_0, T$ で，$T_0$ はdiagonalizableであり，$Bew$ を $T_0, T$ のprovabilityとしたとき，$not Bew (x)$ の不動点をGödel文と呼んで $upright("G")_Bew$ と表す．
+  Let $T_0, T$ be $cal(L)$-theories such that $T_0$ is diagonalizable, and let $Bew$ be a provability of $T_0, T$. Then the fixed point of $not Bew (x)$ is called the _Gödel sentence_ and is denoted by $upright("G")_Bew$.
 ]
 
 #leancode[
@@ -395,14 +396,14 @@ Finally, the second incompleteness theorem follows by the usual argument from th
   ```
 ]
 
-これらの道具立てを用意することによって，不完全性定理やそれらの系などを構文論的な操作によって証明することが可能である．
-以降では，$cal(L)$-理論 $T_0 subset.eq T$ とし， $T_0$ はdiagonalizable，$T$ は consistentとする．
-また $Bew$ を $T_0, T$-provabilityとしよう．
-まず，第1不完全性定理は以下のように示される．
+With these tools at hand, the incompleteness theorems and their corollaries can be proved by syntactic manipulations alone.
+In what follows, let $T_0 subset.eq T$ be $cal(L)$-theories such that $T_0$ is diagonalizable and $T$ is consistent,
+and let $Bew$ be a $T_0, T$-provability.
+The first incompleteness theorem is proved as follows.
 
 #proposition[Abstract version of G1][
-  1. $T nproves upright("G")_Bew$．
-  2. $Bew$ が $bold("Kre")$ を満たすなら $T nproves not upright("G")_Bew$．故に $upright("G")_Bew$ は $T$ の独立命題であり，そして $T$ は不完全である．
+  1. $T nproves upright("G")_Bew$.
+  2. If $Bew$ satisfies $bold("Kre")$, then $T nproves not upright("G")_Bew$. Hence $upright("G")_Bew$ is independent of $T$, and therefore $T$ is incomplete.
 ] <prop:abstract_G1>
 
 #leancode(
@@ -428,14 +429,14 @@ Finally, the second incompleteness theorem follows by the usual argument from th
   ```
 ]
 
-更に，第2不完全性定理に関しても以下のように形式化出来る．
+The second incompleteness theorem can likewise be mechanized.
 
 #proposition[Abstract version of G2][
-  $Bew$ は $bold("D2")$ と $bold("D3")$ を満たすと仮定する．
-  いま，$not Bew bot$ という文は自然な無矛盾性の表現の1つである．これを $upright("Con")_Bew$ とする．
-  さてこのとき以下が成立する．
-  1. $T nproves upright("Con")_Bew$．
-  2. $Bew$ が $bold("Kre")$ を満たすなら $T nproves not upright("Con")_Bew$．故に $upright("Con")_Bew$ も $T$ の独立命題である．
+  Assume that $Bew$ satisfies $bold("D2")$ and $bold("D3")$.
+  The sentence $not Bew bot$ is a natural expression of consistency; we denote it by $upright("Con")_Bew$.
+  Then the following hold.
+  1. $T nproves upright("Con")_Bew$.
+  2. If $Bew$ satisfies $bold("Kre")$, then $T nproves not upright("Con")_Bew$. Hence $upright("Con")_Bew$ is also independent of $T$.
 ] <prop:abstract_G2>
 
 #leancode(
@@ -463,21 +464,17 @@ Finally, the second incompleteness theorem follows by the usual argument from th
   ```
 ]
 
-ここで，$upright("Con")_Bew$ だけが無矛盾性を表す自然な表現ではないという観点も存在する．
-そのような点についてのG2のvariantについては後述する．
-さて，より発展的な事実としてLöbの定理，およびその系として形式化(formalized)された不完全性定理やLöbの定理も形式化出来る．
+There is, however, a view that $upright("Con")_Bew$ is not the only natural expression of consistency.
+Variants of G2 arising from this view are discussed later.
 
-#proposition[Abstract version of Löb's Theorem and formalized theorems][
-  $Bew$ は $bold("D2")$ と $bold("D3")$ を満たすとする．このとき以下が成立する．
-  文 $sigma$ は任意の $cal(L)$-文 $sigma$ とする．
+As further results, we can also mechanize Löb's theorem and the formalized Löb's theorem.
 
-  / Löb's theorem: $T proves Bew sigma -> sigma$ ならば $T proves sigma$．
-  / Formalized Löb's theorem: $T_0 proves Bew (Bew sigma -> sigma) -> Bew sigma$．
+#proposition[Abstract version of Löb's Theorem][
+  Assume that $Bew$ satisfies $bold("D2")$ and $bold("D3")$. Then the following hold,
+  where $sigma$ is an arbitrary $cal(L)$-sentence.
 
-  更に$Bew$ が $bold("Kre")$ を満たすとすると，以下が成立する．
-
-  / Formalized G1: $T nproves upright("Con")_Bew -> not Bew not upright("G")_Bew$
-  / Formalized G2: $T nproves upright("Con")_Bew -> not Bew not upright("Con")_Bew$
+  / Löb's theorem: If $T proves Bew sigma -> sigma$, then $T proves sigma$.
+  / Formalized Löb's theorem: $T_0 proves Bew (Bew sigma -> sigma) -> Bew sigma$.
 ]
 
 #leancode(
@@ -496,26 +493,22 @@ Finally, the second incompleteness theorem follows by the usual argument from th
   theorem löb_theorem {σ : Sentence L}　(H : T ⊢ 𝔅 σ 🡒 σ) : T ⊢ σ
 
   theorem formalized_löb_theorem {σ : Sentence L} : T₀ ⊢ 𝔅 (𝔅 σ 🡒 σ) 🡒 𝔅 σ
-
-  lemma formalized_unrefutable_gödel [Consistent T] [𝔅.Kreisel] : T ⊬ 𝔅.con 🡒 ∼𝔅 (∼(gödel 𝔅))
-
-  lemma formalized_unprovable_not_con [Consistent T] [𝔅.Kreisel] : T ⊬ 𝔅.con 🡒 ∼𝔅 (∼𝔅.con)
   ```
 ]
 
-$bold("D1"), bold("D2"), bold("D3")$ およびformalized Löb's theoremが，それぞれ様相論理のネセシテーション規則，公理 $AxiomK$，公理 $Axiom("4")$，公理 $Axiom("L")$ と概ね対応していることに注意しておこう．
-この事実は標準的なprovability $Bew_T$ で算術的健全性が成立する観察を与える．
+Note that $bold("D1"), bold("D2"), bold("D3")$ and the formalized Löb's theorem correspond roughly to the necessitation rule and the axioms $AxiomK$, $Axiom("4")$, and $Axiom("L")$ of modal logic, respectively.
+This yields the observation that arithmetical soundness holds for the standard provability $Bew_T$.
 
-抽象化において $bold("Kre")$ の導入を述べた理由を踏まえると，@prop:abstract_G1 で示した抽象的なG1について $bold("Kre")$ が要請されていることはおおまかには $T$ の $Sigma_1$-健全性を要請することと等しいと言える．
-しかし $Bew$ に $bold("Kre")$ ではなく別の条件 $bold("Ros")$ を要請すれば $T$ がconsistentであるという要請のみでabstractなG1を示すことが出来る．
-これはまさにRosserによって改良化された不完全性定理 @Ros36 の抽象化になる．
+In view of the reason we gave for introducing $bold("Kre")$ into the abstraction, requiring $bold("Kre")$ in the abstract G1 of @prop:abstract_G1 amounts, roughly speaking, to requiring the $Sigma_1$-soundness of $T$.
+If we instead impose on $Bew$ the condition $bold("Ros")$, then the abstract G1 can be proved assuming only that $T$ is consistent.
+This is precisely an abstraction of the incompleteness theorem as improved by Rosser @Ros36.
 
 #proposition[Abstract version of Gödel-Rosser theorem][
-  $Bew$ は $bold("Ros")$ を満たすとする．
-  この $Bew$ によるGödel文を，特別にRosser文 $upright("R")_Bew$ と呼ぶことにする．
-  このとき $T nproves upright("R")_Bew$ かつ $T nproves not upright("R")_Bew$ が成立する．
-  つまり $upright("R")_Bew$ は独立命題．特に後者に関して $bold("Kre")$ を要請しない．
-  しかし，この $Bew$ による無矛盾性 $upright("Con")_Bew$ について，$T proves upright("Con")_Bew$ である #footnote[日本の数理論理学のコミュニティでは Kreisel's remarkとかと呼ばれる．]．
+  Assume that $Bew$ satisfies $bold("Ros")$.
+  In this case, the Gödel sentence for this $Bew$ is called the _Rosser sentence_, denoted by $upright("R")_Bew$.
+  Then $T nproves upright("R")_Bew$ and $T nproves not upright("R")_Bew$.
+  That is, $upright("R")_Bew$ is independent of $T$; note in particular that $bold("Kre")$ is not required for the latter.
+  On the other hand, for the consistency statement $upright("Con")_Bew$ given by this $Bew$, we have $T proves upright("Con")_Bew$ #footnote[In the Japanese mathematical logic community, this is often called _Kreisel's remark_.].
 ]
 
 #leancode(
@@ -541,27 +534,27 @@ $bold("D1"), bold("D2"), bold("D3")$ およびformalized Löb's theoremが，そ
   ```
 ]
 
-実際に，この抽象化を具体化した結果として得られる，後述する具体的なGödel-Rosserの定理のステートメントには $Sigma_1$-健全性を要請しない．
+Indeed, the concrete statement of the Gödel-Rosser theorem given later, obtained by instantiating this abstraction, does not require $Sigma_1$-soundness.
 
-refutability (Widerlegbar) $Wid$ についても述べておこう．
-G2について，@prop:abstract_G2 で導入したformalized consistency $not Bew bot$ 以外にも，異なる方法で形式的な無矛盾性を表現することが可能である．
-例えば「任意の文に対して，証明可能かつ反証可能であることはない」という言明もまた無矛盾性を自然に表していると言える．
-この無矛盾性を形式化することで得られるG2は通常Jeroslow @Jer73 に帰する #footnote[無矛盾性をどのように形式化するかによって要請される条件の微妙な相違やG2のステートメントの様々なversionが得られるという緊張関係については，例えばKurahashi @Kur20 などを参照しなさい．]．
-さてこのJeroslowのG2をprovability abstraction上で素朴に形式化しようとすると，$Bew$ のみでは微妙に面倒な形式化(formalize)が要求される．
-なぜなら，$Bew$ は実際には論理式のGödel数を受け取る算術上の述語であるから，反証可能性，つまり否定文を扱うとなると文 $sigma$ のGödel数から $not sigma$ のGödel数を得る"関数"を取り扱わなければならず，その抽象化をprovability abstraction内で議論するのはやや面倒である．
-そこで我々はこのような否定のGödel数を計算する関数の抽象化ではなく，refutabilityそのものを抽象化する．
-これによってJeroslowのG2を簡潔に形式化出来る．
+We next describe refutability (_Widerlegbar_) $Wid$.
+Concerning G2, formal consistency can be expressed in ways other than the formalized consistency $not Bew bot$ introduced in @prop:abstract_G2.
+For instance, the statement "no sentence is both provable and refutable" may also be regarded as a natural expression of consistency.
+The version of G2 obtained by formalizing this consistency is usually attributed to Jeroslow @Jer73 #footnote[See, e.g., Kurahashi @Kur20 for how subtle differences in the required conditions, and various versions of the statement of G2, arise depending on how consistency is formalized.].
+A naive attempt to formalize Jeroslow's G2 on top of the provability abstraction, however, becomes slightly cumbersome if only $Bew$ is available.
+The reason is that $Bew$ is in fact an arithmetical predicate taking the Gödel number of a formula: dealing with refutability, that is, with negated sentences, would force us to handle a "function" computing the Gödel number of $not sigma$ from that of $sigma$, and such a function is awkward to accommodate within the provability abstraction.
+We therefore abstract refutability itself, rather than a function computing the Gödel number of a negation.
+This allows us to formalize Jeroslow's G2 concisely.
 
 #definition[Refutability abstraction][
-  $cal(L)_0$-理論 $T_0$ と $cal(L)$-理論 $T$ に対し，unary な $cal(L)_0$-semisentence $Wid(x)$ が $T_0, T$ のrefutabilityであるとは，任意の $cal(L)$-文に対して以下が成立することとする．
+  For an $cal(L)_0$-theory $T_0$ and an $cal(L)$-theory $T$, a unary $cal(L)_0$-semisentence $Wid(x)$ is called a _refutability_ of $T_0, T$ if the following holds for every $cal(L)$-sentence $sigma$.
   $
     T proves not sigma ==> T_0 proves Wid(GoedelNum(sigma))
   $
 
-  やはり $Bew$ と同様に $Wid(GoedelNum(sigma))$ は $Wid sigma$ と略して書く．
-  $Wid$ が $cal(L)$-文 $sigma$ に対してsoundであるとは，$T proves Wid sigma ==> T proves not sigma$ が成立することとする．
+  As with $Bew$, we abbreviate $Wid(GoedelNum(sigma))$ as $Wid sigma$.
+  We say that $Wid$ is _sound on_ an $cal(L)$-sentence $sigma$ if $T proves Wid sigma ==> T proves not sigma$.
 
-  $Wid$ を $T_0, T$-refutabilityとして，$T_0$ がdiagonalizableであるとき，$Wid(x)$ の不動点を Jeroslow文と呼んで $upright("J")_Wid$ で表す．
+  Let $Wid$ be a $T_0, T$-refutability and suppose that $T_0$ is diagonalizable. Then the fixed point of $Wid(x)$ is called the _Jeroslow sentence_ and is denoted by $upright("J")_Wid$.
 ]
 
 #leancode(
@@ -589,10 +582,10 @@ G2について，@prop:abstract_G2 で導入したformalized consistency $not Be
   ```
 ]
 
-Jeroslow文に関して，すぐに次のことはわかる．
+The following is immediate for the Jeroslow sentence.
 
 #proposition[
-  $T$ が無矛盾かつ，$Wid$ が $upright("J")_Wid$ に対してsoundであるとき，$T nproves upright("J")_Wid$．
+  If $T$ is consistent and $Wid$ is sound on $upright("J")_Wid$, then $T nproves upright("J")_Wid$.
 ]
 
 #leancode(
@@ -608,12 +601,12 @@ Jeroslow文に関して，すぐに次のことはわかる．
   ```
 ]
 
-さて，Jeroslowの不完全性定理について述べる．
+We now state Jeroslow's incompleteness theorem.
 
 #proposition[Abstract version of Jeroslow's G2 @Jer73][
-  "証明できてかつ反証可能であることはない" という事態 (_safe_) の形式化を表すsemisentence $upright("Safe")_(Bew,Wid) (x) equiv not (Bew x and Wid x)$ とし，すべての文がsafeであるという意味での無矛盾性 (_formalized law of non-contradiction_) を表す文 $upright("FLoN")_(Bew, Wid) equiv forall x, upright("Safe")_(Bew, Wid)(x)$ とする．
+  Let $upright("Safe")_(Bew,Wid) (x) equiv not (Bew x and Wid x)$ be the semisentence formalizing that a sentence is not both provable and refutable (_safe_), and let $upright("FLoN")_(Bew, Wid) equiv forall x, upright("Safe")_(Bew, Wid)(x)$ be the sentence expressing consistency in the sense that every sentence is safe (the _formalized law of non-contradiction_).
 
-  このとき， $T$ が無矛盾かつ $T_0 proves upright("J")_Wid -> Bew (upright("J")_Wid)$ なら，$T nproves upright("FLoN")_(Bew, Wid)$．
+  If $T$ is consistent and $T_0 proves upright("J")_Wid -> Bew (upright("J")_Wid)$, then $T nproves upright("FLoN")_(Bew, Wid)$.
 ]
 
 #leancode(
@@ -627,6 +620,10 @@ Jeroslow文に関して，すぐに次のことはわかる．
       "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean#L84",
     ),
   ),
+  note: [
+    The hypothesis $T_0 proves upright("J")_Wid -> Bew (upright("J")_Wid)$ is mechanized as the class `FormalizedCompleteOn`, which is an abstract version of formalized $Gamma$-completeness for $Bew$.
+    For instance, formalized $Sigma_1$-completeness is expressed as `[∀ σ ∈ 𝚺₁, 𝔅.FormalizedCompleteOn σ]`.
+  ],
 )[
   ```
   variable [L.DecidableEq] [L.ReferenceableBy L] {T₀ T : Theory L}
@@ -644,7 +641,7 @@ Jeroslow文に関して，すぐに次のことはわかる．
   ```
 ]
 
-この抽象化を具体的にすること，つまり，所望のprovability $Bew$ や refutability $Wid$ を実際に構成することが次節以降の目標になる．
+Making this abstraction concrete, that is, actually constructing the desired provability $Bew$ and refutability $Wid$, is the goal of the following sections.
 
 == Some further results related to the incompleteness theorems
 
