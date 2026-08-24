@@ -118,6 +118,9 @@
 #let R0 = $sans("R"_0)$
 #let Con(T) = $sans("Con")_(#T)$
 
+#let Bew = $class("unary", frak("B"))$
+#let Wid = $class("unary", frak("W"))$
+
 #let sepWithCommaMath(..args) = args.pos().join[,]
 
 #let brak(..args) = $lr(chevron.l sepWithCommaMath(..args) chevron.r)$
