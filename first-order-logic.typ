@@ -3,7 +3,7 @@
 = Mechanization of the incompleteness theorems
 
 We mechanized the following two results.
-Here, arithmetic sentence/theory means a sentence/theory in the language $LOR = {0, 1, +, dot, <, =}$. 
+Here, arithmetic sentence/theory means a sentence/theory in the language $LOR = {0, 1, +, dot, <, =}$.
 
 #theorem[Gödel's First Incompleteness Theorem @God31 @Vau62 @JS83][
   Let $T$ be a $Delta_1$-definable, $Sigma_1$-sound arithmetic theory stronger than $R0$,
@@ -66,10 +66,10 @@ A naïve, purely syntactic approach to this task encounters the following diffic
   When sufficiently complex formulas are involved (which is most of the case in practice), the deductive system can become unmanageably intricate.
   A task that is already difficult to formalize in Lean becomes exceedingly burdensome when it must instead be carried out within a still more restrictive formal system defined in formal system (Lean).
   Moreover, tackling G2 requires climbing yet another level.
-  One would have to work with a formal system defined within a formal system that is itself defined within another formal system, which is hardly practical.
+  One would have to work with a formal system inside a formal system inside a formal system, which is hardly practical.
 / Non-canonicity of bootstrapping:
   Bootstrapping is a formalization of metamathematics.
-  This requires encoding the metamathematical notions, the _Gödel numbering_.
+  This requires encoding of the metamathematical notions, the _Gödel numbering_.
   Unfortunately, there is neither a canonical choice of encoding nor a unique mathematically natural construction.
   One must instead develop a large body of intrinsically complicated combinatorics, often involving numerous ad-hoc constructions...
   This complicates the proofs and, for the reasons just discussed, makes mechanization difficult.
@@ -132,8 +132,8 @@ Theorem @thm:G1 now follows from @thm:repr by the standard diagonal argument.
   ],
 )[
   ```
-  theorem incomplete (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHierarchy 𝚺 1] :
-    Incomplete T :=
+  theorem incomplete
+      (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHierarchy 𝚺 1] : Incomplete T
   ```
 ]
 
@@ -164,10 +164,10 @@ Ackermann coding, obtained from the membership relation defined below, provides 
 $
   x in y <==> Bit(x, y)
 $
-To work with $Bit(x, y)$ in weak arithmetic, we also mechanized the well-known fact due to Gaifman and Dimitracopoulos @GD82, 
+To work with $Bit(x, y)$ in weak arithmetic, we also mechanized the well-known fact due to Gaifman and Dimitracopoulos @GD82,
 that the graph of exponentiation is representable by a $Delta_0$-formula and that its inductive properties are provable in $Ind(Delta_0)$.
 
-The $ISigma1$-restricted version of the Knaster-Tarski theorem, stated below, is useful for defining recursively defined structures over $Universe$ with appropriate complexity.
+The $ISigma1$ version of the Knaster-Tarski theorem, stated below, is useful for defining recursively defined structures over $Universe$ with appropriate complexity.
 
 #let Fix = $bold("Fix")$
 
@@ -198,7 +198,7 @@ This satisfies the following structural induction principle.
   $
 ]<thm:recursive-ind>
 
-Practically important point is that the defining formulas of $Fix_Phi$ can be explicitly constructible from the defining formulas of $P(x, c)$.
+Practically important point is that the defining formulas of $Fix_Phi$ can be explicitly constructible from the defining formula of $P(x, c)$.
 In the mechanization, we first call such a formula a `Blueprint k` (`k` is a number of parameters).
 Obviously it is purely syntactic and independent of any model.
 We then define `Construction V φ`, the model-theoretic realization of a `φ : Blueprint k`.
@@ -209,8 +209,32 @@ these two parameters.
   links: (
     (
       "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L25",
     ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L54"
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L59"
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L62",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L184",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L222",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L256",
+    )
   ),
 )[
   ```
@@ -232,6 +256,8 @@ these two parameters.
 
   def Construction.Fixpoint (v) (x : V) : Prop
 
+  theorem Construction.case [c.Finite] : c.Fixpoint v x ↔ c.Φ v {z | c.Fixpoint v z} x
+
   theorem Construction.induction [c.StrongFinite] {P : V → Prop} (hP : Γ-[1]-Predicate P)
       (H : ∀ C : Set V, (∀ x ∈ C, c.Fixpoint v x ∧ P x) → ∀ x, c.Φ v C x → P x) :
       ∀ x, c.Fixpoint v x → P x
@@ -252,6 +278,14 @@ These facts immediately yield definitions over $Universe$ of basic syntactic ope
       "Foundation",
       "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Proof/Basic.lean#L519",
     ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Proof/Basic.lean#L467",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Proof/Basic.lean#L525",
+    )
   ),
 )[
   ```
@@ -260,6 +294,10 @@ These facts immediately yield definitions over $Universe$ of basic syntactic ope
   instance IsSemiformula.definable : 𝚫₁-Relation[V] (IsSemiformula L)
 
   instance Proof.definable {T : Theory L} [T.Δ₁] : 𝚫₁-Relation[V] (Proof T)
+
+  def Provable (φ : V) : Prop := ∃ d, Proof T d φ
+
+  instance Provable.definable : 𝚺₁-Predicate[V] Provable T
   ```
 ]
 
