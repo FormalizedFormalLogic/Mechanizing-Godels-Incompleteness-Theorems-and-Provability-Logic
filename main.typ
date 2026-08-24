@@ -35,6 +35,15 @@
   ),
 )
 
+#remark[
+  Since the word "formalize" is used in two different senses, which may cause confusion, we strictly distinguish between the words _formalize_ and _mechanize_.
+
+  / _formalize_: the formalization of mathematics as a technique in the context of mathematical logic and metamathematics.
+  / _mechanize_: the formalization of mathematics in an interactive theorem prover, verifiable on an actual computer.
+
+  Following this convention, what we have done can be stated succinctly: _mechanizing formalized mathematics_.
+]
+
 = Introduction
 
 _Gödel's incompleteness theorems_ are among the most significant results in mathematical logic.
@@ -70,9 +79,26 @@ However, for the sake of readability, note that in some places we have modified 
 Moreover, owing to motivations other than the incompleteness theorems and provability logic that the present paper focuses on, some implementations are stated as more general definitions.
 We add comments where we deem it necessary, but for the actual working (verified) code, refer to the repository.
 
-=== On AI usage
-Almost all parts of our codes concerning the incompleteness theorems and Solovay's arithmetical completeness theorem were written in
-2023 - 2025, and free from AI-generated contents.
+=== Declaration of AI usage
+
+In the interest of novelty and fairness, we declare here how AI/LLMs were used in our development.
+Our mechanization of the incompleteness theorems and of Solovay's arithmetical completeness theorem was carried out between 2023 and 2025, and up to that point it contained no AI-generated code.
+This can be verified from the following commits, at which each result first became `sorry`-free.
+#footnote[The first two commits were made in #link("https://github.com/FormalizedFormalLogic/Arithmetization")[FormalizedFormalLogic/Arithmetization], later merged into Foundation as a subtree.]
+
+#let commit-link(hash) = link("https://github.com/FormalizedFormalLogic/Foundation/commit/" + hash)[#raw(hash.slice(
+  0,
+  8,
+))]
+- Gödel's first incompleteness theorem: #commit-link("e9325d82f6e4284b8dca530c8f9719650d7a21cf") (2024/09/04).
+- Gödel's second incompleteness theorem: #commit-link("2da7151e1da0ce40ae222fec1651756f8ee7acce") (2024/09/04).
+- Solovay's arithmetical completeness theorem: #commit-link("4a34d75c074c7614a1f16661ac73fd0725263c32") (2025/04/06).
+
+On the other hand, since June 2026, the second author has adopted AI/LLM-assisted _vibe coding_ in Lean for #link(REPO_SOURCES.at("ProvabilityLogic"))[FormalizedFormalLogic/ProvabilityLogic], using interactive coding agents such as Anthropic's Claude both for refactoring the code and for mechanizing the new results, namely the sequent calculi for modal logics and the classification theorem of provability logics.
+We have verified that the main parts of the generated code do not rely on any device regarded as illegitimate for mechanizing mathematics in Lean, such as `sorry`, additional nontrivial axioms, or `native_decide`#footnote[Some parts still contain `sorry`s; they are isolated from the main results of this paper and do not compromise the validity of the mechanization. See @subsect:remaining_sorry_in_provlogic.].
+In @subsect:vibe-formalizing, we give a brief report on how we carried out the writing and generation of mechanized proofs using AI/LLMs in this project.
+
+*The authors take full responsibility for the final artifact, including its AI-generated code.*
 
 #include "first-order-logic.typ"
 
@@ -847,7 +873,7 @@ We have mechanized this fact as well.
   ```
 ]
 
-=== On some remaining `sorry`s
+=== On some remaining `sorry`s <subsect:remaining_sorry_in_provlogic>
 
 Although the mechanization of the classification theorem itself does not depend on them, the mechanizations of some facts of provability logic still contain `sorry`s.
 We note them here.
@@ -1328,3 +1354,13 @@ As prior work, mechanization of frame definability for Verbrugge semantics has b
 As for our own progress, we have mechanized syntactic proofs and frame definability for some additional axioms and weak interpretability logics based on work by Kurahashi and Okawa @KO21 #footnote[See: #link("https://github.com/FormalizedFormalLogic/InterpretabilityLogic")].
 However, we have not yet established modal completeness with respect to frames, and as for the arithmetical completeness theorem, we have not been able to mechanize it at all.
 
+= Concluding and Future works
+
+== Vibe formalizing <subsect:vibe-formalizing>
+
+We describe how the AI is used in our development.
+Claude does not mechanize everything autonomously: the author first fixes the overall strategy for proving the main theorems and writes their formal statements, and only then delegates the actual proofs to Claude.
+Within the proofs as well, the author gives appropriate directions and tactics, e.g., to proceed by induction on the structure of formulas or on the rules of a sequent calculus.
+As a rule of thumb in pure mathematical logic, a fact proved by such an induction requires no special idea: one simply carries out the calculation, and on paper one typically works out a few representative cases and omits the rest.
+In a mechanization, every case must be treated without omission; we saw little value in a human spending time on such code, so we actively delegated it to the AI.
+In practice, the overall refactoring of #link(REPO_SOURCES.at("ProvabilityLogic"))[FormalizedFormalLogic/ProvabilityLogic] and the mechanization of the classification theorem were mostly completed in about three weeks of actual work, which the second author regards as a substantial gain in speed and efficiency.

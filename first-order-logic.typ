@@ -29,12 +29,14 @@ A semiterm is a term generated using variables of these two kinds.
 A semiformula is generated from semiterms in the usual way, but may contain bound variables that are not bound by any quantifier.
 We formalized the type of semiformulas that may contain free variables of type $xi$ and $n$ bound variables as `Semiformula L ξ n`.
 
-#leancode(links: (
-  ("Foundation", "Foundation/FirstOrder/Basic/Syntax/Formula.lean#L24-L32"),
+#leancode(
+  links: (
+    ("Foundation", "Foundation/FirstOrder/Basic/Syntax/Formula.lean#L24-L32"),
   ),
-  note:[
+  note: [
     We write `Formula L ξ` for `Semiformula L ξ 0`, and `Sentence L` for sentences, namely `Formula L Empty`.
-  ])[
+  ],
+)[
   ```
   inductive Semiformula (L : Language) (ξ : Type*) : ℕ → Type _ where
   |  verum : Semiformula L ξ n
@@ -85,10 +87,10 @@ For example, the second incompleteness theorem asserts $T nproves Con(T)$, and s
 The theory $R0$ consists of the following variable-free graphs and literals in $cal(L)_"OR" = {0, 1, +, dot, <, =}$,
 
 $
-  num(n) + num(m) =& num(n + m) wide&& "for all" n, m in Nat  \
-  num(n) dot num(m) =& num(n dot m) wide&& "for all" n, m in Nat\
-  num(n) <& num(m) wide&& "for all" n, m in Nat "such that" n < m \
-  num(n) eq.not& num(m) wide&& "for all" n, m in Nat "such that" n eq.not m\
+    num(n) + num(m) = & num(n + m) wide   && "for all" n, m in Nat \
+  num(n) dot num(m) = & num(n dot m) wide && "for all" n, m in Nat \
+             num(n) < & num(m) wide       && "for all" n, m in Nat "such that" n < m \
+        num(n) eq.not & num(m) wide       && "for all" n, m in Nat "such that" n eq.not m \
 $
 together with the following axiom scheme:
 $
@@ -112,12 +114,17 @@ As shown below, there is a provability predicate $Pr(T)[x]$, definable by a $Sig
 $Nat models Pr(T)[godel(phi)] <==> T proves phi$; hence $D$ is r.e.
 Theorem @thm:G1 now follows from @thm:repr by the standard diagonal argument.
 
-#leancode(links: (
-  ("Foundation", "https://github.com/FormalizedFormalLogic/Foundation/blob/ee84d9d25d88aec25a0c6b5203881e8515437f40/Foundation/FirstOrder/Incompleteness/First.lean#L16"),
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/ee84d9d25d88aec25a0c6b5203881e8515437f40/Foundation/FirstOrder/Incompleteness/First.lean#L16",
+    ),
   ),
-  note:[
+  note: [
     Here `Incomplete T` is a abbreviation of `∃ φ, T ⊬ φ ∧ T ⊬ ∼φ`.
-  ])[
+  ],
+)[
   ```
   theorem incomplete (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHierarchy 𝚺 1] :
     Incomplete T :=
@@ -193,7 +200,10 @@ We then define `Construction V φ`, the model-theoretic realization of a `φ : B
 
 #leancode(
   links: (
-    ("Foundation", "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean"),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean",
+    ),
   ),
 )[
   ```
@@ -227,8 +237,14 @@ It follows uniformly that the corresponding predicates are $Delta_1$-definable a
 These facts immediately yield definitions over $Universe$ of basic syntactic operations such as substitution.
 #leancode(
   links: (
-    ("Foundation", "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Formula/Basic.lean#L1218"),
-    ("Foundation", "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Proof/Basic.lean#L519")
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Formula/Basic.lean#L1218",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Proof/Basic.lean#L519",
+    ),
   ),
 )[
   ```
@@ -245,9 +261,18 @@ Their verification is routine.
 
 #leancode(
   links: (
-    ("Foundation", "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/DerivabilityCondition/D1.lean#L23"),
-    ("Foundation", "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/DerivabilityCondition/D2.lean#L20"),
-    ("Foundation", "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/DerivabilityCondition/D3.lean#L160")
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/DerivabilityCondition/D1.lean#L23",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/DerivabilityCondition/D2.lean#L20",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/DerivabilityCondition/D3.lean#L160",
+    ),
   ),
 )[
   ```
@@ -277,13 +302,67 @@ Finally, the second incompleteness theorem follows by the usual argument from th
 
 #leancode(
   links: (
-    ("Foundation", "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/Second.lean#L18"),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/Second.lean#L18",
+    ),
   ),
 )[
   ```
-/-- Gödel's second incompleteness theorem -/
-theorem consistent_unprovable [Consistent T] : T ⊬ T.consistent.val
+  /-- Gödel's second incompleteness theorem -/
+  theorem consistent_unprovable [Consistent T] : T ⊬ T.consistent.val
 
-theorem inconsistent_unprovable [ArithmeticTheory.SoundOnHierarchy T 𝚺 1] : T ⊬ ∼T.consistent.val
+  theorem inconsistent_unprovable [ArithmeticTheory.SoundOnHierarchy T 𝚺 1] : T ⊬ ∼T.consistent.val
   ```
 ]
+
+== Some further results related to the incompleteness theorems
+
+Using the tools developed so far, we have also proved several theorems related to Gödel's incompleteness theorems.
+
+=== Tarski's Undefinability Theorem
+
+As a corollary of the fixed point theorem, we can prove Tarski's theorem on the undefinability of truth.
+First, we prove the following lemma.
+
+#lemma[
+  Let $T supset.eq ISigma1$ be a consistent theory.
+  Then there is no predicate $tau(x)$ such that $T proves sigma <-> tau(godel(sigma))$ for any sentence $sigma$.
+]
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Incompleteness/Tarski.lean#L12",
+    ),
+  ),
+)[
+  ```
+  lemma not_exists_tarski_predicate {T : ArithmeticTheory} [𝗜𝚺₁ ⪯ T] [Consistent T] : ¬∃ τ : ArithmeticSemisentence 1, ∀ σ, T ⊢ σ 🡘 τ/[⌜σ⌝]
+  ```
+]
+
+Taking True Arithmetic $TrueArithmetic$ as the theory $T$ in this lemma, we immediately obtain the desired theorem.
+
+#theorem[Tarski's Undefinability Theorem @Tar35][
+  There is no truth predicate $True(x)$ such that $Nat models sigma$ if and only if $Nat models True(godel(sigma))$ for any sentence $sigma$.
+]<thm:undefinability_of_truth>
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Incompleteness/Tarski.lean#L20",
+    ),
+  ),
+)[
+  ```
+  theorem undefinability_of_truth : ¬∃ τ : ArithmeticSemisentence 1, ∀ σ : ArithmeticSentence, ℕ↓[ℒₒᵣ] ⊧ σ ↔ ℕ↓[ℒₒᵣ] ⊧ τ/[⌜σ⌝]
+  ```
+]
+
+In contrast to this theorem, it is known that for a complexity class $Gamma$ of formulas, there is a partial truth predicate $TruePartial(Gamma, x)$, obtained by replacing "for any sentence" with "for any $Gamma$-sentence" in the definition of $True(x)$, which is itself definable by a $Gamma$-formula (cf. @HP16).
+However, this fact has not been mechanized yet.
+We mention that, consequently, several statements of provability logic that are proved by using partial truth predicates have not been mechanized so far.
+We will discuss this point further in @subsect:remaining_sorry_in_provlogic.
