@@ -65,8 +65,8 @@ A naïve, purely syntactic approach to this task encounters the following diffic
 / Bureaucracy of the deductive system:
   When sufficiently complex formulas are involved (which is most of the case in practice), the deductive system can become unmanageably intricate.
   A task that is already difficult to formalize in Lean becomes exceedingly burdensome when it must instead be carried out within a still more restrictive formal system defined in formal system (Lean).
-  さらに，G2 に取り組むには階段をさらに上る必要がある．
-  formal system の中で定義された formal system のなかで定義された formal system を扱うことが求められるが，これはほとんど現実的でない．
+  Moreover, tackling G2 requires climbing yet another level.
+  One would have to work with a formal system defined within a formal system that is itself defined within another formal system, which is hardly practical.
 / Non-canonicity of bootstrapping:
   Bootstrapping is a formalization of metamathematics.
   This requires encoding the metamathematical notions, the _Gödel numbering_.
@@ -85,7 +85,7 @@ Thus, the bureaucratic overhead of syntax, especially that associated with (exte
 There nevertheless remain situations in which a concrete formula must be supplied.
 For example, the second incompleteness theorem asserts $T nproves Con(T)$, and stating this result requires an explicit, model-independent formula $Con(T)$.
 
-加えて， $Pr(T)(x)$ のような怪物的複雑さをもつ formalized statements を直接扱うことをできるだけ避けるため，Derivability condition に関する議論においては provability predicate に関する abstract characterization を用いる．これについては ... で詳しく述べる．
+In addition, to avoid directly handling formalized statements, such as $Pr(T)(x)$, as much as possible, we use an abstract characterization of provability predicates when discussing the derivability conditions. We discuss this in detail in ...
 
 #let num(x) = $overline(#x)$
 
