@@ -35,15 +35,6 @@
   ),
 )
 
-#remark[
-  Since the word "formalize" is used in two different senses, which may cause confusion, we strictly distinguish between the words _formalize_ and _mechanize_.
-
-  / _formalize_: the formalization of mathematics as a technique in the context of mathematical logic and metamathematics.
-  / _mechanize_: the formalization of mathematics in an interactive theorem prover, verifiable on an actual computer.
-
-  Following this convention, what we have done can be stated succinctly: _mechanizing formalized mathematics_.
-]
-
 = Introduction
 
 _Gödel's incompleteness theorems_ are among the most significant results in mathematical logic.
@@ -81,8 +72,8 @@ We add comments where we deem it necessary, but for the actual working (verified
 
 === Declaration of AI usage
 
-In the interest of novelty and fairness, we declare here how AI/LLMs were used in our development.
-Our mechanization of the incompleteness theorems and of Solovay's arithmetical completeness theorem was carried out between 2023 and 2025, and up to that point it contained no AI-generated code.
+// In the interest of novelty and fairness, we declare here how AI/LLMs were used in our development.
+Our main mechanizations of the three results, the first and second incompleteness theorems and Solovay's arithmetical completeness theorem were done between 2023 and 2025, and up to that point they contained no AI-generated code.
 This can be verified from the following commits, at which each result first became `sorry`-free.
 #footnote[The first two commits were made in #link("https://github.com/FormalizedFormalLogic/Arithmetization")[FormalizedFormalLogic/Arithmetization], later merged into Foundation as a subtree.]
 
@@ -94,11 +85,21 @@ This can be verified from the following commits, at which each result first beca
 - Gödel's second incompleteness theorem: #commit-link("2da7151e1da0ce40ae222fec1651756f8ee7acce") (2024/09/04).
 - Solovay's arithmetical completeness theorem: #commit-link("4a34d75c074c7614a1f16661ac73fd0725263c32") (2025/04/06).
 
+/*
 On the other hand, since June 2026, the second author has adopted AI/LLM-assisted _vibe coding_ in Lean for #link(REPO_SOURCES.at("ProvabilityLogic"))[FormalizedFormalLogic/ProvabilityLogic], using interactive coding agents such as Anthropic's Claude both for refactoring the code and for mechanizing the new results, namely the sequent calculi for modal logics and the classification theorem of provability logics.
 We have verified that the main parts of the generated code do not rely on any device regarded as illegitimate for mechanizing mathematics in Lean, such as `sorry`, additional nontrivial axioms, or `native_decide`#footnote[Some parts still contain `sorry`s; they are isolated from the main results of this paper and do not compromise the validity of the mechanization. See @subsect:remaining_sorry_in_provlogic.].
 In @subsect:vibe-formalizing, we give a brief report on how we carried out the writing and generation of mechanized proofs using AI/LLMs in this project.
+*/
+// *The authors take full responsibility for the final artifact, including its AI-generated code.*
 
-*The authors take full responsibility for the final artifact, including its AI-generated code.*
+#remark[
+  Since the word "formalize" can be used in two different senses, which may cause confusion, we strictly distinguish between the words _formalize_ and _mechanize_.
+
+  / _formalize_: to internalize metamathematical notions inside of a formal system.
+  / _mechanize_: writing definitions and proofs in an interactive theorem prover, verifiable on an actual computer.
+
+  Following this convention, what we have done can be stated succinctly: _mechanizing formalized mathematics_.
+]
 
 #include "first-order-logic.typ"
 
