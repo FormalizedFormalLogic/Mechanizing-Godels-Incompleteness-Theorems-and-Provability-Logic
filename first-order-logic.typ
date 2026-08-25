@@ -85,7 +85,7 @@ Thus, the bureaucratic overhead of syntax, especially that associated with (exte
 There nevertheless remain situations in which a concrete formula must be supplied.
 For example, the second incompleteness theorem asserts $T nproves Con(T)$, and stating this result requires an explicit, model-independent formula $Con(T)$.
 
-In addition, to avoid directly handling formalized statements, such as $Pr(T)(x)$, as much as possible, we use an abstract characterization of provability predicates when discussing the derivability conditions. We discuss this in detail in ...
+In addition, to avoid directly handling formalized statements, such as $Pr(T)(x)$, as much as possible, we use an abstract characterization of provability predicates when discussing the derivability conditions. We discuss this in detail in @subsect:provability_abstraction.
 
 #let num(x) = $overline(#x)$
 
@@ -108,9 +108,9 @@ More precisely:
 
 #theorem[
   Let $T supset.eq R0$ be a $Sigma_1$-sound theory and let $S$ be a r.e. set.
-  Then there is a $cal(L)_"OR"$-formula $Rho_(S)(x)$ such that
+  Then there is a $cal(L)_"OR"$-formula $sans("Rep")_(S)(x)$ such that
   $
-    n in S <==> T proves Rho_(S)(num(n))
+    n in S <==> T proves sans("Rep")_(S)(num(n))
   $
 ]<thm:repr>
 
@@ -363,6 +363,9 @@ Finally, the second incompleteness theorem follows by the usual argument from th
 
 == Provability abstraction <subsect:provability_abstraction>
 
+#let Godel(B) = $sans("G")_#B$
+#let Con(B) = $sans("Con")_#B$
+
 Working directly with a raw provability predicate is technically cumbersome.
 We therefore introduce the notion of _provability abstraction_, an abstraction of the provability predicate.
 This notion is closely related to provability logic, which treats provability as a modality (see @sect:provability_logic).
@@ -370,21 +373,43 @@ With these abstractions, the incompleteness theorems can be mechanized abstractl
 Concretely constructing a "provability" satisfying the abstract derivability conditions then immediately yields the concrete statements of the incompleteness theorems.
 Mechanizing the incompleteness theorems via such an abstract provability has previously been studied by Popescu and Traytel @PT19 @PT21.
 
-#definition[Provability abstraction][
-  Suppose that the language $cal(L)$ admits a Gödel numbering in the language $cal(L)_0$.
-  For an $cal(L)_0$-theory $T_0$ and an $cal(L)$-theory $T$, a unary $cal(L)_0$-semisentence $Bew(x)$ is called a _provability_ of $T_0, T$ if the following holds for every $cal(L)$-sentence $sigma$.
-  $
-    T proves sigma ==> T_0 proves Bew(GoedelNum(sigma))
-  $
+#definition[Provability predicate][
+  Suppose that $cal(L)$-sentences admit a Gödel numbering in the language $cal(L)_0$.
+  For an $cal(L)_0$-theory $T_0$ and an $cal(L)$-theory $T$, a unary $cal(L)_0$-semisentence $Bew(x)$ is called a _$T$-provability predicate over $T_0$_, if the following holds for every $cal(L)$-sentence $sigma$.
+
+  #align(center, table(
+    columns: (auto, auto),
+    inset: 8pt,
+    align: horizon,
+    stroke: none,
+    $bold("D1")$, [
+      $T proves sigma ==> T_0 proves Bew(GoedelNum(sigma))$
+    ],
+  ))
+
   That is, $Bew(x)$ is required to satisfy at least the derivability condition $bold("D1")$.
   In what follows, we simply write $Bew sigma$ for $Bew(GoedelNum(sigma))$.
   We further define the following properties, where $sigma$ and $pi$ range over $cal(L)$-sentences.
   The conditions $bold("D3")$ and $bold("Kre")$ are defined only when $T_0$ and $T$ are theories in the same language, i.e., when $cal(L)_0 = cal(L)$.
 
-  - $bold("D2")$: $T_0 proves Bew (sigma -> pi) -> Bew sigma -> Bew pi$.
-  - $bold("D3")$: $T_0 proves Bew sigma -> Bew Bew sigma$.
-  - $bold("Kre")$: $T proves Bew sigma ==> T proves sigma$.
-  - $bold("Ros")$: $T proves not sigma ==> T_0 proves not Bew sigma$.
+  #align(center, table(
+    columns: (auto, auto),
+    inset: 8pt,
+    align: horizon,
+    stroke: none,
+    $bold("D2")$, [
+      $T_0 proves Bew (sigma -> pi) -> Bew sigma -> Bew pi$
+    ],
+    $bold("D3")$, [
+      $T_0 proves Bew sigma -> Bew Bew sigma$
+    ],
+    $bold("Kre")$, [
+      $T proves Bew sigma$ implies $T proves sigma$
+    ],
+    $bold("Ros")$, [
+      $T proves not sigma$ implies $T_0 proves not Bew sigma$
+    ]
+  ))
   // - $bold("FC")$ (on an $cal(L)$-sentence $sigma$): $T_0 proves sigma -> Bew sigma$.
   // - $bold("S")$ (on an $L_0$-structure $M$) : $M models Bew sigma ==> T proves sigma$.
 ]
@@ -414,20 +439,26 @@ Mechanizing the incompleteness theorems via such an abstract provability has pre
   ```
 ]
 
-The standard provability $Bew_T$, constructed later in the standard way, satisfies $bold("D2")$ and $bold("D3")$.
-The provability logic discussed in @sect:provability_logic is developed mainly in terms of the standard provability.
+The standard provability predicate $Pr(T)$ satisfies $bold("D2")$, $bold("D3")$ and $bold("Kre")$.
+The provability logic discussed in @sect:provability_logic is developed mainly in terms of the standard provability predicate.
 The condition $bold("Kre")$ is a derivability condition introduced by Visser @Vis21 under the name _Kreisel's condition_ #footnote[Visser attributes the origin of this condition to @Kre54. To be precise, Visser required both directions.].
 Our motivation for this abstraction is to formalize the arguments in a purely syntactic way, without involving models or structures.
-Anticipating the later construction, the standard $Bew$ that we actually construct is a $Sigma_1$-predicate, so the condition $bold("Kre")$ can be regarded as a purely syntactic counterpart of the $Sigma_1$-soundness and $Sigma_1$-completeness of $T$.
+Anticipating the later construction, the standard provability predicate is a $Sigma_1$-predicate, so the condition $bold("Kre")$ can be regarded as a purely syntactic counterpart of the $Sigma_1$-soundness and $Sigma_1$-completeness of $T$.
 
 In fact, abstracting provability alone does not suffice: we also need to abstract the diagonalizability of a theory.
 
-#definition[Diagonalization abstraction][
-  Suppose that the language $cal(L)$ admits a Gödel numbering in $cal(L)$ itself.
-  An $cal(L)$-theory $T$ is called _diagonalizable_ if one can construct a map $upright("fixpoint")_T$, sending an $cal(L)$-semisentence to an $cal(L)$-sentence,
-  such that $T proves upright("fixpoint")_T (theta) <-> theta (GoedelNum(upright("fixpoint")_T (theta)))$ for any $cal(L)$-semisentence $theta$. We call $upright("fixpoint")_T (theta)$ the _fixed point_ of $theta$.
+#let fixpoint(x) = $sans("Fixedpoint")_#x$
 
-  Let $T_0, T$ be $cal(L)$-theories such that $T_0$ is diagonalizable, and let $Bew$ be a provability of $T_0, T$. Then the fixed point of $not Bew (x)$ is called the _Gödel sentence_ and is denoted by $upright("G")_Bew$.
+#definition[Diagonalization abstraction][
+  Suppose that $cal(L)$-sentences admit a Gödel numbering in $cal(L)$.
+  An $cal(L)$-theory $T$ is called _diagonalizable_ if one can construct a map $fixpoint(bullet)$, sending an unary $cal(L)$-formula to an $cal(L)$-sentence,
+  such that
+  $
+    T proves fixpoint(theta) <-> theta (GoedelNum(fixpoint(theta)))
+  $
+  for any $theta(x)$. We call $fixpoint(theta)$ the _fixed point_ of $theta$.
+
+  Let $T_0, T$ be $cal(L)$-theories such that $T_0$ is diagonalizable, and let $Bew$ be a provability of $T_0, T$. Then the fixed point of $not Bew (x)$ is called the _Gödel sentence_ and is denoted by $Godel(Bew)$.
 ]
 
 #leancode[
@@ -448,8 +479,8 @@ and let $Bew$ be a $T_0, T$-provability.
 The first incompleteness theorem is proved as follows.
 
 #proposition[Abstract version of G1][
-  1. $T nproves upright("G")_Bew$.
-  2. If $Bew$ satisfies $bold("Kre")$, then $T nproves not upright("G")_Bew$. Hence $upright("G")_Bew$ is independent of $T$, and therefore $T$ is incomplete.
+  1. $T nproves Godel(Bew)$.
+  2. If $Bew$ satisfies $bold("Kre")$, then $T nproves not Godel(Bew)$. Hence $Godel(Bew)$ is independent of $T$, and therefore $T$ is incomplete.
 ] <prop:abstract_G1>
 
 #leancode(
@@ -465,9 +496,9 @@ The first incompleteness theorem is proved as follows.
   variable {T₀ T : Theory L} [Diagonalization T₀] [T₀ ⪯ T] [Consistent T]
   variable {𝔅 : Provability T₀ T}
 
-  theorem unprovable_gödel : T ⊬ (gödel 𝔅)
+  theorem unprovable_gödel : T ⊬ gödel 𝔅
 
-  theorem unrefutable_gödel [𝔅.Kreisel] : T ⊬ ∼(gödel 𝔅)
+  theorem unrefutable_gödel [𝔅.Kreisel] : T ⊬ ∼gödel 𝔅
 
   theorem gödel_independent [𝔅.Kreisel] : Independent T (gödel 𝔅)
 
@@ -479,10 +510,10 @@ The second incompleteness theorem can likewise be mechanized.
 
 #proposition[Abstract version of G2][
   Assume that $Bew$ satisfies $bold("D2")$ and $bold("D3")$.
-  The sentence $not Bew bot$ is a natural expression of consistency; we denote it by $upright("Con")_Bew$.
+  The sentence $not Bew bot$ is a natural expression of consistency; we denote it by $Con(Bew)$.
   Then the following hold.
-  1. $T nproves upright("Con")_Bew$.
-  2. If $Bew$ satisfies $bold("Kre")$, then $T nproves not upright("Con")_Bew$. Hence $upright("Con")_Bew$ is also independent of $T$.
+  1. $T nproves Con(Bew)$.
+  2. If $Bew$ satisfies $bold("Kre")$, then $T nproves not Con(Bew)$. Hence $Con(Bew)$ is also independent of $T$.
 ] <prop:abstract_G2>
 
 #leancode(
@@ -510,7 +541,7 @@ The second incompleteness theorem can likewise be mechanized.
   ```
 ]
 
-There is, however, a view that $upright("Con")_Bew$ is not the only natural expression of consistency.
+There is, however, a view that $Con(Bew)$ is not the only natural expression of consistency.
 Variants of G2 arising from this view are discussed later.
 
 As further results, we can also mechanize Löb's theorem and the formalized Löb's theorem.
@@ -554,7 +585,7 @@ This is precisely an abstraction of the incompleteness theorem as improved by Ro
   In this case, the Gödel sentence for this $Bew$ is called the _Rosser sentence_, denoted by $upright("R")_Bew$.
   Then $T nproves upright("R")_Bew$ and $T nproves not upright("R")_Bew$.
   That is, $upright("R")_Bew$ is independent of $T$; note in particular that $bold("Kre")$ is not required for the latter.
-  On the other hand, for the consistency statement $upright("Con")_Bew$ given by this $Bew$, we have $T proves upright("Con")_Bew$ #footnote[In the Japanese mathematical logic community, this is often called _Kreisel's remark_.].
+  On the other hand, for the consistency statement $Con(Bew)$ given by this $Bew$, we have $T proves Con(Bew)$ #footnote[In the Japanese mathematical logic community, this is often called _Kreisel's remark_.].
 ]
 
 #leancode(

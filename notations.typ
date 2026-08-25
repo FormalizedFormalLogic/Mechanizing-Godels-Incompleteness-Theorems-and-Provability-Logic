@@ -86,9 +86,9 @@
 #let HilbertGL = Hilbert(LogicGL)
 #let HilbertGrz = Hilbert(LogicGrz)
 
-#let Prov(T) = $attach(br: #T, upright("Prov"))$
+#let Prov(T) = $attach(br: #T, sans("Prov"))$
 // Use for *standard* provability predicate
-#let Pr(T) = $attach(br: #T, upright("Pr"))$
+#let Pr(T) = $attach(br: #T, sans("Pr"))$
 
 #let height(T) = $upright("hgt")(#T)$
 
