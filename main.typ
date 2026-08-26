@@ -542,7 +542,8 @@ By construction, the $seq1$-fragment of both systems is exactly $GentzenGL$, and
   2. $GentzenS proves seq2 A$
   3. On the chain of the tail model constructed from any finite $LogicGL$-model and any point $t$ of it, $A$ is eventually always forced.
   4. $and.big_(Box B in subfml(A)) (Box B limp B) limp A$ is forced at the root of every rooted finite $LogicGL$-model.
-  5. $LogicGL proves and.big_(Box B in subfml(A)) (Box B limp B) limp A$
+  5. Same as 3, but for the finite $LogicGL$-models whose set of points is ${0, 1, dots.c, n - 1}$ for any $n >= 1$.
+  6. $LogicGL proves and.big_(Box B in subfml(A)) (Box B limp B) limp A$
 ] <prop:S_characterization>
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/S/Basic.lean"),))[
   ```
@@ -611,7 +612,8 @@ Our mechanized proof is semantic, via the tail model of @prop:S_characterization
   2. $GentzenD proves seq3 A$
   3. $A$ is forced at the root of the pseudo tail model constructed from any finite $LogicGL$-model.
   4. $and.big_(Gamma subset.eq prebox(subfml(A))) (Box(or.big Box Gamma) limp or.big Box Gamma) limp A$ is forced at the root of every rooted finite $LogicGL$-model.
-  5. $LogicGL proves and.big_(Gamma subset.eq prebox(subfml(A))) (Box(or.big Box Gamma) limp or.big Box Gamma) limp A$
+  5. Same as 3, but for the finite $LogicGL$-models whose set of points is ${0, 1, dots.c, n - 1}$ for any $n >= 1$.
+  6. $LogicGL proves and.big_(Gamma subset.eq prebox(subfml(A))) (Box(or.big Box Gamma) limp or.big Box Gamma) limp A$
 ] <prop:D_characterization>
 #leancode(links: (
   ("ProvabilityLogic", "ProvabilityLogic/Logic/D/Basic.lean"),
@@ -1354,6 +1356,8 @@ For these characterizations, equivalences analogous to those for #LogicGL hold.
   2. $GentzenGLPoint3 proves => A$.
   3. $A$ is forced at every point of every finite $LogicGLPoint3$-model.
   4. $A$ is forced at the root of every rooted finite $LogicGLPoint3$-model.
+  5. $A$ is forced at every point of every finite $LogicGLPoint3$-model whose set of points is ${0, 1, dots.c, n - 1}$ for any $n >= 1$.
+  6. $A$ is forced at the root of every rooted finite $LogicGLPoint3$-model whose set of points is ${0, 1, dots.c, n - 1}$ for any $n >= 1$.
 ]
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GLPoint3/Basic.lean"),))[```
   theorem LogicGLPoint3.provability_TFAE [DecidableEq α] {A : Formula α} : [
