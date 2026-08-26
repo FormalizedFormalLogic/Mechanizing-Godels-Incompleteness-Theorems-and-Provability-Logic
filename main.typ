@@ -454,36 +454,136 @@ Next, we introduce the modal logics $LogicS$ (due to Solovay @Sol76) and $LogicD
 These logics are non-normal, i.e., not closed under the necessitation rule, so Kripke semantics cannot be applied directly.
 However, they are known to be sound and complete with respect to classes of infinite models obtained by suitably extending finite $LogicGL$-models.
 Such models for $LogicS$ are called tail models @Vis84, and for $LogicD$ the so-called pseudo tail models (cf. @Bek90) are used.
-We omit the details of these constructions; via these semantic characterizations, we mechanized the following two propositions.
+We omit the details of these constructions.
+
+Both logics also admit Gentzen-style sequent calculi, but in the calculi, sequents have levels.
+Kushida @Kus20 gave such a calculus for $LogicS$ with two levels of sequents, and Kashima et al. @KKIM25 extended his approach to a calculus for $LogicD$ with three levels.
+
+#definition[Sequent calculi for $LogicS$ and $LogicD$ @Kus20 @KK23 @KKIM25][
+  A _layered sequent_ is a sequent $Gamma => Delta$ together with a level.
+  The calculus $GentzenS$ uses the two levels $seq1$ and $seq2$, and the calculus $GentzenD$ uses the three levels $seq1$, $seq2$, and $seq3$.
+  At each level $l$ separately, both systems contain the propositional rules (Ax), ($bot$L), (WL), (WR), ($limp$L), and ($limp$R) of $GentzenGL$, with $=>$ replaced by $seq(l)$.
+  In addition, both systems contain the following rules, except that (Lift$""^2_3$) belongs to $GentzenD$ only.
+
+  #align(center, grid(
+    columns: 2,
+    column-gutter: 4em,
+    row-gutter: 2em,
+    prooftree(rule(
+      name: [($Box_LogicGL$)],
+      $Box Gamma seq1 Box A$,
+      $Box A, Gamma, Box Gamma seq1 A$,
+    )),
+    prooftree(rule(name: [(Lift$""^1_2$)], $Gamma seq2 Delta$, $Gamma seq1 Delta$)),
+
+    prooftree(rule(name: [($Box$L)], $Box A, Gamma seq2 Delta$, $A, Gamma seq2 Delta$)),
+    prooftree(rule(
+      name: [(Lift$""^2_3$)],
+      $Box Gamma seq3 Box Delta$,
+      $Box Gamma seq2 Box Delta$,
+    )),
+  ))
+
+  Neither system contains a cut rule; $GentzenWithCutS$ and $GentzenWithCutD$ denote the systems extended with the cut rule, which is level-preserving.
+] <def:layered_sequent_calculi>
+#leancode(
+  links: (
+    ("ProvabilityLogic", "ProvabilityLogic/Gentzen/Sequent.lean"),
+    ("ProvabilityLogic", "ProvabilityLogic/Gentzen/S/Basic.lean"),
+    ("ProvabilityLogic", "ProvabilityLogic/Gentzen/D/Basic.lean"),
+  ),
+  note: [
+    Levels are implemented as elements of `Fin 2` and `Fin 3`, hence are numbered from $0$ in the mechanization: the levels $seq1$, $seq2$, and $seq3$ above correspond to `⟹[0]`, `⟹[1]`, and `⟹[2]` respectively.
+  ],
+)[
+  ```
+  structure TwoLayeredSequent (α : Type u) extends Sequent α where
+    level : Fin 2
+  notation:50 Γ:51 " ⟹[" l "] " Δ:51 => TwoLayeredSequent.mk (Γ ⟹ Δ) l
+
+  inductive LogicS.ProofGentzen : TwoLayeredSequent α → Type u
+  | ...
+  | boxGL  {Γ A}   : ProofGentzen ((insert (□A) (Γ ∪ Γ.box)) ⟹[0] {A}) →
+                     ProofGentzen (Γ.box ⟹[0] {□A})
+  | liftUp {Γ Δ}   : ProofGentzen (Γ ⟹[0] Δ) → ProofGentzen (Γ ⟹[1] Δ)
+  | boxL   {Γ Δ A} : ProofGentzen (insert A Γ ⟹[1] Δ) →
+                     ProofGentzen (insert (□A) Γ ⟹[1] Δ)
+  scoped prefix:120 "⊢ᵍ[S]! " => LogicS.ProofGentzen
+
+  abbrev LogicS.ProvableGentzen (S : TwoLayeredSequent α) : Prop := Nonempty (⊢ᵍ[S]! S)
+  scoped prefix:120 "⊢ᵍ[S] " => LogicS.ProvableGentzen
+
+  structure ThreeLayeredSequent (α : Type u) extends Sequent α where
+    level : Fin 3
+  notation:50 Γ:51 " ⟹[" l "] " Δ:51 => ThreeLayeredSequent.mk (Γ ⟹ Δ) l
+
+  inductive LogicD.ProofGentzen : ThreeLayeredSequent α → Type u
+  | ...
+  | boxGL {Γ : FormulaFinset α} {A}   : ProofGentzen ((insert (□A) (Γ ∪ □Γ)) ⟹[0] {A}) →
+                                        ProofGentzen (□Γ ⟹[0] {□A})
+  | liftUp₀₁ {Γ Δ}                    : ProofGentzen (Γ ⟹[0] Δ) → ProofGentzen (Γ ⟹[1] Δ)
+  | boxL {Γ Δ A}                      : ProofGentzen (insert A Γ ⟹[1] Δ) →
+                                        ProofGentzen (insert (□A) Γ ⟹[1] Δ)
+  | liftUp₁₂ {Γ Δ : FormulaFinset α}  : ProofGentzen (□Γ ⟹[1] □Δ) →
+                                        ProofGentzen (□Γ ⟹[2] □Δ)
+  scoped prefix:120 "⊢ᵍ[D]! " => LogicD.ProofGentzen
+
+  abbrev LogicD.ProvableGentzen (S : ThreeLayeredSequent α) : Prop := Nonempty (⊢ᵍ[D]! S)
+  scoped prefix:120 "⊢ᵍ[D] " => LogicD.ProvableGentzen
+  ```
+]
+
+By construction, the $seq1$-fragment of both systems is exactly $GentzenGL$, and the $seq1$ and $seq2$ fragments of $GentzenD$ are exactly $GentzenS$; these embeddings are mechanized as well, and are what lets the mechanization of $GentzenD$ reuse that of $GentzenS$.
+
+As for $GentzenGL$, we can prove the cut-elimination theorem semantically.
+
+#theorem[Cut elimination for $GentzenS$ and $GentzenD$ @KK23 @KKIM25][
+  - If $GentzenWithCutS proves Gamma seq2 Delta$, then $GentzenS proves Gamma seq2 Delta$.
+  - If $GentzenWithCutD proves Gamma seq3 Delta$, then $GentzenD proves Gamma seq3 Delta$.
+] <prop:SD_cut_elimination>
+#leancode(links: (
+  ("ProvabilityLogic", "ProvabilityLogic/Gentzen/S/Kripke.lean"),
+  ("ProvabilityLogic", "ProvabilityLogic/Gentzen/D/Kripke.lean"),
+))[
+  ```
+  theorem LogicS.ProvableGentzen.of_with_cut {Γ Δ : FormulaFinset α}
+    (h : ⊢ᵍᶜ[S] (Γ ⟹[1] Δ)) : ⊢ᵍ[S] (Γ ⟹[1] Δ)
+
+  theorem LogicD.ProvableGentzen.of_with_cut {Γ Δ : FormulaFinset α}
+    (h : ⊢ᵍᶜ[D] (Γ ⟹[2] Δ)) : ⊢ᵍ[D] (Γ ⟹[2] Δ)
+  ```
+]
+
+With this result, the characterizations of $LogicS$ and $LogicD$ can be stated as follows.
+First, the following holds for $LogicS$.
 
 #proposition[cf. @Vis84][
   The following are equivalent.
 
   1. $LogicS proves A$
-  2. On the chain of the tail model constructed from any finite $LogicGL$-model and any point $t$ of it, $A$ is eventually always forced.
-  3. $and.big_(Box B in subfml(A)) (Box B limp B) limp A$ is forced at the root of every rooted finite $LogicGL$-model.
-  4. $LogicGL proves and.big_(Box B in subfml(A)) (Box B limp B) limp A$
-  5. $=> A$ is provable in the two-level sequent calculus for $LogicS$ @Kus20 @KK23.
+  2. $GentzenS proves seq2 A$
+  3. On the chain of the tail model constructed from any finite $LogicGL$-model and any point $t$ of it, $A$ is eventually always forced.
+  4. $and.big_(Box B in subfml(A)) (Box B limp B) limp A$ is forced at the root of every rooted finite $LogicGL$-model.
+  5. Same as 3, but for the finite $LogicGL$-models whose set of points is ${0, 1, dots.c, n - 1}$ for any $n >= 1$.
+  6. $LogicGL proves and.big_(Box B in subfml(A)) (Box B limp B) limp A$
 ] <prop:S_characterization>
-#leancode(
-  links: (("ProvabilityLogic", "ProvabilityLogic/Logic/S/Basic.lean"),),
-  note: [
-    The last clause corresponds to provability in the two-level sequent calculus @Kus20 @KK23.
-    We discuss this calculus as future work in @sect:provabilitylogic_futurework.
-  ],
-)[
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/S/Basic.lean"),))[
   ```
   theorem LogicS.provability_TFAE [DecidableEq α] : [
     A ∈ LogicS,
+    ⊢ᵍ[S] (∅ ⟹[1] {A}),
     ∀ {κ : Type u}, [Nonempty κ] → ∀ (M : Model κ α), [M.IsFiniteGL] → ∀ (tail : M.World),
       ∃ k : ℕ, ∀ n : ℕ, k ≤ n → toTail.chainPoint n ⊩[(M.toTail tail).toModel] A,
     ∀ {κ : Type u}, [Nonempty κ] → ∀ (M : RootedModel κ α), [M.IsFiniteGL] →
       M.root.1 ⊩[_] (⋀A.subfmlsS 🡒 A),
-    (⋀A.subfmlsS 🡒 A) ∈ LogicGL,
-    ⊢ᵍ[S] (∅ ⟹[1] {A})
+    ∀ (n : ℕ) [NeZero n] (M : Model (Fin n) α), [M.IsFiniteGL] → ∀ (tail : M.World),
+      ∃ k : ℕ, ∀ m : ℕ, k ≤ m → toTail.chainPoint m ⊩[(M.toTail tail).toModel] A,
+    (⋀A.subfmlsS 🡒 A) ∈ LogicGL
   ].TFAE
   ```
 ]
+
+Using this equivalence, we can show the following fact about the formulas obtained by replacing every $Box$ with $Boxdot$.
 
 #definition[Boxdot translation][
   The _boxdot translation_ $A^Boxdot$ of a formula $A$ is obtained by replacing every occurrence of $Box$ with $Boxdot$, i.e., it is defined recursively as follows.
@@ -503,9 +603,6 @@ We omit the details of these constructions; via these semantic characterizations
   ```
 ]
 
-On boxdot-translated formulas, $LogicGL$ and $LogicS$ do not differ.
-Our mechanized proof is semantic, via the tail model of @prop:S_characterization, and hence does not go through arithmetical completeness.
-
 #proposition[
   For every formula $A$, $LogicGL proves A^Boxdot$ if and only if $LogicS proves A^Boxdot$.
 ] <prop:boxdot_S_boxdot_GL>
@@ -516,22 +613,34 @@ Our mechanized proof is semantic, via the tail model of @prop:S_characterization
   ```
 ]
 
-#proposition[cf. @Bek90][
+The boxdot translation and the equivalence of $LogicGL$ and $LogicS$ on boxdot-translated formulas are also important in the connection with $LogicGrz$, which we discuss later in @sect:Grz.
+
+Next, we turn to $LogicD$.
+
+#proposition[cf. @Bek90 @KKIM25][
   The following are equivalent, where $prebox(X) = {B | Box B in X}$ for a set of formulas $X$.
 
   1. $LogicD proves A$
-  2. $A$ is forced at the root of the pseudo tail model constructed from any finite $LogicGL$-model.
-  3. $and.big_(Gamma subset.eq prebox(subfml(A))) (Box(or.big Box Gamma) limp or.big Box Gamma) limp A$ is forced at the root of every rooted finite $LogicGL$-model.
-  4. $LogicGL proves and.big_(Gamma subset.eq prebox(subfml(A))) (Box(or.big Box Gamma) limp or.big Box Gamma) limp A$
+  2. $GentzenD proves seq3 A$
+  3. $A$ is forced at the root of the pseudo tail model constructed from any finite $LogicGL$-model.
+  4. $and.big_(Gamma subset.eq prebox(subfml(A))) (Box(or.big Box Gamma) limp or.big Box Gamma) limp A$ is forced at the root of every rooted finite $LogicGL$-model.
+  5. Same as 3, but for the finite $LogicGL$-models whose set of points is ${0, 1, dots.c, n - 1}$ for any $n >= 1$.
+  6. $LogicGL proves and.big_(Gamma subset.eq prebox(subfml(A))) (Box(or.big Box Gamma) limp or.big Box Gamma) limp A$
 ] <prop:D_characterization>
-#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/D/Basic.lean"),))[
+#leancode(links: (
+  ("ProvabilityLogic", "ProvabilityLogic/Logic/D/Basic.lean"),
+  ("ProvabilityLogic", "ProvabilityLogic/Gentzen/D/Kripke.lean"),
+))[
   ```
   theorem LogicD.provability_TFAE [DecidableEq α] : [
     A ∈ LogicD,
+    ⊢ᵍ[D] (∅ ⟹[2] {A}),
     ∀ {κ : Type u}, [Nonempty κ] → ∀ (M : Model κ α), [M.IsFiniteGL] → ∀ r o,
       (M.toPseudoTail r o).root.1 ⊩[_] A,
     ∀ {κ : Type u}, [Nonempty κ] → ∀ (M : RootedModel κ α), [M.IsFiniteGL] →
       M.root.1 ⊩[_] (⋀A.subfmlsD 🡒 A),
+    ∀ (n : ℕ) [NeZero n] (M : Model (Fin n) α), [M.IsFiniteGL] → ∀ r o,
+      (M.toPseudoTail r o).root.1 ⊩[_] A,
     (⋀A.subfmlsD 🡒 A) ∈ LogicGL
   ].TFAE
   ```
@@ -617,27 +726,17 @@ However, at present derivation trees of the sequent calculus cannot be construct
 
 Finally, we have also mechanized facts on the CIP of $LogicS$ and $LogicD$, which we briefly mention.
 
-#theorem[@Bek87][
-  $LogicS$ has the CIP.
+#theorem[@Bek87 @Bek89][
+  $LogicS$ has CIP. But $LogicD$ does not.
 ]
-#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/S/CIP.lean"),))[
+#leancode(links: (
+  ("ProvabilityLogic", "ProvabilityLogic/Logic/S/CIP.lean"),
+  ("ProvabilityLogic", "ProvabilityLogic/Logic/D/NotCIP.lean"),
+))[
   ```
   theorem LogicS.CIP (h : (A 🡒 B) ∈ LogicS) :
     ∃ C : Formula α, (A 🡒 C) ∈ LogicS ∧ (C 🡒 B) ∈ LogicS ∧ C.atoms ⊆ A.atoms ∩ B.atoms
-  ```
-]
 
-#theorem[@Bek89][
-  $LogicD$ does not have the CIP.
-  In particular, for the following $A$ and $B$, $LogicD proves not A -> B$ but there exists no interpolant for it,
-  where $a,b,c$ are distinct propositional variables.
-  $
-    A & equiv Box (Box b or a) -> Box b \
-    B & equiv Box (a -> Box c) -> Box c
-  $
-] <thm:D_no_CIP>
-#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/D/NotCIP.lean"),))[
-  ```
   theorem LogicD.notCIP {a b c : α} (hab : a ≠ b) (hac : a ≠ c) (hbc : b ≠ c) :
     ∃ A B : Formula α, (A 🡒 B) ∈ LogicD ∧
       ¬ ∃ C : Formula α, (A 🡒 C) ∈ LogicD ∧ (C 🡒 B) ∈ LogicD ∧
@@ -840,21 +939,23 @@ For the details, see @Bek90 @AB05.
   ],
   links: (
     ("ProvabilityLogic", "ProvabilityLogic/Formula/Basic.lean"),
-    ("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/Classification/LetterlessTrace.lean"),
+    ("ProvabilityLogic", "ProvabilityLogic/Logic/GLAlpha/Basic.lean"),
+    ("ProvabilityLogic", "ProvabilityLogic/Logic/A/Basic.lean"),
+    ("ProvabilityLogic", "ProvabilityLogic/Logic/GLBetaMinus/Basic.lean"),
   ),
 )[
   ```
   def TBB (n : ℕ) : Formula α := (□^[(n + 1)]⊥) 🡒 (□^[n]⊥)
 
-  abbrev LogicGLAlpha {α} (Alpha : Set ℕ) : Logic α := (@LogicGL α) +ᴸ ↑(Alpha.image $ TBB (α := Empty))
+  abbrev LogicGLAlpha {α} (X : Set ℕ) : Logic α := (@LogicGL α) +ᴸ ↑(X.image $ TBB (α := Empty))
 
   abbrev LogicA {α} : Logic α := LogicGLAlpha Set.univ
 
   noncomputable abbrev TBBMinus [DecidableEq α] (X : Set ℕ) (X_finite : X.Finite) : Formula α :=
     ∼⋀(X_finite.toFinset.image TBB)
 
-  abbrev LogicGLBetaMinus {α} [DecidableEq α] (Beta : Set ℕ) (Beta_cofinite : Betaᶜ.Finite) : Logic α :=
-    (@LogicGL α) +ᴸ (LetterlessFormulaSet.lift { TBBMinus _ Beta_cofinite })
+  abbrev LogicGLBetaMinus {α} [DecidableEq α] (X : Set ℕ) (X_cofinite : Xᶜ.Finite) : Logic α :=
+    (@LogicGL α) +ᴸ (LetterlessFormulaSet.lift { TBBMinus _ X_cofinite })
   ```
 ]
 
@@ -952,7 +1053,7 @@ The other is the uniform arithmetical completeness theorem.
   for every formula $A$, $LogicGL proves A$ if and only if $T proves f_(Bew_T) (A)$.
 ]
 
-== On $LogicGrz$
+== On $LogicGrz$ <sect:Grz>
 
 The Grzegorczyk logic $LogicGrz$ is also closely related to #LogicGL.
 Unlike #LogicGL, it is an extension of $LogicS4$, so that $Box$ behaves reflexively; nevertheless, as we describe below, it is tightly connected to #LogicGL and #LogicS through the boxdot translation, and this connection yields an arithmetical completeness theorem for $LogicGrz$ with respect to a _strong_ arithmetical interpretation.
@@ -1049,17 +1150,14 @@ Sequent calculi for $LogicGrz$ were formulated by Avron @Avr84 and by Borga and 
   As for $GentzenGL$, this system contains no cut rule, and $GentzenWithCutGrz$ denotes the system extended with the cut rule.
 ]
 #leancode(
-  links: (
-    ("ProvabilityLogic", "ProvabilityLogic/Gentzen/Grz/Basic.lean"),
-    ("ProvabilityLogic", "ProvabilityLogic/Gentzen/Grz/WithCut.lean"),
-  ),
+  links: (("ProvabilityLogic", "ProvabilityLogic/Gentzen/Grz/Basic.lean"),),
   note: [
     In @Avr84, the rule $(Box_LogicGrz)$ carries arbitrary side formulas.
     As with $(Box_LogicGL)$, we adopt the more economical presentation in which the conclusion is exactly $Box Gamma => Box A$, and recover the side formulas afterwards by the weakening rules.
   ],
 )[
   ```
-  inductive LogicGrz.ProofGentzen : LogicGL.Sequent α → Type u
+  inductive LogicGrz.ProofGentzen : Sequent α → Type u
   | ...
   | boxT   {Γ Δ : FormulaFinset α} {B} :
       ProofGentzen (insert B Γ ⟹ Δ) → ProofGentzen (insert (□B) Γ ⟹ Δ)
@@ -1067,17 +1165,17 @@ Sequent calculi for $LogicGrz$ were formulated by Avron @Avr84 and by Borga and 
       ProofGentzen (insert (□(A 🡒 □A)) (□Γ) ⟹ {A}) → ProofGentzen (□Γ ⟹ {□A})
   notation:120 "⊢ᵍ[Grz]! " S:121 => LogicGrz.ProofGentzen S
 
-  abbrev LogicGrz.ProvableGentzen (S : LogicGL.Sequent α) : Prop := Nonempty (⊢ᵍ[Grz]! S)
+  abbrev LogicGrz.ProvableGentzen (S : Sequent α) : Prop := Nonempty (⊢ᵍ[Grz]! S)
   notation:120 "⊢ᵍ[Grz] " S:121 => LogicGrz.ProvableGentzen S
 
-  inductive LogicGrz.GentzenWithCutProof : LogicGL.Sequent α → Type u
+  inductive LogicGrz.GentzenWithCutProof : Sequent α → Type u
   | ...
   | cut {Γ₁ Γ₂ Δ₁ Δ₂ A} :
       GentzenWithCutProof (Γ₁ ⟹ insert A Δ₁) → GentzenWithCutProof (insert A Γ₂ ⟹ Δ₂) →
       GentzenWithCutProof (Γ₁ ∪ Γ₂ ⟹ Δ₁ ∪ Δ₂)
   notation:120 "⊢ᵍᶜ[Grz]! " S:121 => LogicGrz.GentzenWithCutProof S
 
-  abbrev LogicGrz.GentzenWithCutProvable (S : LogicGL.Sequent α) : Prop := Nonempty (⊢ᵍᶜ[Grz]! S)
+  abbrev LogicGrz.GentzenWithCutProvable (S : Sequent α) : Prop := Nonempty (⊢ᵍᶜ[Grz]! S)
   notation:120 "⊢ᵍᶜ[Grz] " S:121 => LogicGrz.GentzenWithCutProvable S
   ```
 ]
@@ -1227,7 +1325,7 @@ Note that the case $Delta = {A}$ is exactly the $(Box_LogicGL)$ rule.
 
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Gentzen/GLPoint3/Basic.lean"),))[
   ```
-  inductive LogicGLPoint3.ProofGentzen : LogicGL.Sequent α → Type u
+  inductive LogicGLPoint3.ProofGentzen : Sequent α → Type u
   | axm (A) : ProofGentzen ({A} ⟹ {A})
   | botL : ProofGentzen ({⊥} ⟹ ∅)
   | wkL  {Γ Γ' Δ}  : ProofGentzen (Γ ⟹ Δ) → Γ ⊆ Γ' → ProofGentzen (Γ' ⟹ Δ)
@@ -1242,7 +1340,7 @@ Note that the case $Delta = {A}$ is exactly the $(Box_LogicGL)$ rule.
       ProofGentzen (Γ.box ⟹ Δ.box)
   notation:120 "⊢ᵍ[GLPoint3]! " S:121 => LogicGLPoint3.ProofGentzen S
 
-  abbrev LogicGLPoint3.ProvableGentzen (S : LogicGL.Sequent α) : Prop :=
+  abbrev LogicGLPoint3.ProvableGentzen (S : Sequent α) : Prop :=
     Nonempty (⊢ᵍ[GLPoint3]! S)
   notation:120 "⊢ᵍ[GLPoint3] " S:121 => LogicGLPoint3.ProvableGentzen S
   ```
@@ -1256,13 +1354,17 @@ For these characterizations, equivalences analogous to those for #LogicGL hold.
   2. $GentzenGLPoint3 proves => A$.
   3. $A$ is forced at every point of every finite $LogicGLPoint3$-model.
   4. $A$ is forced at the root of every rooted finite $LogicGLPoint3$-model.
+  5. $A$ is forced at every point of every finite $LogicGLPoint3$-model whose set of points is ${0, 1, dots.c, n - 1}$ for any $n >= 1$.
+  6. $A$ is forced at the root of every rooted finite $LogicGLPoint3$-model whose set of points is ${0, 1, dots.c, n - 1}$ for any $n >= 1$.
 ]
-#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GLPoint3/Completeness.lean"),))[```
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GLPoint3/Basic.lean"),))[```
   theorem LogicGLPoint3.provability_TFAE [DecidableEq α] {A : Formula α} : [
     A ∈ LogicGLPoint3,
     ⊢ᵍ[GLPoint3] (∅ ⟹ {A}),
     ∀ {κ : Type u}, [Nonempty κ] → ∀ M : Model κ α, [M.IsFiniteGLPoint3] → M ⊧ A,
-    ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGLPoint3] → M.root.1 ⊩[_] A
+    ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGLPoint3] → M.root.1 ⊩[_] A,
+    ∀ (n : ℕ) [NeZero n] (M : Model (Fin n) α), [M.IsFiniteGLPoint3] → M ⊧ A,
+    ∀ (n : ℕ) [NeZero n] (M : RootedModel (Fin n) α), [M.IsFiniteGLPoint3] → M.root.1 ⊩[_] A
   ].TFAE
   ```
 ]
@@ -1349,25 +1451,19 @@ As far as we know, the only mechanizations of the proof theory of sequent calcul
 
 Tableau methods for #LogicGL are discussed in @Boo94[Chapter 10] for instance.
 A tableau-based automated theorem prover for #LogicGL was implemented by Goré and Kelly @GK07, where the efficiency of the implementation is also discussed.
-#let seq(l) = $attach(tr: #l, =>)$
-#let seq1 = seq("1")
-#let seq2 = seq("2")
-#let seq3 = seq("3")
 
 The proof theory of #LogicS and #LogicD has been developed only recently.
 Sierra Miranda and Studer @SMS26 proved the Lyndon interpolation property of #LogicS using non-wellfounded proofs.
-As a different approach, Kushida @Kus20 proposed a sequent calculus for #LogicS that uses two levels of sequents $seq1$ and $seq2$.
+As a different approach, Kushida @Kus20 proposed a sequent calculus for #LogicS that uses two levels of sequents $seq1$ and $seq2$ (see @def:layered_sequent_calculi).
 Roughly speaking, the provable #seq1;-sequents coincide with those provable in #GentzenGL, the system is equipped with a lift-up mechanism from #seq1 to #seq2, and on the level of #seq2 one can reason as in the logic #LogicKT.
 While @Kus20 gives a syntactic cut-elimination algorithm, Kashima and Kato @KK23 proved the cut elimination for #LogicS by a semantical method.
 Furthermore, Kashima et al. @KKIM25 extended this approach and formulated two sequent calculi for #LogicD.
 The former uses two levels of sequents as in the case of #LogicS, but has the drawback that the cut rule cannot be eliminated.
-The latter uses three levels of sequents #seq1, #seq2, and #seq3, and in particular admits cut elimination.
+The latter uses three levels of sequents #seq1, #seq2, and #seq3, and in particular admits cut elimination; this is the system we have mechanized (see @def:layered_sequent_calculi).
 
-In the present work, we have mechanized the Gentzen-style sequent calculus for #LogicGL, the labelled sequent calculus for #LogicGL (see @sect:labelled-sequent-calculus), and the two-level sequent calculus for #LogicS (see @prop:S_characterization).
+In the present work, we have mechanized the Gentzen-style sequent calculus for #LogicGL, the labelled sequent calculus for #LogicGL (see @sect:labelled-sequent-calculus), and the two-level sequent calculus for #LogicS together with the three-level sequent calculus for #LogicD (see @def:layered_sequent_calculi).
 For future work, we plan to mechanize sequent calculi with other machinery as well, together with the equivalence of their provability.
 In particular, although Shamkanov's circular proofs involve infinitary structures, the studies by Sierra Miranda et al. @SM23 @SMSZ24 @HSMS25 @SMS26 have revealed that they have many applications, so their mechanization seems to be a technically challenging but worthwhile task.
-We also plan to mechanize the three-level sequent calculus for #LogicD following @KKIM25.
-We expect that this will provide, for instance, a syntactic proof of the failure of the CIP for #LogicD (@thm:D_no_CIP) and a concise implementation of its mechanization.
 
 === Provability logic of Heyting arithmetic
 
