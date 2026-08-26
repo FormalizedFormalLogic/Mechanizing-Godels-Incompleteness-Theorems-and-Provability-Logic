@@ -258,12 +258,12 @@ Since we are not concerned with modal logic in general, we omit the notion of fr
     Rel' : κ → κ → Prop
     Val' : κ → α → Prop
 
-  def Forces (x : M.World) : Formula α → Prop
+  def Model.World.Forces (M : Model κ α) (x : M.World) : Formula α → Prop
   | #a    => M x a
   | ⊥     => False
-  | A 🡒 B => Forces x A → Forces x B
-  | □A    => ∀ y, x ≺ y → Forces y A
-  infix:55 " ⊩ " => Forces
+  | A 🡒 B => Forces M x A → Forces M x B
+  | □A    => ∀ y, x ≺ y → Forces M y A
+  notation:55 x:56 " ⊩[" M "] " A:56 => Model.World.Forces M x A
 
   class IsGL (M : Model κ α) extends IsTrans _ M.Rel, IsConverseWellFounded _ M.Rel
 
@@ -364,8 +364,8 @@ As the equivalence of these characterizations, we mechanized the following.
     ⊢ᵍᶜ[GL] (∅ ⟹ {A}),
     ⊢ˡ (∅ ⸴ ∅ ⟹ˡ {(0 : LabelledGentzen.Label) ∶ A}),
     ∀ {κ : Type u}, [Nonempty κ] → ∀ M : Model κ α, [M.IsFiniteGL] → M ⊧ A,
-    ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGL] → M.root.1 ⊩ A,
-    ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGLTree] → M.root.1 ⊩ A
+    ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGL] → M.root.1 ⊩[_] A,
+    ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGLTree] → M.root.1 ⊩[_] A
   ].TFAE
   ```
 ]
@@ -430,9 +430,9 @@ We omit the details of these constructions; via these semantic characterizations
   theorem LogicS.provability_TFAE [DecidableEq α] : [
     A ∈ LogicS,
     ∀ {κ : Type u}, [Nonempty κ] → ∀ (M : Model κ α), [M.IsFiniteGL] → ∀ (tail : M.World),
-      ∃ k : ℕ, ∀ n : ℕ, k ≤ n → Forces (M := (M.toTail tail).toModel) (toTail.chainPoint n) A,
+      ∃ k : ℕ, ∀ n : ℕ, k ≤ n → toTail.chainPoint n ⊩[(M.toTail tail).toModel] A,
     ∀ {κ : Type u}, [Nonempty κ] → ∀ (M : RootedModel κ α), [M.IsFiniteGL] →
-      M.root.1 ⊩ (⋀A.subfmlsS 🡒 A),
+      M.root.1 ⊩[_] (⋀A.subfmlsS 🡒 A),
     (⋀A.subfmlsS 🡒 A) ∈ LogicGL,
     ⊢ᵍ[S] (∅ ⟹[1] {A})
   ].TFAE
@@ -483,9 +483,9 @@ Our mechanized proof is semantic, via the tail model of @prop:S_characterization
   theorem LogicD.provability_TFAE [DecidableEq α] : [
     A ∈ LogicD,
     ∀ {κ : Type u}, [Nonempty κ] → ∀ (M : Model κ α), [M.IsFiniteGL] → ∀ r o,
-      (M.toPseudoTail r o).root.1 ⊩ A,
+      (M.toPseudoTail r o).root.1 ⊩[_] A,
     ∀ {κ : Type u}, [Nonempty κ] → ∀ (M : RootedModel κ α), [M.IsFiniteGL] →
-      M.root.1 ⊩ (⋀A.subfmlsD 🡒 A),
+      M.root.1 ⊩[_] (⋀A.subfmlsD 🡒 A),
     (⋀A.subfmlsD 🡒 A) ∈ LogicGL
   ].TFAE
   ```
@@ -557,9 +557,10 @@ We have also mechanized the fixed point theorem of $LogicGL$ via the sequent cal
   links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GL/Fixedpoint.lean"),),
 )[
   ```
-  theorem LogicGL.fixpointTheorem {A : Formula α} {p q : α}
+  theorem LogicGL.fixpointTheorem
     (hpq : p ≠ q) (hA : A.ModalizedIn p) (hq : q ∉ A.atoms) :
-    ∃ D : Formula α, D.atoms ⊆ A.atoms \ {p} ∧ ((A⟦p ↦ D⟧) 🡘 D) ∈ LogicGL
+    ∃ D : Formula α, D.atoms ⊆ A.atoms \ {p} ∧ ((A⟦p ↦ D⟧) 🡘 D) ∈ LogicGL ∧
+      ∀ E : Formula α, ((A⟦p ↦ E⟧) 🡘 E) ∈ LogicGL → (D 🡘 E) ∈ LogicGL
 
   theorem LogicGL.ProvableGentzen.fixpoint_uniqueness (hA : A.ModalizedIn p) :
     ⊢ᵍ[GL] ({⊡(A 🡘 #p), ⊡((A⟦p ↦ #q⟧) 🡘 #q)} ⟹ {(#p : Formula α) 🡘 #q})
@@ -775,7 +776,7 @@ For the details, see @Bek90 @AB05.
   ```
   def trace (A : Formula α) : Set ℕ := { n |
     ∃ κ : Type u, ∃ _ : Nonempty κ, ∃ M : RootedModel κ α, ∃ _ : Fintype M.World, ∃ _ : M.IsGL,
-    (M.height = n ∧ M.root.1 ⊮ A) }
+    (M.height = n ∧ M.root.1 ⊮[_] A) }
 
   abbrev Logic.trace (L : Logic α) : Set ℕ := ⋃ A ∈ L, A.trace
   ```
@@ -1060,7 +1061,7 @@ We mechanized the finite model property of $LogicGrz$ with respect to the Kripke
     ⊢ᵍ[Grz] (∅ ⟹ {A}),
     ⊢ᵍᶜ[Grz] (∅ ⟹ {A}),
     ∀ {κ : Type u}, [Nonempty κ] → ∀ M : Model κ α, [M.IsFiniteGrz] → M ⊧ A,
-    ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGrz] → M.root.1 ⊩ A
+    ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGrz] → M.root.1 ⊩[_] A
   ].TFAE
   ```
 ]
@@ -1217,7 +1218,7 @@ For these characterizations, equivalences analogous to those for #LogicGL hold.
     A ∈ LogicGLPoint3,
     ⊢ᵍ[GLPoint3] (∅ ⟹ {A}),
     ∀ {κ : Type u}, [Nonempty κ] → ∀ M : Model κ α, [M.IsFiniteGLPoint3] → M ⊧ A,
-    ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGLPoint3] → M.root.1 ⊩ A
+    ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGLPoint3] → M.root.1 ⊩[_] A
   ].TFAE
   ```
 ]
