@@ -356,6 +356,8 @@ As the equivalence of these characterizations, we mechanized the following.
   6. $A$ is forced at every point of every finite $LogicGL$-model.
   7. $A$ is forced at the root of every rooted finite $LogicGL$-model.
   8. $A$ is forced at the root of every rooted finite $LogicGL$-model that is a tree.
+  9. $A$ is forced at every point of every finite $LogicGL$-model whose set of points is ${0, 1, dots.c, n - 1}$ for some $n >= 1$.
+  10. $A$ is forced at the root of every rooted finite $LogicGL$-model whose set of points is ${0, 1, dots.c, n - 1}$ for some $n >= 1$.
 ] <thm:GL_TFAE>
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GL/Basic.lean"),))[
   ```
@@ -364,10 +366,12 @@ As the equivalence of these characterizations, we mechanized the following.
     ⊢ʰ[GL] A,
     ⊢ᵍ[GL] (∅ ⟹ {A}),
     ⊢ᵍᶜ[GL] (∅ ⟹ {A}),
-    ⊢ˡ (∅ ⸴ ∅ ⟹ˡ {(0 : LabelledGentzen.Label) ∶ A}),
+    ⊢ˡᵍ[GL] (∅ ⸴ ∅ ⟹ˡ {(0 : Label) ∶ A}),
     ∀ {κ : Type u}, [Nonempty κ] → ∀ M : Model κ α, [M.IsFiniteGL] → M ⊧ A,
     ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGL] → M.root.1 ⊩[_] A,
-    ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGLTree] → M.root.1 ⊩[_] A
+    ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGLTree] → M.root.1 ⊩[_] A,
+    ∀ (n : ℕ) [NeZero n] (M : Model (Fin n) α), [M.IsFiniteGL] → M ⊧ A,
+    ∀ (n : ℕ) [NeZero n] (M : RootedModel (Fin n) α), [M.IsFiniteGL] → M.root.1 ⊩[_] A
   ].TFAE
   ```
 ]
@@ -378,6 +382,8 @@ This is the usual Kripke completeness with respect to the class of finite $Logic
 However, the proof of the arithmetical completeness theorem described later requires not the mere Kripke completeness, but the completeness with respect to rooted models (7, and furthermore 8).
 The transformation of a rooted model into a tree model is done by the technique known as tree unraveling (cf. @CZ97[Theorem 3.18]).
 The equivalence of 3 and 4 corresponds to the cut-elimination theorem.
+Finally, 9 and 10 characterize provability by _concrete_ models, i.e., models whose set of points is ${0, 1, dots.c, n - 1}$, implemented as the type `Fin n`.
+These clauses are convenient for refuting $LogicGL proves A$: since 6--8 quantify over types `κ` of an arbitrary universe, a countermodel refutes them only after an explicit universe lifting, whereas by 9 and 10 it suffices to construct a single countermodel written directly over `Fin n`.
 
 Next, we introduce the modal logics $LogicS$ (due to Solovay @Sol76) and $LogicD$ (due to Japaridze (Dzhaparidze) @Jap86), which play important roles in provability logic.
 
