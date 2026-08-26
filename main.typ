@@ -196,10 +196,22 @@ Our sequent calculus for #LogicGL is due to Sambin and Valentini @SV82.
       $Box A, Gamma, Box Gamma => A$,
     ))),
   ))
+
+  Moreover, the sequent calculus $GentzenWithCutGL$ is obtained from $GentzenGL$ by adding the following cut rule.
+
+  #align(center, prooftree(rule(
+    name: [(Cut)],
+    $Gamma_1, Gamma_2 => Delta_1, Delta_2$,
+    $Gamma_1 => A, Delta_1$,
+    $A, Gamma_2 => Delta_2$,
+  )))
 ]
-#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Gentzen/GL/Basic.lean"),))[
+#leancode(links: (
+  ("ProvabilityLogic", "ProvabilityLogic/Gentzen/Sequent.lean"),
+  ("ProvabilityLogic", "ProvabilityLogic/Gentzen/GL/Basic.lean"),
+))[
   ```
-  structure LogicGL.Sequent (α : Type u) where
+  structure Sequent (α : Type u) where
     ant : FormulaFinset α
     suc : FormulaFinset α
   infix:50 " ⟹ " => Sequent.mk
@@ -218,11 +230,30 @@ Our sequent calculus for #LogicGL is due to Sambin and Valentini @SV82.
 
   abbrev LogicGL.ProvableGentzen (S : Sequent α) : Prop := Nonempty (⊢ᵍ[GL]! S)
   notation:120 "⊢ᵍ[GL] " S:121 => LogicGL.ProvableGentzen S
+
+  inductive LogicGL.GentzenWithCutProof : Sequent α → Type u
+  | ...
+  | cut {Γ₁ Γ₂ Δ₁ Δ₂ A} : GentzenWithCutProof (Γ₁ ⟹ insert A Δ₁) → GentzenWithCutProof (insert A Γ₂ ⟹ Δ₂) →
+                          GentzenWithCutProof (Γ₁ ∪ Γ₂ ⟹ Δ₁ ∪ Δ₂)
+  notation:120 "⊢ᵍᶜ[GL]! " S:121 => LogicGL.GentzenWithCutProof S
+
+  abbrev LogicGL.GentzenWithCutProvable (S : Sequent α) : Prop := Nonempty (⊢ᵍᶜ[GL]! S)
+  notation:120 "⊢ᵍᶜ[GL] " S:121 => LogicGL.GentzenWithCutProvable S
   ```
 ]
 
-Note that this system contains no cut rule.
-We also define the system extended with the cut rule (`LogicGL.GentzenWithCutProvable`, denoted by `⊢ᵍᶜ[GL]` in the mechanization), and the equivalence corresponding to the cut-elimination theorem of Sambin and Valentini @SV82 is also mechanized as a part of @thm:GL_TFAE.
+Note that $GentzenGL$ itself contains no cut rule; the cut-elimination theorem of Sambin and Valentini @SV82 is mechanized in the following form, for arbitrary sequents.
+
+#theorem[Cut elimination for $GentzenGL$ @SV82][
+  If $GentzenWithCutGL proves Gamma => Delta$, then $GentzenGL proves Gamma => Delta$.
+] <thm:GL_cut_elimination>
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Gentzen/GL/Kripke.lean"),))[
+  ```
+  theorem LogicGL.ProvableGentzen.of_with_cut {S : Sequent α} : ⊢ᵍᶜ[GL] S → ⊢ᵍ[GL] S
+  ```
+]
+
+We emphasize that our mechanized proof of this theorem uses a semantic argument, rather than a syntactic one: instead of transforming a derivation with cuts into a cut-free one, each application of the cut rule is justified by the soundness and the Kripke completeness of the cut-free system $GentzenGL$ (so-called semantic cut elimination), with respect to the finite $LogicGL$-models introduced below.
 
 Next, we introduce Kripke semantics.
 Since we are not concerned with modal logic in general, we omit the notion of frames and work only with models.
@@ -381,7 +412,7 @@ The Kripke completeness of $LogicGL$ (the equivalence of 1 and 6) is due to Sege
 This is the usual Kripke completeness with respect to the class of finite $LogicGL$-models, and has already been mechanized in HOL Light by Maggesi and Perini Brogi @MPB21 @MPB23.
 However, the proof of the arithmetical completeness theorem described later requires not the mere Kripke completeness, but the completeness with respect to rooted models (7, and furthermore 8).
 The transformation of a rooted model into a tree model is done by the technique known as tree unraveling (cf. @CZ97[Theorem 3.18]).
-The equivalence of 3 and 4 corresponds to the cut-elimination theorem.
+The equivalence of 3 and 4 is the special case of the cut-elimination theorem (@thm:GL_cut_elimination) for sequents of the form $=> A$.
 The equivalence with 9 and 10 is provided for the sake of _concrete_ (or easy-to-define) countermodels.
 Due to universe issues, the models in the completeness clauses range over types `κ` in the same universe level as the one that `α` belongs to.
 Hence, to construct a countermodel, one would have to define it over a type lifted to the matching universe level, such as `PUnit` or `PLift (Fin n)` #footnote[https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#PLift].
