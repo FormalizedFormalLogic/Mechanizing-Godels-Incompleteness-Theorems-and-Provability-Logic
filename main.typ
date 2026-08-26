@@ -535,6 +535,28 @@ Kushida @Kus20 gave such a calculus for $LogicS$ with two levels of sequents, an
 
 By construction, the $seq1$-fragment of both systems is exactly $GentzenGL$, and the $seq1$ and $seq2$ fragments of $GentzenD$ are exactly $GentzenS$; these embeddings are mechanized as well, and are what lets the mechanization of $GentzenD$ reuse that of $GentzenS$.
 
+As for $GentzenGL$, we can prove the cut-elimination theorem for these systems semantically.
+
+#theorem[Cut elimination for $GentzenS$ and $GentzenD$ @KK23 @KKIM25][
+  - If $GentzenWithCutS proves Gamma seq2 Delta$, then $GentzenS proves Gamma seq2 Delta$.
+  - If $GentzenWithCutD proves Gamma seq3 Delta$, then $GentzenD proves Gamma seq3 Delta$.
+] <prop:SD_cut_elimination>
+#leancode(links: (
+  ("ProvabilityLogic", "ProvabilityLogic/Gentzen/S/Kripke.lean"),
+  ("ProvabilityLogic", "ProvabilityLogic/Gentzen/D/Kripke.lean"),
+))[
+  ```
+  theorem LogicS.ProvableGentzen.of_with_cut {Γ Δ : FormulaFinset α}
+    (h : ⊢ᵍᶜ[S] (Γ ⟹[1] Δ)) : ⊢ᵍ[S] (Γ ⟹[1] Δ)
+
+  theorem LogicD.ProvableGentzen.of_with_cut {Γ Δ : FormulaFinset α}
+    (h : ⊢ᵍᶜ[D] (Γ ⟹[2] Δ)) : ⊢ᵍ[D] (Γ ⟹[2] Δ)
+  ```
+]
+
+With this result in hand, the characterizations of $LogicS$ and $LogicD$ can be stated as follows.
+First, the following holds for $LogicS$.
+
 #proposition[cf. @Vis84][
   The following are equivalent.
 
@@ -561,19 +583,7 @@ By construction, the $seq1$-fragment of both systems is exactly $GentzenGL$, and
   ```
 ]
 
-#corollary[Cut elimination for $GentzenS$ @KK23][
-  If $GentzenWithCutS proves Gamma seq2 Delta$, then $GentzenS proves Gamma seq2 Delta$.
-] <prop:S_cut_elimination>
-#leancode(links: (
-  ("ProvabilityLogic", "ProvabilityLogic/Gentzen/S/Kripke.lean"),
-))[
-  ```
-  theorem LogicS.ProvableGentzen.of_with_cut {Γ Δ : FormulaFinset α}
-    (h : ⊢ᵍᶜ[S] (Γ ⟹[1] Δ)) : ⊢ᵍ[S] (Γ ⟹[1] Δ)
-  ```
-]
-
-Furthermore, we can also show the following: on boxdot-translated formulas, $LogicGL$ and $LogicS$ do not differ.
+Using this equivalence, we can show the following fact about the formulas obtained by replacing every $Box$ with $Boxdot$.
 
 #definition[Boxdot translation][
   The _boxdot translation_ $A^Boxdot$ of a formula $A$ is obtained by replacing every occurrence of $Box$ with $Boxdot$, i.e., it is defined recursively as follows.
@@ -603,7 +613,9 @@ Furthermore, we can also show the following: on boxdot-translated formulas, $Log
   ```
 ]
 
-Our mechanized proof is semantic, via the tail model of @prop:S_characterization, and hence does not go through arithmetical completeness.
+The boxdot translation and the equivalence of $LogicGL$ and $LogicS$ on boxdot-translated formulas are also important in the connection with $LogicGrz$, which we discuss later in @sect:Grz.
+
+Next, we turn to $LogicD$.
 
 #proposition[cf. @Bek90 @KKIM25][
   The following are equivalent, where $prebox(X) = {B | Box B in X}$ for a set of formulas $X$.
@@ -631,20 +643,6 @@ Our mechanized proof is semantic, via the tail model of @prop:S_characterization
       (M.toPseudoTail r o).root.1 ⊩[_] A,
     (⋀A.subfmlsD 🡒 A) ∈ LogicGL
   ].TFAE
-  ```
-]
-
-As a corollary, we obtain the cut elimination for $GentzenD$.
-
-#corollary[Cut elimination for $GentzenD$ @KKIM25][
-  If $GentzenWithCutD proves Gamma seq3 Delta$, then $GentzenD proves Gamma seq3 Delta$.
-] <prop:D_cut_elimination>
-#leancode(links: (
-  ("ProvabilityLogic", "ProvabilityLogic/Gentzen/D/Kripke.lean"),
-))[
-  ```
-  theorem LogicD.ProvableGentzen.of_with_cut {Γ Δ : FormulaFinset α}
-    (h : ⊢ᵍᶜ[D] (Γ ⟹[2] Δ)) : ⊢ᵍ[D] (Γ ⟹[2] Δ)
   ```
 ]
 
@@ -1055,7 +1053,7 @@ The other is the uniform arithmetical completeness theorem.
   for every formula $A$, $LogicGL proves A$ if and only if $T proves f_(Bew_T) (A)$.
 ]
 
-== On $LogicGrz$
+== On $LogicGrz$ <sect:Grz>
 
 The Grzegorczyk logic $LogicGrz$ is also closely related to #LogicGL.
 Unlike #LogicGL, it is an extension of $LogicS4$, so that $Box$ behaves reflexively; nevertheless, as we describe below, it is tightly connected to #LogicGL and #LogicS through the boxdot translation, and this connection yields an arithmetical completeness theorem for $LogicGrz$ with respect to a _strong_ arithmetical interpretation.
