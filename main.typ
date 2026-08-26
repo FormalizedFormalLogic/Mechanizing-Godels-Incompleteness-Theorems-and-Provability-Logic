@@ -242,9 +242,10 @@ Our sequent calculus for #LogicGL is due to Sambin and Valentini @SV82.
   ```
 ]
 
-Note that $GentzenGL$ itself contains no cut rule; the cut-elimination theorem of Sambin and Valentini @SV82 is mechanized in the following form, for arbitrary sequents.
+Note that $GentzenGL$ itself contains no cut rule.
+The cut-elimination theorem for $GentzenWithCutGL$ is also mechanized.
 
-#theorem[Cut elimination for $GentzenGL$ @SV82][
+#theorem[Cut elimination for $GentzenGL$ @SV82 @Avr84][
   If $GentzenWithCutGL proves Gamma => Delta$, then $GentzenGL proves Gamma => Delta$.
 ] <thm:GL_cut_elimination>
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Gentzen/GL/Kripke.lean"),))[
@@ -253,7 +254,10 @@ Note that $GentzenGL$ itself contains no cut rule; the cut-elimination theorem o
   ```
 ]
 
-We emphasize that our mechanized proof of this theorem uses a semantic argument, rather than a syntactic one: instead of transforming a derivation with cuts into a cut-free one, each application of the cut rule is justified by the soundness and the Kripke completeness of the cut-free system $GentzenGL$ (so-called semantic cut elimination), with respect to the finite $LogicGL$-models introduced below.
+Here we note that this cut-elimination theorem is mechanized as a _semantic_ cut elimination, via the Kripke semantics explained below.
+In other words, we do not present a deterministic and computable syntactic cut-elimination algorithm (`def cutEliminationAlgorithm : ⊢ᵍᶜ[GL]! S → ⊢ᵍ[GL]! S`), such as the ones repeatedly discussed in @SV82 @GR12.
+For the purpose of our mechanization, the cut rule is introduced to show the equivalence with the Hilbert-style system, i.e., for modus ponens, and it suffices that it can be eliminated; hence we put off a rigorous mechanization of such an algorithm.
+For a syntactic and computable cut-elimination algorithm for the sequent calculus of $LogicGL$, see, e.g., the mechanization in Rocq by Goré, Ramanayake, and Shillito @GRS21.
 
 Next, we introduce Kripke semantics.
 Since we are not concerned with modal logic in general, we omit the notion of frames and work only with models.
@@ -413,10 +417,11 @@ This is the usual Kripke completeness with respect to the class of finite $Logic
 However, the proof of the arithmetical completeness theorem described later requires not the mere Kripke completeness, but the completeness with respect to rooted models (7, and furthermore 8).
 The transformation of a rooted model into a tree model is done by the technique known as tree unraveling (cf. @CZ97[Theorem 3.18]).
 The equivalence of 3 and 4 is the special case of the cut-elimination theorem (@thm:GL_cut_elimination) for sequents of the form $=> A$.
-The equivalence with 9 and 10 is provided for the sake of _concrete_ (or easy-to-define) countermodels.
+The equivalence with 9 and 10 is provided for the sake of _concrete_ (or useful) countermodels.
 Due to universe issues, the models in the completeness clauses range over types `κ` in the same universe level as the one that `α` belongs to.
 Hence, to construct a countermodel, one would have to define it over a type lifted to the matching universe level, such as `PUnit` or `PLift (Fin n)` #footnote[https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#PLift].
-However, dealing with such universe issues every time is quite tedious, and it also clutters the definitions of countermodels; we thus prepared lemmas that internally dispose of the universe issues via a suitable type equivalence, so that countermodels can be constructed concretely over `Fin n`.
+However, dealing with such universe issues every time is quite tedious.
+Thus we prepared some lemmas that internally dispose of the universe issues via a suitable type equivalence, so that countermodels can be constructed concretely over `Fin n`.
 
 Next, we introduce the modal logics $LogicS$ (due to Solovay @Sol76) and $LogicD$ (due to Japaridze (Dzhaparidze) @Jap86), which play important roles in provability logic.
 
