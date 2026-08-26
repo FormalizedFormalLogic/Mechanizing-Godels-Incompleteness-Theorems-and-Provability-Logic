@@ -456,15 +456,14 @@ However, they are known to be sound and complete with respect to classes of infi
 Such models for $LogicS$ are called tail models @Vis84, and for $LogicD$ the so-called pseudo tail models (cf. @Bek90) are used.
 We omit the details of these constructions.
 
-Both logics also admit Gentzen-style sequent calculi, once sequents are stratified into levels.
-Kushida @Kus20 gave such a calculus for $LogicS$ with two levels of sequents, and Kashima et al. @KKIM25 extended his approach to a calculus for $LogicD$ with three levels; we discuss the background of these systems in @subsect:proof_theory_provability_logic.
-We have mechanized both of them.
+Both logics also admit Gentzen-style sequent calculi, but in the calculi, sequents have levels.
+Kushida @Kus20 gave such a calculus for $LogicS$ with two levels of sequents, and Kashima et al. @KKIM25 extended his approach to a calculus for $LogicD$ with three levels.
 
-#definition[Layered sequent calculi for $LogicS$ and $LogicD$ @Kus20 @KK23 @KKIM25][
+#definition[Sequent calculi for $LogicS$ and $LogicD$ @Kus20 @KK23 @KKIM25][
   A _layered sequent_ is a sequent $Gamma => Delta$ together with a level.
   The calculus $GentzenS$ uses the two levels $seq1$ and $seq2$, and the calculus $GentzenD$ uses the three levels $seq1$, $seq2$, and $seq3$.
   At each level $l$ separately, both systems contain the propositional rules (Ax), ($bot$L), (WL), (WR), ($limp$L), and ($limp$R) of $GentzenGL$, with $=>$ replaced by $seq(l)$.
-  In addition, both systems contain the following rules, except that (Lift$""^(2 arrow.r 3)$) belongs to $GentzenD$ only.
+  In addition, both systems contain the following rules, except that (Lift$""^2_3$) belongs to $GentzenD$ only.
 
   #align(center, grid(
     columns: 2,
@@ -475,10 +474,11 @@ We have mechanized both of them.
       $Box Gamma seq1 Box A$,
       $Box A, Gamma, Box Gamma seq1 A$,
     )),
-    prooftree(rule(name: [(Lift$""^(1 arrow.r 2)$)], $Gamma seq2 Delta$, $Gamma seq1 Delta$)),
+    prooftree(rule(name: [(Lift$""^1_2$)], $Gamma seq2 Delta$, $Gamma seq1 Delta$)),
+
     prooftree(rule(name: [($Box$L)], $Box A, Gamma seq2 Delta$, $A, Gamma seq2 Delta$)),
     prooftree(rule(
-      name: [(Lift$""^(2 arrow.r 3)$)],
+      name: [(Lift$""^2_3$)],
       $Box Gamma seq3 Box Delta$,
       $Box Gamma seq2 Box Delta$,
     )),
@@ -494,7 +494,6 @@ We have mechanized both of them.
   ),
   note: [
     Levels are implemented as elements of `Fin 2` and `Fin 3`, hence are numbered from $0$ in the mechanization: the levels $seq1$, $seq2$, and $seq3$ above correspond to `⟹[0]`, `⟹[1]`, and `⟹[2]` respectively.
-    The propositional rules, which are shared with $GentzenGL$ and are taken at an arbitrary level `l`, are abbreviated as `| ...`.
   ],
 )[
   ```
@@ -534,27 +533,7 @@ We have mechanized both of them.
   ```
 ]
 
-By construction, the level-$seq1$ fragment of both systems is exactly $GentzenGL$, and the levels $seq1$ and $seq2$ of $GentzenD$ are exactly $GentzenS$; these embeddings are mechanized as well, and are what lets the mechanization of $GentzenD$ reuse that of $GentzenS$.
-Cut elimination for both systems is proved semantically, as in @KK23 and @KKIM25; no syntactic cut-elimination algorithm is mechanized.
-
-#proposition[Cut elimination for $GentzenS$ @KK23 and for $GentzenD$ @KKIM25][
-  If $GentzenWithCutS proves Gamma seq2 Delta$, then $GentzenS proves Gamma seq2 Delta$.
-  If $GentzenWithCutD proves Gamma seq3 Delta$, then $GentzenD proves Gamma seq3 Delta$.
-] <prop:SD_cut_elimination>
-#leancode(links: (
-  ("ProvabilityLogic", "ProvabilityLogic/Gentzen/S/Kripke.lean"),
-  ("ProvabilityLogic", "ProvabilityLogic/Gentzen/D/Kripke.lean"),
-))[
-  ```
-  theorem LogicS.ProvableGentzen.of_with_cut {Γ Δ : FormulaFinset α}
-    (h : ⊢ᵍᶜ[S] (Γ ⟹[1] Δ)) : ⊢ᵍ[S] (Γ ⟹[1] Δ)
-
-  theorem LogicD.ProvableGentzen.of_with_cut {Γ Δ : FormulaFinset α}
-    (h : ⊢ᵍᶜ[D] (Γ ⟹[2] Δ)) : ⊢ᵍ[D] (Γ ⟹[2] Δ)
-  ```
-]
-
-Via the semantic characterizations and these calculi, we mechanized the following two propositions.
+By construction, the $seq1$-fragment of both systems is exactly $GentzenGL$, and the $seq1$ and $seq2$ fragments of $GentzenD$ are exactly $GentzenS$; these embeddings are mechanized as well, and are what lets the mechanization of $GentzenD$ reuse that of $GentzenS$.
 
 #proposition[cf. @Vis84][
   The following are equivalent.
@@ -581,6 +560,20 @@ Via the semantic characterizations and these calculi, we mechanized the followin
   ```
 ]
 
+#corollary[Cut elimination for $GentzenS$ @KK23][
+  If $GentzenWithCutS proves Gamma seq2 Delta$, then $GentzenS proves Gamma seq2 Delta$.
+] <prop:S_cut_elimination>
+#leancode(links: (
+  ("ProvabilityLogic", "ProvabilityLogic/Gentzen/S/Kripke.lean"),
+))[
+  ```
+  theorem LogicS.ProvableGentzen.of_with_cut {Γ Δ : FormulaFinset α}
+    (h : ⊢ᵍᶜ[S] (Γ ⟹[1] Δ)) : ⊢ᵍ[S] (Γ ⟹[1] Δ)
+  ```
+]
+
+Furthermore, we can also show the following: on boxdot-translated formulas, $LogicGL$ and $LogicS$ do not differ.
+
 #definition[Boxdot translation][
   The _boxdot translation_ $A^Boxdot$ of a formula $A$ is obtained by replacing every occurrence of $Box$ with $Boxdot$, i.e., it is defined recursively as follows.
   - $p^Boxdot = p$
@@ -599,9 +592,6 @@ Via the semantic characterizations and these calculi, we mechanized the followin
   ```
 ]
 
-On boxdot-translated formulas, $LogicGL$ and $LogicS$ do not differ.
-Our mechanized proof is semantic, via the tail model of @prop:S_characterization, and hence does not go through arithmetical completeness.
-
 #proposition[
   For every formula $A$, $LogicGL proves A^Boxdot$ if and only if $LogicS proves A^Boxdot$.
 ] <prop:boxdot_S_boxdot_GL>
@@ -612,7 +602,9 @@ Our mechanized proof is semantic, via the tail model of @prop:S_characterization
   ```
 ]
 
-#proposition[cf. @Bek90][
+Our mechanized proof is semantic, via the tail model of @prop:S_characterization, and hence does not go through arithmetical completeness.
+
+#proposition[cf. @Bek90 @KKIM25][
   The following are equivalent, where $prebox(X) = {B | Box B in X}$ for a set of formulas $X$.
 
   1. $LogicD proves A$
@@ -637,6 +629,20 @@ Our mechanized proof is semantic, via the tail model of @prop:S_characterization
       (M.toPseudoTail r o).root.1 ⊩[_] A,
     (⋀A.subfmlsD 🡒 A) ∈ LogicGL
   ].TFAE
+  ```
+]
+
+As a corollary, we obtain the cut elimination for $GentzenD$.
+
+#corollary[Cut elimination for $GentzenD$ @KKIM25][
+  If $GentzenWithCutD proves Gamma seq3 Delta$, then $GentzenD proves Gamma seq3 Delta$.
+] <prop:D_cut_elimination>
+#leancode(links: (
+  ("ProvabilityLogic", "ProvabilityLogic/Gentzen/D/Kripke.lean"),
+))[
+  ```
+  theorem LogicD.ProvableGentzen.of_with_cut {Γ Δ : FormulaFinset α}
+    (h : ⊢ᵍᶜ[D] (Γ ⟹[2] Δ)) : ⊢ᵍ[D] (Γ ⟹[2] Δ)
   ```
 ]
 
@@ -721,7 +727,7 @@ However, at present derivation trees of the sequent calculus cannot be construct
 Finally, we have also mechanized facts on the CIP of $LogicS$ and $LogicD$, which we briefly mention.
 
 #theorem[@Bek87 @Bek89][
-  $LogicS$ has the CIP. But $LogicD$ does not.
+  $LogicS$ has CIP. But $LogicD$ does not.
 ]
 #leancode(links: (
   ("ProvabilityLogic", "ProvabilityLogic/Logic/S/CIP.lean"),
