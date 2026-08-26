@@ -356,12 +356,12 @@ As the equivalence of these characterizations, we mechanized the following.
   6. $A$ is forced at every point of every finite $LogicGL$-model.
   7. $A$ is forced at the root of every rooted finite $LogicGL$-model.
   8. $A$ is forced at the root of every rooted finite $LogicGL$-model that is a tree.
-  9. $A$ is forced at every point of every finite $LogicGL$-model whose set of points is ${0, 1, dots.c, n - 1}$ for some $n >= 1$.
-  10. $A$ is forced at the root of every rooted finite $LogicGL$-model whose set of points is ${0, 1, dots.c, n - 1}$ for some $n >= 1$.
+  9. $A$ is forced at every point of every finite $LogicGL$-model whose set of points is ${0, 1, dots.c, n - 1}$ for any $n >= 1$.
+  10. $A$ is forced at the root of every rooted finite $LogicGL$-model whose set of points is ${0, 1, dots.c, n - 1}$ for any $n >= 1$.
 ] <thm:GL_TFAE>
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GL/Basic.lean"),))[
   ```
-  theorem LogicGL.provability_TFAE [DecidableEq α] {A : Formula α} : [
+  theorem LogicGL.provability_TFAE {α : Type u} [DecidableEq α] {A : Formula α} : [
     A ∈ LogicGL,
     ⊢ʰ[GL] A,
     ⊢ᵍ[GL] (∅ ⟹ {A}),
@@ -382,8 +382,10 @@ This is the usual Kripke completeness with respect to the class of finite $Logic
 However, the proof of the arithmetical completeness theorem described later requires not the mere Kripke completeness, but the completeness with respect to rooted models (7, and furthermore 8).
 The transformation of a rooted model into a tree model is done by the technique known as tree unraveling (cf. @CZ97[Theorem 3.18]).
 The equivalence of 3 and 4 corresponds to the cut-elimination theorem.
-Finally, 9 and 10 characterize provability by _concrete_ models, i.e., models whose set of points is ${0, 1, dots.c, n - 1}$, implemented as the type `Fin n`.
-These clauses are convenient for refuting $LogicGL proves A$: since 6--8 quantify over types `κ` of an arbitrary universe, a countermodel refutes them only after an explicit universe lifting, whereas by 9 and 10 it suffices to construct a single countermodel written directly over `Fin n`.
+The equivalence with 9 and 10 is provided for the sake of _concrete_ (or easy-to-define) countermodels.
+Due to universe issues, the models in the completeness clauses range over types `κ` in the same universe level as the one that `α` belongs to.
+Hence, to construct a countermodel, one would have to define it over a type lifted to the matching universe level, such as `PUnit` or `PLift (Fin n)` #footnote[https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#PLift].
+However, dealing with such universe issues every time is quite tedious, and it also clutters the definitions of countermodels; we thus prepared lemmas that internally dispose of the universe issues via a suitable type equivalence, so that countermodels can be constructed concretely over `Fin n`.
 
 Next, we introduce the modal logics $LogicS$ (due to Solovay @Sol76) and $LogicD$ (due to Japaridze (Dzhaparidze) @Jap86), which play important roles in provability logic.
 
