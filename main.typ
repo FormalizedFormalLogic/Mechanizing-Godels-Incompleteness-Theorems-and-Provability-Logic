@@ -254,10 +254,10 @@ The cut-elimination theorem for $GentzenWithCutGL$ is also mechanized.
   ```
 ]
 
-Here we note that this cut-elimination theorem is mechanized as a _semantic_ cut elimination, via the Kripke semantics explained below.
-In other words, we do not present a deterministic and computable syntactic cut-elimination algorithm (`def cutEliminationAlgorithm : ⊢ᵍᶜ[GL]! S → ⊢ᵍ[GL]! S`), such as the ones repeatedly discussed in @SV82 @GR12.
+Here we note that this cut-elimination theorem is mechanized as a semantical cut elimination, via the Kripke semantics explained below.
+In other words, we do not present a deterministic/computable/syntactic cut-elimination algorithm (`def cutEliminationAlgorithm : ⊢ᵍᶜ[GL]! S → ⊢ᵍ[GL]! S`), such as the ones repeatedly discussed in @SV82 @GR12.
 For the purpose of our mechanization, the cut rule is introduced to show the equivalence with the Hilbert-style system, i.e., for modus ponens, and it suffices that it can be eliminated; hence we put off a rigorous mechanization of such an algorithm.
-For a syntactic and computable cut-elimination algorithm for the sequent calculus of $LogicGL$, see, e.g., the mechanization in Rocq by Goré, Ramanayake, and Shillito @GRS21.
+For a syntactic cut-elimination algorithm for the sequent calculus of $LogicGL$, see, e.g., the mechanization in Rocq by Goré, Ramanayake, and Shillito @GRS21.
 
 Next, we introduce Kripke semantics.
 Since we are not concerned with modal logic in general, we omit the notion of frames and work only with models.
@@ -287,7 +287,7 @@ Since we are not concerned with modal logic in general, we omit the notion of fr
   note: [
     $W$ is given as an arbitrary nonempty type `κ`, and a model is implemented as a pair of a relation and a valuation.
     An advantage of taking the model `M` as an explicit argument of the forcing relation, as in `x ⊩[M] A`, is that the type of `x` (namely `M.World`) can be inferred from the notation.
-    Conversely, if `x` is already known to be a point of `M`, then `M` is determined by unification, and hence can be omitted as in `x ⊩[_] A`.
+    Conversely, if `x` is already inferred to be a world of `M`, then `M` is determined by unification, and hence can be omitted as in `x ⊩[_] A`.
   ],
 )[
   ```
