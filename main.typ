@@ -535,7 +535,7 @@ Kushida @Kus20 gave such a calculus for $LogicS$ with two levels of sequents, an
 
 By construction, the $seq1$-fragment of both systems is exactly $GentzenGL$, and the $seq1$ and $seq2$ fragments of $GentzenD$ are exactly $GentzenS$; these embeddings are mechanized as well, and are what lets the mechanization of $GentzenD$ reuse that of $GentzenS$.
 
-As for $GentzenGL$, we can prove the cut-elimination theorem for these systems semantically.
+As for $GentzenGL$, we can prove the cut-elimination theorem semantically.
 
 #theorem[Cut elimination for $GentzenS$ and $GentzenD$ @KK23 @KKIM25][
   - If $GentzenWithCutS proves Gamma seq2 Delta$, then $GentzenS proves Gamma seq2 Delta$.
@@ -554,7 +554,7 @@ As for $GentzenGL$, we can prove the cut-elimination theorem for these systems s
   ```
 ]
 
-With this result in hand, the characterizations of $LogicS$ and $LogicD$ can be stated as follows.
+With this result, the characterizations of $LogicS$ and $LogicD$ can be stated as follows.
 First, the following holds for $LogicS$.
 
 #proposition[cf. @Vis84][
