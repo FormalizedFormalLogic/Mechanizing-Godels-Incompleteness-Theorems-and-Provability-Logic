@@ -251,6 +251,8 @@ Since we are not concerned with modal logic in general, we omit the notion of fr
   ),
   note: [
     $W$ is given as an arbitrary nonempty type `κ`, and a model is implemented as a pair of a relation and a valuation.
+    An advantage of taking the model `M` as an explicit argument of the forcing relation, as in `x ⊩[M] A`, is that the type of `x` (namely `M.World`) can be inferred from the notation.
+    Conversely, if `x` is already known to be a point of `M`, then `M` is determined by unification, and hence can be omitted as in `x ⊩[_] A`.
   ],
 )[
   ```
@@ -549,21 +551,19 @@ We have also mechanized the fixed point theorem of $LogicGL$ via the sequent cal
   Suppose that $p$ is modalized in $A$.
   Then there exists a formula $D$ not containing $p$ and consisting only of propositional variables of $A$ such that
   $ LogicGL proves A[p := D] <-> D $
-  Moreover, the fixed point is unique up to provable equivalence:
-  for a propositional variable $q$ not occurring in $A$,
-  $ LogicGL proves Boxdot(A <-> p) land Boxdot(A[p := q] <-> q) limp (p <-> q) $
+  Moreover, such a fixed point is unique up to provable equivalence: for any formula $E$ such that $LogicGL proves A[p := E] <-> E$, we have $LogicGL proves D <-> E$.
 ] <thm:GL_fixpoint>
 #leancode(
   links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GL/Fixedpoint.lean"),),
+  note: [
+    The fresh propositional variable `q` serves only as a placeholder in the construction of the fixed point.
+  ],
 )[
   ```
   theorem LogicGL.fixpointTheorem
     (hpq : p ≠ q) (hA : A.ModalizedIn p) (hq : q ∉ A.atoms) :
     ∃ D : Formula α, D.atoms ⊆ A.atoms \ {p} ∧ ((A⟦p ↦ D⟧) 🡘 D) ∈ LogicGL ∧
       ∀ E : Formula α, ((A⟦p ↦ E⟧) 🡘 E) ∈ LogicGL → (D 🡘 E) ∈ LogicGL
-
-  theorem LogicGL.ProvableGentzen.fixpoint_uniqueness (hA : A.ModalizedIn p) :
-    ⊢ᵍ[GL] ({⊡(A 🡘 #p), ⊡((A⟦p ↦ #q⟧) 🡘 #q)} ⟹ {(#p : Formula α) 🡘 #q})
   ```
 ]
 
