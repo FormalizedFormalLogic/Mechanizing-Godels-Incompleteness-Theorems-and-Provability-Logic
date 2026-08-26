@@ -196,10 +196,22 @@ Our sequent calculus for #LogicGL is due to Sambin and Valentini @SV82.
       $Box A, Gamma, Box Gamma => A$,
     ))),
   ))
+
+  Moreover, the sequent calculus $GentzenWithCutGL$ is obtained from $GentzenGL$ by adding the following cut rule.
+
+  #align(center, prooftree(rule(
+    name: [(Cut)],
+    $Gamma_1, Gamma_2 => Delta_1, Delta_2$,
+    $Gamma_1 => A, Delta_1$,
+    $A, Gamma_2 => Delta_2$,
+  )))
 ]
-#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Gentzen/GL/Basic.lean"),))[
+#leancode(links: (
+  ("ProvabilityLogic", "ProvabilityLogic/Gentzen/Sequent.lean"),
+  ("ProvabilityLogic", "ProvabilityLogic/Gentzen/GL/Basic.lean"),
+))[
   ```
-  structure LogicGL.Sequent (α : Type u) where
+  structure Sequent (α : Type u) where
     ant : FormulaFinset α
     suc : FormulaFinset α
   infix:50 " ⟹ " => Sequent.mk
@@ -218,11 +230,34 @@ Our sequent calculus for #LogicGL is due to Sambin and Valentini @SV82.
 
   abbrev LogicGL.ProvableGentzen (S : Sequent α) : Prop := Nonempty (⊢ᵍ[GL]! S)
   notation:120 "⊢ᵍ[GL] " S:121 => LogicGL.ProvableGentzen S
+
+  inductive LogicGL.GentzenWithCutProof : Sequent α → Type u
+  | ...
+  | cut {Γ₁ Γ₂ Δ₁ Δ₂ A} : GentzenWithCutProof (Γ₁ ⟹ insert A Δ₁) → GentzenWithCutProof (insert A Γ₂ ⟹ Δ₂) →
+                          GentzenWithCutProof (Γ₁ ∪ Γ₂ ⟹ Δ₁ ∪ Δ₂)
+  notation:120 "⊢ᵍᶜ[GL]! " S:121 => LogicGL.GentzenWithCutProof S
+
+  abbrev LogicGL.GentzenWithCutProvable (S : Sequent α) : Prop := Nonempty (⊢ᵍᶜ[GL]! S)
+  notation:120 "⊢ᵍᶜ[GL] " S:121 => LogicGL.GentzenWithCutProvable S
   ```
 ]
 
-Note that this system contains no cut rule.
-We also define the system extended with the cut rule (`LogicGL.GentzenWithCutProvable`, denoted by `⊢ᵍᶜ[GL]` in the mechanization), and the equivalence corresponding to the cut-elimination theorem of Sambin and Valentini @SV82 is also mechanized as a part of @thm:GL_TFAE.
+Note that $GentzenGL$ itself contains no cut rule.
+The cut-elimination theorem for $GentzenWithCutGL$ is also mechanized.
+
+#theorem[Cut elimination for $GentzenGL$ @SV82 @Avr84][
+  If $GentzenWithCutGL proves Gamma => Delta$, then $GentzenGL proves Gamma => Delta$.
+] <thm:GL_cut_elimination>
+#leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Gentzen/GL/Kripke.lean"),))[
+  ```
+  theorem LogicGL.ProvableGentzen.of_with_cut {S : Sequent α} : ⊢ᵍᶜ[GL] S → ⊢ᵍ[GL] S
+  ```
+]
+
+Here we note that this cut-elimination theorem is mechanized as a semantical cut elimination, via the Kripke semantics explained below.
+In other words, we do not present a deterministic/computable/syntactic cut-elimination algorithm (`def cutEliminationAlgorithm : ⊢ᵍᶜ[GL]! S → ⊢ᵍ[GL]! S`), such as the ones repeatedly discussed in @SV82 @GR12.
+For the purpose of our mechanization, the cut rule is introduced to show the equivalence with the Hilbert-style system, i.e., for modus ponens, and it suffices that it can be eliminated; hence we put off a rigorous mechanization of such an algorithm.
+For a syntactic cut-elimination algorithm for the sequent calculus of $LogicGL$, see, e.g., the mechanization in Rocq by Goré, Ramanayake, and Shillito @GRS21.
 
 Next, we introduce Kripke semantics.
 Since we are not concerned with modal logic in general, we omit the notion of frames and work only with models.
@@ -251,6 +286,8 @@ Since we are not concerned with modal logic in general, we omit the notion of fr
   ),
   note: [
     $W$ is given as an arbitrary nonempty type `κ`, and a model is implemented as a pair of a relation and a valuation.
+    An advantage of taking the model `M` as an explicit argument of the forcing relation, as in `x ⊩[M] A`, is that the type of `x` (namely `M.World`) can be inferred from the notation.
+    Conversely, if `x` is already inferred to be a world of `M`, then `M` is determined by unification, and hence can be omitted as in `x ⊩[_] A`.
   ],
 )[
   ```
@@ -258,12 +295,12 @@ Since we are not concerned with modal logic in general, we omit the notion of fr
     Rel' : κ → κ → Prop
     Val' : κ → α → Prop
 
-  def Forces (x : M.World) : Formula α → Prop
+  def Model.World.Forces (M : Model κ α) (x : M.World) : Formula α → Prop
   | #a    => M x a
   | ⊥     => False
-  | A 🡒 B => Forces x A → Forces x B
-  | □A    => ∀ y, x ≺ y → Forces y A
-  infix:55 " ⊩ " => Forces
+  | A 🡒 B => Forces M x A → Forces M x B
+  | □A    => ∀ y, x ≺ y → Forces M y A
+  notation:55 x:56 " ⊩[" M "] " A:56 => Model.World.Forces M x A
 
   class IsGL (M : Model κ α) extends IsTrans _ M.Rel, IsConverseWellFounded _ M.Rel
 
@@ -354,18 +391,22 @@ As the equivalence of these characterizations, we mechanized the following.
   6. $A$ is forced at every point of every finite $LogicGL$-model.
   7. $A$ is forced at the root of every rooted finite $LogicGL$-model.
   8. $A$ is forced at the root of every rooted finite $LogicGL$-model that is a tree.
+  9. $A$ is forced at every point of every finite $LogicGL$-model whose set of points is ${0, 1, dots.c, n - 1}$ for any $n >= 1$.
+  10. $A$ is forced at the root of every rooted finite $LogicGL$-model whose set of points is ${0, 1, dots.c, n - 1}$ for any $n >= 1$.
 ] <thm:GL_TFAE>
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GL/Basic.lean"),))[
   ```
-  theorem LogicGL.provability_TFAE [DecidableEq α] {A : Formula α} : [
+  theorem LogicGL.provability_TFAE {α : Type u} [DecidableEq α] {A : Formula α} : [
     A ∈ LogicGL,
     ⊢ʰ[GL] A,
     ⊢ᵍ[GL] (∅ ⟹ {A}),
     ⊢ᵍᶜ[GL] (∅ ⟹ {A}),
-    ⊢ˡ (∅ ⸴ ∅ ⟹ˡ {(0 : LabelledGentzen.Label) ∶ A}),
+    ⊢ˡᵍ[GL] (∅ ⸴ ∅ ⟹ˡ {(0 : Label) ∶ A}),
     ∀ {κ : Type u}, [Nonempty κ] → ∀ M : Model κ α, [M.IsFiniteGL] → M ⊧ A,
-    ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGL] → M.root.1 ⊩ A,
-    ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGLTree] → M.root.1 ⊩ A
+    ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGL] → M.root.1 ⊩[_] A,
+    ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGLTree] → M.root.1 ⊩[_] A,
+    ∀ (n : ℕ) [NeZero n] (M : Model (Fin n) α), [M.IsFiniteGL] → M ⊧ A,
+    ∀ (n : ℕ) [NeZero n] (M : RootedModel (Fin n) α), [M.IsFiniteGL] → M.root.1 ⊩[_] A
   ].TFAE
   ```
 ]
@@ -375,7 +416,12 @@ The Kripke completeness of $LogicGL$ (the equivalence of 1 and 6) is due to Sege
 This is the usual Kripke completeness with respect to the class of finite $LogicGL$-models, and has already been mechanized in HOL Light by Maggesi and Perini Brogi @MPB21 @MPB23.
 However, the proof of the arithmetical completeness theorem described later requires not the mere Kripke completeness, but the completeness with respect to rooted models (7, and furthermore 8).
 The transformation of a rooted model into a tree model is done by the technique known as tree unraveling (cf. @CZ97[Theorem 3.18]).
-The equivalence of 3 and 4 corresponds to the cut-elimination theorem.
+The equivalence of 3 and 4 is the special case of the cut-elimination theorem (@thm:GL_cut_elimination) for sequents of the form $=> A$.
+The equivalence with 9 and 10 is provided for the sake of _concrete_ (or useful) countermodels.
+Due to universe issues, the models in the completeness clauses range over types `κ` in the same universe level as the one that `α` belongs to.
+Hence, to construct a countermodel, one would have to define it over a type lifted to the matching universe level, such as `PUnit` or `PLift (Fin n)` #footnote[https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#PLift].
+However, dealing with such universe issues every time is quite tedious.
+Thus we prepared some lemmas that internally dispose of the universe issues via a suitable type equivalence, so that countermodels can be constructed concretely over `Fin n`.
 
 Next, we introduce the modal logics $LogicS$ (due to Solovay @Sol76) and $LogicD$ (due to Japaridze (Dzhaparidze) @Jap86), which play important roles in provability logic.
 
@@ -430,9 +476,9 @@ We omit the details of these constructions; via these semantic characterizations
   theorem LogicS.provability_TFAE [DecidableEq α] : [
     A ∈ LogicS,
     ∀ {κ : Type u}, [Nonempty κ] → ∀ (M : Model κ α), [M.IsFiniteGL] → ∀ (tail : M.World),
-      ∃ k : ℕ, ∀ n : ℕ, k ≤ n → Forces (M := (M.toTail tail).toModel) (toTail.chainPoint n) A,
+      ∃ k : ℕ, ∀ n : ℕ, k ≤ n → toTail.chainPoint n ⊩[(M.toTail tail).toModel] A,
     ∀ {κ : Type u}, [Nonempty κ] → ∀ (M : RootedModel κ α), [M.IsFiniteGL] →
-      M.root.1 ⊩ (⋀A.subfmlsS 🡒 A),
+      M.root.1 ⊩[_] (⋀A.subfmlsS 🡒 A),
     (⋀A.subfmlsS 🡒 A) ∈ LogicGL,
     ⊢ᵍ[S] (∅ ⟹[1] {A})
   ].TFAE
@@ -483,9 +529,9 @@ Our mechanized proof is semantic, via the tail model of @prop:S_characterization
   theorem LogicD.provability_TFAE [DecidableEq α] : [
     A ∈ LogicD,
     ∀ {κ : Type u}, [Nonempty κ] → ∀ (M : Model κ α), [M.IsFiniteGL] → ∀ r o,
-      (M.toPseudoTail r o).root.1 ⊩ A,
+      (M.toPseudoTail r o).root.1 ⊩[_] A,
     ∀ {κ : Type u}, [Nonempty κ] → ∀ (M : RootedModel κ α), [M.IsFiniteGL] →
-      M.root.1 ⊩ (⋀A.subfmlsD 🡒 A),
+      M.root.1 ⊩[_] (⋀A.subfmlsD 🡒 A),
     (⋀A.subfmlsD 🡒 A) ∈ LogicGL
   ].TFAE
   ```
@@ -549,20 +595,19 @@ We have also mechanized the fixed point theorem of $LogicGL$ via the sequent cal
   Suppose that $p$ is modalized in $A$.
   Then there exists a formula $D$ not containing $p$ and consisting only of propositional variables of $A$ such that
   $ LogicGL proves A[p := D] <-> D $
-  Moreover, the fixed point is unique up to provable equivalence:
-  for a propositional variable $q$ not occurring in $A$,
-  $ LogicGL proves Boxdot(A <-> p) land Boxdot(A[p := q] <-> q) limp (p <-> q) $
+  Moreover, such a fixed point is unique up to provable equivalence: for any formula $E$ such that $LogicGL proves A[p := E] <-> E$, we have $LogicGL proves D <-> E$.
 ] <thm:GL_fixpoint>
 #leancode(
   links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GL/Fixedpoint.lean"),),
+  note: [
+    The fresh propositional variable `q` serves only as a placeholder in the construction of the fixed point.
+  ],
 )[
   ```
-  theorem LogicGL.fixpointTheorem {A : Formula α} {p q : α}
+  theorem LogicGL.fixpointTheorem
     (hpq : p ≠ q) (hA : A.ModalizedIn p) (hq : q ∉ A.atoms) :
-    ∃ D : Formula α, D.atoms ⊆ A.atoms \ {p} ∧ ((A⟦p ↦ D⟧) 🡘 D) ∈ LogicGL
-
-  theorem LogicGL.ProvableGentzen.fixpoint_uniqueness (hA : A.ModalizedIn p) :
-    ⊢ᵍ[GL] ({⊡(A 🡘 #p), ⊡((A⟦p ↦ #q⟧) 🡘 #q)} ⟹ {(#p : Formula α) 🡘 #q})
+    ∃ D : Formula α, D.atoms ⊆ A.atoms \ {p} ∧ ((A⟦p ↦ D⟧) 🡘 D) ∈ LogicGL ∧
+      ∀ E : Formula α, ((A⟦p ↦ E⟧) 🡘 E) ∈ LogicGL → (D 🡘 E) ∈ LogicGL
   ```
 ]
 
@@ -775,7 +820,7 @@ For the details, see @Bek90 @AB05.
   ```
   def trace (A : Formula α) : Set ℕ := { n |
     ∃ κ : Type u, ∃ _ : Nonempty κ, ∃ M : RootedModel κ α, ∃ _ : Fintype M.World, ∃ _ : M.IsGL,
-    (M.height = n ∧ M.root.1 ⊮ A) }
+    (M.height = n ∧ M.root.1 ⊮[_] A) }
 
   abbrev Logic.trace (L : Logic α) : Set ℕ := ⋃ A ∈ L, A.trace
   ```
@@ -1060,7 +1105,7 @@ We mechanized the finite model property of $LogicGrz$ with respect to the Kripke
     ⊢ᵍ[Grz] (∅ ⟹ {A}),
     ⊢ᵍᶜ[Grz] (∅ ⟹ {A}),
     ∀ {κ : Type u}, [Nonempty κ] → ∀ M : Model κ α, [M.IsFiniteGrz] → M ⊧ A,
-    ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGrz] → M.root.1 ⊩ A
+    ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGrz] → M.root.1 ⊩[_] A
   ].TFAE
   ```
 ]
@@ -1217,7 +1262,7 @@ For these characterizations, equivalences analogous to those for #LogicGL hold.
     A ∈ LogicGLPoint3,
     ⊢ᵍ[GLPoint3] (∅ ⟹ {A}),
     ∀ {κ : Type u}, [Nonempty κ] → ∀ M : Model κ α, [M.IsFiniteGLPoint3] → M ⊧ A,
-    ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGLPoint3] → M.root.1 ⊩ A
+    ∀ {κ : Type u}, [Nonempty κ] → ∀ M : RootedModel κ α, [M.IsFiniteGLPoint3] → M.root.1 ⊩[_] A
   ].TFAE
   ```
 ]
