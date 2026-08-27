@@ -93,8 +93,8 @@
 #let height(T) = $upright("hgt")(#T)$
 
 #let GoedelNum(x) = $corner.l #x corner.r$
-#let True(x) = $upright("True")(#x)$
-#let TruePartial(Gamma, x) = $upright("True")_(#Gamma) (#x)$
+#let True(x) = $sans("True")(#x)$
+#let TruePartial(Gamma, x) = $sans("True")_(#Gamma) (#x)$
 #let ProvLogic(T, U) = $upright("PL")_(#T) (#U)$
 
 #let Theory(T) = $sans(upright(#T))$
