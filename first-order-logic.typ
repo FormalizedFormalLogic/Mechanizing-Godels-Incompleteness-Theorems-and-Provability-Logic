@@ -758,54 +758,7 @@ $Sigma_1$-soundnessおよび$Delta_1$-definabilityを各々の理論において
   $ISigma1$ および $PeanoArithmetic$ は $Sigma_1$-soundであり，故に無矛盾である．
 ]
 
-Foundationにおいて，理論 $T$ が $Sigma_1$-soundであることは，「$T$ から証明可能な任意の $Sigma_1$-文は標準モデル $Nat$ で真である」ことを表す型クラス `ArithmeticTheory.SoundOnHierarchy 𝚺 1` として定式化されている．
-標準モデル $Nat$ をモデルに持つ理論は任意の論理式クラス上でsoundであるというインスタンスが与えられているので，$ISigma1$ および $PeanoArithmetic$ の $Sigma_1$-soundnessは，$Nat$ がこれらの理論のモデルであるという事実から直ちに従う．
-無矛盾性も $Sigma_1$-soundnessからインスタンスとして導出される．
-
-#leancode(
-  links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Arithmetic/Basic/Model.lean#L92",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Arithmetic/Basic/Hierarchy.lean#L476",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Arithmetic/Basic/Model.lean#L99",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Arithmetic/Schemata.lean#L383",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Arithmetic/Schemata.lean#L385",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Arithmetic/Basic/Hierarchy.lean#L481",
-    ),
-  ),
-)[
-  ```
-  class ArithmeticTheory.SoundOn (T : ArithmeticTheory) (F : ArithmeticSentence → Prop) where
-    sound : ∀ {σ}, T ⊢ σ → F σ → ℕ↓[ℒₒᵣ] ⊧ σ
-
-  abbrev ArithmeticTheory.SoundOnHierarchy (T : ArithmeticTheory) (Γ : Polarity) (k : ℕ) :=
-    T.SoundOn (Arithmetic.Hierarchy Γ k)
-
-  instance [ℕ↓[ℒₒᵣ] ⊧* T] : T.SoundOn F
-
-  instance models_ISigmaOne : ℕ↓[ℒₒᵣ] ⊧* 𝗜𝚺₁
-
-  instance models_Peano : ℕ↓[ℒₒᵣ] ⊧* 𝗣𝗔
-
-  instance (T : ArithmeticTheory) [T.SoundOnHierarchy 𝚺 1] : Entailment.Consistent T
-  ```
-]
+// TODO: code for Sigma_1-soundness of ISigma1 and PeanoArithmetic
 
 #proposition[
   $ISigma1$ および $PeanoArithmetic$ は $Delta_1$-definableである．
@@ -880,13 +833,10 @@ However, this fact has not been mechanized yet.
 We mention that, consequently, several statements of provability logic that are proved by using partial truth predicates have not been mechanized so far.
 We will discuss this point further in @subsect:remaining_sorry_in_provlogic.
 
-=== Church's undecidability theorem
+=== Undecidability of First-Order Logic
 
-述語論理の決定不能性，すなわちEntscheidungsproblemの否定的解決は，Church @Chu36a に由来する．
-Churchはまず，$lambda$-計算に基づく計算可能性の定式化のもとで，算術のある体系の決定不能性を示し @Chu36 ，その系として述語論理そのものの決定不能性を導いた @Chu36a #footnote[同年にTuringもTuring機械による定式化のもとで独立に同じ結論を得ている．]．
-本projectで形式化されているのは，これらの現代的な定式化である．
-
-Mathlibにおいて(Leanのメタでの)述語が計算可能であるとは `ComputablePred` によって定義されている (cf: @Carneiro2019)．
+述語論理の決定不能性について述べておく．
+まず，Mathlibにおいて(Leanのメタでの)述語が計算可能であるとは `ComputablePred` によって定義されている (cf: @Carneiro2019)．
 この定義は定義域および値域の型が `PrimCodable` （自然数によるエンコーディング・デコーディングが原始再帰的に計算可能）であることが要請される．
 我々の算術の論理式全体の型などは適当なエンコーディングによって `PrimCodable` であることを示すことが出来るので，例えば，理論 $T$ から証明できる文全体の集合 $upright("Thm")(T)$ が計算可能かどうかなどを議論することが出来る．
 これらを踏まえて，まず，次の補題が形式化される．
@@ -901,9 +851,9 @@ Mathlibにおいて(Leanのメタでの)述語が計算可能であるとは `Co
 ]
 
 特に，この $T$ として $PeanoArithmetic$ の有限なフラグメントとなる理論 $PeanoArithmeticMinus$ を取ると，これは $Sigma_1$-健全であって，更に $R0$ よりも強い．更に有限性より $PeanoArithmeticMinus$ の全ての公理の連言を有限の論理式で取ることが出来て，演繹定理を用いる事ができる．
-これらの事実より，Churchによる算術の言語上の1階述語論理の計算不可能性を示すことが出来る．
+これらの事実より，算術の言語上の1階述語論理の計算不可能性を示すことが出来る．
 
-#proposition[Church's undecidability theorem @Chu36a][
+#proposition[Undecidability of First-Order Logic][
   言語 $LOR$ 上の一階述語論理は計算可能ではない．
   つまり，$LOR$-文 $sigma$ について，$emptyset proves sigma$ または $emptyset nproves sigma$ であるかは判定出来ない．
 ]
