@@ -696,11 +696,11 @@ Using the tools developed so far, we have also proved several theorems related t
 === Löb's Theorem
 
 Instantiating the abstract version stated in @prop:abstract_Löb, we immediately obtain the concrete Löb's theorem.
-As a related work, we mention that Löb's theorem has been mechanized by Bailitis on top of Paulson's mechanization of the incompleteness theorems in Isabelle (see @PB13[Chapter 13]).
+As a related work, we mention that Löb's theorem has been mechanized by Bailitis on Paulson's mechanization of the incompleteness theorems in Isabelle (see @AFP-Incompleteness[Chapter 13]).
 
 #theorem[Löb's theorem and formalized Löb's theorem][
-  - Let $T supset.eq ISigma1$ be a $Delta_1$ arithmetical theory and let $sigma$ be any sentence. If $T proves Pr(T)(GoedelNum(sigma)) -> sigma$, then $T proves sigma$.
-  - $ISigma1 proves Pr(T)(GoedelNum(Pr(T)(GoedelNum(sigma)) -> sigma)) -> Pr(T)(GoedelNum(sigma))$ for any $sigma$.
+  / Löb's theorem: Let $T supset.eq ISigma1$ be a $Delta_1$ arithmetical theory and let $sigma$ be any sentence. If $T proves Pr(T)(GoedelNum(sigma)) -> sigma$, then $T proves sigma$.
+  / Formalized Löb's theorem: $ISigma1 proves Pr(T)(GoedelNum(Pr(T)(GoedelNum(sigma)) -> sigma)) -> Pr(T)(GoedelNum(sigma))$ for any $sigma$.
 ]
 
 #leancode()[
@@ -716,7 +716,7 @@ As a related work, we mention that Löb's theorem has been mechanized by Bailiti
 === Gödel-Rosser First Incompleteness Theorem
 
 In the setting of @thm:G1, the theory $T$ was required to be $Sigma_1$-sound.
-By instantiating @prop:abstract_GR, we can prove the Gödel-Rosser incompleteness theorem, which weakens this requirement to mere consistency.
+By instantiating @prop:abstract_GR, we can prove the Gödel-Rosser incompleteness theorem @Ros36, which weakens this requirement to mere consistency.
 
 #leancode(
   note: [
@@ -728,8 +728,8 @@ By instantiating @prop:abstract_GR, we can prove the Gödel-Rosser incompletenes
   ```
 ]
 
-The proof requires actually constructing a provability satisfying $bold("Ros")$, which is achieved by the technique of witness comparison (see @HP16 @Lin97).
-We omit the implementation here.
+The proof requires actually constructing a provability satisfying $bold("Ros")$.
+It can be achieved by the means called _witness comparison_ (see @HP16 @Lin97), but we omit the implementation here.
 
 === Jeroslow's Second Incompleteness Theorem
 
@@ -853,7 +853,7 @@ We will discuss this point further in @subsect:remaining_sorry_in_provlogic.
 
 We now discuss the undecidability of first-order logic.
 First, in Mathlib, computability of a predicate (at the meta level of Lean) is defined by `ComputablePred` (cf. @Car19).
-This definition requires that the types of the domain and the codomain are `Primcodable`, that is, encoding into and decoding from natural numbers are primitive recursively computable.
+This definition requires that the types of the domain and the range are `Primcodable` #footnote[That is, encoding into and decoding from natural numbers are primitive recursive.].
 Since the type of formulas of our arithmetic can be shown to be `Primcodable` via a suitable encoding, we can discuss, for example, whether the set $upright("Thm")(T)$ of sentences provable from a theory $T$ is computable.
 With these preparations, the following lemma is mechanized.
 
