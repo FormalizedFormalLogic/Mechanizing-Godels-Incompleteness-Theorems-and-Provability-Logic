@@ -79,8 +79,19 @@
 #let GentzenGLPoint3 = Gentzen(LogicGLPoint3)
 #let GentzenGrz = Gentzen(LogicGrz)
 
+#let GentzenS = Gentzen(LogicS)
+#let GentzenD = Gentzen(LogicD)
+
 #let GentzenWithCutGL = $Gentzen(LogicGL) + ("Cut")$
 #let GentzenWithCutGrz = $Gentzen(LogicGrz) + ("Cut")$
+#let GentzenWithCutS = $Gentzen(LogicS) + ("Cut")$
+#let GentzenWithCutD = $Gentzen(LogicD) + ("Cut")$
+
+// Levelled sequent arrows of the sequent calculi for S and D
+#let seq(l) = $attach(tr: #l, =>)$
+#let seq1 = seq("1")
+#let seq2 = seq("2")
+#let seq3 = seq("3")
 
 #let Hilbert(L) = $cal("H")_(#L)$
 #let HilbertGL = Hilbert(LogicGL)
@@ -117,6 +128,9 @@
 #let Robinson = $sans("Q")$
 #let R0 = $sans("R"_0)$
 #let Con(T) = $sans("Con")_(#T)$
+
+#let Bew = $class("unary", frak("B"))$
+#let Wid = $class("unary", frak("W"))$
 
 #let sepWithCommaMath(..args) = args.pos().join[,]
 

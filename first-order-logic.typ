@@ -361,6 +361,334 @@ Finally, the second incompleteness theorem follows by the usual argument from th
   ```
 ]
 
+== Provability abstraction <subsect:provability_abstraction>
+
+Working directly with a raw provability predicate is technically cumbersome.
+We therefore introduce the notion of _provability abstraction_, an abstraction of the provability predicate.
+This notion is closely related to provability logic, which treats provability as a modality (see @sect:provability_logic).
+With these abstractions, the incompleteness theorems can be mechanized abstractly, by purely syntactic manipulations.
+Concretely constructing a "provability" satisfying the abstract derivability conditions then immediately yields the concrete statements of the incompleteness theorems.
+Mechanizing the incompleteness theorems via such an abstract provability has previously been studied by Popescu and Traytel @PT19 @PT21.
+
+#definition[Provability abstraction][
+  Suppose that the language $cal(L)$ admits a Gödel numbering in the language $cal(L)_0$.
+  For an $cal(L)_0$-theory $T_0$ and an $cal(L)$-theory $T$, a unary $cal(L)_0$-semisentence $Bew(x)$ is called a _provability_ of $T_0, T$ if the following holds for every $cal(L)$-sentence $sigma$.
+  $
+    T proves sigma ==> T_0 proves Bew(GoedelNum(sigma))
+  $
+  That is, $Bew(x)$ is required to satisfy at least the derivability condition $bold("D1")$.
+  In what follows, we simply write $Bew sigma$ for $Bew(GoedelNum(sigma))$.
+  We further define the following properties, where $sigma$ and $pi$ range over $cal(L)$-sentences.
+  The conditions $bold("D3")$ and $bold("Kre")$ are defined only when $T_0$ and $T$ are theories in the same language, i.e., when $cal(L)_0 = cal(L)$.
+
+  - $bold("D2")$: $T_0 proves Bew (sigma -> pi) -> Bew sigma -> Bew pi$.
+  - $bold("D3")$: $T_0 proves Bew sigma -> Bew Bew sigma$.
+  - $bold("Kre")$: $T proves Bew sigma ==> T proves sigma$.
+  - $bold("Ros")$: $T proves not sigma ==> T_0 proves not Bew sigma$.
+  // - $bold("FC")$ (on an $cal(L)$-sentence $sigma$): $T_0 proves sigma -> Bew sigma$.
+  // - $bold("S")$ (on an $L_0$-structure $M$) : $M models Bew sigma ==> T proves sigma$.
+]
+
+#leancode[
+  ```
+  structure Provability [L.ReferenceableBy L₀] (T₀ : Theory L₀) (T : Theory L) where
+    prov : Semisentence L₀ 1
+    bew_def {σ : Sentence L} : T ⊢ σ → T₀ ⊢ prov/[⌜σ⌝]
+
+  variable {L₀ L : Language} [L.ReferenceableBy L₀] {T₀ : Theory L₀} {T : Theory L}
+
+  @[coe] def pr (𝔅 : Provability T₀ T) (σ : Sentence L) : Sentence L₀ := 𝔅.prov/[⌜σ⌝]
+  instance : CoeFun (Provability T₀ T) (fun _ ↦ Sentence L → Sentence L₀) := ⟨pr⟩
+
+  class HBL2 [L.ReferenceableBy L₀] {T₀ : Theory L₀} {T : Theory L} (𝔅 : Provability T₀ T) where
+    D2 {σ τ : Sentence L} : T₀ ⊢ 𝔅 (σ 🡒 τ) 🡒 𝔅 σ 🡒 𝔅 τ
+
+  class HBL3 [L.ReferenceableBy L] {T₀ T : Theory L} (𝔅 : Provability T₀ T) where
+    D3 {σ : Sentence L} : T₀ ⊢ 𝔅 σ 🡒 𝔅 (𝔅 σ)
+
+  class Kreisel [L.ReferenceableBy L] {T₀ T : Theory L} (𝔅 : Provability T₀ T) where
+    KR {σ : Sentence L} : T ⊢ 𝔅 σ → T ⊢ σ
+
+  class Rosser [L.ReferenceableBy L₀] {T₀ : Theory L₀} {T : Theory L} (𝔅 : Provability T₀ T) where
+    Ros {σ : Sentence L} : T ⊢ ∼σ → T₀ ⊢ ∼𝔅 σ
+  ```
+]
+
+The standard provability $Bew_T$, constructed later in the standard way, satisfies $bold("D2")$ and $bold("D3")$.
+The provability logic discussed in @sect:provability_logic is developed mainly in terms of the standard provability.
+The condition $bold("Kre")$ is a derivability condition introduced by Visser @Vis21 under the name _Kreisel's condition_ #footnote[Visser attributes the origin of this condition to @Kre54. To be precise, Visser required both directions.].
+Our motivation for this abstraction is to formalize the arguments in a purely syntactic way, without involving models or structures.
+Anticipating the later construction, the standard $Bew$ that we actually construct is a $Sigma_1$-predicate, so the condition $bold("Kre")$ can be regarded as a purely syntactic counterpart of the $Sigma_1$-soundness and $Sigma_1$-completeness of $T$.
+
+In fact, abstracting provability alone does not suffice: we also need to abstract the diagonalizability of a theory.
+
+#definition[Diagonalization abstraction][
+  Suppose that the language $cal(L)$ admits a Gödel numbering in $cal(L)$ itself.
+  An $cal(L)$-theory $T$ is called _diagonalizable_ if one can construct a map $upright("fixpoint")_T$, sending an $cal(L)$-semisentence to an $cal(L)$-sentence,
+  such that $T proves upright("fixpoint")_T (theta) <-> theta (GoedelNum(upright("fixpoint")_T (theta)))$ for any $cal(L)$-semisentence $theta$. We call $upright("fixpoint")_T (theta)$ the _fixed point_ of $theta$.
+
+  Let $T_0, T$ be $cal(L)$-theories such that $T_0$ is diagonalizable, and let $Bew$ be a provability of $T_0, T$. Then the fixed point of $not Bew (x)$ is called the _Gödel sentence_ and is denoted by $upright("G")_Bew$.
+]
+
+#leancode[
+  ```
+  class Diagonalization [L.ReferenceableBy L] (T : Theory L) where
+    fixedpoint : Semisentence L 1 → Sentence L
+    diag (θ) : T ⊢ fixedpoint θ 🡘 θ/[⌜fixedpoint θ⌝]
+
+  variable {L : Language} [L.ReferenceableBy L] {T₀ T : Theory L} [Diagonalization T₀]
+
+  def gödel (𝔅 : Provability T₀ T) : Sentence L := fixedpoint T₀ “x. ¬!𝔅.prov x”
+  ```
+]
+
+With these tools at hand, the incompleteness theorems and their corollaries can be proved by syntactic manipulations alone.
+In what follows, let $T_0 subset.eq T$ be $cal(L)$-theories such that $T_0$ is diagonalizable and $T$ is consistent,
+and let $Bew$ be a $T_0, T$-provability.
+The first incompleteness theorem is proved as follows.
+
+#proposition[Abstract version of G1][
+  1. $T nproves upright("G")_Bew$.
+  2. If $Bew$ satisfies $bold("Kre")$, then $T nproves not upright("G")_Bew$. Hence $upright("G")_Bew$ is independent of $T$, and therefore $T$ is incomplete.
+] <prop:abstract_G1>
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean#L194",
+    ),
+  ),
+)[
+  ```
+  variable {L : Language} [L.ReferenceableBy L] [L.DecidableEq]
+  variable {T₀ T : Theory L} [Diagonalization T₀] [T₀ ⪯ T] [Consistent T]
+  variable {𝔅 : Provability T₀ T}
+
+  theorem unprovable_gödel : T ⊬ (gödel 𝔅)
+
+  theorem unrefutable_gödel [𝔅.Kreisel] : T ⊬ ∼(gödel 𝔅)
+
+  theorem gödel_independent [𝔅.Kreisel] : Independent T (gödel 𝔅)
+
+  theorem first_incompleteness [𝔅.Kreisel] : Incomplete T
+  ```
+]
+
+The second incompleteness theorem can likewise be mechanized.
+
+#proposition[Abstract version of G2][
+  Assume that $Bew$ satisfies $bold("D2")$ and $bold("D3")$.
+  The sentence $not Bew bot$ is a natural expression of consistency; we denote it by $upright("Con")_Bew$.
+  Then the following hold.
+  1. $T nproves upright("Con")_Bew$.
+  2. If $Bew$ satisfies $bold("Kre")$, then $T nproves not upright("Con")_Bew$. Hence $upright("Con")_Bew$ is also independent of $T$.
+] <prop:abstract_G2>
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean#L35",
+    ),
+  ),
+)[
+  ```
+  variable {L₀ L : Language} [L.ReferenceableBy L₀] {T₀ : Theory L₀} {T : Theory L}
+
+  def con (𝔅 : Provability T₀ T) : Sentence L₀ := ∼𝔅 ⊥
+
+  variable {L : Language} [L.ReferenceableBy L] [L.DecidableEq]
+  variable {T₀ T : Theory L} [Diagonalization T₀] [T₀ ⪯ T]
+  variable {𝔅 : Provability T₀ T} [𝔅.HBL]
+
+  theorem con_unprovable [Consistent T] : T ⊬ 𝔅.con
+
+  theorem con_unrefutable [Consistent T] [𝔅.Kreisel] : T ⊬ ∼𝔅.con
+
+  theorem con_independent [Consistent T] [𝔅.Kreisel] : Independent T 𝔅.con
+  ```
+]
+
+There is, however, a view that $upright("Con")_Bew$ is not the only natural expression of consistency.
+Variants of G2 arising from this view are discussed later.
+
+As further results, we can also mechanize Löb's theorem and the formalized Löb's theorem.
+
+#proposition[Abstract version of Löb's Theorem][
+  Assume that $Bew$ satisfies $bold("D2")$ and $bold("D3")$. Then the following hold,
+  where $sigma$ is an arbitrary $cal(L)$-sentence.
+
+  / Löb's theorem: If $T proves Bew sigma -> sigma$, then $T proves sigma$.
+  / Formalized Löb's theorem: $T_0 proves Bew (Bew sigma -> sigma) -> Bew sigma$.
+]
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean#L286",
+    ),
+  ),
+)[
+  ```
+  variable {L : Language} [L.ReferenceableBy L] [L.DecidableEq]
+  variable {T₀ T : Theory L} [Diagonalization T₀] [T₀ ⪯ T]
+  variable {𝔅 : Provability T₀ T} [𝔅.HBL]
+
+  theorem löb_theorem {σ : Sentence L}　(H : T ⊢ 𝔅 σ 🡒 σ) : T ⊢ σ
+
+  theorem formalized_löb_theorem {σ : Sentence L} : T₀ ⊢ 𝔅 (𝔅 σ 🡒 σ) 🡒 𝔅 σ
+  ```
+]
+
+Note that $bold("D1"), bold("D2"), bold("D3")$ and the formalized Löb's theorem correspond roughly to the necessitation rule and the axioms $AxiomK$, $Axiom("4")$, and $Axiom("L")$ of modal logic, respectively.
+This yields the observation that arithmetical soundness holds for the standard provability $Bew_T$.
+
+In view of the reason we gave for introducing $bold("Kre")$ into the abstraction, requiring $bold("Kre")$ in the abstract G1 of @prop:abstract_G1 amounts, roughly speaking, to requiring the $Sigma_1$-soundness of $T$.
+If we instead impose on $Bew$ the condition $bold("Ros")$, then the abstract G1 can be proved assuming only that $T$ is consistent.
+This is precisely an abstraction of the incompleteness theorem as improved by Rosser @Ros36.
+
+#proposition[Abstract version of Gödel-Rosser theorem][
+  Assume that $Bew$ satisfies $bold("Ros")$.
+  In this case, the Gödel sentence for this $Bew$ is called the _Rosser sentence_, denoted by $upright("R")_Bew$.
+  Then $T nproves upright("R")_Bew$ and $T nproves not upright("R")_Bew$.
+  That is, $upright("R")_Bew$ is independent of $T$; note in particular that $bold("Kre")$ is not required for the latter.
+  On the other hand, for the consistency statement $upright("Con")_Bew$ given by this $Bew$, we have $T proves upright("Con")_Bew$ #footnote[In the Japanese mathematical logic community, this is often called _Kreisel's remark_.].
+]
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean#L323",
+    ),
+  ),
+)[
+  ```
+  variable {L : Language} [L.ReferenceableBy L]
+  variable {T₀ T : Theory L} [Diagonalization T₀] [T₀ ⪯ T] [Consistent T]
+  variable {𝔅 : Provability T₀ T} [𝔅.Rosser]
+
+  theorem unrefutable_rosser : T ⊬ ∼(gödel 𝔅)
+
+  theorem rosser_independent : Independent T (gödel 𝔅)
+
+  theorem rosser_first_incompleteness (𝔅 : Provability T₀ T) : Incomplete T
+
+  theorem kreisel_remark : T ⊢ 𝔅.con
+  ```
+]
+
+Indeed, the concrete statement of the Gödel-Rosser theorem given later, obtained by instantiating this abstraction, does not require $Sigma_1$-soundness.
+
+We next describe refutability (_Widerlegbar_) $Wid$.
+Concerning G2, formal consistency can be expressed in ways other than the formalized consistency $not Bew bot$ introduced in @prop:abstract_G2.
+For instance, the statement "no sentence is both provable and refutable" may also be regarded as a natural expression of consistency.
+The version of G2 obtained by formalizing this consistency is usually attributed to Jeroslow @Jer73 #footnote[See, e.g., Kurahashi @Kur20 for how subtle differences in the required conditions, and various versions of the statement of G2, arise depending on how consistency is formalized.].
+A naive attempt to formalize Jeroslow's G2 on top of the provability abstraction, however, becomes slightly cumbersome if only $Bew$ is available.
+The reason is that $Bew$ is in fact an arithmetical predicate taking the Gödel number of a formula: dealing with refutability, that is, with negated sentences, would force us to handle a "function" computing the Gödel number of $not sigma$ from that of $sigma$, and such a function is awkward to accommodate within the provability abstraction.
+We therefore abstract refutability itself, rather than a function computing the Gödel number of a negation.
+This allows us to formalize Jeroslow's G2 concisely.
+
+#definition[Refutability abstraction][
+  For an $cal(L)_0$-theory $T_0$ and an $cal(L)$-theory $T$, a unary $cal(L)_0$-semisentence $Wid(x)$ is called a _refutability_ of $T_0, T$ if the following holds for every $cal(L)$-sentence $sigma$.
+  $
+    T proves not sigma ==> T_0 proves Wid(GoedelNum(sigma))
+  $
+
+  As with $Bew$, we abbreviate $Wid(GoedelNum(sigma))$ as $Wid sigma$.
+  We say that $Wid$ is _sound on_ an $cal(L)$-sentence $sigma$ if $T proves Wid sigma ==> T proves not sigma$.
+
+  Let $Wid$ be a $T_0, T$-refutability and suppose that $T_0$ is diagonalizable. Then the fixed point of $Wid(x)$ is called the _Jeroslow sentence_ and is denoted by $upright("J")_Wid$.
+]
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Refutability.lean#L15",
+    ),
+  ),
+)[
+  ```
+  structure Refutability [L.ReferenceableBy L₀] (T₀ : Theory L₀) (T : Theory L) where
+    refu : Semisentence L₀ 1
+    refu_def {σ : Sentence L} : T ⊢ ∼σ → T₀ ⊢ refu/[⌜σ⌝]
+
+  @[coe] def Refutability.rf (𝔚 : Refutability T₀ T) (σ : Sentence L) : Sentence L₀ := 𝔚.refu/[⌜σ⌝]
+  instance : CoeFun (Refutability T₀ T) (fun _ ↦ Sentence L → Sentence L₀) := ⟨Refutability.rf⟩
+
+  variable {L : Language} [L.ReferenceableBy L] {T₀ T : Theory L} [Diagonalization T₀]
+
+  class Refutability.SoundOn (𝔚 : Refutability T₀ T) (σ : Sentence L) where
+    sound_on : T ⊢ 𝔚 σ → T ⊢ ∼σ
+
+  def jeroslow (𝔚 : Refutability T₀ T) : Sentence L := fixedpoint T₀ 𝔚.refu
+  ```
+]
+
+The following is immediate for the Jeroslow sentence.
+
+#proposition[
+  If $T$ is consistent and $Wid$ is sound on $upright("J")_Wid$, then $T nproves upright("J")_Wid$.
+]
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Refutability.lean#L73",
+    ),
+  ),
+)[
+  ```
+  lemma unprovable_jeroslow [T₀ ⪯ T] [Consistent T] [𝔚.SoundOn (jeroslow 𝔚)] : T ⊬ jeroslow 𝔚
+  ```
+]
+
+We now state Jeroslow's incompleteness theorem.
+
+#proposition[Abstract version of Jeroslow's G2 @Jer73][
+  Let $upright("Safe")_(Bew,Wid) (x) equiv not (Bew x and Wid x)$ be the semisentence formalizing that a sentence is not both provable and refutable (_safe_), and let $upright("FLoN")_(Bew, Wid) equiv forall x, upright("Safe")_(Bew, Wid)(x)$ be the sentence expressing consistency in the sense that every sentence is safe (the _formalized law of non-contradiction_).
+
+  If $T$ is consistent and $T_0 proves upright("J")_Wid -> Bew (upright("J")_Wid)$, then $T nproves upright("FLoN")_(Bew, Wid)$.
+]
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Refutability.lean#L90",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean#L84",
+    ),
+  ),
+  note: [
+    The hypothesis $T_0 proves upright("J")_Wid -> Bew (upright("J")_Wid)$ is mechanized as the class `FormalizedCompleteOn`, which is an abstract version of formalized $Gamma$-completeness for $Bew$.
+    For instance, formalized $Sigma_1$-completeness is expressed as `[∀ σ ∈ 𝚺₁, 𝔅.FormalizedCompleteOn σ]`.
+  ],
+)[
+  ```
+  variable [L.DecidableEq] [L.ReferenceableBy L] {T₀ T : Theory L}
+  variable [Diagonalization T₀] [T₀ ⪯ T] {𝔅 : Provability T₀ T} {𝔚 : Refutability T₀ T}
+
+  def safe (𝔅 : Provability T₀ T) (𝔚 : Refutability T₀ T) : Semisentence L 1 :=
+    “x. ¬(!𝔅.prov x ∧ !𝔚.refu x)”
+
+  def flon (𝔅 : Provability T₀ T) (𝔚 : Refutability T₀ T) : Sentence L := “∀ x, !(safe 𝔅 𝔚) x”
+
+  class FormalizedCompleteOn (𝔅 : Provability T₀ T) (σ) where
+    formalized_complete_on : T₀ ⊢ σ 🡒 𝔅 σ
+
+  lemma unprovable_flon [Consistent T] [𝔅.FormalizedCompleteOn (jeroslow 𝔚)] : T ⊬ flon 𝔅 𝔚
+  ```
+]
+
+Making this abstraction concrete, that is, actually constructing the desired provability $Bew$ and refutability $Wid$, is the goal of the following sections.
+
 == Some further results related to the incompleteness theorems
 
 Using the tools developed so far, we have also proved several theorems related to Gödel's incompleteness theorems.
