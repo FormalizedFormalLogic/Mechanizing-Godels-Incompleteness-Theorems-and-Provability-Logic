@@ -698,7 +698,7 @@ Using the tools developed so far, we have also proved several theorems related t
 Instantiating the abstract version stated in @prop:abstract_Löb, we immediately obtain the concrete Löb's theorem.
 As a related work, we mention that Löb's theorem has been mechanized by Bailitis on Paulson's mechanization of the incompleteness theorems in Isabelle (see @AFP-Incompleteness[Chapter 13]).
 
-#theorem[Löb's theorem and formalized Löb's theorem][
+#theorem[Löb's theorem and formalized Löb's theorem @Lob55][
   / Löb's theorem: Let $T supset.eq ISigma1$ be a $Delta_1$ arithmetical theory and let $sigma$ be any sentence. If $T proves Pr(T)(GoedelNum(sigma)) -> sigma$, then $T proves sigma$.
   / Formalized Löb's theorem: $ISigma1 proves Pr(T)(GoedelNum(Pr(T)(GoedelNum(sigma)) -> sigma)) -> Pr(T)(GoedelNum(sigma))$ for any $sigma$.
 ]
