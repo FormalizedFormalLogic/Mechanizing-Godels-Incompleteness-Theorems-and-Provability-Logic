@@ -50,7 +50,16 @@ However, it follows from G2, that abstracting the behavior of the provability pr
 Solovay @Sol76 showed that the modal logic called #LogicGL precisely captures the behavior of the standard provability predicate.
 This fact, known as _Solovay's arithmetical completeness theorem_, was a significant result that opened up the subfield of modal logic called _provability logic_.
 
-On the other hand, recently, there has been much active work on mechanizing mathematics using interactive theorem provers, guaranteeing the validity of existing and new results, and providing AI/LLM-assisted or automated proving.
+On the other hand, recently, there has been much active work on mechanizing
+#footnote[
+  Since the word "formalize" can be used in two different senses, which may cause confusion, we strictly distinguish between the words _formalize_ and _mechanize_.
+
+  / _formalize_: to internalize metamathematical notions inside of a formal system.
+  / _mechanize_: writing definitions and proofs in interactive theorem prover, verifiable on computer.
+
+  Following this convention, what we have done can be stated succinctly: _mechanizing formalized mathematics_.
+]
+mathematics using interactive theorem provers, guaranteeing the validity of existing and new results, and providing AI/LLM-assisted or automated proving.
 There are many well-known interactive theorem provers such as Rocq @RocqProver, Isabelle @Isabelle, HOL Light @HOLLight @HOLLightTutorial, Agda @Agda, and Lean @dMU21, and mathematics has been mechanized in each of them, including in the field of mathematical logic#footnote[Some of these mechanizations are summarized in @AwesomeLogicFormalization.].
 In particular, for mechanizing Gödel's incompleteness theorems, this line of work began with Shankar in 1986 @Sha86 @Sha97, and continues with O'Connor @OCo05 @OCo09, Harrison @Har06, Paulson @Pau15, and Popescu and Traytel @PT19 @PT21, Kirst and Peters @KP23.
 As for provability logic, modal-logical properties of #LogicGL, such as its semantical completeness and automated solvers, have been mechanized by Harrison @HOLLightTutorial[Chapter 20]#footnote[We don't know when Harrison's mechanization of modal logic was carried out.], Goré and Kelly @GK07, Goré, Ramanayake and Shillito @GRS21, Maggesi and Perini Brogi @MPB21 @MPB23, Gignoux @Gig26.
@@ -84,6 +93,8 @@ This can be verified from the following commits, at which each result first beca
 - Gödel's first incompleteness theorem: #commit-link("e9325d82f6e4284b8dca530c8f9719650d7a21cf") (2024/09/04).
 - Gödel's second incompleteness theorem: #commit-link("2da7151e1da0ce40ae222fec1651756f8ee7acce") (2024/09/04).
 - Solovay's arithmetical completeness theorem: #commit-link("4a34d75c074c7614a1f16661ac73fd0725263c32") (2025/04/06).
+Some proofs in modal logic and provability logic make use of AI-assisted mechanizations. This is discussed in detail in
+Appendix: @subsect:vibe-formalizing.
 
 /*
 On the other hand, since June 2026, the second author has adopted AI/LLM-assisted _vibe coding_ in Lean for #link(REPO_SOURCES.at("ProvabilityLogic"))[FormalizedFormalLogic/ProvabilityLogic], using interactive coding agents such as Anthropic's Claude both for refactoring the code and for mechanizing the new results, namely the sequent calculi for modal logics and the classification theorem of provability logics.
@@ -91,15 +102,6 @@ We have verified that the main parts of the generated code do not rely on any de
 In @subsect:vibe-formalizing, we give a brief report on how we carried out the writing and generation of mechanized proofs using AI/LLMs in this project.
 */
 // *The authors take full responsibility for the final artifact, including its AI-generated code.*
-
-#remark[
-  Since the word "formalize" can be used in two different senses, which may cause confusion, we strictly distinguish between the words _formalize_ and _mechanize_.
-
-  / _formalize_: to internalize metamathematical notions inside of a formal system.
-  / _mechanize_: writing definitions and proofs in an interactive theorem prover, verifiable on an actual computer.
-
-  Following this convention, what we have done can be stated succinctly: _mechanizing formalized mathematics_.
-]
 
 #include "first-order-logic.typ"
 
@@ -1355,9 +1357,9 @@ As prior work, mechanization of frame definability for Verbrugge semantics has b
 As for our own progress, we have mechanized syntactic proofs and frame definability for some additional axioms and weak interpretability logics based on work by Kurahashi and Okawa @KO21 #footnote[See: #link("https://github.com/FormalizedFormalLogic/InterpretabilityLogic")].
 However, we have not yet established modal completeness with respect to frames, and as for the arithmetical completeness theorem, we have not been able to mechanize it at all.
 
-= Concluding and Future works
+// = Concluding and Future works
 
-== Vibe formalizing <subsect:vibe-formalizing>
+= Appendix: Vibe formalizing <subsect:vibe-formalizing>
 
 We describe how the AI is used in our development.
 Claude does not mechanize everything autonomously: the author first fixes the overall strategy for proving the main theorems and writes their formal statements, and only then delegates the actual proofs to Claude.
