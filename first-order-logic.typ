@@ -695,11 +695,11 @@ Using the tools developed so far, we have also proved several theorems related t
 
 === Löb's Theorem
 
-@prop:abstract_Löb で述べた抽象的なバージョンを具体化することでconcreteなLöbの定理が直ちに得られる．
-先行研究として，PaulsonのIsabelle上での形式化の上でのLöbの定理はBailitisによって形式化されていることはメンションしておこう (see @PB13[Chapter 13])．
+Instantiating the abstract version stated in @prop:abstract_Löb, we immediately obtain the concrete Löb's theorem.
+As a related work, we mention that Löb's theorem has been mechanized by Bailitis on top of Paulson's mechanization of the incompleteness theorems in Isabelle (see @PB13[Chapter 13]).
 
-#theorem[Löb's thorem and formalized Löb's theorem][
-  - Let arithmetical theory $T supset.eq ISigma1$ be $Delta_1$ and $sigma$ for any sentence. If $T proves Pr(T)(GoedelNum(sigma)) -> sigma$, then $T proves sigma$.
+#theorem[Löb's theorem and formalized Löb's theorem][
+  - Let $T supset.eq ISigma1$ be a $Delta_1$ arithmetical theory and let $sigma$ be any sentence. If $T proves Pr(T)(GoedelNum(sigma)) -> sigma$, then $T proves sigma$.
   - $ISigma1 proves Pr(T)(GoedelNum(Pr(T)(GoedelNum(sigma)) -> sigma)) -> Pr(T)(GoedelNum(sigma))$ for any $sigma$.
 ]
 
@@ -713,14 +713,14 @@ Using the tools developed so far, we have also proved several theorems related t
   ```
 ]
 
-=== Gödel-Rosser 1st Incompleteness Theorem
+=== Gödel-Rosser First Incompleteness Theorem
 
-@thm:G1 のsettingにおいて，理論 $T$ は $Sigma_1$-soundであることが要請されていた．
-@prop:abstract_GR を具体化することで，この要請を無矛盾性に弱めたGödel-Rosserの不完全性定理を示すことが出来る．
+In the setting of @thm:G1, the theory $T$ was required to be $Sigma_1$-sound.
+By instantiating @prop:abstract_GR, we can prove the Gödel-Rosser incompleteness theorem, which weakens this requirement to mere consistency.
 
 #leancode(
   note: [
-    @thm:G1 の形式化では `[T.SoundOnHierarchy 𝚺 1]` と仮定していた部分が `[Entailment.Consistent T]` になっていることを確認せよ．
+    Note that the assumption `[T.SoundOnHierarchy 𝚺 1]` in the mechanization of @thm:G1 is replaced by `[Entailment.Consistent T]`.
   ],
 )[
   ```
@@ -728,17 +728,17 @@ Using the tools developed so far, we have also proved several theorems related t
   ```
 ]
 
-証明には $bold("Ros")$ を満たすprovabilityを実際に構成する必要があり，それにはwitness comparison (see @HP16 @Lin97) の手法を用いる．
-ここではその実装は省略する．
+The proof requires actually constructing a provability satisfying $bold("Ros")$, which is achieved by the technique of witness comparison (see @HP16 @Lin97).
+We omit the implementation here.
 
-=== Jeroslow's G2
+=== Jeroslow's Second Incompleteness Theorem
 
-やはり同様に @prop:abstract_JG2 から，Jeroslowによる第二不完全性定理 @Jer73 も，我々は具体的に形式化することが出来る．
-Jeroslowの形式化については，PoposcuとTraytel @PT21[Theorem 30] では抽象的なレベルでのみ形式化されている．
+Similarly, from @prop:abstract_JG2, we can also concretely mechanize Jeroslow's second incompleteness theorem @Jer73.
+We mention that Popescu and Traytel @PT21[Theorem 30] mechanized Jeroslow's theorem only at the abstract level.
 
 #theorem[Jeroslow's Second Incompleteness Theorem @Jer73][
-  Arithmetical Theory $T supset.eq ISigma1$ が $Delta_1$ かつ無矛盾なら，$T nproves forall x. not (Pr(T)(x) and Pr(T)(dot(not) x)$．
-  ここで，$dot(not)$ は $dot(not) GoedelNum(sigma) = GoedelNum(not sigma)$ を満たす，つまり文のGödel数を受け取った場合その否定文のGödel数を返す関数である．
+  If an arithmetical theory $T supset.eq ISigma1$ is $Delta_1$ and consistent, then $T nproves forall x. not (Pr(T)(x) and Pr(T)(dot(not) x))$.
+  Here, $dot(not)$ is a function satisfying $dot(not) GoedelNum(sigma) = GoedelNum(not sigma)$, that is, a function that takes the Gödel number of a sentence and returns the Gödel number of its negation.
 ]
 
 #leancode()[
@@ -750,12 +750,11 @@ Jeroslowの形式化については，PoposcuとTraytel @PT21[Theorem 30] では
 
 === $Sigma_1$-soundness and $Delta_1$-definability of $ISigma1$ and $PeanoArithmetic$
 
-今まで述べてきた不完全性定理やその系において， $T$ として具体的な理論，つまり $ISigma1$ や $PeanoArithmetic$ を取るためには，
-$Sigma_1$-soundnessおよび$Delta_1$-definabilityを各々の理論において形式化しなければならない．
-我々はこの事実も形式化済みである．
+In the incompleteness theorems and their corollaries stated so far, in order to take a concrete theory such as $ISigma1$ or $PeanoArithmetic$ as $T$, the $Sigma_1$-soundness and the $Delta_1$-definability must be mechanized for each of these theories.
+We have already mechanized these facts as well.
 
 #proposition[
-  $ISigma1$ および $PeanoArithmetic$ は $Sigma_1$-soundであり，故に無矛盾である．
+  $ISigma1$ and $PeanoArithmetic$ are $Sigma_1$-sound, hence consistent.
 ]
 
 #leancode(
@@ -778,7 +777,7 @@ $Sigma_1$-soundnessおよび$Delta_1$-definabilityを各々の理論において
 ]
 
 #proposition[
-  $ISigma1$ および $PeanoArithmetic$ は $Delta_1$-definableである．
+  $ISigma1$ and $PeanoArithmetic$ are $Delta_1$-definable.
 ]
 
 #leancode(
@@ -800,7 +799,7 @@ $Sigma_1$-soundnessおよび$Delta_1$-definabilityを各々の理論において
   ```
 ]
 
-故に，ここまで述べてきた定理において $T$ として具体的な理論 $ISigma1$ や $PeanoArithmetic$ を取ってより具体的な主張を形式化することも出来る．
+Therefore, in the theorems stated so far, we can also take concrete theories such as $ISigma1$ and $PeanoArithmetic$ as $T$ and mechanize the resulting more concrete statements.
 
 === Tarski's Undefinability Theorem
 
@@ -852,14 +851,14 @@ We will discuss this point further in @subsect:remaining_sorry_in_provlogic.
 
 === Undecidability of First-Order Logic
 
-述語論理の決定不能性について述べておく．
-まず，Mathlibにおいて(Leanのメタでの)述語が計算可能であるとは `ComputablePred` によって定義されている (cf: @Car19)．
-この定義は定義域および値域の型が `PrimCodable` （自然数によるエンコーディング・デコーディングが原始再帰的に計算可能）であることが要請される．
-我々の算術の論理式全体の型などは適当なエンコーディングによって `PrimCodable` であることを示すことが出来るので，例えば，理論 $T$ から証明できる文全体の集合 $upright("Thm")(T)$ が計算可能かどうかなどを議論することが出来る．
-これらを踏まえて，まず，次の補題が形式化される．
+We now discuss the undecidability of first-order logic.
+First, in Mathlib, computability of a predicate (at the meta level of Lean) is defined by `ComputablePred` (cf. @Car19).
+This definition requires that the types of the domain and the codomain are `Primcodable`, that is, encoding into and decoding from natural numbers are primitive recursively computable.
+Since the type of formulas of our arithmetic can be shown to be `Primcodable` via a suitable encoding, we can discuss, for example, whether the set $upright("Thm")(T)$ of sentences provable from a theory $T$ is computable.
+With these preparations, the following lemma is mechanized.
 
 #lemma[
-  $Sigma_1$-soundな理論 $T supset.eq R0$ について，$upright("Thm")(T)$ は計算可能ではない．
+  For a $Sigma_1$-sound theory $T supset.eq R0$, $upright("Thm")(T)$ is not computable.
 ]
 #leancode()[
   ```
@@ -867,12 +866,13 @@ We will discuss this point further in @subsect:remaining_sorry_in_provlogic.
   ```
 ]
 
-特に，この $T$ として $PeanoArithmetic$ の有限なフラグメントとなる理論 $PeanoArithmeticMinus$ を取ると，これは $Sigma_1$-健全であって，更に $R0$ よりも強い．更に有限性より $PeanoArithmeticMinus$ の全ての公理の連言を有限の論理式で取ることが出来て，演繹定理を用いる事ができる．
-これらの事実より，算術の言語上の1階述語論理の計算不可能性を示すことが出来る．
+In particular, take as this $T$ the theory $PeanoArithmeticMinus$, a finitely axiomatized fragment of $PeanoArithmetic$: it is $Sigma_1$-sound and moreover stronger than $R0$.
+Furthermore, by finiteness, the conjunction of all axioms of $PeanoArithmeticMinus$ can be taken as a single formula, so that the deduction theorem is applicable.
+From these facts, we can show that first-order logic over the language of arithmetic is not computable.
 
 #proposition[Undecidability of First-Order Logic][
-  言語 $LOR$ 上の一階述語論理は計算可能ではない．
-  つまり，$LOR$-文 $sigma$ について，$emptyset proves sigma$ または $emptyset nproves sigma$ であるかは判定出来ない．
+  First-order logic over the language $LOR$ is not computable.
+  That is, for an $LOR$-sentence $sigma$, it is undecidable whether $emptyset proves sigma$ or $emptyset nproves sigma$.
 ]
 #leancode()[
   ```
