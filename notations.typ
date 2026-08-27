@@ -110,6 +110,8 @@
 
 #let Theory(T) = $sans(upright(#T))$
 #let PeanoArithmetic = Theory("PA")
+#let PeanoArithmeticMinus = $PeanoArithmetic^-$
+#let RobinsonArithmetic = Theory("Q")
 #let TrueArithmetic = Theory("TA")
 #let HeytingArithmetic = Theory("HA")
 

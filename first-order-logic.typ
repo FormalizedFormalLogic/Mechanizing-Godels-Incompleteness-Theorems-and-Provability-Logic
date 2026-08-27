@@ -213,11 +213,11 @@ these two parameters.
     ),
     (
       "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L54"
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L54",
     ),
     (
       "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L59"
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L59",
     ),
     (
       "Foundation",
@@ -234,7 +234,7 @@ these two parameters.
     (
       "Foundation",
       "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L256",
-    )
+    ),
   ),
 )[
   ```
@@ -285,7 +285,7 @@ These facts immediately yield definitions over $Universe$ of basic syntactic ope
     (
       "Foundation",
       "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Proof/Basic.lean#L525",
-    )
+    ),
   ),
 )[
   ```
@@ -521,7 +521,7 @@ As further results, we can also mechanize Löb's theorem and the formalized Löb
 
   / Löb's theorem: If $T proves Bew sigma -> sigma$, then $T proves sigma$.
   / Formalized Löb's theorem: $T_0 proves Bew (Bew sigma -> sigma) -> Bew sigma$.
-]
+] <prop:abstract_Löb>
 
 #leancode(
   links: (
@@ -555,7 +555,7 @@ This is precisely an abstraction of the incompleteness theorem as improved by Ro
   Then $T nproves upright("R")_Bew$ and $T nproves not upright("R")_Bew$.
   That is, $upright("R")_Bew$ is independent of $T$; note in particular that $bold("Kre")$ is not required for the latter.
   On the other hand, for the consistency statement $upright("Con")_Bew$ given by this $Bew$, we have $T proves upright("Con")_Bew$ #footnote[In the Japanese mathematical logic community, this is often called _Kreisel's remark_.].
-]
+] <prop:abstract_GR>
 
 #leancode(
   links: (
@@ -653,7 +653,7 @@ We now state Jeroslow's incompleteness theorem.
   Let $upright("Safe")_(Bew,Wid) (x) equiv not (Bew x and Wid x)$ be the semisentence formalizing that a sentence is not both provable and refutable (_safe_), and let $upright("FLoN")_(Bew, Wid) equiv forall x, upright("Safe")_(Bew, Wid)(x)$ be the sentence expressing consistency in the sense that every sentence is safe (the _formalized law of non-contradiction_).
 
   If $T$ is consistent and $T_0 proves upright("J")_Wid -> Bew (upright("J")_Wid)$, then $T nproves upright("FLoN")_(Bew, Wid)$.
-]
+] <prop:abstract_JG2>
 
 #leancode(
   links: (
@@ -693,6 +693,145 @@ Making this abstraction concrete, that is, actually constructing the desired pro
 
 Using the tools developed so far, we have also proved several theorems related to Gödel's incompleteness theorems.
 
+=== Löb's Theorem
+
+@prop:abstract_Löb で述べた抽象的なバージョンを具体化することでconcreteなLöbの定理が直ちに得られる．
+先行研究として，PaulsonのIsabelle上での形式化の上でのLöbの定理はBailitisによって形式化されていることはメンションしておこう (see @Incompleteness-AFP[Chapter 13])．
+
+#theorem[Löb's thorem and formalized Löb's theorem][
+  - Let arithmetical theory $T supset.eq ISigma1$ be $Delta_1$ and $sigma$ for any sentence. If $T proves Pr(T)(GoedelNum(sigma)) -> sigma$, then $T proves sigma$.
+  - $ISigma1 proves Pr(T)(GoedelNum(Pr(T)(GoedelNum(sigma)) -> sigma)) -> Pr(T)(GoedelNum(sigma))$ for any $sigma$.
+]
+
+#leancode()[
+  ```
+  variable {T : ArithmeticTheory} [T.Δ₁] [𝗜𝚺₁ ⪯ T] {σ : ArithmeticSentence}
+
+  theorem löb_theorem : T ⊢ provabilityPred T σ 🡒 σ → T ⊢ σ
+
+  theorem formalized_löb_theorem : 𝗜𝚺₁ ⊢ provabilityPred T (provabilityPred T σ 🡒 σ) 🡒 provabilityPred T σ
+  ```
+]
+
+=== Gödel-Rosser 1st Incompleteness Theorem
+
+@thm:G1 のsettingにおいて，理論 $T$ は $Sigma_1$-soundであることが要請されていた．
+@prop:abstract_GR を具体化することで，この要請を無矛盾性に弱めたGödel-Rosserの不完全性定理を示すことが出来る．
+
+#leancode(
+  note: [
+    @thm:G1 の形式化では `[T.SoundOnHierarchy 𝚺 1]` と仮定していた部分が `[Entailment.Consistent T]` になっていることを確認せよ．
+  ],
+)[
+  ```
+  theorem incomplete_GR (T : ArithmeticTheory) [T.Δ₁] [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T] : Entailment.Incomplete T
+  ```
+]
+
+証明には $bold("Ros")$ を満たすprovabilityを実際に構成する必要があり，それにはwitness comparison (see @HP16 @Lindstrom1997) の手法を用いる．
+ここではその実装は省略する．
+
+=== Jeroslow's G2
+
+やはり同様に @prop:abstract_JG2 から，Jeroslowによる第二不完全性定理 @Jer73 も，我々は具体的に形式化することが出来る．
+Jeroslowの形式化については，PoposcuとTraytel @PT21[Theorem 30] では抽象的なレベルでのみ形式化されている．
+
+#theorem[Jeroslow's Second Incompleteness Theorem @Jer73][
+  Arithmetical Theory $T supset.eq ISigma1$ が $Delta_1$ かつ無矛盾なら，$T nproves forall x. not (Pr(T)(x) and Pr(T)(dot(not) x)$．
+  ここで，$dot(not)$ は $dot(not) GoedelNum(sigma) = GoedelNum(not sigma)$ を満たす，つまり文のGödel数を受け取った場合その否定文のGödel数を返す関数である．
+]
+
+#leancode()[
+  ```
+  theorem unprovable_formalized_law_of_noncontradiction {T : ArithmeticTheory} [T.Δ₁] [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T]
+  : T ⊬ (∀¹ ∼(T.provable ⋏ T.refutable))
+  ```
+]
+
+=== $Sigma_1$-soundness and $Delta_1$-definability of $ISigma1$ and $PeanoArithmetic$
+
+今まで述べてきた不完全性定理やその系において， $T$ として具体的な理論，つまり $ISigma1$ や $PeanoArithmetic$ を取るためには，
+$Sigma_1$-soundnessおよび$Delta_1$-definabilityを各々の理論において形式化しなければならない．
+我々はこの事実も形式化済みである．
+
+#proposition[
+  $ISigma1$ および $PeanoArithmetic$ は $Sigma_1$-soundであり，故に無矛盾である．
+]
+
+Foundationにおいて，理論 $T$ が $Sigma_1$-soundであることは，「$T$ から証明可能な任意の $Sigma_1$-文は標準モデル $Nat$ で真である」ことを表す型クラス `ArithmeticTheory.SoundOnHierarchy 𝚺 1` として定式化されている．
+標準モデル $Nat$ をモデルに持つ理論は任意の論理式クラス上でsoundであるというインスタンスが与えられているので，$ISigma1$ および $PeanoArithmetic$ の $Sigma_1$-soundnessは，$Nat$ がこれらの理論のモデルであるという事実から直ちに従う．
+無矛盾性も $Sigma_1$-soundnessからインスタンスとして導出される．
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Arithmetic/Basic/Model.lean#L92",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Arithmetic/Basic/Hierarchy.lean#L476",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Arithmetic/Basic/Model.lean#L99",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Arithmetic/Schemata.lean#L383",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Arithmetic/Schemata.lean#L385",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Arithmetic/Basic/Hierarchy.lean#L481",
+    ),
+  ),
+)[
+  ```
+  class ArithmeticTheory.SoundOn (T : ArithmeticTheory) (F : ArithmeticSentence → Prop) where
+    sound : ∀ {σ}, T ⊢ σ → F σ → ℕ↓[ℒₒᵣ] ⊧ σ
+
+  abbrev ArithmeticTheory.SoundOnHierarchy (T : ArithmeticTheory) (Γ : Polarity) (k : ℕ) :=
+    T.SoundOn (Arithmetic.Hierarchy Γ k)
+
+  instance [ℕ↓[ℒₒᵣ] ⊧* T] : T.SoundOn F
+
+  instance models_ISigmaOne : ℕ↓[ℒₒᵣ] ⊧* 𝗜𝚺₁
+
+  instance models_Peano : ℕ↓[ℒₒᵣ] ⊧* 𝗣𝗔
+
+  instance (T : ArithmeticTheory) [T.SoundOnHierarchy 𝚺 1] : Entailment.Consistent T
+  ```
+]
+
+#proposition[
+  $ISigma1$ および $PeanoArithmetic$ は $Delta_1$-definableである．
+]
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Incompleteness/InductionSchemeDelta1.lean#L1386",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Incompleteness/InductionSchemeDelta1.lean#L1389",
+    ),
+  ),
+)[
+  ```
+  noncomputable instance PA_delta1Definable : 𝗣𝗔.Δ₁
+
+  noncomputable instance ISigma1_delta1Definable : 𝗜𝚺₁.Δ₁
+  ```
+]
+
+故に，ここまで述べてきた定理において $T$ として具体的な理論 $ISigma1$ や $PeanoArithmetic$ を取ってより具体的な主張を形式化することも出来る．
+
 === Tarski's Undefinability Theorem
 
 As a corollary of the fixed point theorem, we can prove Tarski's theorem on the undefinability of truth.
@@ -712,7 +851,8 @@ First, we prove the following lemma.
   ),
 )[
   ```
-  lemma not_exists_tarski_predicate {T : ArithmeticTheory} [𝗜𝚺₁ ⪯ T] [Consistent T] : ¬∃ τ : ArithmeticSemisentence 1, ∀ σ, T ⊢ σ 🡘 τ/[⌜σ⌝]
+  lemma not_exists_tarski_predicate {T : ArithmeticTheory} [𝗜𝚺₁ ⪯ T] [Consistent T]
+  : ¬∃ τ : ArithmeticSemisentence 1, ∀ σ, T ⊢ σ 🡘 τ/[⌜σ⌝]
   ```
 ]
 
@@ -739,3 +879,32 @@ In contrast to this theorem, it is known that for a complexity class $Gamma$ of 
 However, this fact has not been mechanized yet.
 We mention that, consequently, several statements of provability logic that are proved by using partial truth predicates have not been mechanized so far.
 We will discuss this point further in @subsect:remaining_sorry_in_provlogic.
+
+=== Church's undecidablity theorem
+
+Mathlibにおいて(Leanのメタでの)述語が計算可能であるとは `ComputablePred` によって定義されている (cf: @Carneiro2019)．
+この定義は定義域および値域の型が `PrimCodable` （自然数によるエンコーディング・デコーディングが原始再帰的に計算可能）であることが要請される．
+我々の算術の論理式全体の型などは適当なエンコーディングによって `PrimCodable` であることを示すことが出来るので，例えば，理論 $T$ から証明できる文全体の集合 $upright("Thm")(T)$ が計算可能かどうかなどを議論することが出来る．
+これらを踏まえて，まず，次の補題が形式化される．
+
+#lemma[
+  $Sigma_1$-soundな理論 $T supset.eq R0$ について，$upright("Thm")(T)$ は計算可能ではない．
+]
+#leancode()[
+  ```
+  theorem church_theorem_general : ¬ComputablePred T.theory := by
+  ```
+]
+
+特に，この $T$ として $PeanoArithmetic$ の有限なフラグメントとなる理論 $PeanoArithmeticMinus$ を取ると，これは $Sigma_1$-健全であって，更に $R0$ よりも強い．更に有限性より $PeanoArithmeticMinus$ の全ての公理の連言を有限の論理式で取ることが出来て，演繹定理を用いる事ができる．
+これらの事実より，Churchによる算術の言語上の1階述語論理の計算不可能性を示すことが出来る．
+
+#proposition[Church's undecidablity theorem][
+  言語 $LOR$ 上の一階述語論理は計算可能ではない．
+  つまり，$LOR$-文 $sigma$ について，$emptyset proves sigma$ または $emptyset nproves sigma$ であるかは判定出来ない．
+]
+#leancode()[
+  ```
+  theorem undecidability_first_order_logic : ¬ComputablePred ((∅ : ArithmeticTheory).theory)
+  ```
+]
