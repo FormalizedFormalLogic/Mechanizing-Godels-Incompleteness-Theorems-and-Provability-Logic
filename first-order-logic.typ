@@ -696,7 +696,7 @@ Using the tools developed so far, we have also proved several theorems related t
 === Löb's Theorem
 
 @prop:abstract_Löb で述べた抽象的なバージョンを具体化することでconcreteなLöbの定理が直ちに得られる．
-先行研究として，PaulsonのIsabelle上での形式化の上でのLöbの定理はBailitisによって形式化されていることはメンションしておこう (see @Incompleteness-AFP[Chapter 13])．
+先行研究として，PaulsonのIsabelle上での形式化の上でのLöbの定理はBailitisによって形式化されていることはメンションしておこう (see @PB13[Chapter 13])．
 
 #theorem[Löb's thorem and formalized Löb's theorem][
   - Let arithmetical theory $T supset.eq ISigma1$ be $Delta_1$ and $sigma$ for any sentence. If $T proves Pr(T)(GoedelNum(sigma)) -> sigma$, then $T proves sigma$.
@@ -728,7 +728,7 @@ Using the tools developed so far, we have also proved several theorems related t
   ```
 ]
 
-証明には $bold("Ros")$ を満たすprovabilityを実際に構成する必要があり，それにはwitness comparison (see @HP16 @Lindstrom1997) の手法を用いる．
+証明には $bold("Ros")$ を満たすprovabilityを実際に構成する必要があり，それにはwitness comparison (see @HP16 @Lin97) の手法を用いる．
 ここではその実装は省略する．
 
 === Jeroslow's G2
@@ -836,7 +836,7 @@ We will discuss this point further in @subsect:remaining_sorry_in_provlogic.
 === Undecidability of First-Order Logic
 
 述語論理の決定不能性について述べておく．
-まず，Mathlibにおいて(Leanのメタでの)述語が計算可能であるとは `ComputablePred` によって定義されている (cf: @Carneiro2019)．
+まず，Mathlibにおいて(Leanのメタでの)述語が計算可能であるとは `ComputablePred` によって定義されている (cf: @Car19)．
 この定義は定義域および値域の型が `PrimCodable` （自然数によるエンコーディング・デコーディングが原始再帰的に計算可能）であることが要請される．
 我々の算術の論理式全体の型などは適当なエンコーディングによって `PrimCodable` であることを示すことが出来るので，例えば，理論 $T$ から証明できる文全体の集合 $upright("Thm")(T)$ が計算可能かどうかなどを議論することが出来る．
 これらを踏まえて，まず，次の補題が形式化される．
