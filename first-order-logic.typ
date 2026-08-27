@@ -758,7 +758,24 @@ $Sigma_1$-soundnessおよび$Delta_1$-definabilityを各々の理論において
   $ISigma1$ および $PeanoArithmetic$ は $Sigma_1$-soundであり，故に無矛盾である．
 ]
 
-// TODO: code for Sigma_1-soundness of ISigma1 and PeanoArithmetic
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/12fc07a5019847beb6b2217d2a5edbd853c24258/Foundation/FirstOrder/Arithmetic/Schemata.lean#L390",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/12fc07a5019847beb6b2217d2a5edbd853c24258/Foundation/FirstOrder/Arithmetic/Schemata.lean#L392",
+    ),
+  ),
+)[
+  ```
+  instance sigmaOneSound_ISigmaOne : 𝗜𝚺₁.SoundOnHierarchy 𝚺 1
+
+  instance sigmaOneSound_Peano : 𝗣𝗔.SoundOnHierarchy 𝚺 1
+  ```
+]
 
 #proposition[
   $ISigma1$ および $PeanoArithmetic$ は $Delta_1$-definableである．
