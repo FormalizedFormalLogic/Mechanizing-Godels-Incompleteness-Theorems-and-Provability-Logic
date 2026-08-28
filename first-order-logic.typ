@@ -958,13 +958,14 @@ From these facts, we can show that first-order logic over the language of arithm
 #proposition[
   自然数 $e in omega$ を任意に取り，$T supset.eq ISigma1$ を $Delta_1$-definable かつ $Sigma_1$-sound な理論とする．
   このとき，provability predicateを更に制限して，「Gödel数が $2^e$ 未満の$T$-証明によって証明できる」ということを表す _restricted provability predicate_ $RPr(T, e) (x)$ を $Pi_1$-述語で構成できる．
-  通常のGödel文のように，$not RPr(T, e) (x)$ の不動点を $upright("G")_T^e$ を取ることにする．
+  通常のGödel文のように，$not RPr(T, e) (x)$ の不動点として $upright("G")_T^e$ を取ることにする．
 
   このとき，$NN models upright("G")_T^e$ であり，更に $T proves upright("G")_T^e$ であって，その証明のコードは $2^e$ 以上である．
   つまり，$upright("G")_T^e$ は正しいがコードが $2^e$ 未満の証明では証明できない．
 ]
 
 #leancode(
+  links: (("Foundation", "Foundation/FirstOrder/Incompleteness/RestrictedProvability.lean"),),
   note: [
     `T ⊢! T.restrictedGödel e` は「 $upright("G")_T^e$ の $T$-証明 」の`Type`を表す（証明可能という`Prop`ではない）．
   ],
@@ -991,20 +992,20 @@ $T proves sigma <-> pi$ によって同値類を定める通常の構成によ�
 
 #proposition[
   $T supset.eq ISigma1$ で $Delta_1$-definableな理論とする．
-  このとき，$T$ のLindenbaum代数 $frak(A)_T$ はdensly orderを成す，つまり，$frak(A)_T$ の要素 $phi, psi in frak(A)_T$ を $phi < psi$ として取ると，ある $xi in frak(A)_T$ があって $phi < xi$ かつ $xi < phi$．
+  このとき，$T$ のLindenbaum代数 $frak(A)_T$ はdensely orderedである．つまり，$frak(A)_T$ の要素 $phi, psi in frak(A)_T$ を $phi < psi$ として取ると，ある $xi in frak(A)_T$ があって $phi < xi$ かつ $xi < psi$．
 ]
 
 
-#leancode()[
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Dense.lean"),))[
   ```
-  lemma FirstOrder.Arithmetic.dense (T : ArithmeticTheory) [𝗜𝚺₁ ⪯ T] [T.Δ₁] {φ ψ : LindenbaumAlgebra T}
-  : φ < ψ → ∃ ξ, φ < ξ ∧ ξ < ψ
+  lemma dense (T : ArithmeticTheory) [𝗜𝚺₁ ⪯ T] [T.Δ₁] {φ ψ : LindenbaumAlgebra T} :
+      φ < ψ → ∃ ξ, φ < ξ ∧ ξ < ψ
 
   instance (T : ArithmeticTheory) [𝗜𝚺₁ ⪯ T] [T.Δ₁] : DenselyOrdered (LindenbaumAlgebra T)
   ```
 ]
 
-更に，任意の可算稠密Boolean代数は全て順序同型というよく知られた事実から，直ちに次の系が得られる．
+いま，算術の理論のLindenbaum代数が可算であることは明らかであり，更に，任意の稠密かつ非自明な可算Boolean代数は全て順序同型 (cf: @HG09[Chapter 16]#footnote[一般にはatomlessnessの形で述べられることが多いが，今回の形式化ではMathlibの `DenselyOrdered` クラスに合わせて稠密性の形で述べている．]) というよく知られた事実から，直ちに次の系が得られる．
 
 
 #corollary[
@@ -1012,7 +1013,10 @@ $T proves sigma <-> pi$ によって同値類を定める通常の構成によ�
 ]
 
 
-#leancode()[
+#leancode(links: (
+  ("Foundation", "Foundation/Vorspiel/Order/BooleanAlgebra/Iso.lean"),
+  ("Foundation", "Foundation/FirstOrder/Incompleteness/Dense.lean"),
+))[
   ```
   theorem iso_of_countable_atomless {α β : Type*}
       [BooleanAlgebra α] [Countable α] [Nontrivial α] [DenselyOrdered α]
