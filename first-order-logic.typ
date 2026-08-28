@@ -986,9 +986,9 @@ $n$ を極めて大きく例えば $10^9$ などとして取れば，*現実的�
 
 === Lindenbaum Algebra
 
-$T proves sigma <-> pi$ によって同値類を定める通常の構成によって，理論 $T$ のLindenbaum algebra $frak(A)_T$ について議論することが出来る．
+文全体のクラスを $T proves sigma <-> pi$ による同値関係で割る通常の構成によって，理論 $T$ のLindenbaum algebra $frak(A)_T$ について議論することが出来る．
 これらに関しても形式化をしている．
-特に，Gödel-Rosserの第1不完全性定理が成立するような理論 $T$ では $frak(A)_T$ はBoolean algebraであり稠密である．
+特に，Gödel-Rosserの第1不完全性定理が成立するような理論 $T$ では $frak(A)_T$ はBoolean algebraであり，更に稠密である．
 
 #proposition[
   $T supset.eq ISigma1$ で $Delta_1$-definableな理論とする．
