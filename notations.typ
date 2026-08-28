@@ -100,6 +100,7 @@
 #let Prov(T) = $attach(br: #T, sans("Prov"))$
 // Use for *standard* provability predicate
 #let Pr(T) = $attach(br: #T, sans("Pr"))$
+#let RPr(T, e) = $attach(tr: e, br: #T, sans("Pr"))$
 
 #let height(T) = $upright("hgt")(#T)$
 

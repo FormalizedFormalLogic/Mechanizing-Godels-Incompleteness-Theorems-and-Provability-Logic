@@ -381,7 +381,8 @@ Mechanizing the incompleteness theorems via such an abstract provability has pre
     inset: 6pt,
     align: (right + horizon, left + horizon),
     stroke: none,
-    $bold("D1")$, [
+    $bold("D1")$,
+    [
       $T proves sigma ==> T_0 proves Bew(GoedelNum(sigma))$
     ],
   ))
@@ -396,18 +397,25 @@ Mechanizing the incompleteness theorems via such an abstract provability has pre
     inset: 6pt,
     align: (right + horizon, left + horizon),
     stroke: none,
-    $bold("D2")$, [
+    $bold("D2")$,
+    [
       $T_0 proves Bew (sigma -> pi) -> Bew sigma -> Bew pi$
     ],
-    $bold("D3")$, [
+
+    $bold("D3")$,
+    [
       $T_0 proves Bew sigma -> Bew Bew sigma$
     ],
-    $bold("Kre")$, [
+
+    $bold("Kre")$,
+    [
       $T proves Bew sigma$ implies $T proves sigma$
     ],
-    $bold("Ros")$, [
+
+    $bold("Ros")$,
+    [
       $T proves not sigma$ implies $T_0 proves not Bew sigma$
-    ]
+    ],
   ))
   // - $bold("FC")$ (on an $cal(L)$-sentence $sigma$): $T_0 proves sigma -> Bew sigma$.
   // - $bold("S")$ (on an $L_0$-structure $M$) : $M models Bew sigma ==> T proves sigma$.
@@ -479,9 +487,9 @@ which is obtained by the standard construction of diagonalization.
   links: (
     (
       "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/25dda5090b03e9d74b23d4537ca76e546c7197af/Foundation/FirstOrder/Bootstrapping/FixedPoint.lean#L130"
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/25dda5090b03e9d74b23d4537ca76e546c7197af/Foundation/FirstOrder/Bootstrapping/FixedPoint.lean#L130",
     ),
-  )
+  ),
 )[
   ```
   theorem diagonal {T : ArithmeticTheory} [𝗜𝚺₁ ⪯ T] (θ : ArithmeticSemisentence 1) :
@@ -573,10 +581,8 @@ As further results, we can also mechanize Löb's theorem and the formalized Löb
     inset: 6pt,
     align: (right + horizon, left + horizon),
     stroke: none,
-    [Löb's theorem],
-    [$T proves Bew sigma -> sigma$ implies $T proves sigma$.],
-    [Formalized Löb's theorem],
-    [$T_0 proves Bew (Bew sigma -> sigma) -> Bew sigma$.],
+    [Löb's theorem], [$T proves Bew sigma -> sigma$ implies $T proves sigma$.],
+    [Formalized Löb's theorem], [$T_0 proves Bew (Bew sigma -> sigma) -> Bew sigma$.],
   ))
 ] <prop:abstract_Löb>
 
@@ -710,11 +716,11 @@ The following is immediate for the Jeroslow sentence.
 
 We now state Jeroslow's incompleteness theorem.
 
-#let Safe(B,W) = $sans("Safe")_(#B,#W)$
+#let Safe(B, W) = $sans("Safe")_(#B,#W)$
 #let FLoN(B, W) = $sans("FLoN")_(#B,#W)$
 
 #proposition[Abstract version of Jeroslow's G2 @Jer73][
-  Let $Safe(Bew,Wid) (x) equiv not (Bew x and Wid x)$ be the unary formula stating that a sentence is not both provable and refutable (_safe_), and let $FLoN(Bew, Wid) equiv forall x, Safe(Bew, Wid)(x)$ be the sentence expressing consistency in the sense that every sentence is safe (the _formalized law of non-contradiction_).
+  Let $Safe(Bew, Wid) (x) equiv not (Bew x and Wid x)$ be the unary formula stating that a sentence is not both provable and refutable (_safe_), and let $FLoN(Bew, Wid) equiv forall x, Safe(Bew, Wid)(x)$ be the sentence expressing consistency in the sense that every sentence is safe (the _formalized law of non-contradiction_).
 
   If $T$ is consistent and $T_0 proves Jeroslow(Wid) -> Bew Jeroslow(Wid)$, then $T nproves FLoN(Bew, Wid)$.
 ] <prop:abstract_JG2>
@@ -944,3 +950,35 @@ From these facts, we can show that first-order logic over the language of arithm
   theorem undecidability_first_order_logic : ¬ComputablePred ((∅ : ArithmeticTheory).theory)
   ```
 ]
+
+=== Restricted provability
+
+ある意味で現実的な(feasible)証明の長さで証明可能，ということを形式化によって論じることが出来る．
+
+#proposition[
+  自然数 $e in omega$ を任意に取り，$T supset.eq ISigma1$ を $Delta_1$-definable かつ $Sigma_1$-sound な理論とする．
+  このとき，provability predicateを更に制限して，「Gödel数が $2^e$ 未満の$T$-証明によって証明できる」ということを表す _restricted provability predicate_ $RPr(T, e) (x)$ を $Pi_1$-述語で構成できる．
+  通常のGödel文のように，$not RPr(T, e) (x)$ の不動点を $upright("G")_T^e$ を取ることにする．
+
+  このとき，$NN models upright("G")_T^e$ であり，更に $T proves upright("G")_T^e$ であって，その証明のコードは $2^e$ 以上である．
+  つまり，$upright("G")_T^e$ は正しいがコードが $2^e$ 未満の証明では証明できない．
+]
+
+#leancode(
+  note: [
+    `T ⊢! T.restrictedGödel e` は「 $upright("G")_T^e$ の $T$-証明 」の`Type`を表す（証明可能という`Prop`ではない）．
+  ],
+)[
+  ```
+  theorem true_restrictedGödel : ℕ↓[ℒₒᵣ] ⊧ T.restrictedGödel e
+
+  theorem provable_restrictedGödel : T ⊢ T.restrictedGödel e
+
+  theorem lower_bound_gödelNumber_proof_restrictedGödel : ∀ b : T ⊢! T.restrictedGödel e, 2^e ≤ ⌜b⌝
+  ```
+]
+
+大雑把に $n$ 文字の論理式ないし証明をコードするとそのGödel数は $2^n$ になると概算するならば，この主張は「 $T$ 上では $n$ 文字では証明できない正しい事実が存在する」ということを述べている．
+$n$ を極めて大きく例えば $10^9$ などとして取れば，*現実的に*人間には証明できない正しい言明が存在すると主張することも出来よう．
+このような制限による証明可能性の議論はParikh @parikhExistenceFeasibilityArithmetic1971 のfeasibilityや，GödelないしEhrenfeucht-Mycielskiのspeed-up theorem @Godel1936 @EhrenfeuchtMycielski1971，あるいは限定算術 @Bus86 とも関連が深い．
+この形式化された事実はそれらへの第一歩となるものだろう．
