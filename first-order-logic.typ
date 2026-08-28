@@ -955,7 +955,7 @@ From these facts, we can show that first-order logic over the language of arithm
 
 ある意味で現実的な(feasible)証明の長さで証明可能，ということを形式化によって論じることが出来る．
 
-#proposition[
+#theorem[
   自然数 $e in omega$ を任意に取り，$T supset.eq ISigma1$ を $Delta_1$-definable かつ $Sigma_1$-sound な理論とする．
   このとき，provability predicateを更に制限して，「Gödel数が $2^e$ 未満の$T$-証明によって証明できる」ということを表す _restricted provability predicate_ $RPr(T, e) (x)$ を $Pi_1$-述語で構成できる．
   通常のGödel文のように，$not RPr(T, e) (x)$ の不動点として $upright("G")_T^e$ を取ることにする．
@@ -981,18 +981,19 @@ From these facts, we can show that first-order logic over the language of arithm
 
 大雑把に $n$ 文字の論理式ないし証明をコードするとそのGödel数は $2^n$ になると概算するならば，この主張は「 $T$ 上では $n$ 文字では証明できない正しい事実が存在する」ということを述べている．
 $n$ を極めて大きく例えば $10^9$ などとして取れば，*現実的に*人間には証明できない正しい言明が存在すると主張することも出来よう．
-このような制限による証明可能性の議論はParikh @Par71 のfeasibilityや，GödelないしEhrenfeucht-Mycielskiのspeed-up theorem @God36 @EM71，あるいは限定算術 @Bus86 とも関連が深い．
+このような制限による証明可能性の議論はParikh @Par71 のfeasibilityや，GödelないしEhrenfeucht--Mycielskiのspeed-up theorem @God36 @EM71，あるいは限定算術 @Bus86 とも関連が深い．
 この形式化された事実はそれらへの第一歩となるものだろう．
 
 === Lindenbaum Algebra
 
-文全体のクラスを $T proves sigma <-> pi$ による同値関係で割る通常の構成によって，理論 $T$ のLindenbaum algebra $frak(A)_T$ について議論することが出来る．
-これらに関しても形式化をしている．
-特に，Gödel-Rosserの第1不完全性定理が成立するような理論 $T$ では $frak(A)_T$ はBoolean algebraであり，更に稠密である．
+By the usual construction that quotients the class of sentences by the equivalence relation given by $T proves sigma <-> pi$, we can discuss the Lindenbaum algebra $frak(A)_T$ of a theory $T$.
+We have also mechanized results on these algebras.
+In particular, for a theory $T$ for which the Gödel--Rosser first incompleteness theorem holds, $frak(A)_T$ is a Boolean algebra and, moreover, dense.
 
-#proposition[
-  $T supset.eq ISigma1$ で $Delta_1$-definableな理論とする．
-  このとき，$T$ のLindenbaum代数 $frak(A)_T$ はdensely orderedである．つまり，$frak(A)_T$ の要素 $phi, psi in frak(A)_T$ を $phi < psi$ として取ると，ある $xi in frak(A)_T$ があって $phi < xi$ かつ $xi < psi$．
+#theorem[
+  Let $T supset.eq ISigma1$ be a $Delta_1$-definable theory.
+  Then the Lindenbaum algebra $frak(A)_T$ of $T$ is densely ordered:
+  that is, for any elements $phi, psi in frak(A)_T$ with $phi < psi$, there exists $xi in frak(A)_T$ such that $phi < xi$ and $xi < psi$.
 ]
 
 
@@ -1005,11 +1006,12 @@ $n$ を極めて大きく例えば $10^9$ などとして取れば，*現実的�
   ```
 ]
 
-いま，算術の理論のLindenbaum代数が可算であることは明らかであり，更に，任意の稠密かつ非自明な可算Boolean代数は全て順序同型 (cf: @HG09[Chapter 16]#footnote[一般にはatomlessnessの形で述べられることが多いが，今回の形式化ではMathlibの `DenselyOrdered` クラスに合わせて稠密性の形で述べている．]) というよく知られた事実から，直ちに次の系が得られる．
+Now, it is clear that the Lindenbaum algebra of an arithmetic theory is countable.
+Combined with the well-known fact that any two countable, dense, and nontrivial Boolean algebras are order isomorphic (cf: @HG09[Chapter 16]#footnote[This fact is usually stated in terms of atomlessness, but our mechanization states it in terms of density, following Mathlib's `DenselyOrdered` class.]), we immediately obtain the following result.
 
 
-#corollary[
-  任意の $T, U supset.eq ISigma1$ で $Delta_1$-definableな無矛盾理論のLindenbaum代数 $frak(A)_T$ および $frak(A)_U$ は互いに同型．
+#theorem[
+  For any $Delta_1$-definable consistent theories $T, U supset.eq ISigma1$, the Lindenbaum algebras $frak(A)_T$ and $frak(A)_U$ are isomorphic.
 ]
 
 
@@ -1029,10 +1031,9 @@ $n$ を極めて大きく例えば $10^9$ などとして取れば，*現実的�
   ```
 ]
 
-つまり，$ISigma1$ や $PeanoArithmetic$，ないし，形式化されていないが $Theory("ZF")$ などのLindenbaum Algebraは全て同型であり，その意味でこれらの理論のLindenbaum algebraを考えることはつまらない，ということが言える．
-なお，この同型はrecursiveに取ることが可能であることがPour-ElとKripkeの定理 @PK67 として知られているが，現段階では，そこまでの精緻化は形式化出来ていない．
+That is, the Lindenbaum algebras of $ISigma1$, $PeanoArithmetic$, and even $Theory("ZF")$ (although not mechanized) are all isomorphic; in this sense, the Lindenbaum algebras of these theories are not interesting.
+It is known as a theorem of Pour-El and Kripke @PK67 that this isomorphism can be taken to be recursive, but such a refinement has not been mechanized at present.
 
-また，理論のLindenbaum algebraの定義を拡張し，provabilityを陽に代数上のunaryなoperatorとして扱う代数は
-_diagonalizable algebra_ あるいは _Magari algebra_ (cf: @Mag75 @Sha93) と呼ばれる．
-例えば $PeanoArithmetic$ と $Theory("ZF")$ のdiagonalizable algebraは互いに同型ではない @Sha93a といった事実や，@sect:provability_logic で述べる証明可能性論理とも深い関係があることが知られている．
-しかし，現段階ではこれらの代数についての形式化は何も進んでいない．
+The algebras obtained by extending the Lindenbaum algebra with provability as an explicit unary operator are called _diagonalizable algebras_ or _Magari algebras_ (cf: @Mag75 @Sha93).
+It is known, for example, that the diagonalizable algebras of $PeanoArithmetic$ and $Theory("ZF")$ are not isomorphic @Sha93a, and that these algebras are deeply related to provability logic, which we discuss in @sect:provability_logic.
+However, no mechanization of these algebras has been carried out at present.
