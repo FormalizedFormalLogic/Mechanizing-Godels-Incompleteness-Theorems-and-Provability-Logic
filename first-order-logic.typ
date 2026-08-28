@@ -982,3 +982,53 @@ From these facts, we can show that first-order logic over the language of arithm
 $n$ を極めて大きく例えば $10^9$ などとして取れば，*現実的に*人間には証明できない正しい言明が存在すると主張することも出来よう．
 このような制限による証明可能性の議論はParikh @parikhExistenceFeasibilityArithmetic1971 のfeasibilityや，GödelないしEhrenfeucht-Mycielskiのspeed-up theorem @Godel1936 @EhrenfeuchtMycielski1971，あるいは限定算術 @Bus86 とも関連が深い．
 この形式化された事実はそれらへの第一歩となるものだろう．
+
+=== Lindenbaum Algebra
+
+$T proves sigma <-> pi$ によって同値類を定める通常の構成によって，理論 $T$ のLindenbaum algebra $frak(A)_T$ について議論することが出来る．
+これらに関しても形式化をしている．
+特に，Gödel-Rosserの第1不完全性定理が成立するような理論 $T$ では $frak(A)_T$ はBoolean algebraであり稠密である．
+
+#proposition[
+  $T supset.eq ISigma1$ で $Delta_1$-definableな理論とする．
+  このとき，$T$ のLindenbaum代数 $frak(A)_T$ はdensly orderを成す，つまり，$frak(A)_T$ の要素 $phi, psi in frak(A)_T$ を $phi < psi$ として取ると，ある $xi in frak(A)_T$ があって $phi < xi$ かつ $xi < phi$．
+]
+
+
+#leancode()[
+  ```
+  lemma FirstOrder.Arithmetic.dense (T : ArithmeticTheory) [𝗜𝚺₁ ⪯ T] [T.Δ₁] {φ ψ : LindenbaumAlgebra T}
+  : φ < ψ → ∃ ξ, φ < ξ ∧ ξ < ψ
+
+  instance (T : ArithmeticTheory) [𝗜𝚺₁ ⪯ T] [T.Δ₁] : DenselyOrdered (LindenbaumAlgebra T)
+  ```
+]
+
+更に，任意の可算稠密Boolean代数は全て順序同型というよく知られた事実から，直ちに次の系が得られる．
+
+
+#corollary[
+  任意の $T, U supset.eq ISigma1$ で $Delta_1$-definableな無矛盾理論のLindenbaum代数 $frak(A)_T$ および $frak(A)_U$ は互いに同型．
+]
+
+
+#leancode()[
+  ```
+  theorem iso_of_countable_atomless {α β : Type*}
+      [BooleanAlgebra α] [Countable α] [Nontrivial α] [DenselyOrdered α]
+      [BooleanAlgebra β] [Countable β] [Nontrivial β] [DenselyOrdered β] :
+      Nonempty (α ≃o β)
+
+  theorem lindenbaum_iso (T U : ArithmeticTheory)
+      [𝗜𝚺₁ ⪯ T] [T.Δ₁] [Consistent T] [𝗜𝚺₁ ⪯ U] [U.Δ₁] [Consistent U] :
+      Nonempty (LindenbaumAlgebra T ≃o LindenbaumAlgebra U)
+  ```
+]
+
+つまり，$ISigma1$ や $PeanoArithmetic$，ないし，形式化されていないが $Theory("ZF")$ などのLindenbaum Algebraは全て同型であり，その意味でこれらの理論のLindenbaum algebraを考えることはつまらない，ということが言える．
+なお，この同型はrecursiveに取ることが可能であることがPour-ElとKripkeの定理 @PourEl1967DeductionpreservingI として知られているが，現段階では，そこまでの精緻化は形式化出来ていない．
+
+また，理論のLindenbaum algebraの定義を拡張し，provabilityを陽に代数上のunaryなoperatorとして扱う代数は
+_diagonalizable algebra_ あるいは _Magari algebra_ (cf: @magariDiagonalizableAlgebrasAlgebraization1975 @Shavrukov1993) と呼ばれる．
+例えば $PeanoArithmetic$ と $Theory("ZF")$ のdiagonalizable algebraは互いに同型ではない @Shavrukov1993a といった事実や，@sect:provability_logic で述べる証明可能性論理とも深い関係があることが知られている．
+しかし，現段階ではこれらの代数についての形式化は何も進んでいない．
