@@ -980,7 +980,7 @@ From these facts, we can show that first-order logic over the language of arithm
 
 大雑把に $n$ 文字の論理式ないし証明をコードするとそのGödel数は $2^n$ になると概算するならば，この主張は「 $T$ 上では $n$ 文字では証明できない正しい事実が存在する」ということを述べている．
 $n$ を極めて大きく例えば $10^9$ などとして取れば，*現実的に*人間には証明できない正しい言明が存在すると主張することも出来よう．
-このような制限による証明可能性の議論はParikh @parikhExistenceFeasibilityArithmetic1971 のfeasibilityや，GödelないしEhrenfeucht-Mycielskiのspeed-up theorem @Godel1936 @EhrenfeuchtMycielski1971，あるいは限定算術 @Bus86 とも関連が深い．
+このような制限による証明可能性の議論はParikh @Par71 のfeasibilityや，GödelないしEhrenfeucht-Mycielskiのspeed-up theorem @God36 @EM71，あるいは限定算術 @Bus86 とも関連が深い．
 この形式化された事実はそれらへの第一歩となるものだろう．
 
 === Lindenbaum Algebra
@@ -1026,9 +1026,9 @@ $T proves sigma <-> pi$ によって同値類を定める通常の構成によ�
 ]
 
 つまり，$ISigma1$ や $PeanoArithmetic$，ないし，形式化されていないが $Theory("ZF")$ などのLindenbaum Algebraは全て同型であり，その意味でこれらの理論のLindenbaum algebraを考えることはつまらない，ということが言える．
-なお，この同型はrecursiveに取ることが可能であることがPour-ElとKripkeの定理 @PourEl1967DeductionpreservingI として知られているが，現段階では，そこまでの精緻化は形式化出来ていない．
+なお，この同型はrecursiveに取ることが可能であることがPour-ElとKripkeの定理 @PK67 として知られているが，現段階では，そこまでの精緻化は形式化出来ていない．
 
 また，理論のLindenbaum algebraの定義を拡張し，provabilityを陽に代数上のunaryなoperatorとして扱う代数は
-_diagonalizable algebra_ あるいは _Magari algebra_ (cf: @magariDiagonalizableAlgebrasAlgebraization1975 @Shavrukov1993) と呼ばれる．
-例えば $PeanoArithmetic$ と $Theory("ZF")$ のdiagonalizable algebraは互いに同型ではない @Shavrukov1993a といった事実や，@sect:provability_logic で述べる証明可能性論理とも深い関係があることが知られている．
+_diagonalizable algebra_ あるいは _Magari algebra_ (cf: @Mag75 @Sha93) と呼ばれる．
+例えば $PeanoArithmetic$ と $Theory("ZF")$ のdiagonalizable algebraは互いに同型ではない @Sha93a といった事実や，@sect:provability_logic で述べる証明可能性論理とも深い関係があることが知られている．
 しかし，現段階ではこれらの代数についての形式化は何も進んでいない．
