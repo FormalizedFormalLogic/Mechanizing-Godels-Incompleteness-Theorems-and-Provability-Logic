@@ -166,11 +166,11 @@ $
 To work with $Bit(x, y)$ in weak arithmetic, we also mechanized the well-known fact due to Gaifman and Dimitracopoulos @GD82,
 that the graph of exponentiation is representable by a $Delta_0$-formula and that its inductive properties are provable in $Ind(Delta_0)$.
 
-The $ISigma1$ version of the Knaster-Tarski theorem, stated below, is useful for defining recursively defined structures over $Universe$ with appropriate complexity.
+The $ISigma1$ version of the Knaster--Tarski theorem, stated below, is useful for defining recursively defined structures over $Universe$ with appropriate complexity.
 
 #let Fix = $bold("Fix")$
 
-#theorem[Version of the Knaster-Tarski theorem][
+#theorem[Version of the Knaster--Tarski theorem][
   Let $Phi: cal(P)(Universe) -> cal(P)(Universe)$ be a class-valued function.
   Assume that this satisfies the following conditions.
   / Definability: A predicate $P(x, c) := x in Phi({z | z in c})$ is $Delta_1$-definable with parameters.
@@ -608,7 +608,7 @@ This is precisely an abstraction of the incompleteness theorem as improved by Ro
 
 #let Rosser = $frak(R)$
 
-#proposition[Abstract version of Gödel-Rosser theorem][
+#proposition[Abstract version of Gödel--Rosser theorem][
   Assume that the provability predicate $Rosser$ satisfies $bold("Ros")$.
   In this case, the Gödel sentence for $Rosser$ is called the _Rosser sentence_.
   Then we have $T nproves Godel(Rosser)$ and $T nproves not Godel(Rosser)$.
@@ -639,7 +639,7 @@ This is precisely an abstraction of the incompleteness theorem as improved by Ro
   ```
 ]
 
-Indeed, the concrete statement of the Gödel-Rosser theorem given later, obtained by instantiating this abstraction, does not require $Sigma_1$-soundness.
+Indeed, the concrete statement of the Gödel--Rosser theorem given later, obtained by instantiating this abstraction, does not require $Sigma_1$-soundness.
 
 We next describe refutability (_Widerlegbar_) $Wid$.
 Concerning G2, formal consistency can be expressed in ways other than the formalized consistency $not Bew bot$ introduced in @prop:abstract_G2.
