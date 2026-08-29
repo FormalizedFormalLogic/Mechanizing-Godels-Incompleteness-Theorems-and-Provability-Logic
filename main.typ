@@ -311,11 +311,11 @@ these two parameters.
     ),
     (
       "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L54"
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L54",
     ),
     (
       "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L59"
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L59",
     ),
     (
       "Foundation",
@@ -332,7 +332,7 @@ these two parameters.
     (
       "Foundation",
       "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L256",
-    )
+    ),
   ),
 )[
   ```
@@ -383,7 +383,7 @@ These facts immediately yield definitions over $Universe$ of basic syntactic ope
     (
       "Foundation",
       "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Proof/Basic.lean#L525",
-    )
+    ),
   ),
 )[
   ```
@@ -480,7 +480,8 @@ Mechanizing the incompleteness theorems via such an abstract provability has pre
     inset: 6pt,
     align: (right + horizon, left + horizon),
     stroke: none,
-    $bold("D1")$, [
+    $bold("D1")$,
+    [
       $T proves sigma ==> T_0 proves Bew(GoedelNum(sigma))$
     ],
   ))
@@ -495,18 +496,25 @@ Mechanizing the incompleteness theorems via such an abstract provability has pre
     inset: 6pt,
     align: (right + horizon, left + horizon),
     stroke: none,
-    $bold("D2")$, [
+    $bold("D2")$,
+    [
       $T_0 proves Bew (sigma -> pi) -> Bew sigma -> Bew pi$
     ],
-    $bold("D3")$, [
+
+    $bold("D3")$,
+    [
       $T_0 proves Bew sigma -> Bew Bew sigma$
     ],
-    $bold("Kre")$, [
+
+    $bold("Kre")$,
+    [
       $T proves Bew sigma$ implies $T proves sigma$
     ],
-    $bold("Ros")$, [
+
+    $bold("Ros")$,
+    [
       $T proves not sigma$ implies $T_0 proves not Bew sigma$
-    ]
+    ],
   ))
   // - $bold("FC")$ (on an $cal(L)$-sentence $sigma$): $T_0 proves sigma -> Bew sigma$.
   // - $bold("S")$ (on an $L_0$-structure $M$) : $M models Bew sigma ==> T proves sigma$.
@@ -578,9 +586,9 @@ which is obtained by the standard construction of diagonalization.
   links: (
     (
       "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/25dda5090b03e9d74b23d4537ca76e546c7197af/Foundation/FirstOrder/Bootstrapping/FixedPoint.lean#L130"
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/25dda5090b03e9d74b23d4537ca76e546c7197af/Foundation/FirstOrder/Bootstrapping/FixedPoint.lean#L130",
     ),
-  )
+  ),
 )[
   ```
   theorem diagonal {T : ArithmeticTheory} [𝗜𝚺₁ ⪯ T] (θ : ArithmeticSemisentence 1) :
@@ -672,10 +680,8 @@ As further results, we can also mechanize Löb's theorem and the formalized Löb
     inset: 6pt,
     align: (right + horizon, left + horizon),
     stroke: none,
-    [Löb's theorem],
-    [$T proves Bew sigma -> sigma$ implies $T proves sigma$.],
-    [Formalized Löb's theorem],
-    [$T_0 proves Bew (Bew sigma -> sigma) -> Bew sigma$.],
+    [Löb's theorem], [$T proves Bew sigma -> sigma$ implies $T proves sigma$.],
+    [Formalized Löb's theorem], [$T_0 proves Bew (Bew sigma -> sigma) -> Bew sigma$.],
   ))
 ]
 
@@ -809,11 +815,11 @@ The following is immediate for the Jeroslow sentence.
 
 We now state Jeroslow's incompleteness theorem.
 
-#let Safe(B,W) = $sans("Safe")_(#B,#W)$
+#let Safe(B, W) = $sans("Safe")_(#B,#W)$
 #let FLoN(B, W) = $sans("FLoN")_(#B,#W)$
 
 #proposition[Abstract version of Jeroslow's G2 @Jer73][
-  Let $Safe(Bew,Wid) (x) equiv not (Bew x and Wid x)$ be the unary formula stating that a sentence is not both provable and refutable (_safe_), and let $FLoN(Bew, Wid) equiv forall x, Safe(Bew, Wid)(x)$ be the sentence expressing consistency in the sense that every sentence is safe (the _formalized law of non-contradiction_).
+  Let $Safe(Bew, Wid) (x) equiv not (Bew x and Wid x)$ be the unary formula stating that a sentence is not both provable and refutable (_safe_), and let $FLoN(Bew, Wid) equiv forall x, Safe(Bew, Wid)(x)$ be the sentence expressing consistency in the sense that every sentence is safe (the _formalized law of non-contradiction_).
 
   If $T$ is consistent and $T_0 proves Jeroslow(Wid) -> Bew Jeroslow(Wid)$, then $T nproves FLoN(Bew, Wid)$.
 ]
@@ -1467,7 +1473,7 @@ Moreover, constructing countermodels via the semantics shows that these inclusio
   ```
 ]
 
-=== Applications of the sequent calculus <sect:application-of-sequent-calculus>
+== Applications of the sequent calculus <sect:application-of-sequent-calculus>
 
 Sambin and Valentini @SV82 give several further applications of the sequent calculus for $LogicGL$.
 First, since it is a pure sequent calculus, the Craig interpolation property (CIP) can be shown straightforwardly by Maehara's method @Mae61 (cf. @Tak87).
@@ -1546,7 +1552,7 @@ Finally, we have also mechanized facts on the CIP of $LogicS$ and $LogicD$, whic
   ```
 ]
 
-=== On the labelled sequent calculus <sect:labelled-sequent-calculus>
+== On the labelled sequent calculus <sect:labelled-sequent-calculus>
 
 We have also mechanized the labelled sequent calculus for #LogicGL by Negri @Neg05 @Neg14. As for prior work, our mechanization is almost the same in its method as the mechanization of the labelled sequent calculus for #LogicGL in HOL Light by Maggesi and Perini Brogi @MPB21 @MPB23, and in that sense it has little novelty.
 We nevertheless touch on some differences between the implementations.
@@ -1830,7 +1836,7 @@ We have mechanized this fact as well.
   ```
 ]
 
-=== On some remaining `sorry`s <subsect:remaining_sorry_in_provlogic>
+== On some remaining `sorry`s <subsect:remaining_sorry_in_provlogic>
 
 Although the mechanization of the classification theorem itself does not depend on them, the mechanizations of some facts of provability logic still contain `sorry`s.
 We note them here.
@@ -2231,12 +2237,13 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
   ```
 ]
 
-== Related work and milestones <sect:provabilitylogic_futurework>
+= Related work and future work <sect:provabilitylogic_futurework>
 
-Finally, we mention some prior work related to theorem provers and mechanizations for provability logic, and describe future directions.
-In the following, we restrict our attention to prior work in the field of provability logic, and omit prior work in other areas of modal logic (e.g., tense logic and epistemic logic).
+Finally, in this section, we mention some prior work related to our mechanization, that is, mechanizations of the incompleteness theorems and of facts concerning provability logic in proof assistants.
+Moreover, on that basis, we indicate several directions in which we plan.
+Concerning provability logic, there is much prior work on mechanizations in the broader area of modal logic in general (e.g., tense logic and epistemic logic), but since these are outside the interest of the present report, we omit them.
 
-=== Proof theory <subsect:proof_theory_provability_logic>
+== Proof theory of provability logics <subsect:proof_theory_provability_logic>
 
 The proof theory of #LogicGL has been studied extensively.
 First, Gentzen-style sequent calculi have been investigated in numerous works @SV80 @Lei81 @SV82 @Val83 @Bor83 @Avr84 @Sas01 @Moe01 @GR12 @Bri16.
@@ -2251,7 +2258,6 @@ e.g., the _labelled sequent calculi_ by Negri @Neg05 @Neg14, the _tree-hypersequ
 For discussions on the equivalence of the provability of several of these sequent systems, including the Gentzen-style ones, see Goré and Ramanayake @GR12a and Lyon @Lyo25.
 In particular, Shamkanov's non-wellfounded proofs have the advantage that the Lyndon interpolation theorem can be proved syntactically @Sha14[Chapter 4]#footnote[This fact itself is also proved in @Sha11, but the proof there relies on Kripke-semantical techniques.].
 As far as we know, the only mechanizations of the proof theory of sequent calculi equipped with such additional machinery are the mechanization of the labelled sequent calculus in HOL Light by Maggesi and Perini Brogi @MPB21 @MPB23 and, along that line, Bilotta's HOLMS project @Bil25 @BMPB26 @BMPB26a.
-
 
 Tableau methods for #LogicGL are discussed in @Boo94[Chapter 10] for instance.
 A tableau-based automated theorem prover for #LogicGL was implemented by Goré and Kelly @GK07, where the efficiency of the implementation is also discussed.
@@ -2269,7 +2275,7 @@ In the present work, we have mechanized the Gentzen-style sequent calculus for #
 For future work, we plan to mechanize sequent calculi with other machinery as well, together with the equivalence of their provability.
 In particular, although Shamkanov's circular proofs involve infinitary structures, the studies by Sierra Miranda et al. @SM23 @SMSZ24 @HSMS25 @SMS26 have revealed that they have many applications, so their mechanization seems to be a technically challenging but worthwhile task.
 
-=== Provability logic of Heyting arithmetic
+== Provability logic of Heyting arithmetic
 
 The provability logic of intuitionistic or constructive arithmetic, in particular, Heyting arithmetic #HeytingArithmetic, has been a subject of study for a long time (see @AB05[Section 9] @BV06[Section 4]).
 Even among the recent developments alone, there is prior work such as @AM18 @AM19 @SM23a @Moj24 @Moj26.
@@ -2290,7 +2296,7 @@ Finally, the provability logic of Heyting arithmetic has been announced in Mojta
 However, at the time of writing, this preprint is still under review#footnote[The first version was submitted to arXiv in 2022.].
 In the future, we plan to mechanize these arguments, which will make it possible to verify them rigorously and thus to settle this problem in a more reliable way.
 
-=== Enriched Languages
+== Enrhcied modalities
 
 There are also extensions in the direction of adding further modal operators in order to express various notions related to provability.
 Here we mention two directions for which mechanizations can be found: polymodal provability logic and interpretability logic.
