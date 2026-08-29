@@ -32,9 +32,21 @@
   keywords: (),
   body,
 ) = {
+  // fine-lncs は著者が2人以上だと一律 "A et al." にするので，
+  // LNCS の慣例に従い2人なら "A and B" とする（3人以上は et al.）
+  let abbrev(name) = {
+    let ns = name.split(" ")
+    [#ns.at(0).split("-").map(w => w.at(0) + ".").join("-") #ns.last()]
+  }
+  let running-author = {
+    let an = authors.map(a => abbrev(a.name))
+    if an.len() == 2 [#an.at(0) and #an.at(1)] else { none }
+  }
+
   show: lncs.with(
     title: title,
     authors: authors,
+    running-author: running-author,
     abstract: abstract,
     keywords: keywords,
     bibliography: bibliography("references.bib", style: "assets/springer-lecture-notes-in-computer-science.csl"),
