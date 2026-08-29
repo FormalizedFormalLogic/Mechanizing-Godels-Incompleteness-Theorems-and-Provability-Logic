@@ -1,5 +1,5 @@
 #import "@preview/fine-lncs:0.6.5": author, institute, lncs, proof, theorem
-#import "@preview/fine-lncs:0.6.5": author, institute, lncs, theorem, proof
+#import "@preview/fine-lncs:0.6.5": author, institute, lncs, proof, theorem
 #import "@preview/ctheorems:1.1.3": *
 #import "@preview/curryst:0.5.0": prooftree, rule
 
@@ -291,8 +291,10 @@
 #let Prov(T) = $attach(br: #T, sans("Prov"))$
 // Use for *standard* provability predicate
 #let Pr(T) = $attach(br: #T, sans("Pr"))$
-// Use for *restricted* provability predicate
-#let RPr(T, e) = $attach(tr: e, br: #T, sans("Pr"))$
+#let RPr(T, f, e) = $attach(tr: chevron.l #f\, #e chevron.r, br: #T, sans("Pr"))$
+#let RGodel(T, f, e) = $attach(tr: (#f\, #e), br: #T, sans("G"))$
+#let supexp = $sans("supexp")$
+#let iterexp(x, y) = $attach(tr: #y, br: #x, 2)$
 
 #let height(T) = $upright("hgt")(#T)$
 

@@ -311,11 +311,11 @@ these two parameters.
     ),
     (
       "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L54"
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L54",
     ),
     (
       "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L59"
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L59",
     ),
     (
       "Foundation",
@@ -332,7 +332,7 @@ these two parameters.
     (
       "Foundation",
       "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L256",
-    )
+    ),
   ),
 )[
   ```
@@ -383,7 +383,7 @@ These facts immediately yield definitions over $Universe$ of basic syntactic ope
     (
       "Foundation",
       "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Proof/Basic.lean#L525",
-    )
+    ),
   ),
 )[
   ```
@@ -480,7 +480,8 @@ Mechanizing the incompleteness theorems via such an abstract provability has pre
     inset: 6pt,
     align: (right + horizon, left + horizon),
     stroke: none,
-    $bold("D1")$, [
+    $bold("D1")$,
+    [
       $T proves sigma ==> T_0 proves Bew(GoedelNum(sigma))$
     ],
   ))
@@ -495,18 +496,25 @@ Mechanizing the incompleteness theorems via such an abstract provability has pre
     inset: 6pt,
     align: (right + horizon, left + horizon),
     stroke: none,
-    $bold("D2")$, [
+    $bold("D2")$,
+    [
       $T_0 proves Bew (sigma -> pi) -> Bew sigma -> Bew pi$
     ],
-    $bold("D3")$, [
+
+    $bold("D3")$,
+    [
       $T_0 proves Bew sigma -> Bew Bew sigma$
     ],
-    $bold("Kre")$, [
+
+    $bold("Kre")$,
+    [
       $T proves Bew sigma$ implies $T proves sigma$
     ],
-    $bold("Ros")$, [
+
+    $bold("Ros")$,
+    [
       $T proves not sigma$ implies $T_0 proves not Bew sigma$
-    ]
+    ],
   ))
   // - $bold("FC")$ (on an $cal(L)$-sentence $sigma$): $T_0 proves sigma -> Bew sigma$.
   // - $bold("S")$ (on an $L_0$-structure $M$) : $M models Bew sigma ==> T proves sigma$.
@@ -578,9 +586,9 @@ which is obtained by the standard construction of diagonalization.
   links: (
     (
       "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/25dda5090b03e9d74b23d4537ca76e546c7197af/Foundation/FirstOrder/Bootstrapping/FixedPoint.lean#L130"
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/25dda5090b03e9d74b23d4537ca76e546c7197af/Foundation/FirstOrder/Bootstrapping/FixedPoint.lean#L130",
     ),
-  )
+  ),
 )[
   ```
   theorem diagonal {T : ArithmeticTheory} [𝗜𝚺₁ ⪯ T] (θ : ArithmeticSemisentence 1) :
@@ -672,10 +680,8 @@ As further results, we can also mechanize Löb's theorem and the formalized Löb
     inset: 6pt,
     align: (right + horizon, left + horizon),
     stroke: none,
-    [Löb's theorem],
-    [$T proves Bew sigma -> sigma$ implies $T proves sigma$.],
-    [Formalized Löb's theorem],
-    [$T_0 proves Bew (Bew sigma -> sigma) -> Bew sigma$.],
+    [Löb's theorem], [$T proves Bew sigma -> sigma$ implies $T proves sigma$.],
+    [Formalized Löb's theorem], [$T_0 proves Bew (Bew sigma -> sigma) -> Bew sigma$.],
   ))
 ] <prop:abstract_Löb>
 
@@ -809,11 +815,11 @@ The following is immediate for the Jeroslow sentence.
 
 We now state Jeroslow's incompleteness theorem.
 
-#let Safe(B,W) = $sans("Safe")_(#B,#W)$
+#let Safe(B, W) = $sans("Safe")_(#B,#W)$
 #let FLoN(B, W) = $sans("FLoN")_(#B,#W)$
 
 #proposition[Abstract version of Jeroslow's G2 @Jer73][
-  Let $Safe(Bew,Wid) (x) equiv not (Bew x and Wid x)$ be the unary formula stating that a sentence is not both provable and refutable (_safe_), and let $FLoN(Bew, Wid) equiv forall x, Safe(Bew, Wid)(x)$ be the sentence expressing consistency in the sense that every sentence is safe (the _formalized law of non-contradiction_).
+  Let $Safe(Bew, Wid) (x) equiv not (Bew x and Wid x)$ be the unary formula stating that a sentence is not both provable and refutable (_safe_), and let $FLoN(Bew, Wid) equiv forall x, Safe(Bew, Wid)(x)$ be the sentence expressing consistency in the sense that every sentence is safe (the _formalized law of non-contradiction_).
 
   If $T$ is consistent and $T_0 proves Jeroslow(Wid) -> Bew Jeroslow(Wid)$, then $T nproves FLoN(Bew, Wid)$.
 ] <prop:abstract_JG2>
@@ -1026,7 +1032,7 @@ With these preparations, the following lemma is mechanized.
 
 #leancode()[
   ```
-  theorem church_theorem_general : ¬ComputablePred T.theory := by
+  theorem church_theorem_general : ¬ComputablePred T.theory
   ```
 ]
 
@@ -1045,36 +1051,63 @@ From these facts, we can show that first-order logic over the language of arithm
   ```
 ]
 
-=== Restricted provability
+=== On proof size
 
 ある意味で現実的な(feasible)証明の長さで証明可能，ということを形式化によって論じることが出来る．
 
 #theorem[
-  自然数 $e in omega$ を任意に取り，$T supset.eq ISigma1$ を $Delta_1$-definable かつ $Sigma_1$-sound な理論とする．
-  このとき，provability predicateを更に制限して，「Gödel数が $2^e$ 未満の$T$-証明によって証明できる」ということを表す _restricted provability predicate_ $RPr(T, e) (x)$ を $Pi_1$-述語で構成できる．
-  通常のGödel文のように，$not RPr(T, e) (x)$ の不動点として $upright("G")_T^e$ を取ることにする．
+  $T supset.eq ISigma1$ を $Delta_1$-definable かつ $Sigma_1$-sound な理論とし，$f$ を $Sigma_1$-definable な関数，$e in omega$ を任意の自然数とする．
+  このとき，provability predicateを更に制限して，「Gödel数が $f(e)$ 未満の$T$-証明によって証明できる」ということを表す _restricted provability predicate_ $RPr(T, f, e) (x)$ を構成できる．
+  通常のGödel文のように，$not RPr(T, f, e) (x)$ の不動点として $RGodel(T, f, e)$ を取ることにする．
 
-  このとき，$NN models upright("G")_T^e$ であり，更に $T proves upright("G")_T^e$ であって，その証明のコードは $2^e$ 以上である．
-  つまり，$upright("G")_T^e$ は正しいがコードが $2^e$ 未満の証明では証明できない．
+  このとき，$NN models RGodel(T, f, e)$ であり，更に $T proves RGodel(T, f, e)$ であって，その証明のコードは $f(e)$ 以上である．
+  つまり，$RGodel(T, f, e)$ は正しいがコードが $f(e)$ 未満の証明では証明できない．
 ]
 
 #leancode(
   links: (("Foundation", "Foundation/FirstOrder/Incompleteness/RestrictedProvability.lean"),),
   note: [
-    `T ⊢! T.restrictedGödel e` は「 $upright("G")_T^e$ の $T$-証明 」の`Type`を表す（証明可能という`Prop`ではない）．
+    `fDef` は $f$ を定義する $Sigma_1$-論理式であり，`[𝚺₁-Function₁ f via fDef]` は `fDef` が実際に $f$ を定義していることを表す．
+    すなわちこれらの定理を使うには，具体的な関数 `f` と，それを表現する論理式 `fDef` の両方を与える必要がある．
+    また `T ⊢! T.restrictedGödel fDef e` は「 $RGodel(T, f, e)$ の $T$-証明 」の`Type`を表す（証明可能という`Prop`ではない）．
   ],
 )[
   ```
-  theorem true_restrictedGödel : ℕ↓[ℒₒᵣ] ⊧ T.restrictedGödel e
+  variable {T : ArithmeticTheory} [T.Δ₁] [𝗜𝚺₁ ⪯ T] [T.SoundOnHierarchy 𝚺 1]
+           {f : ℕ → ℕ) {fDef : 𝚺₁.Semisentence 2} {e : ℕ}
 
-  theorem provable_restrictedGödel : T ⊢ T.restrictedGödel e
+  theorem true_restrictedGödel : ℕ↓[ℒₒᵣ] ⊧ T.restrictedGödel fDef e
 
-  theorem lower_bound_gödelNumber_proof_restrictedGödel : ∀ b : T ⊢! T.restrictedGödel e, 2^e ≤ ⌜b⌝
+  theorem provable_restrictedGödel : T ⊢ T.restrictedGödel fDef e
+
+  theorem lower_bound_gödelNumber_proof_restrictedGödel :
+    ∀ b : T ⊢! T.restrictedGödel fDef e, f (ORingStructure.numeral e) ≤ ⌜b⌝
   ```
 ]
 
-大雑把に $n$ 文字の論理式ないし証明をコードするとそのGödel数は $2^n$ になると概算するならば，この主張は「 $T$ 上では $n$ 文字では証明できない正しい事実が存在する」ということを述べている．
-$n$ を極めて大きく例えば $10^9$ などとして取れば，*現実的に*人間には証明できない正しい言明が存在すると主張することも出来よう．
+このような $f$ の具体例として，例えば $ISigma1$ 上で _superexponential_ $supexp$ #footnote[
+  $iterexp(x, y)$ を $iterexp(x, 0) = x$，$iterexp(x, y + 1) = 2^(iterexp(x, y))$ で定め，$supexp(x) = iterexp(x, x)$ とする．例えば $supexp(2) = 16$，$supexp(3) = 2^256$ であり，また $x >= 1$ ならば $2^x <= supexp(x)$ が成り立つ．
+] を取ることが出来て，次の系が得られる．
+
+#corollary[
+  $T supset.eq ISigma1$ を $Delta_1$-definable かつ $Sigma_1$-sound な理論とし，$e in omega$ を任意の自然数とする．
+  このとき $T proves RGodel(T, supexp, e)$ であって，その証明のコードは $supexp(e)$ 以上である．
+]
+
+#leancode(links: (
+  ("Foundation", "Foundation/FirstOrder/Arithmetic/HFS/Superexp.lean"),
+  ("Foundation", "Foundation/FirstOrder/Incompleteness/RestrictedProvability.lean"),
+))[
+  ```
+  theorem provable_restrictedGödel_superexp : T ⊢ T.restrictedGödel superexpDef e
+
+  theorem lower_bound_gödelNumber_proof_restrictedGödel_superexp :
+      ∀ b : T ⊢! T.restrictedGödel superexpDef e, Superexp.superexp e ≤ ⌜b⌝
+  ```
+]
+
+今回の形式化において $n$ 文字の論理式ないし証明をコードするとそのGödel数は概ね $2^n$ 程度のオーダーで近似できる．
+故に $f$ として $supexp$ を取り，更に $e$ を極めて大きく例えば $10^9$ などとして取れば，この主張は *現実的に*人間には証明できない（それどころか読むことも出来ない）正しい言明が存在するという示唆を与える．
 このような制限による証明可能性の議論はParikh @Par71 のfeasibilityや，GödelないしEhrenfeucht–Mycielskiのspeed-up theorem @God36 @EM71，あるいは限定算術 @Bus86 とも関連が深い．
 この形式化された事実はそれらへの第一歩となるものだろう．
 
