@@ -71,7 +71,7 @@ In the present paper, we describe our mechanizations of Gödel's first and secon
 Our work is carried out in Lean 4, an interactive theorem prover, together with mathlib4 @Mathlib2020, its community-developed mathematics library.
 Lean 4 is based on the Calculus of Inductive Constructions (CIC) @dMU21,
 and features dependent types, quotient types, and support for noncomputable definitions, making it highly expressive.
-In addition, its powerful metaprogramming infrastructure like aesop @LF23 enables efficient proof automation and extensibility.
+In addition, its powerful metaprogramming infrastructure like `aesop` @LF23 and `grind` @MdM26 enables efficient proof automation and extensibility.
 
 Our mechanization is currently hosted as a repository on GitHub, and the version we refer to is #link(REPO_SOURCES.at("Foundation")).
 In the present paper, we will briefly and informally introduce the mathematical facts without omitting the essentials, and show the code of our mechanization corresponding to those facts.
