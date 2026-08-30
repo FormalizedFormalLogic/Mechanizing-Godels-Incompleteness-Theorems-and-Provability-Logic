@@ -1018,7 +1018,7 @@ We now discuss the undecidability of first-order logic.
 First, in Mathlib, computability of a predicate (at the meta level of Lean) is defined by `ComputablePred` (cf. @Car19).
 This definition requires that the types of the domain and the range are `Primcodable` #footnote[That is, encoding into and decoding from natural numbers are primitive recursive.].
 Since the type of formulas of our arithmetic can be shown to be `Primcodable` via a suitable encoding, we can discuss, for example, whether the set $upright("Thm")(T)$ of sentences provable from a theory $T$ is computable.
-With these preparations, 我々は一般にChurchの定理と呼ばれる次の定理を証明することが出来る．
+With these preparations, we can prove the following theorem, commonly known as Church's theorem.
 
 #theorem[Church's Theorem (for $Sigma_1$-sound theory)][
   For a $Sigma_1$-sound theory $T supset.eq R0$, $upright("Thm")(T)$ is not computable.
@@ -1046,8 +1046,8 @@ From these facts, we can show that first-order logic over the language of arithm
   ```
 ]
 
-なお，次で説明する加速定理(@thm:speedup)のためには $Sigma_1$-健全性という仮定では都合が悪く，仮定を無矛盾性にまで弱めた次の版も形式化している．
-ただしトレードオフとして，理論に対する仮定は $R0$ を含むことから $ISigma1$ を含むことへと強めなければならない．
+The assumption of $Sigma_1$-soundness is inconvenient for the speed-up theorem (@thm:speedup) explained below, so we have also mechanized the following version, which weakens the assumption to mere consistency.
+As a trade-off, the assumption on the theory must be strengthened from containing $R0$ to containing $ISigma1$.
 
 #theorem[Church's Theorem (for consistent theory)][
   For a consistent theory $T supset.eq ISigma1$, $upright("Thm")(T)$ is not computable.
@@ -1060,26 +1060,26 @@ From these facts, we can show that first-order logic over the language of arithm
   ```
 ]
 
-$PeanoArithmeticMinus$ は $ISigma1$ よりも弱い理論であるから，先程の第一階述語論理の決定不能性の証明にこの版を使うことは出来ないことに注意しておく．
+Note that this version cannot be used in the above proof of the undecidability of first-order logic, since $PeanoArithmeticMinus$ is weaker than $ISigma1$.
 
 === On proof size
-ある意味で現実的な(feasible)長さ・複雑さの証明で証明可能である，ということも形式化によって論じることが出来る．
+Provability by a proof of feasible length or complexity, in a certain sense, can also be discussed through mechanization.
 
 #theorem[
-  $T supset.eq ISigma1$ を $Delta_1$-definable かつ $Sigma_1$-sound な理論とし，$f$ を $Sigma_1$-definable な関数，$e in omega$ を任意の自然数とする．
-  このとき，provability predicateを更に制限して，「Gödel数が $f(e)$ 未満の$T$-証明によって証明できる」ということを表す _restricted provability predicate_ $RPr(T, f, e) (x)$ を構成できる．
-  通常のGödel文と同様に，$not RPr(T, f, e) (x)$ の不動点として $RGodel(T, f, e)$ を取ることにする．
+  Let $T supset.eq ISigma1$ be a $Delta_1$-definable and $Sigma_1$-sound theory, let $f$ be a $Sigma_1$-definable function, and let $e in omega$ be an arbitrary natural number.
+  Then we can construct the _restricted provability predicate_ $RPr(T, f, e) (x)$, a further restriction of the provability predicate expressing that "provable by a $T$-proof whose Gödel number is less than $f(e)$".
+  As with the usual Gödel sentence, let $RGodel(T, f, e)$ be a fixed point of $not RPr(T, f, e) (x)$.
 
-  このとき，$NN models RGodel(T, f, e)$ であり，更に $T proves RGodel(T, f, e)$ であって，その証明のコードは $f(e)$ 以上である．
-  つまり，$RGodel(T, f, e)$ は正しいがコードが $f(e)$ 未満の証明では証明できない．
+  Then $NN models RGodel(T, f, e)$, and moreover $T proves RGodel(T, f, e)$ with the code of any such proof at least $f(e)$.
+  That is, $RGodel(T, f, e)$ is true but cannot be proved by any proof whose code is less than $f(e)$.
 ]
 
 #leancode(
   links: (("Foundation", "Foundation/FirstOrder/Incompleteness/RestrictedProvability.lean"),),
   note: [
-    `fDef` は $f$ を定義する $Sigma_1$-論理式であり，`[𝚺₁-Function₁ f via fDef]` は `fDef` が実際に $f$ を定義していることを表す．
-    すなわちこれらの定理を使うには，具体的な関数 `f` と，それを表現する論理式 `fDef` の両方を与える必要がある．
-    また `T ⊢! T.restrictedGödel fDef e` は「 $RGodel(T, f, e)$ の $T$-証明 」の`Type`を表す（証明可能という`Prop`ではない）．
+    `fDef` is a $Sigma_1$-formula defining $f$, and `[𝚺₁-Function₁ f via fDef]` states that `fDef` actually defines $f$.
+    That is, to use these theorems, both a concrete function `f` and a formula `fDef` representing it must be supplied.
+    Also, `T ⊢! T.restrictedGödel fDef e` denotes the `Type` of "$T$-proofs of $RGodel(T, f, e)$" (not the `Prop` of provability).
   ],
 )[
   ```
@@ -1097,13 +1097,13 @@ $PeanoArithmeticMinus$ は $ISigma1$ よりも弱い理論であるから，先�
   ```
 ]
 
-このような $f$ の具体例としては，$ISigma1$ 上で形式化したsuperexponential関数 $supexp$ #footnote[
-  $iterexp(x, y)$ を $iterexp(x, 0) = x$，$iterexp(x, y + 1) = 2^(iterexp(x, y))$ で定め，$supexp(x) = iterexp(x, x)$ とする．例えば $supexp(2) = 16$，$supexp(3) = 2^256$ であり，また $x >= 1$ ならば $2^x <= supexp(x)$ が成り立つ．
-] が挙げられる．これを取れば次の系が得られる．
+As a concrete example of such an $f$, we can take the superexponential function $supexp$ #footnote[
+  Define $iterexp(x, y)$ by $iterexp(x, 0) = x$ and $iterexp(x, y + 1) = 2^(iterexp(x, y))$, and let $supexp(x) = iterexp(x, x)$. For example, $supexp(2) = 16$ and $supexp(3) = 2^256$; also $2^x <= supexp(x)$ holds for $x >= 1$.
+], formalized over $ISigma1$, which yields the following corollary.
 
 #corollary[
-  $T supset.eq ISigma1$ を $Delta_1$-definable かつ $Sigma_1$-sound な理論とし，$e in omega$ を任意の自然数とする．
-  このとき $T proves RGodel(T, supexp, e)$ であって，その証明のコードは $supexp(e)$ 以上である．
+  Let $T supset.eq ISigma1$ be a $Delta_1$-definable and $Sigma_1$-sound theory, and let $e in omega$ be an arbitrary natural number.
+  Then $T proves RGodel(T, supexp, e)$, with the code of any such proof at least $supexp(e)$.
 ]
 
 #leancode(links: (
@@ -1120,19 +1120,19 @@ $PeanoArithmeticMinus$ は $ISigma1$ よりも弱い理論であるから，先�
   ```
 ]
 
-今回の形式化において $n$ 文字の論理式ないし証明をコードすると，そのGödel数は概ね $2^n$ 程度のオーダーになる．
-したがって，$f$ として増加のオーダーが遥かに激しい $supexp$ を取り，$e$ を $10^9$ などと極めて大きく取れば，この系は *現実的に* 人間には証明できない（それどころか読むことも出来ない）正しい言明が存在するという示唆を与える．
+In our mechanization, coding a formula or a proof of $n$ characters yields a Gödel number roughly of the order of $2^n$.
+Hence, taking as $f$ the far faster-growing $supexp$ and taking $e$ extremely large, say $10^9$, this corollary suggests that there are true statements that humans can _practically_ never prove (or even read).
 
-更に，証明の長さに関する加速定理のうち，Ehrenfeucht–Mycielski @EM71 によるものも形式化している#footnote[この種の定理はGödel @God36 に遡る．]．
+Furthermore, among the speed-up theorems on the length of proofs, we have also mechanized the one due to Ehrenfeucht–Mycielski @EM71 #footnote[Theorems of this kind go back to Gödel @God36.].
 
 #theorem[Ehrenfeucht–Mycielski speed-up theorem @EM71][
-  $min_T (sigma)$ を，$T proves sigma$ ならば $sigma$ の $T$-証明のGödel数のうち最小のものとし，$T nproves sigma$ ならば $0$ とする．
+  Let $min_T (sigma)$ be the least Gödel number of a $T$-proof of $sigma$ if $T proves sigma$, and $0$ if $T nproves sigma$.
 
-  $T supset.eq ISigma1$ を $Delta_1$-definable な理論とし，$T nproves sigma$ なる文 $sigma$ を取る．
-  このとき任意の計算可能関数 $f$ に対し，ある文 $pi$ で，$T proves pi$ かつ $f (min_(T + sigma)(pi)) < min_T (pi)$ となるものが存在する．
+  Let $T supset.eq ISigma1$ be a $Delta_1$-definable theory and take a sentence $sigma$ with $T nproves sigma$.
+  Then, for any computable function $f$, there exists a sentence $pi$ such that $T proves pi$ and $f (min_(T + sigma)(pi)) < min_T (pi)$.
 
-  例えば $f(x) = 2^(x + 1)$ と取れば，$min_(T + sigma)(pi) < log_2 min_T (pi)$ となる $pi$ が存在する．
-  すなわち，$sigma$ を公理として追加することで証明の大きさが対数オーダーにまで縮む文が存在する．
+  For example, taking $f(x) = 2^(x + 1)$, there exists $pi$ with $min_(T + sigma)(pi) < log_2 min_T (pi)$.
+  That is, there is a sentence whose proof shrinks to logarithmic order by adding $sigma$ as an axiom.
 ] <thm:speedup>
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Speedup.lean"),))[
@@ -1154,13 +1154,13 @@ $PeanoArithmeticMinus$ は $ISigma1$ よりも弱い理論であるから，先�
 ]
 
 #remark[
-  算術に限らないより一般の理論に対しては，$T + not sigma$ における証明可能性が計算可能でないことを仮定すれば同じ結論が従う（上の `ehrenfeucht_mycielski_speedup`）．
-  算術の場合は，$T nproves sigma$ から $T + not sigma$ が $ISigma1$ を含む無矛盾な理論であることが分かるので，無矛盾な理論に対するChurchの定理 @thm:church2 によってこの仮定は自動的に満たされる．
+  For general theories, not necessarily arithmetical, the same conclusion follows under the assumption that provability in $T + not sigma$ is not computable (`ehrenfeucht_mycielski_speedup` above).
+  In the arithmetical case, $T nproves sigma$ implies that $T + not sigma$ is a consistent theory containing $ISigma1$, so this assumption is automatically fulfilled by Church's theorem for consistent theories (@thm:church2).
 ]
 
-証明の複雑さを単に証明のGödel数で測ることの是非などはあるものの，
-このような制限による議論はParikh @Par71 のfeasibilityや限定算術 @Bus86 とも関連が深い．
-これらの形式化はその第一歩となるものだと考えている．
+Although one may question measuring the complexity of a proof simply by its Gödel number,
+such discussions of restricted provability are closely related to Parikh's feasibility @Par71 and to bounded arithmetic @Bus86.
+We consider these mechanizations to be a first step in that direction.
 
 === Lindenbaum Algebra
 By the usual construction that quotients the class of sentences by the equivalence relation given by $T proves sigma <-> pi$, we can discuss the Lindenbaum algebra $frak(A)_T$ of a theory $T$.
