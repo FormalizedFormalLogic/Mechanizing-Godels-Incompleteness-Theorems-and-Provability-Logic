@@ -1035,7 +1035,7 @@ In particular, take as this $T$ the theory $PeanoArithmeticMinus$, a finitely ax
 Furthermore, by finiteness, the conjunction of all axioms of $PeanoArithmeticMinus$ can be taken as a single formula, so that the deduction theorem is applicable.
 From these facts, we can show that first-order logic over the language of arithmetic is not computable.
 
-#proposition[Undecidability of First-Order Logic][
+#theorem[Undecidability of First-Order Logic][
   First-order logic over the language $LOR$ is not computable.
   That is, for an $LOR$-sentence $sigma$, it is undecidable whether $emptyset proves sigma$ or $emptyset nproves sigma$.
 ]
@@ -1063,10 +1063,10 @@ As a trade-off, the assumption on the theory must be strengthened from containin
 Note that this version cannot be used in the above proof of the undecidability of first-order logic, since $PeanoArithmeticMinus$ is weaker than $ISigma1$.
 
 === On proof size
-Provability by a proof of feasible length or complexity, in a certain sense, can also be discussed through mechanization.
+Provability by a proof of _feasible_ length or complexity in a certain sense, can also be discussed through formalization.
 
 #theorem[
-  Let $T supset.eq ISigma1$ be a $Delta_1$-definable and $Sigma_1$-sound theory, let $f$ be a $Sigma_1$-definable function, and let $e in omega$ be an arbitrary natural number.
+  Let $T supset.eq ISigma1$ be a $Delta_1$-definable and $Sigma_1$-sound theory, let $f$ be a $Sigma_1$-definable function, and let $e$ be an arbitrary natural number.
   Then we can construct the _restricted provability predicate_ $RPr(T, f, e) (x)$, a further restriction of the provability predicate expressing that "provable by a $T$-proof whose Gödel number is less than $f(e)$".
   As with the usual Gödel sentence, let $RGodel(T, f, e)$ be a fixed point of $not RPr(T, f, e) (x)$.
 
@@ -1120,10 +1120,10 @@ As a concrete example of such an $f$, we can take the superexponential function 
   ```
 ]
 
-In our mechanization, coding a formula or a proof of $n$ characters yields a Gödel number roughly of the order of $2^n$.
+In our mechanization, coding a formula or a proof of $n$-characters yields a Gödel number roughly of the order of $2^n$.
 Hence, taking as $f$ the far faster-growing $supexp$ and taking $e$ extremely large, say $10^9$, this corollary suggests that there are true statements that humans can _practically_ never prove (or even read).
 
-Furthermore, among the speed-up theorems on the length of proofs, we have also mechanized the one due to Ehrenfeucht–Mycielski @EM71 #footnote[Theorems of this kind go back to Gödel @God36.].
+Furthermore, we have also mechanized the speed-up theorem due to Ehrenfeucht–Mycielski @EM71 #footnote[This kind of observations can be goes back to Gödel @God36.].
 
 #theorem[Ehrenfeucht–Mycielski speed-up theorem @EM71][
   Let $min_T (sigma)$ be the least Gödel number of a $T$-proof of $sigma$ if $T proves sigma$, and $0$ if $T nproves sigma$.
@@ -1154,8 +1154,8 @@ Furthermore, among the speed-up theorems on the length of proofs, we have also m
 ]
 
 #remark[
-  For general theories, not necessarily arithmetical, the same conclusion follows under the assumption that provability in $T + not sigma$ is not computable (`ehrenfeucht_mycielski_speedup` above).
-  In the arithmetical case, $T nproves sigma$ implies that $T + not sigma$ is a consistent theory containing $ISigma1$, so this assumption is automatically fulfilled by Church's theorem for consistent theories (@thm:church2).
+  For general theories, i.e. not arithmetic, the same conclusion follows under the assumption that provability in $T + not sigma$ is not computable (`ehrenfeucht_mycielski_speedup` above).
+  In the arithmetic case, $T nproves sigma$ implies that $T + not sigma$ is a consistent theory containing $ISigma1$, so this assumption is automatically fulfilled by Church's theorem for consistent theories (@thm:church2).
 ]
 
 Although one may question measuring the complexity of a proof simply by its Gödel number,
