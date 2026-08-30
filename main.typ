@@ -683,7 +683,7 @@ As further results, we can also mechanize Löb's theorem and the formalized Löb
     [Löb's theorem], [$T proves Bew sigma -> sigma$ implies $T proves sigma$.],
     [Formalized Löb's theorem], [$T_0 proves Bew (Bew sigma -> sigma) -> Bew sigma$.],
   ))
-]
+] <prop:abstract_Löb>
 
 #leancode(
   links: (
@@ -719,7 +719,7 @@ This is precisely an abstraction of the incompleteness theorem as improved by Ro
   Then we have $T nproves Godel(Rosser)$ and $T nproves not Godel(Rosser)$.
   That is, $Godel(Rosser)$ is independent of $T$; note in particular that $bold("Kre")$ is not required.
   On the other hand, for the consistency statement $Con(Rosser)$ defined above, we have $T proves Con(Rosser)$ #footnote[In the Japanese mathematical logic community, this is often called _Kreisel's remark_.].
-]
+] <prop:abstract_GR>
 
 #leancode(
   links: (
@@ -822,7 +822,7 @@ We now state Jeroslow's incompleteness theorem.
   Let $Safe(Bew, Wid) (x) equiv not (Bew x and Wid x)$ be the unary formula stating that a sentence is not both provable and refutable (_safe_), and let $FLoN(Bew, Wid) equiv forall x, Safe(Bew, Wid)(x)$ be the sentence expressing consistency in the sense that every sentence is safe (the _formalized law of non-contradiction_).
 
   If $T$ is consistent and $T_0 proves Jeroslow(Wid) -> Bew Jeroslow(Wid)$, then $T nproves FLoN(Bew, Wid)$.
-]
+] <prop:abstract_JG2>
 
 #leancode(
   links: (
@@ -862,8 +862,118 @@ Making this abstraction concrete, that is, actually constructing the desired pro
 
 Using the tools developed so far, we have also proved several theorems related to Gödel's incompleteness theorems.
 
-=== Tarski's Undefinability Theorem
+=== Löb's Theorem
+Instantiating the abstract version stated in @prop:abstract_Löb, we immediately obtain the concrete Löb's theorem.
+As related work, Löb's theorem has also been mechanized in Isabelle by Bailitis, on top of Paulson's mechanization of the incompleteness theorems (see @AFP-Incompleteness[Chapter 13]).
 
+#theorem[Löb's theorem and formalized Löb's theorem @Lob55][
+  Let $T supset.eq ISigma1$ be a $Delta_1$-definable theory and let $sigma$ be any sentence.
+  / Löb's theorem: If $T proves Pr(T)(GoedelNum(sigma)) -> sigma$, then $T proves sigma$.
+  / Formalized Löb's theorem: $ISigma1 proves Pr(T)(GoedelNum(Pr(T)(GoedelNum(sigma)) -> sigma)) -> Pr(T)(GoedelNum(sigma))$.
+]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Löb.lean"),))[
+  ```
+  variable {T : ArithmeticTheory} [T.Δ₁] [𝗜𝚺₁ ⪯ T] {σ : ArithmeticSentence}
+
+  theorem löb_theorem : T ⊢ provabilityPred T σ 🡒 σ → T ⊢ σ
+
+  theorem formalized_löb_theorem : 𝗜𝚺₁ ⊢ provabilityPred T (provabilityPred T σ 🡒 σ) 🡒 provabilityPred T σ
+  ```
+]
+
+=== Gödel–Rosser First Incompleteness Theorem
+In the setting of @thm:G1, the theory $T$ was required to be $Sigma_1$-sound.
+By instantiating @prop:abstract_GR, we can prove the Gödel–Rosser incompleteness theorem @Ros36, which weakens this requirement to mere consistency.
+
+#theorem[Gödel–Rosser First Incompleteness Theorem @Ros36][
+  Let $T supset.eq ISigma1$ be a $Delta_1$-definable and consistent theory.
+  Then $T$ is incomplete.
+]
+
+#leancode(
+  links: (("Foundation", "Foundation/FirstOrder/Incompleteness/RosserProvability.lean"),),
+  note: [
+    Note that the assumption `[T.SoundOnHierarchy 𝚺 1]` in the mechanization of @thm:G1 is replaced by `[Entailment.Consistent T]`.
+  ],
+)[
+  ```
+  theorem incomplete_GR (T : ArithmeticTheory) [T.Δ₁] [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T] : Entailment.Incomplete T
+  ```
+]
+
+The required provability predicate satisfying $bold("Ros")$ is constructed by so-called _witness comparison_ (see @HP16 @Lin97); we omit the details here.
+
+=== Jeroslow's Second Incompleteness Theorem
+Similarly, from @prop:abstract_JG2, we can also concretely mechanize Jeroslow's second incompleteness theorem @Jer73.
+We mention that Popescu and Traytel @PT21[Theorem 30] mechanized Jeroslow's theorem only at the abstract level.
+
+#theorem[Jeroslow's Second Incompleteness Theorem @Jer73][
+  Let $T supset.eq ISigma1$ be a $Delta_1$-definable and consistent theory.
+  Then $T nproves forall x. not (Pr(T)(x) and Pr(T)(dot(not) x))$,
+  where $dot(not)$ denotes the function taking the Gödel number of a sentence to that of its negation, i.e., $dot(not) GoedelNum(sigma) = GoedelNum(not sigma)$.
+]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Jeroslow.lean"),))[
+  ```
+  theorem unprovable_formalized_law_of_noncontradiction {T : ArithmeticTheory} [T.Δ₁] [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T]
+  : T ⊬ (∀¹ ∼(T.provable ⋏ T.refutable))
+  ```
+]
+
+=== $Sigma_1$-soundness and $Delta_1$-definability of $ISigma1$ and $PeanoArithmetic$
+To instantiate the theorems stated so far with a concrete theory such as $ISigma1$ or $PeanoArithmetic$, the $Sigma_1$-soundness and the $Delta_1$-definability of these theories must themselves be mechanized.
+We have done this as well.
+
+#proposition[
+  $ISigma1$ and $PeanoArithmetic$ are $Sigma_1$-sound, hence consistent.
+]
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/12fc07a5019847beb6b2217d2a5edbd853c24258/Foundation/FirstOrder/Arithmetic/Schemata.lean#L390",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/12fc07a5019847beb6b2217d2a5edbd853c24258/Foundation/FirstOrder/Arithmetic/Schemata.lean#L392",
+    ),
+  ),
+)[
+  ```
+  instance sigmaOneSound_ISigmaOne : 𝗜𝚺₁.SoundOnHierarchy 𝚺 1
+
+  instance sigmaOneSound_Peano : 𝗣𝗔.SoundOnHierarchy 𝚺 1
+  ```
+]
+
+#proposition[
+  $ISigma1$ and $PeanoArithmetic$ are $Delta_1$-definable.
+]
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Incompleteness/InductionSchemeDelta1.lean#L1386",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Incompleteness/InductionSchemeDelta1.lean#L1389",
+    ),
+  ),
+)[
+  ```
+  noncomputable instance PA_delta1Definable : 𝗣𝗔.Δ₁
+
+  noncomputable instance ISigma1_delta1Definable : 𝗜𝚺₁.Δ₁
+  ```
+]
+
+Hence all the theorems above can indeed be instantiated with concrete theories such as $ISigma1$ and $PeanoArithmetic$.
+
+=== Tarski's Undefinability Theorem
 As a corollary of the fixed point theorem, we can prove Tarski's theorem on the undefinability of truth.
 First, we prove the following lemma.
 
@@ -885,8 +995,7 @@ First, we prove the following lemma.
   ```
 ]
 
-Taking the _true arithmetic $TrueArithmetic$_, the arithmetic theory consisting of all true arithmetic sentences,
-as the theory $T$ in this lemma, we immediately obtain the desired theorem.
+Taking as $T$ the _true arithmetic_ $TrueArithmetic$, the theory of all sentences true in $Nat$, we immediately obtain the desired theorem.
 
 #theorem[Tarski's Undefinability Theorem @Tar35][
   There is no truth predicate $True(x)$ such that $Nat models sigma$ if and only if $Nat models True(godel(sigma))$ for any sentence $sigma$.
@@ -906,9 +1015,198 @@ as the theory $T$ in this lemma, we immediately obtain the desired theorem.
 ]
 
 In contrast to this theorem, it is known that for a complexity class $Gamma$ of formulas, there is a partial truth predicate $TruePartial(Gamma, x)$, obtained by replacing "for any sentence" with "for any $Gamma$-sentence" in the definition of $True(x)$, which is itself definable by a $Gamma$-formula (cf. @HP16).
-However, this fact has not been mechanized yet.
-We mention that, consequently, several statements of provability logic that are proved by using partial truth predicates have not been mechanized so far.
-We will discuss this point further in @subsect:remaining_sorry_in_provlogic.
+This fact has not been mechanized yet; consequently, several statements of provability logic proved via partial truth predicates remain unmechanized, as we discuss further in @subsect:remaining_sorry_in_provlogic.
+
+=== Church's Theorem and Undecidability of First-Order Logic
+In Mathlib, computability of a predicate (at the meta level of Lean) is defined by `ComputablePred` (cf. @Car19), which requires the types of the domain and the range to be `Primcodable` #footnote[That is, encoding into and decoding from natural numbers are primitive recursive.].
+Since the type of formulas of our arithmetic is `Primcodable` via a suitable encoding, we can ask whether the set $upright("Thm")(T)$ of sentences provable from a theory $T$ is computable.
+This yields the following theorem, commonly known as Church's theorem.
+
+#theorem[Church's Theorem (for $Sigma_1$-sound theories)][
+  For a $Sigma_1$-sound theory $T supset.eq R0$, $upright("Thm")(T)$ is not computable.
+]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Church.lean"),))[
+  ```
+  theorem uncomputable_theory_of_sigma1Sound {T : ArithmeticTheory} [𝗥₀ ⪯ T] [T.SoundOnHierarchy 𝚺 1]
+  : ¬ComputablePred T.theory
+  ```
+]
+
+Now take as $T$ the theory $PeanoArithmeticMinus$, a finitely axiomatized $Sigma_1$-sound fragment of $PeanoArithmetic$ stronger than $R0$.
+Since its axioms can be conjoined into a single sentence, the deduction theorem applies, and the undecidability of first-order logic over the language of arithmetic follows.
+
+#theorem[Undecidability of First-Order Logic][
+  First-order logic over the language $LOR$ is not computable.
+  That is, for an $LOR$-sentence $sigma$, it is undecidable whether $emptyset proves sigma$ or $emptyset nproves sigma$.
+]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Church.lean"),))[
+  ```
+  theorem undecidability_first_order_logic : ¬ComputablePred ((∅ : ArithmeticTheory).theory)
+  ```
+]
+
+For the speed-up theorem (@thm:speedup) below, we have also mechanized a version that weakens $Sigma_1$-soundness to mere consistency, at the cost of strengthening the base theory from $R0$ to $ISigma1$.
+
+#theorem[Church's Theorem (for consistent theories)][
+  For a consistent theory $T supset.eq ISigma1$, $upright("Thm")(T)$ is not computable.
+] <thm:church2>
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Church.lean"),))[
+  ```
+  theorem uncomputable_theory_of_consistent {T : ArithmeticTheory} [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T]
+  : ¬ComputablePred T.theory
+  ```
+]
+
+Note that this version does not apply to the above proof of the undecidability of first-order logic, since $PeanoArithmeticMinus$ is weaker than $ISigma1$.
+
+=== On proof size
+Formalization also allows us to discuss provability by a proof of _feasible_ length or complexity in a certain sense.
+
+#theorem[
+  Let $T supset.eq ISigma1$ be a $Delta_1$-definable and $Sigma_1$-sound theory, let $f$ be a $Sigma_1$-definable function, and let $e$ be an arbitrary natural number.
+  Then we can construct the _restricted provability predicate_ $RPr(T, f, e) (x)$, a further restriction of the provability predicate expressing that "provable by a $T$-proof whose Gödel number is less than $f(e)$".
+  As with the usual Gödel sentence, let $RGodel(T, f, e)$ be a fixed point of $not RPr(T, f, e) (x)$.
+
+  Then $NN models RGodel(T, f, e)$ and $T proves RGodel(T, f, e)$, but every $T$-proof of $RGodel(T, f, e)$ has code at least $f(e)$.
+]
+
+#leancode(
+  links: (("Foundation", "Foundation/FirstOrder/Incompleteness/RestrictedProvability.lean"),),
+  note: [
+    To use these theorems, one must supply both a concrete function `f` and a $Sigma_1$-formula `fDef` representing it; the instance `[𝚺₁-Function₁ f via fDef]` states that `fDef` actually defines `f`.
+    `T ⊢! T.restrictedGödel fDef e` denotes the `Type` of "$T$-proofs of $RGodel(T, f, e)$" (not the `Prop` of provability).
+  ],
+)[
+  ```
+  variable {T : ArithmeticTheory} [T.Δ₁] [𝗜𝚺₁ ⪯ T] [T.SoundOnHierarchy 𝚺 1]
+           {fDef : 𝚺₁.Semisentence 2} {e : ℕ}
+
+  theorem true_restrictedGödel (f : ℕ → ℕ) [𝚺₁-Function₁ f via fDef] :
+    ℕ↓[ℒₒᵣ] ⊧ T.restrictedGödel fDef e
+
+  theorem provable_restrictedGödel (f : ℕ → ℕ) [𝚺₁-Function₁ f via fDef] :
+    T ⊢ T.restrictedGödel fDef e
+
+  theorem lower_bound_gödelNumber_proof_restrictedGödel (f : ℕ → ℕ) [𝚺₁-Function₁ f via fDef] :
+    ∀ b : T ⊢! T.restrictedGödel fDef e, f (ORingStructure.numeral e) ≤ ⌜b⌝
+  ```
+]
+
+As a concrete example of such an $f$, we can take the superexponential function $supexp$ #footnote[
+  Define $iterexp(x, y)$ by $iterexp(x, 0) = x$ and $iterexp(x, y + 1) = 2^(iterexp(x, y))$, and let $supexp(x) = iterexp(x, x)$. For example, $supexp(2) = 16$ and $supexp(3) = 2^256$; also $2^x <= supexp(x)$ holds for $x >= 1$.
+], formalized over $ISigma1$, which yields the following corollary.
+
+#corollary[
+  Let $T supset.eq ISigma1$ be a $Delta_1$-definable and $Sigma_1$-sound theory, and let $e$ be an arbitrary natural number.
+  Then $T proves RGodel(T, supexp, e)$, but every $T$-proof of $RGodel(T, supexp, e)$ has code at least $supexp(e)$.
+]
+
+#leancode(links: (
+  ("Foundation", "Foundation/FirstOrder/Arithmetic/HFS/Superexp.lean"),
+  ("Foundation", "Foundation/FirstOrder/Incompleteness/RestrictedProvability.lean"),
+))[
+  ```
+  variable {T : ArithmeticTheory} [T.Δ₁] [𝗜𝚺₁ ⪯ T] [T.SoundOnHierarchy 𝚺 1] {e : ℕ}
+
+  theorem provable_restrictedGödel_superexp : T ⊢ T.restrictedGödel superexpDef e
+
+  theorem lower_bound_gödelNumber_proof_restrictedGödel_superexp :
+    ∀ b : T ⊢! T.restrictedGödel superexpDef e, Superexp.superexp e ≤ ⌜b⌝
+  ```
+]
+
+In our mechanization, coding an $n$-character formula or proof yields a Gödel number roughly of the order of $2^n$.
+Hence, taking as $f$ the far faster-growing $supexp$ and taking $e$ extremely large, say $10^9$, this corollary suggests that there are true statements that humans can _practically_ never prove (or even read).
+
+Furthermore, we have also mechanized the speed-up theorem due to Ehrenfeucht–Mycielski @EM71 #footnote[Observations of this kind go back to Gödel @God36.].
+
+#theorem[Ehrenfeucht–Mycielski speed-up theorem @EM71][
+  Let $min_T (sigma)$ be the least Gödel number of a $T$-proof of $sigma$ if $T proves sigma$, and $0$ if $T nproves sigma$.
+
+  Let $T supset.eq ISigma1$ be a $Delta_1$-definable theory and take a sentence $sigma$ with $T nproves sigma$.
+  Then, for any computable function $f$, there exists a sentence $pi$ such that $T proves pi$ and $f (min_(T + sigma)(pi)) < min_T (pi)$.
+
+  For example, taking $f(x) = 2^(x + 1)$, there is a sentence $pi$ with $min_(T + sigma)(pi) < log_2 min_T (pi)$: adding $sigma$ as an axiom shrinks its proof to logarithmic order.
+] <thm:speedup>
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Speedup.lean"),))[
+  ```
+  noncomputable def Theory.minProof (T : Theory L) [T.Δ₁] (σ : Sentence L) : ℕ
+    := sInf {d : ℕ | Proof T d (⌜σ⌝ : ℕ)}
+
+  theorem ehrenfeucht_mycielski_speedup {T : Theory L} [T.Δ₁] {σ : Sentence L}
+    (hU : ¬ComputablePred (insert (∼σ) T).theory) (f : ℕ → ℕ) (hf : Computable f) :
+    ∃ π : Sentence L, T ⊢ π ∧ f ((insert σ T).minProof π) < T.minProof π
+
+  variable {T : ArithmeticTheory} [T.Δ₁] [𝗜𝚺₁ ⪯ T] {σ : ArithmeticSentence} (hσ : T ⊬ σ)
+
+  theorem ehrenfeucht_mycielski_speedup_arithmetic (f : ℕ → ℕ) (hf : Computable f) :
+    ∃ π : ArithmeticSentence, T ⊢ π ∧ f ((insert σ T).minProof π) < T.minProof π
+
+  example : ∃ π : ArithmeticSentence, T ⊢ π ∧ (insert σ T).minProof π < Nat.log 2 (T.minProof π)
+  ```
+]
+
+#remark[
+  For a general, not necessarily arithmetic, theory $T$, the same conclusion follows assuming that provability in $T + not sigma$ is not computable (`ehrenfeucht_mycielski_speedup` above).
+  In the arithmetic case, this assumption follows from @thm:church2, since $T nproves sigma$ makes $T + not sigma$ a consistent theory containing $ISigma1$.
+]
+
+Although one may question measuring the complexity of a proof simply by its Gödel number,
+such discussions of restricted provability are closely related to Parikh's feasibility @Par71 and to bounded arithmetic @Bus86.
+We consider these mechanizations to be a first step in that direction.
+
+=== Lindenbaum Algebra
+The _Lindenbaum algebra_ $frak(A)_T$ of a theory $T$ is obtained by the usual construction quotienting sentences by the equivalence relation given by $T proves sigma <-> pi$.
+We have also mechanized some results on these algebras: in particular, for a theory $T$ for which the Gödel–Rosser first incompleteness theorem holds, $frak(A)_T$ is a dense Boolean algebra.
+
+#theorem[
+  Let $T supset.eq ISigma1$ be a $Delta_1$-definable theory.
+  Then the Lindenbaum algebra $frak(A)_T$ of $T$ is densely ordered:
+  whenever $phi < psi$ in $frak(A)_T$, there exists $xi$ such that $phi < xi < psi$.
+]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Dense.lean"),))[
+  ```
+  lemma dense (T : ArithmeticTheory) [𝗜𝚺₁ ⪯ T] [T.Δ₁] {φ ψ : LindenbaumAlgebra T} :
+      φ < ψ → ∃ ξ, φ < ξ ∧ ξ < ψ
+
+  instance (T : ArithmeticTheory) [𝗜𝚺₁ ⪯ T] [T.Δ₁] : DenselyOrdered (LindenbaumAlgebra T)
+  ```
+]
+
+Now, it is clear that the Lindenbaum algebra of an arithmetic theory is countable.
+Combined with the well-known fact that any two countable, dense, and nontrivial Boolean algebras are order isomorphic (cf. @HG09[Chapter 16]#footnote[This fact is usually stated in terms of atomlessness, but our mechanization states it in terms of density, following Mathlib's `DenselyOrdered` class.]), we immediately obtain the following result.
+
+#theorem[
+  For any $Delta_1$-definable consistent theories $T, U supset.eq ISigma1$, the Lindenbaum algebras $frak(A)_T$ and $frak(A)_U$ are isomorphic.
+]
+
+#leancode(links: (
+  ("Foundation", "Foundation/Vorspiel/Order/BooleanAlgebra/Iso.lean"),
+  ("Foundation", "Foundation/FirstOrder/Incompleteness/Dense.lean"),
+))[
+  ```
+  theorem iso_of_countable_atomless {α β : Type*}
+      [BooleanAlgebra α] [Countable α] [Nontrivial α] [DenselyOrdered α]
+      [BooleanAlgebra β] [Countable β] [Nontrivial β] [DenselyOrdered β] :
+      Nonempty (α ≃o β)
+
+  theorem lindenbaum_iso (T U : ArithmeticTheory)
+      [𝗜𝚺₁ ⪯ T] [T.Δ₁] [Consistent T] [𝗜𝚺₁ ⪯ U] [U.Δ₁] [Consistent U] :
+      Nonempty (LindenbaumAlgebra T ≃o LindenbaumAlgebra U)
+  ```
+]
+
+That is, the Lindenbaum algebras of $ISigma1$, $PeanoArithmetic$, and even $Theory("ZF")$ (although not mechanized) are all isomorphic; in this sense these algebras are not interesting.
+By a theorem of Pour-El and Kripke @PK67, this isomorphism can moreover be taken to be recursive, but such a refinement has not been mechanized at present.
+
+The algebras obtained by extending the Lindenbaum algebra with provability as an explicit unary operator are called _diagonalizable algebras_ or _Magari algebras_ (cf. @Mag75 @Sha93).
+It is known, for example, that the diagonalizable algebras of $PeanoArithmetic$ and $Theory("ZF")$ are not isomorphic @Sha93a, and these algebras are deeply related to provability logic, which we discuss in @sect:provability_logic.
+No mechanization of these algebras has been carried out at present.
 
 = Provability Logic <sect:provability_logic>
 
