@@ -1528,7 +1528,7 @@ We have also mechanized the fixed point theorem of $LogicGL$ via the sequent cal
   ```
 ]
 
-A special case of the fixed point theorem of #LogicGL has also been mechanized in Lean by Gignoux @Gig26, as a supporting lemma for a mechanization of the CIP of #LogicGL based on ill-founded proof systems formulated coalgebraically.
+A special case of the fixed point theorem of #LogicGL has also been mechanized in Lean by Gignoux @Gig26, as a supporting lemma for a mechanization of the CIP of #LogicGL based on non-wellfounded proof systems formulated coalgebraically.
 We note that Gignoux's mechanization treats formulas of the form $Box A$ and $Dia A$ and proves the fixed point equivalence semantically over Kripke frames, and its interpolants are given by a noncomputable function, whereas in our mechanization the interpolants and the fixed points can be computed constructively inside Lean from derivation trees of the sequent calculus.
 However, at present derivation trees of the sequent calculus cannot be constructed automatically by proof search or the like, so concrete derivation trees have to be input by hand. Also, when $LogicGL proves A$ is proved non-constructively, e.g., via Kripke semantics, the interpolants and the fixed points are of course not computable in Lean.
 
@@ -2257,7 +2257,7 @@ In addition, there are also many approaches to non-Gentzen-style proof systems f
 e.g., the _labelled sequent calculi_ by Negri @Neg05 @Neg14, the _tree-hypersequent calculus_ by Poggiolesi @Pog09, the _nested sequent calculi_ by Maniwa and Kashima @MK24, and the _non-wellfounded proofs_ (or _circular proofs_) by Shamkanov @Sha14#footnote[Here we mention only the systems for #LogicGL. For general discussions of each formalism, we refer the reader to the references of the respective papers.].
 For discussions on the equivalence of the provability of several of these sequent systems, including the Gentzen-style ones, see Goré and Ramanayake @GR12a and Lyon @Lyo25.
 In particular, Shamkanov's non-wellfounded proofs have the advantage that the Lyndon interpolation theorem can be proved syntactically @Sha14[Chapter 4]#footnote[This fact itself is also proved in @Sha11, but the proof there relies on Kripke-semantical techniques.].
-As far as we know, the only mechanizations of the proof theory of sequent calculi equipped with such additional machinery are the mechanization of the labelled sequent calculus in HOL Light by Maggesi and Perini Brogi @MPB21 @MPB23, along that line, Bilotta's HOLMS project @Bil25 @BMPB26 @BMPB26a, and the recent mechanization in Lean by Gignoux @Gig26 of ill-founded proof systems for #LogicGL, formulated coalgebraically, through which the CIP of #LogicGL is proved.
+As far as we know, the only mechanizations of the proof theory of sequent calculi equipped with such additional machinery are the mechanization of the labelled sequent calculus in HOL Light by Maggesi and Perini Brogi @MPB21 @MPB23, along that line, Bilotta's HOLMS project @Bil25 @BMPB26 @BMPB26a, and the recent mechanization in Lean by Gignoux @Gig26 of non-wellfounded proof systems for #LogicGL, formulated coalgebraically, through which the CIP of #LogicGL is proved.
 
 Tableau methods for #LogicGL are discussed in @Boo94[Chapter 10] for instance.
 A tableau-based automated theorem prover for #LogicGL was implemented by Goré and Kelly @GK07, where the efficiency of the implementation is also discussed.
@@ -2269,7 +2269,7 @@ As a different approach, Kushida @Kus20 proposed a sequent calculus for #LogicS 
 In the present work, we have mechanized the Gentzen-style sequent calculus for #LogicGL, the labelled sequent calculus for #LogicGL (see @sect:labelled-sequent-calculus), and the two-level sequent calculus for #LogicS together with the three-level sequent calculus for #LogicD (see @def:layered_sequent_calculi).
 For future work, we plan to mechanize sequent calculi with other machinery as well, together with the equivalence of their provability.
 In particular, although Shamkanov's circular proofs involve infinitary structures, the studies by Sierra Miranda et al. @SM23 @SMSZ24 @HSMS25 @SMS26 have revealed that they have many applications, so their mechanization seems to be a technically challenging but worthwhile task.
-Gignoux's coalgebraic mechanization of ill-founded proof systems for #LogicGL @Gig26 mentioned above can be regarded as a first step in this direction.
+Gignoux's coalgebraic mechanization of non-wellfounded proof systems for #LogicGL @Gig26 mentioned above can be regarded as a first step in this direction.
 
 == Provability logic of Heyting arithmetic
 
