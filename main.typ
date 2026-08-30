@@ -863,7 +863,6 @@ Making this abstraction concrete, that is, actually constructing the desired pro
 Using the tools developed so far, we have also proved several theorems related to Gödel's incompleteness theorems.
 
 === Löb's Theorem
-
 Instantiating the abstract version stated in @prop:abstract_Löb, we immediately obtain the concrete Löb's theorem.
 As a related work, we mention that Löb's theorem has been mechanized by Bailitis on Paulson's mechanization of the incompleteness theorems in Isabelle (see @AFP-Incompleteness[Chapter 13]).
 
@@ -883,7 +882,6 @@ As a related work, we mention that Löb's theorem has been mechanized by Bailiti
 ]
 
 === Gödel–Rosser First Incompleteness Theorem
-
 In the setting of @thm:G1, the theory $T$ was required to be $Sigma_1$-sound.
 By instantiating @prop:abstract_GR, we can prove the Gödel–Rosser incompleteness theorem @Ros36, which weakens this requirement to mere consistency.
 
@@ -901,7 +899,6 @@ The proof requires actually constructing a provability predicate satisfying $bol
 It can be achieved by the means called _witness comparison_ (see @HP16 @Lin97), but we omit the implementation here.
 
 === Jeroslow's Second Incompleteness Theorem
-
 Similarly, from @prop:abstract_JG2, we can also concretely mechanize Jeroslow's second incompleteness theorem @Jer73.
 We mention that Popescu and Traytel @PT21[Theorem 30] mechanized Jeroslow's theorem only at the abstract level.
 
@@ -918,7 +915,6 @@ We mention that Popescu and Traytel @PT21[Theorem 30] mechanized Jeroslow's theo
 ]
 
 === $Sigma_1$-soundness and $Delta_1$-definability of $ISigma1$ and $PeanoArithmetic$
-
 In the incompleteness theorems and their corollaries stated so far, in order to take a concrete theory such as $ISigma1$ or $PeanoArithmetic$ as $T$, the $Sigma_1$-soundness and the $Delta_1$-definability must be mechanized for each of these theories.
 We have already mechanized these facts as well.
 
@@ -971,7 +967,6 @@ We have already mechanized these facts as well.
 Therefore, in the theorems stated so far, we can also take concrete theories such as $ISigma1$ and $PeanoArithmetic$ as $T$ and mechanize the resulting more concrete statements.
 
 === Tarski's Undefinability Theorem
-
 As a corollary of the fixed point theorem, we can prove Tarski's theorem on the undefinability of truth.
 First, we prove the following lemma.
 
@@ -1018,15 +1013,14 @@ However, this fact has not been mechanized yet.
 We mention that, consequently, several statements of provability logic that are proved by using partial truth predicates have not been mechanized so far.
 We will discuss this point further in @subsect:remaining_sorry_in_provlogic.
 
-=== Undecidability of First-Order Logic
-
+=== Church's Theorem and Undecidability of First-Order Logic
 We now discuss the undecidability of first-order logic.
 First, in Mathlib, computability of a predicate (at the meta level of Lean) is defined by `ComputablePred` (cf. @Car19).
 This definition requires that the types of the domain and the range are `Primcodable` #footnote[That is, encoding into and decoding from natural numbers are primitive recursive.].
 Since the type of formulas of our arithmetic can be shown to be `Primcodable` via a suitable encoding, we can discuss, for example, whether the set $upright("Thm")(T)$ of sentences provable from a theory $T$ is computable.
-With these preparations, the following lemma is mechanized.
+With these preparations, 我々は一般にChurchの定理と呼ばれる次の定理を証明することが出来る．
 
-#lemma[
+#theorem[Church's Theorem (for $Sigma_1$-sound theory)][
   For a $Sigma_1$-sound theory $T supset.eq R0$, $upright("Thm")(T)$ is not computable.
 ]
 
@@ -1045,15 +1039,23 @@ From these facts, we can show that first-order logic over the language of arithm
   That is, for an $LOR$-sentence $sigma$, it is undecidable whether $emptyset proves sigma$ or $emptyset nproves sigma$.
 ]
 
+なお，次で説明する加速定理(@thm:speedup)の証明のためには $Sigma_1$-健全であるという仮定では都合が悪く，無矛盾性に落とさなければならない．
+ただしトレードオフとして，不動点定理などを用いるために理論の仮定は $R0$ ではなくて $ISigma1$ よりも強い，という条件に強めなければならない．
+
+#theorem[Church's Theorem (for consistent theory)][
+  For a consistent theory $T supset.eq ISigma1$, $upright("Thm")(T)$ is not computable.
+]
+
 #leancode()[
   ```
   theorem undecidability_first_order_logic : ¬ComputablePred ((∅ : ArithmeticTheory).theory)
   ```
 ]
 
-=== On proof size
+$PeanoArithmeticMinus$ は $ISigma1$ よりも弱い理論であるから，先程の議論は使えないことは注意しておく．
 
-ある意味で現実的な(feasible)証明の長さで証明可能，ということを形式化によって論じることが出来る．
+=== On proof size
+ある意味で現実的な(feasible)証明の長さ・複雑さで証明可能，ということを形式化によって論じることが出来る．
 
 #theorem[
   $T supset.eq ISigma1$ を $Delta_1$-definable かつ $Sigma_1$-sound な理論とし，$f$ を $Sigma_1$-definable な関数，$e in omega$ を任意の自然数とする．
@@ -1085,7 +1087,7 @@ From these facts, we can show that first-order logic over the language of arithm
   ```
 ]
 
-このような $f$ の具体例として，例えば $ISigma1$ 上で _superexponential_ $supexp$ #footnote[
+このような $f$ の具体例として，例えば $ISigma1$ 上でsuperexponential $supexp$ #footnote[
   $iterexp(x, y)$ を $iterexp(x, 0) = x$，$iterexp(x, y + 1) = 2^(iterexp(x, y))$ で定め，$supexp(x) = iterexp(x, x)$ とする．例えば $supexp(2) = 16$，$supexp(3) = 2^256$ であり，また $x >= 1$ ならば $2^x <= supexp(x)$ が成り立つ．
 ] を取ることが出来て，次の系が得られる．
 
@@ -1107,12 +1109,39 @@ From these facts, we can show that first-order logic over the language of arithm
 ]
 
 今回の形式化において $n$ 文字の論理式ないし証明をコードするとそのGödel数は概ね $2^n$ 程度のオーダーで近似できる．
-故に $f$ として $supexp$ を取り，更に $e$ を極めて大きく例えば $10^9$ などとして取れば，この主張は *現実的に*人間には証明できない（それどころか読むことも出来ない）正しい言明が存在するという示唆を与える．
-このような制限による証明可能性の議論はParikh @Par71 のfeasibilityや，GödelないしEhrenfeucht–Mycielskiのspeed-up theorem @God36 @EM71，あるいは限定算術 @Bus86 とも関連が深い．
-この形式化された事実はそれらへの第一歩となるものだろう．
+故に $f$ として更に増加のオーダーが激しい $supexp$ を取り，更に $e$ を極めて大きく $10^9$ などとして取れば，この系は *現実的に* 人間には証明できない（それどころか読むことも出来ない）正しい言明が存在するという示唆を与える．
+
+更に，我々はGödelないしEhrenfeucht–Mycielskiのspeed-up theorem @God36 @EM71 も形式化している．
+
+#theorem[Ehrenfeucht–Mycielski speed-up theorem @EM71][
+  $min_T (sigma)$ を $T proves sigma$ ならばそのような証明のGödelの中で最小のものとする．
+  $T nproves sigma$ なら $0$ とする．
+
+  $T supset.eq ISigma1$ を $Delta_1$-definable かつ無矛盾とし，$T nproves sigma$ とする．
+  このとき任意の計算可能関数 $f$ に対し，ある $pi$ で，$T proves pi$ かつ $f (min_(T + sigma)(pi)) < min_T (pi)$ となるものが存在する．
+
+  例えば $f$ を $2^x$ として取れば，$pi$ の $T + sigma$ での証明の大きさは $T$ のそれと比べて対数オーダーで小さく（加速）出来る．
+] <thm:speedup>
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Dense.lean"),))[
+  ```
+  noncomputable def Theory.minProof (T : Theory L) [T.Δ₁] (σ : Sentence L) : ℕ
+    := sInf {d : ℕ | Proof T d (⌜σ⌝ : ℕ)}
+
+  variable {T : ArithmeticTheory} [T.Δ₁] {σ : ArithmeticSentence} [𝗜𝚺₁ ⪯ T] (hσ : T ⊬ σ)
+
+  theorem ehrenfeucht_mycielski_speedup_arithmetic (f : ℕ → ℕ) (hf : Computable f) :
+    ∃ π : ArithmeticSentence, T ⊢ π ∧ f ((insert σ T).minProof π) < T.minProof π
+
+  example : ∃ π : ArithmeticSentence, T ⊢ π ∧ (insert σ T).minProof π < Nat.log 2 (T.minProof π)
+  ```
+]
+
+証明の複雑さを単に証明のGödel数で測るということの是非などはあるものの，
+このような制限による議論はParikh @Par71 のfeasibilityや，あるいは限定算術 @Bus86 とも関連が深い．
+これらの形式化はその第一歩に繋がるものだと考えている．
 
 === Lindenbaum Algebra
-
 By the usual construction that quotients the class of sentences by the equivalence relation given by $T proves sigma <-> pi$, we can discuss the Lindenbaum algebra $frak(A)_T$ of a theory $T$.
 We have also mechanized results on these algebras.
 In particular, for a theory $T$ for which the Gödel–Rosser first incompleteness theorem holds, $frak(A)_T$ is a Boolean algebra and, moreover, dense.
