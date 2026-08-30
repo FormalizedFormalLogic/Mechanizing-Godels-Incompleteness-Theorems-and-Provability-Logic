@@ -2240,7 +2240,7 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
 = Related work and future work <sect:provabilitylogic_futurework>
 
 Finally, in this section, we mention some prior work related to our mechanization, that is, mechanizations of the incompleteness theorems and of facts concerning provability logic in proof assistants.
-Moreover, on that basis, we indicate several directions in which we plan.
+Moreover, on that basis, we indicate several directions in which we plan to proceed.
 Concerning provability logic, there is much prior work on mechanizations in the broader area of modal logic in general (e.g., tense logic and epistemic logic), but since these are outside the interest of the present report, we omit them.
 
 == Proof theory of provability logics <subsect:proof_theory_provability_logic>
@@ -2296,7 +2296,7 @@ Finally, the provability logic of Heyting arithmetic has been announced in Mojta
 However, at the time of writing, this preprint is still under review#footnote[The first version was submitted to arXiv in 2022.].
 In the future, we plan to mechanize these arguments, which will make it possible to verify them rigorously and thus to settle this problem in a more reliable way.
 
-== Enrhcied modalities
+== Enriched modalities
 
 There are also extensions in the direction of adding further modal operators in order to express various notions related to provability.
 Here we mention two directions for which mechanizations can be found: polymodal provability logic and interpretability logic.
