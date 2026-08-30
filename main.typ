@@ -1014,11 +1014,9 @@ We mention that, consequently, several statements of provability logic that are 
 We will discuss this point further in @subsect:remaining_sorry_in_provlogic.
 
 === Church's Theorem and Undecidability of First-Order Logic
-We now discuss the undecidability of first-order logic.
-First, in Mathlib, computability of a predicate (at the meta level of Lean) is defined by `ComputablePred` (cf. @Car19).
-This definition requires that the types of the domain and the range are `Primcodable` #footnote[That is, encoding into and decoding from natural numbers are primitive recursive.].
-Since the type of formulas of our arithmetic can be shown to be `Primcodable` via a suitable encoding, we can discuss, for example, whether the set $upright("Thm")(T)$ of sentences provable from a theory $T$ is computable.
-With these preparations, we can prove the following theorem, commonly known as Church's theorem.
+In Mathlib, computability of a predicate (at the meta level of Lean) is defined by `ComputablePred` (cf. @Car19), which requires the types of the domain and the range to be `Primcodable` #footnote[That is, encoding into and decoding from natural numbers are primitive recursive.].
+Since the type of formulas of our arithmetic is `Primcodable` via a suitable encoding, we can ask whether the set $upright("Thm")(T)$ of sentences provable from a theory $T$ is computable.
+This yields the following theorem, commonly known as Church's theorem.
 
 #theorem[Church's Theorem (for $Sigma_1$-sound theory)][
   For a $Sigma_1$-sound theory $T supset.eq R0$, $upright("Thm")(T)$ is not computable.
@@ -1031,9 +1029,8 @@ With these preparations, we can prove the following theorem, commonly known as C
   ```
 ]
 
-In particular, take as this $T$ the theory $PeanoArithmeticMinus$, a finitely axiomatized fragment of $PeanoArithmetic$: it is $Sigma_1$-sound and moreover stronger than $R0$.
-Furthermore, by finiteness, the conjunction of all axioms of $PeanoArithmeticMinus$ can be taken as a single formula, so that the deduction theorem is applicable.
-From these facts, we can show that first-order logic over the language of arithmetic is not computable.
+Now take as $T$ the theory $PeanoArithmeticMinus$, a finitely axiomatized $Sigma_1$-sound fragment of $PeanoArithmetic$ stronger than $R0$.
+Since its axioms can be conjoined into a single sentence, the deduction theorem applies, and the undecidability of first-order logic over the language of arithmetic follows.
 
 #theorem[Undecidability of First-Order Logic][
   First-order logic over the language $LOR$ is not computable.
@@ -1046,8 +1043,7 @@ From these facts, we can show that first-order logic over the language of arithm
   ```
 ]
 
-The assumption of $Sigma_1$-soundness is inconvenient for the speed-up theorem (@thm:speedup) explained below, so we have also mechanized the following version, which weakens the assumption to mere consistency.
-As a trade-off, the assumption on the theory must be strengthened from containing $R0$ to containing $ISigma1$.
+For the speed-up theorem (@thm:speedup) below, we have also mechanized a version that weakens $Sigma_1$-soundness to mere consistency, at the cost of strengthening the base theory from $R0$ to $ISigma1$.
 
 #theorem[Church's Theorem (for consistent theory)][
   For a consistent theory $T supset.eq ISigma1$, $upright("Thm")(T)$ is not computable.
@@ -1060,26 +1056,24 @@ As a trade-off, the assumption on the theory must be strengthened from containin
   ```
 ]
 
-Note that this version cannot be used in the above proof of the undecidability of first-order logic, since $PeanoArithmeticMinus$ is weaker than $ISigma1$.
+Note that this version does not apply to the above proof of the undecidability of first-order logic, since $PeanoArithmeticMinus$ is weaker than $ISigma1$.
 
 === On proof size
-Provability by a proof of _feasible_ length or complexity in a certain sense, can also be discussed through formalization.
+Formalization also allows us to discuss provability by a proof of _feasible_ length or complexity in a certain sense.
 
 #theorem[
   Let $T supset.eq ISigma1$ be a $Delta_1$-definable and $Sigma_1$-sound theory, let $f$ be a $Sigma_1$-definable function, and let $e$ be an arbitrary natural number.
   Then we can construct the _restricted provability predicate_ $RPr(T, f, e) (x)$, a further restriction of the provability predicate expressing that "provable by a $T$-proof whose Gödel number is less than $f(e)$".
   As with the usual Gödel sentence, let $RGodel(T, f, e)$ be a fixed point of $not RPr(T, f, e) (x)$.
 
-  Then $NN models RGodel(T, f, e)$, and moreover $T proves RGodel(T, f, e)$ with the code of any such proof at least $f(e)$.
-  That is, $RGodel(T, f, e)$ is true but cannot be proved by any proof whose code is less than $f(e)$.
+  Then $NN models RGodel(T, f, e)$ and $T proves RGodel(T, f, e)$, but every $T$-proof of $RGodel(T, f, e)$ has code at least $f(e)$.
 ]
 
 #leancode(
   links: (("Foundation", "Foundation/FirstOrder/Incompleteness/RestrictedProvability.lean"),),
   note: [
-    `fDef` is a $Sigma_1$-formula defining $f$, and `[𝚺₁-Function₁ f via fDef]` states that `fDef` actually defines $f$.
-    That is, to use these theorems, both a concrete function `f` and a formula `fDef` representing it must be supplied.
-    Also, `T ⊢! T.restrictedGödel fDef e` denotes the `Type` of "$T$-proofs of $RGodel(T, f, e)$" (not the `Prop` of provability).
+    To use these theorems, one must supply both a concrete function `f` and a $Sigma_1$-formula `fDef` representing it; the instance `[𝚺₁-Function₁ f via fDef]` states that `fDef` actually defines `f`.
+    `T ⊢! T.restrictedGödel fDef e` denotes the `Type` of "$T$-proofs of $RGodel(T, f, e)$" (not the `Prop` of provability).
   ],
 )[
   ```
@@ -1103,7 +1097,7 @@ As a concrete example of such an $f$, we can take the superexponential function 
 
 #corollary[
   Let $T supset.eq ISigma1$ be a $Delta_1$-definable and $Sigma_1$-sound theory, and let $e in omega$ be an arbitrary natural number.
-  Then $T proves RGodel(T, supexp, e)$, with the code of any such proof at least $supexp(e)$.
+  Then $T proves RGodel(T, supexp, e)$, but every $T$-proof of $RGodel(T, supexp, e)$ has code at least $supexp(e)$.
 ]
 
 #leancode(links: (
@@ -1120,10 +1114,10 @@ As a concrete example of such an $f$, we can take the superexponential function 
   ```
 ]
 
-In our mechanization, coding a formula or a proof of $n$-characters yields a Gödel number roughly of the order of $2^n$.
+In our mechanization, coding an $n$-character formula or proof yields a Gödel number roughly of the order of $2^n$.
 Hence, taking as $f$ the far faster-growing $supexp$ and taking $e$ extremely large, say $10^9$, this corollary suggests that there are true statements that humans can _practically_ never prove (or even read).
 
-Furthermore, we have also mechanized the speed-up theorem due to Ehrenfeucht–Mycielski @EM71 #footnote[This kind of observations can be goes back to Gödel @God36.].
+Furthermore, we have also mechanized the speed-up theorem due to Ehrenfeucht–Mycielski @EM71 #footnote[Observations of this kind go back to Gödel @God36.].
 
 #theorem[Ehrenfeucht–Mycielski speed-up theorem @EM71][
   Let $min_T (sigma)$ be the least Gödel number of a $T$-proof of $sigma$ if $T proves sigma$, and $0$ if $T nproves sigma$.
@@ -1131,8 +1125,7 @@ Furthermore, we have also mechanized the speed-up theorem due to Ehrenfeucht–M
   Let $T supset.eq ISigma1$ be a $Delta_1$-definable theory and take a sentence $sigma$ with $T nproves sigma$.
   Then, for any computable function $f$, there exists a sentence $pi$ such that $T proves pi$ and $f (min_(T + sigma)(pi)) < min_T (pi)$.
 
-  For example, taking $f(x) = 2^(x + 1)$, there exists $pi$ with $min_(T + sigma)(pi) < log_2 min_T (pi)$.
-  That is, there is a sentence whose proof shrinks to logarithmic order by adding $sigma$ as an axiom.
+  For example, taking $f(x) = 2^(x + 1)$, there is a sentence $pi$ with $min_(T + sigma)(pi) < log_2 min_T (pi)$: adding $sigma$ as an axiom shrinks its proof to logarithmic order.
 ] <thm:speedup>
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Speedup.lean"),))[
@@ -1154,8 +1147,8 @@ Furthermore, we have also mechanized the speed-up theorem due to Ehrenfeucht–M
 ]
 
 #remark[
-  For general theories, i.e. not arithmetic, the same conclusion follows under the assumption that provability in $T + not sigma$ is not computable (`ehrenfeucht_mycielski_speedup` above).
-  In the arithmetic case, $T nproves sigma$ implies that $T + not sigma$ is a consistent theory containing $ISigma1$, so this assumption is automatically fulfilled by Church's theorem for consistent theories (@thm:church2).
+  For a general, not necessarily arithmetic, theory $T$, the same conclusion follows assuming that provability in $T + not sigma$ is not computable (`ehrenfeucht_mycielski_speedup` above).
+  In the arithmetic case, this assumption follows from @thm:church2, since $T nproves sigma$ makes $T + not sigma$ a consistent theory containing $ISigma1$.
 ]
 
 Although one may question measuring the complexity of a proof simply by its Gödel number,
