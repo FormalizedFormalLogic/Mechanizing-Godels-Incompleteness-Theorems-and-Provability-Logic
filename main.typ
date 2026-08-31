@@ -482,12 +482,12 @@ Mechanizing the incompleteness theorems via such an abstract provability has pre
     stroke: none,
     $bold("D1")$,
     [
-      $T proves sigma ==> T_0 proves Bew(GoedelNum(sigma))$
+      $T proves sigma ==> T_0 proves Bew(godel(sigma))$
     ],
   ))
 
   That is, $Bew(x)$ is required to satisfy at least the derivability condition $bold("D1")$.
-  In what follows, we simply write $Bew sigma$ for $Bew(GoedelNum(sigma))$.
+  In what follows, we simply write $Bew sigma$ for $Bew(godel(sigma))$.
   We further define the following properties, where $sigma$ and $pi$ range over $cal(L)$-sentences.
   The conditions $bold("D3")$ and $bold("Kre")$ are defined only when $T_0$ and $T$ are theories in the same language, i.e., when $cal(L)_0 = cal(L)$.
 
@@ -560,7 +560,7 @@ In fact, abstracting provability alone does not suffice to mechanize the incompl
   An $cal(L)$-theory $T$ is called _diagonalizable_ if one can construct a map $fixpoint(bullet)$, sending an unary $cal(L)$-formula to an $cal(L)$-sentence,
   such that
   $
-    T proves fixpoint(theta) <-> theta (GoedelNum(fixpoint(theta)))
+    T proves fixpoint(theta) <-> theta (godel(fixpoint(theta)))
   $
   for any $theta(x)$. We call $fixpoint(theta)$ the _fixed point_ of $theta$.
 
@@ -760,10 +760,10 @@ This allows us to formalize Jeroslow's G2 concisely.
 #definition[Refutability abstraction][
   For an $cal(L)_0$-theory $T_0$ and an $cal(L)$-theory $T$, a unary $cal(L)_0$-semisentence $Wid(x)$ is called a _$T$-refutability predicate over $T_0$_, if the following holds for every $cal(L)$-sentence $sigma$.
   $
-    T proves not sigma ==> T_0 proves Wid(GoedelNum(sigma))
+    T proves not sigma ==> T_0 proves Wid(godel(sigma))
   $
 
-  As with $Bew$, we abbreviate $Wid(GoedelNum(sigma))$ as $Wid sigma$.
+  As with $Bew$, we abbreviate $Wid(godel(sigma))$ as $Wid sigma$.
   We say that $Wid$ is _sound on_ an $cal(L)$-sentence $sigma$ if $T proves Wid sigma ==> T proves not sigma$.
 
   Let $Wid$ be a $T$-refutability predicate over $T_0$ and suppose that $T_0$ is diagonalizable. Then the fixed point of $Wid(x)$ is called the _Jeroslow sentence_ and is denoted by $Jeroslow(Wid)$.
@@ -868,8 +868,8 @@ As related work, Löb's theorem has also been mechanized in Isabelle by Bailitis
 
 #theorem[Löb's theorem and formalized Löb's theorem @Lob55][
   Let $T supset.eq ISigma1$ be a $Delta_1$-definable theory and let $sigma$ be any sentence.
-  / Löb's theorem: If $T proves Pr(T)(GoedelNum(sigma)) -> sigma$, then $T proves sigma$.
-  / Formalized Löb's theorem: $ISigma1 proves Pr(T)(GoedelNum(Pr(T)(GoedelNum(sigma)) -> sigma)) -> Pr(T)(GoedelNum(sigma))$.
+  / Löb's theorem: If $T proves Pr(T)(godel(sigma)) -> sigma$, then $T proves sigma$.
+  / Formalized Löb's theorem: $ISigma1 proves Pr(T)(godel(Pr(T)(godel(sigma)) -> sigma)) -> Pr(T)(godel(sigma))$.
 ]
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Löb.lean"),))[
@@ -911,7 +911,7 @@ We mention that Popescu and Traytel @PT21[Theorem 30] mechanized Jeroslow's theo
 #theorem[Jeroslow's Second Incompleteness Theorem @Jer73][
   Let $T supset.eq ISigma1$ be a $Delta_1$-definable and consistent theory.
   Then $T nproves forall x. not (Pr(T)(x) and Pr(T)(dot(not) x))$,
-  where $dot(not)$ denotes the function taking the Gödel number of a sentence to that of its negation, i.e., $dot(not) GoedelNum(sigma) = GoedelNum(not sigma)$.
+  where $dot(not)$ denotes the function taking the Gödel number of a sentence to that of its negation, i.e., $dot(not) godel(sigma) = godel(not sigma)$.
 ]
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Jeroslow.lean"),))[
