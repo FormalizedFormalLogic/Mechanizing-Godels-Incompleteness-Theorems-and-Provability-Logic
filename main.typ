@@ -49,8 +49,8 @@ _Gödel's incompleteness theorems_ are among the most significant results in mat
 In his seminal paper @God31, he proved what is now known as the first incompleteness theorem (G1), and in a footnote, he outlined the second incompleteness theorem (G2).
 G2 was later proved rigorously by Hilbert and Bernays @HB39.
 We state the theorems in modern terms:
-G1, with Rosser's improvement @Ros36, states that for any consistent axiomatic system with sufficient expressive power to execute arithmetic, there exists a proposition that can neither be proved nor disproved within the system.
-G2 states that, for any consistent _nice_ axiomatic system as in G1, the proposition formally representing the system's own consistency cannot be proved within the system itself.
+G1, with Rosser's improvement @Ros36, states that for any consistent axiomatic system with sufficient expressive power to execute arithmetic, there exists a proposition that can neither be proved nor disproved within the system (see @thm:G1 and @thm:GR).
+G2 states that, for any consistent reasonable axiomatic system as in G1, the proposition formally representing the system's own consistency cannot be proved within the system itself (see @thm:G2).
 
 Gödel also made another important observation: that provability can be regarded as a modality.
 In his early work @God33, he observed that the provability of intuitionistic logic can be treated similarly to the modal operator $Box$ in the modal logic now called #LogicS4.
@@ -104,17 +104,15 @@ In @subsect:vibe-formalizing, we give a brief report on how we carried out the w
 We mechanized the following two results.
 Here, arithmetic sentence/theory means a sentence/theory in the language $LOR = {0, 1, +, dot, <, =}$.
 
-#theorem[Gödel's First Incompleteness Theorem @God31 @Vau62 @JS83][
+#theorem(number: thmnumber(<thm:G1>))[Gödel's First Incompleteness Theorem][
   Let $T$ be a $Delta_1$-definable, $Sigma_1$-sound arithmetic theory stronger than $R0$,
-  Then $T$ is incomplete,
-  that is, there exists a arithmetic sentence $phi$ such that $T nproves phi$ and $T nproves not phi$.
-]<thm:G1>
+  Then $T$ is incomplete.
+]
 
-#theorem[Gödel's Second Incompleteness Theorem @God31][
+#theorem(number: thmnumber(<thm:G2>))[Gödel's Second Incompleteness Theorem][
   Let $T$ be a $Delta_1$-definable, $Sigma_1$-sound arithmetic theory stronger than $ISigma1$.
-  Then $T nproves Con(T)$,
-  where $Con(T)$ is a consistency statement of $T$.
-]<thm:G2>
+  Then $T nproves Con(T)$.
+]
 
 The proofs largely follow the standard approach using derivability conditions in the literature (see, for example, @HP16).
 We therefore omit the details and instead comment on several technical and methodological aspects of the formalization.
@@ -216,7 +214,13 @@ Let $godel(bullet)$ denote a Gödel coding of formulas.
 Define the set $D$ by $godel(phi) in D <==> T proves not phi(godel(phi))$.
 As shown below, there is a provability predicate $Pr(T)(x)$, definable by a $Sigma_1$-formula, such that
 $Nat models Pr(T)(godel(psi)) <==> T proves psi$; hence $D$ is r.e.
-Theorem @thm:G1 now follows from @thm:repr by the standard diagonal argument.
+@thm:G1 now follows from @thm:repr by the standard diagonal argument.
+
+#theorem[Gödel's First Incompleteness Theorem @God31 @Vau62 @JS83][
+  Let $T$ be a $Delta_1$-definable, $Sigma_1$-sound arithmetic theory stronger than $R0$,
+  Then $T$ is incomplete,
+  that is, there exists a arithmetic sentence $phi$ such that $T nproves phi$ and $T nproves not phi$.
+]<thm:G1>
 
 #leancode(
   links: (
@@ -230,8 +234,7 @@ Theorem @thm:G1 now follows from @thm:repr by the standard diagonal argument.
   ],
 )[
   ```
-  theorem incomplete
-      (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHierarchy 𝚺 1] : Incomplete T
+  theorem incomplete (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHierarchy 𝚺 1] : Incomplete T
   ```
 ]
 
@@ -442,6 +445,12 @@ Their verification is routine.
 ]
 
 Finally, the second incompleteness theorem follows by the usual argument from the derivability conditions.
+
+#theorem[Gödel's Second Incompleteness Theorem @God31][
+  Let $T$ be a $Delta_1$-definable, $Sigma_1$-sound arithmetic theory stronger than $ISigma1$.
+  Then $T nproves Con(T)$,
+  where $Con(T)$ is a consistency statement of $T$.
+]<thm:G2>
 
 #leancode(
   links: (
@@ -889,7 +898,7 @@ By instantiating @prop:abstract_GR, we can prove the Gödel–Rosser incompleten
 #theorem[Gödel–Rosser First Incompleteness Theorem @Ros36][
   Let $T supset.eq ISigma1$ be a $Delta_1$-definable and consistent theory.
   Then $T$ is incomplete.
-]
+] <thm:GR>
 
 #leancode(
   links: (("Foundation", "Foundation/FirstOrder/Incompleteness/RosserProvability.lean"),),

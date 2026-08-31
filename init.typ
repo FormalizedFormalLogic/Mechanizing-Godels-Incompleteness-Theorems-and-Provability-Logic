@@ -179,6 +179,12 @@
 #let problem = sqthmbox("Problem")
 #let conjecture = sqthmbox("Conjecture")
 
+#let thmnumber(target) = context {
+  let el = query(target).first()
+  let meta = query(selector(<meta:thmenvcounter>).after(el.location())).first()
+  numbering(el.numbering, ..thmcounters.at(meta.location()).at("latest"))
+}
+
 #let proof = thmproof(
   "proof",
   [_Proof._],
