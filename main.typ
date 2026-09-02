@@ -35,6 +35,15 @@
   ),
 )
 
+#remark[
+  Since the word "formalize" is used in two different senses, which may cause confusion, we strictly distinguish between the words _formalize_ and _mechanize_.
+
+  / _formalize_: the formalization of mathematics as a technique in the context of mathematical logic and metamathematics.
+  / _mechanize_: the formalization of mathematics in an interactive theorem prover, verifiable on an actual computer.
+
+  Following this convention, what we have done can be stated succinctly: _mechanizing formalized mathematics_.
+]
+
 = Introduction
 
 _Gödel's incompleteness theorems_ are among the most significant results in mathematical logic.
@@ -50,16 +59,7 @@ However, it follows from G2, that abstracting the behavior of the provability pr
 Solovay @Sol76 showed that the modal logic called #LogicGL precisely captures the behavior of the standard provability predicate.
 This fact, known as _Solovay's arithmetical completeness theorem_, was a significant result that opened up the subfield of modal logic called _provability logic_.
 
-On the other hand, recently, there has been much active work on mechanizing
-#footnote[
-  Since the word "formalize" can be used in two different senses, which may cause confusion, we strictly distinguish between the words _formalize_ and _mechanize_.
-
-  / _formalize_: to internalize metamathematical notions inside of a formal system.
-  / _mechanize_: writing definitions and proofs in interactive theorem prover, verifiable on computer.
-
-  Following this convention, what we have done can be stated succinctly: _mechanizing formalized mathematics_.
-]
-mathematics using interactive theorem provers, guaranteeing the validity of existing and new results, and providing AI/LLM-assisted or automated proving.
+On the other hand, recently, there has been much active work on mechanizing mathematics using interactive theorem provers, guaranteeing the validity of existing and new results, and providing AI/LLM-assisted or automated proving.
 There are many well-known interactive theorem provers such as Rocq @RocqProver, Isabelle @Isabelle, HOL Light @HOLLight @HOLLightTutorial, Agda @Agda, and Lean @dMU21, and mathematics has been mechanized in each of them, including in the field of mathematical logic#footnote[Some of these mechanizations are summarized in @AwesomeLogicFormalization.].
 In particular, for mechanizing Gödel's incompleteness theorems, this line of work began with Shankar in 1986 @Sha86 @Sha97, and continues with O'Connor @OCo05 @OCo09, Harrison @Har06, Paulson @Pau15, and Popescu and Traytel @PT19 @PT21, Kirst and Peters @KP23.
 As for provability logic, modal-logical properties of #LogicGL, such as its semantical completeness and automated solvers, have been mechanized by Harrison @HOLLightTutorial[Chapter 20]#footnote[We don't know when Harrison's mechanization of modal logic was carried out.], Goré and Kelly @GK07, Goré, Ramanayake and Shillito @GRS21, Maggesi and Perini Brogi @MPB21 @MPB23, Gignoux @Gig26.
