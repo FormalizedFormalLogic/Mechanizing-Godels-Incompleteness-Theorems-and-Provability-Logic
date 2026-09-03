@@ -191,11 +191,11 @@ In addition, to avoid directly handling formalized statements, such as $Pr(T)(x)
 
 == First incompleteness theorem
 
-第1不完全性定理は極めて弱い算術理論でも成立することが知られている。
-その中でも，我々はCobhamによる算術理論 $R0$ を用いる。
+It is known that the first incompleteness theorem holds even for extremely weak arithmetical theories.
+Among these, we use the arithmetical theory $R0$ due to Cobham @Vau62.
 
 #definition[
-  The theory $R0$ consists $LOR$-文に関する統合の公理を含み，かつ the following variable-free atomic formulas in $LOR$,
+  The theory $R0$ consists of the equality axioms for $LOR$, together with the following variable-free atomic formulas in $LOR$,
 
   $
       num(n) + num(m) = & num(n + m) wide   && "for all" n, m in Nat \
@@ -663,17 +663,17 @@ Making this abstraction concrete, that is, actually constructing the desired pro
 #let Universe = $bold(upright(V))$
 #let Bit = $"Bit"$
 
-前節で導入した @prop:abstract_G2 を具体化することによって，我々は第二不完全性定理を形式化することを目標とする．
-まず，We take $ISigma1$ as the base theory for our proof of G2.
+By making the abstraction @prop:abstract_G2 introduced in the previous section concrete, the goal of this section is to mechanize the second incompleteness theorem.
+We first take $ISigma1$ as the base theory for our proof of G2.
 
 #definition[
-  $LOR$ に関する等式の公理および17個からなる算術の有限な公理系を $PeanoArithmeticMinus$ (離散順序半環の理論) と呼ぶ．
-  またunaryな算術論理式 $phi(x)$ に対して，次の数学的帰納法を表す論理式 $Ind(φ)$ を定義する．
+  We call $PeanoArithmeticMinus$ (the theory of discrete ordered semirings) the finite axiom system consisting of the equality axioms for $LOR$ together with 17 further axioms.
+  For a unary arithmetical formula $phi(x)$, we define the formula $Ind(φ)$ expressing the following instance of mathematical induction:
   $
     phi(0) -> (forall x phi(x) -> phi(x + 1)) -> forall x phi(x)
   $
-  論理式のクラス $Gamma$ に対して，$Ind(Gamma)$ を $PeanoArithmeticMinus$ と $Gamma$ に属する全ての論理式に対して $Ind(φ)$ を含む論理式との合併として定義する．
-  このとき，$ISigma1$ は $Sigma_1$-論理式全体の数学的帰納法が実行可能な理論であり，$PeanoArithmetic$ は全ての論理式に対して数学的帰納法が実行可能な理論として定める．
+  For a class of formulas $Gamma$, we define $Ind(Gamma)$ as the union of $PeanoArithmeticMinus$ with $Ind(φ)$ for every formula $φ$ belonging to $Gamma$.
+  We then let $ISigma1$ be the theory in which mathematical induction is available for all $Sigma_1$-formulas, and $PeanoArithmetic$ the theory in which it is available for all formulas.
 ]
 
 #leancode(
@@ -890,7 +890,7 @@ These facts immediately yield definitions over $Universe$ of basic syntactic ope
 ]
 
 
-我々は述語 `provabilityPred` が @def:provability_abstraction で導入した provability であり，更にそれが導出可能性条件 $bold("D1"), bold("D2"), bold("D3")$ を満たすことをroutineとして確認することができる．
+We can routinely verify that the predicate `provabilityPred` is a provability in the sense of @def:provability_abstraction, and moreover that it satisfies the derivability conditions $bold("D1")$, $bold("D2")$, $bold("D3")$.
 
 #leancode(
   links: (
@@ -941,15 +941,15 @@ These facts immediately yield definitions over $Universe$ of basic syntactic ope
   ```
 ]
 
-一方で，@prop:abstract_G2 を具体化するには理論がdiagonalizable (@def:diagonalization_abstraction) であることが必要であった．
-$T$ が $ISigma1$ を含むことから，不動点定理が成立する．
+On the other hand, making @prop:abstract_G2 concrete requires the theory to be diagonalizable (@def:diagonalization_abstraction).
+Since $T supset.eq ISigma1$, the fixed point theorem holds.
 
 #theorem[
-  $T$ が $ISigma1$ を含むとき，任意のunaryな算術論理式 $theta(x)$ に対して，算術文 $fixpoint(theta)$ を構成できて，次を満たす．
+  Suppose $T supset.eq ISigma1$. For any unary arithmetical formula $theta(x)$, one can construct an arithmetical sentence $fixpoint(theta)$ such that
   $
-    T proves fixpoint(theta) ↔ theta(godel(fixpoint(theta)))
+    T proves fixpoint(theta) <-> theta (godel(fixpoint(theta)))
   $
-  故に，理論 $T$ は diagonalizable である．
+  Hence the theory $T$ is diagonalizable.
 ] <thm:fixedpoint>
 
 #leancode(
@@ -973,7 +973,7 @@ $T$ が $ISigma1$ を含むことから，不動点定理が成立する．
   ```
 ]
 
-以上の結果をまとめることによって，@prop:abstract_G2 から直ちに最終結果として，we can mechanize the second incompleteness theorem.
+Combining the results above, @prop:abstract_G2 immediately yields our final result: a mechanization of the second incompleteness theorem.
 
 #theorem[Gödel's Second Incompleteness Theorem @God31][
   Let $T$ be a $Delta_1$-definable, $Sigma_1$-sound arithmetic theory stronger than $ISigma1$.
@@ -1002,14 +1002,14 @@ $T$ が $ISigma1$ を含むことから，不動点定理が成立する．
 Using the tools developed so far, we have also proved several theorems related to Gödel's incompleteness theorems.
 
 === Variants of fixedpoint lemma
-@thm:fixedpoint を一般化した，次のような不動点定理も成立する．証明は @Boo94 などを参照されたし．
-詳細は説明しないものの，これらは @sect:provability_logic で算術的完全性を示す際に必要となる．
-ここでは理論 $T$ が $ISigma1$ を含むとする．
+The following fixed point theorems, which generalize @thm:fixedpoint, also hold; see @Boo94 for the proofs.
+Although we omit the details, they are needed when we establish arithmetical completeness in @sect:provability_logic.
+Throughout this subsection, we assume $T supset.eq ISigma1$.
 
 #theorem[
-  任意の $k$-arity 算術論理式 $theta(x_0, ..., x_(k - 1))$ に対して，算術文 $sans("fixedpoint")_0, ..., sans("fixedpoint")_(k - 1)$ を構成できて，任意の $i < k$ に対して次を満たす．
+  For any family $(theta_i)_(i < k)$ of $k$-arity arithmetical formulas $theta_i (x_0, ..., x_(k - 1))$, one can construct arithmetical sentences $sans("fixedpoint")_0, ..., sans("fixedpoint")_(k - 1)$ such that, for every $i < k$,
   $
-    T proves sans("fixedpoint")_i ↔ theta(godel(sans("fixedpoint")_0), ..., godel(sans("fixedpoint")_(k - 1)))
+    T proves sans("fixedpoint")_i <-> theta_i (godel(sans("fixedpoint")_0), ..., godel(sans("fixedpoint")_(k - 1)))
   $
 ] <thm:multi_fixedpoint>
 
@@ -1026,9 +1026,9 @@ Using the tools developed so far, we have also proved several theorems related t
 ]
 
 #theorem[
-  任意の $k + 1$-arity 算術論理式 $theta(x, arrow(y))$ に対して，$k$-arity 算術論理式 $fixpoint(theta)(arrow(y))$ を構成できて，次を満たす．
+  For any $(k + 1)$-arity arithmetical formula $theta(x, arrow(y))$, one can construct a $k$-arity arithmetical formula $fixpoint(theta)(arrow(y))$ such that
   $
-    T proves forall arrow(y). (fixpoint(theta)(arrow(y)) ↔ theta(godel(fixpoint(theta)), arrow(y))
+    T proves forall arrow(y), (fixpoint(theta)(arrow(y)) <-> theta(godel(fixpoint(theta)), arrow(y)))
   $
 ] <thm:parameterized_fixedpoint>
 
