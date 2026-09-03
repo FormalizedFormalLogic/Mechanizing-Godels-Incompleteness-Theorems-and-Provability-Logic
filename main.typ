@@ -192,7 +192,7 @@ In addition, to avoid directly handling formalized statements, such as $Pr(T)(x)
 == First incompleteness theorem
 
 It is known that the first incompleteness theorem holds even for extremely weak arithmetical theories.
-Among these, we use the arithmetical theory $R0$ due to Cobham @Vau62.
+Among these, we use the arithmetical theory $R0$ due to Cobham (cf. @Vau62).
 
 #definition[
   The theory $R0$ consists of the equality axioms for $LOR$, together with the following variable-free atomic formulas in $LOR$,
