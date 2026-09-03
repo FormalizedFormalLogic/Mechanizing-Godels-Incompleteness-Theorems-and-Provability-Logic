@@ -190,17 +190,37 @@ In addition, to avoid directly handling formalized statements, such as $Pr(T)(x)
 #let num(x) = $overline(#x)$
 
 == First incompleteness theorem
-The theory $R0$ consists of the following variable-free atomic formulas in $LOR$,
 
-$
-    num(n) + num(m) = & num(n + m) wide   && "for all" n, m in Nat \
-  num(n) dot num(m) = & num(n dot m) wide && "for all" n, m in Nat \
-        num(n) eq.not & num(m) wide       && "for all" n, m in Nat "such that" n eq.not m \
-$
-together with the following axiom scheme:
-$
-  fal(x)[x < num(n) <-> or.big_(i < n) (x = num(i))]
-$
+第1不完全性定理は極めて弱い算術理論でも成立することが知られている。
+その中でも，我々はCobhamによる算術理論 $R0$ を用いる。
+
+#definition[
+  The theory $R0$ consists $LOR$-文に関する統合の公理を含み，かつ the following variable-free atomic formulas in $LOR$,
+
+  $
+      num(n) + num(m) = & num(n + m) wide   && "for all" n, m in Nat \
+    num(n) dot num(m) = & num(n dot m) wide && "for all" n, m in Nat \
+          num(n) eq.not & num(m) wide       && "for all" n, m in Nat "such that" n eq.not m \
+  $
+  together with the following axiom scheme:
+  $
+    fal(x)[x < num(n) <-> or.big_(i < n) (x = num(i))]
+  $
+]
+
+#leancode[
+  ```
+  inductive R0 : ArithmeticTheory
+    | equal : ∀ φ ∈ 𝗘𝗤 ℒₒᵣ, R0 φ
+    | Ω₁ (n m : ℕ) : R0 “↑n + ↑m = ↑(n + m)”
+    | Ω₂ (n m : ℕ) : R0 “↑n * ↑m = ↑(n * m)”
+    | Ω₃ (n m : ℕ) : n ≠ m → R0 “↑n ≠ ↑m”
+    | Ω₄ (n : ℕ) : R0 “∀ x, x < ↑n ↔ ⋁ i < n, x = ↑i”
+
+  notation "𝗥₀" => R0
+  ```
+]
+
 
 The key theorem is that every $Sigma_1$-sound theory extending $R0$ has a weak representation of every recursively enumerable (r.e.) predicate @Vau62 @JS83.
 More precisely:
@@ -646,7 +666,72 @@ Making this abstraction concrete, that is, actually constructing the desired pro
 前節で導入した @prop:abstract_G2 を具体化することによって，我々は第二不完全性定理を形式化することを目標とする．
 まず，We take $ISigma1$ as the base theory for our proof of G2.
 
-This theory is in fact unnecessarily strong. For a sharper result, one could weaken the base theory to Buss's theory $sans("S")^1_2$ @Bus86, over which the standard proof can be carried out with few changes#footnote[
+#definition[
+  $LOR$ に関する等式の公理および17個からなる算術の有限な公理系を $PeanoArithmeticMinus$ (離散順序半環の理論) と呼ぶ．
+  またunaryな算術論理式 $phi(x)$ に対して，次の数学的帰納法を表す論理式 $Ind(φ)$ を定義する．
+  $
+    phi(0) -> (forall x phi(x) -> phi(x + 1)) -> forall x phi(x)
+  $
+  論理式のクラス $Gamma$ に対して，$Ind(Gamma)$ を $PeanoArithmeticMinus$ と $Gamma$ に属する全ての論理式に対して $Ind(φ)$ を含む論理式との合併として定義する．
+  このとき，$ISigma1$ は $Sigma_1$-論理式全体の数学的帰納法が実行可能な理論であり，$PeanoArithmetic$ は全ての論理式に対して数学的帰納法が実行可能な理論として定める．
+]
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Refutability.lean#L90",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean#L84",
+    ),
+  ),
+)[
+  ```
+  abbrev       addZero : ArithmeticSentence := “∀ x, x + 0 = x”
+  abbrev      addAssoc : ArithmeticSentence := “∀ x y z, (x + y) + z = x + (y + z)”
+  abbrev       addComm : ArithmeticSentence := “∀ x y, x + y = y + x”
+  abbrev     addEqOfLt : ArithmeticSentence := “∀ x y, x < y → ∃ z, x + z = y”
+  abbrev        zeroLe : ArithmeticSentence := “∀ x, 0 ≤ x”
+  abbrev     zeroLtOne : ArithmeticSentence := “0 < 1”
+  abbrev oneLeOfZeroLt : ArithmeticSentence := “∀ x, 0 < x → 1 ≤ x”
+  abbrev      addLtAdd : ArithmeticSentence := “∀ x y z, x < y → x + z < y + z”
+  abbrev       mulZero : ArithmeticSentence := “∀ x, x * 0 = 0”
+  abbrev        mulOne : ArithmeticSentence := “∀ x, x * 1 = x”
+  abbrev      mulAssoc : ArithmeticSentence := “∀ x y z, (x * y) * z = x * (y * z)”
+  abbrev       mulComm : ArithmeticSentence := “∀ x y, x * y = y * x”
+  abbrev      mulLtMul : ArithmeticSentence := “∀ x y z, x < y ∧ 0 < z → x * z < y * z”
+  abbrev         distr : ArithmeticSentence := “∀ x y z, x * (y + z) = x * y + x * z”
+  abbrev      ltIrrefl : ArithmeticSentence := “∀ x, x ≮ x”
+  abbrev       ltTrans : ArithmeticSentence := “∀ x y z, x < y ∧ y < z → x < z”
+  abbrev         ltTri : ArithmeticSentence := “∀ x y, x < y ∨ x = y ∨ x > y”
+
+  inductive PeanoMinus : ArithmeticTheory
+    | equal         : ∀ φ ∈ 𝗘𝗤 ℒₒᵣ, PeanoMinus φ
+    | addZero       : PeanoMinus PeanoMinus.Axiom.addZero
+    | addAssoc      : PeanoMinus PeanoMinus.Axiom.addAssoc
+    | ...
+  notation "𝗣𝗔⁻" => PeanoMinus
+
+  def succInd {ξ} (φ : Semiformula L ξ 1) : Formula L ξ　:=
+    “!φ 0 → (∀ x, !φ x → !φ (x + 1)) → ∀ x, !φ x”
+
+  def InductionScheme (Γ : Semiformula L ℕ 1 → Prop) : Theory L :=
+    { ψ | ∃ φ : Semiformula L ℕ 1, Γ φ ∧ ψ = .univCl (succInd φ) }
+
+  abbrev InductionOnHierarchy (Γ : Polarity) (k : ℕ) : ArithmeticTheory := 𝗣𝗔⁻ ∪ InductionScheme ℒₒᵣ (Arithmetic.Hierarchy Γ k)
+  prefix:max "𝗜𝗡𝗗 " => InductionOnHierarchy
+
+  abbrev ISigma (k : ℕ) : ArithmeticTheory := 𝗜𝗡𝗗 𝚺 k
+  notation "𝗜𝚺₁" => ISigma 1
+
+  abbrev Peano : ArithmeticTheory := 𝗣𝗔⁻ ∪ InductionScheme ℒₒᵣ Set.univ
+  notation "𝗣𝗔" => Peano
+  ```
+]
+
+$ISigma1$ is in fact unnecessarily strong. For a sharper result, one could weaken the base theory to Buss's theory $sans("S")^1_2$ @Bus86, over which the standard proof can be carried out with few changes#footnote[
   In many proofs, including ours, derivability condition D3 is established using formalized $Sigma_1$-completeness.
   Whether this principle holds in $sans("S")^1_2$ remains an open problem @BV06a.
   One must therefore prove the sharper formalized $Sigma^"b"_1$-completeness theorem.
