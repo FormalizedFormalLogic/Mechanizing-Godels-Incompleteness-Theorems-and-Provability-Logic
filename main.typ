@@ -202,7 +202,7 @@ $
   fal(x)[x < num(n) <-> or.big_(i < n) (x = num(i))]
 $
 
-The key theorem is that every $Sigma_1$-sound theory extending $R0$ has a weak representation of every recursively enumerable (r.e.) predicate @Vau62,@JS83.
+The key theorem is that every $Sigma_1$-sound theory extending $R0$ has a weak representation of every recursively enumerable (r.e.) predicate @Vau62 @JS83.
 More precisely:
 
 #theorem[
@@ -240,244 +240,12 @@ $Nat models Pr(T)(godel(psi)) <==> T proves psi$; hence $D$ is r.e.
   theorem incomplete (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHierarchy 𝚺 1] : Incomplete T
   ```
 ]
-
-== Second incompleteness theorem
-
-#let Universe = $bold(upright(V))$
-#let Bit = $"Bit"$
-
-We take $ISigma1$ as the base theory for our proof of the second incompleteness theorem.
-This theory is in fact unnecessarily strong. For a sharper result, one could weaken the base theory to Buss's theory $sans("S")^1_2$ @Bus86, over which the standard proof can be carried out with few changes#footnote[
-  In many proofs, including ours, derivability condition D3 is established using formalized $Sigma_1$-completeness.
-  Whether this principle holds in $sans("S")^1_2$ remains an open problem @BV06a.
-  One must therefore prove the sharper formalized $Sigma^"b"_1$-completeness theorem.
-].
-Moreover, Nelson's interpretation $Robinson triangle.small.r sans("S")^1_2$ extends the second incompleteness theorem to a broad class of theories that interpret Robinson arithmetic $Robinson$ @Vis11.
-Although this is an appealing direction, we do not pursue it because it would make the mechanization prohibitively complex.
-Working in $ISigma1$ makes recursive definitions of predicates and functions easier to handle, since @thm:recursive-def is available.
-
-As noted above, our internal arithmetical arguments are carried out in an arbitrarily fixed model of $ISigma1$, which we henceforth denote by $Universe$.
-A _class_ is a subset of $Universe$.
-
-Because only induction restricted to $Sigma_1$-formulas is available over $Universe$, the ($Sigma_i$-, $Pi_i$-, and $Delta_i$-) definability of relations and functions on $Universe$ is important.
-In practice, this can often be inferred automatically from the stated definition.
-To automate the substantial amount of such reasoning, we make extensive use of Aesop @LF23 whenever no explicit defining formula is needed.
-
-Let $Bit(x, y)$ be the predicate asserting that the $x$-th digit in the binary expansion of $y$ is $1$.
-Ackermann coding, obtained from the membership relation defined below, provides a means of representing hereditarily finite sets within arithmetic @Pet09.
-$
-  x in y <==> Bit(x, y)
-$
-To work with $Bit(x, y)$ in weak arithmetic, we also mechanized the well-known fact due to Gaifman and Dimitracopoulos @GD82,
-that the graph of exponentiation is representable by a $Delta_0$-formula and that its inductive properties are provable in $Ind(Delta_0)$.
-
-The $ISigma1$ version of the Knaster--Tarski theorem, stated below, is useful for defining recursively defined structures over $Universe$ with appropriate complexity.
-
-#let Fix = $bold("Fix")$
-
-#theorem[Version of the Knaster--Tarski theorem][
-  Let $Phi: cal(P)(Universe) -> cal(P)(Universe)$ be a class-valued function.
-  Assume that this satisfies the following conditions.
-  / Definability: A predicate $P(x, c) := x in Phi({z | z in c})$ is $Delta_1$-definable with parameters.
-  / Monotonicity: $bold(C) subset.eq bold(C')$ implies $Phi(bold(C)) subset.eq Phi(bold(C'))$.
-  / Finiteness: If $x in Phi(bold(C))$ holds, then $x in Phi({z in bold(C) | z < m})$ holds for some $m in Universe$.
-  Then we have a $Sigma_1$ class $Fix_Phi$ such that
-  $
-    Phi(Fix_Phi) = Fix_Phi
-  $
-  Additionally, if it satisfies following condition, $Fix_Phi$ is $Delta_1$.
-  / Strong finiteness: If $x in Phi(bold(C))$ holds, then $x in Phi({z in bold(C) | z < x})$ holds.
-]<thm:recursive-def>
-
-This satisfies the following structural induction principle.
-
-#theorem[Structural induction][
-  Assume that $Phi$ satisfies the strong finiteness property.
-  The predicate $Fix_Phi$ above satisfies the induction principle of following form.
-  Let $psi$ be a $Sigma_1$ or $Pi_1$-predicate (which may contains parameters from $Universe$):
-  $
-    fal(bold(C) subset.eq Fix_Phi)[fal(x in bold(C))psi(x) -> fal(x in Phi(bold(C)))psi(x)]
-    quad "implies" quad
-    fal(x in Fix_Phi)psi(x)
-  $
-]<thm:recursive-ind>
-
-Practically important point is that the defining formulas of $Fix_Phi$ can be explicitly constructible from the defining formula of $P(x, c)$.
-In the mechanization, we first call such a formula a `Blueprint k` (`k` is a number of parameters).
-Obviously it is purely syntactic and independent of any model.
-We then define `Construction V φ`, the model-theoretic realization of a `φ : Blueprint k`.
-Our mechanization of @thm:recursive-def and @thm:recursive-ind is stated with
-these two parameters.
-
-#leancode(
-  links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L25",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L54",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L59",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L62",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L184",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L222",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L256",
-    ),
-  ),
-)[
-  ```
-  structure Blueprint (k : ℕ) where
-    core : 𝚫₁.Semisentence (k + 2)
-
-  structure Construction {k : ℕ} (φ : Blueprint k) where
-    Φ : (Fin k → V) → Set V → V → Prop
-    defined : 𝚫₁.Defined (fun v ↦ Φ (v ·.succ.succ) {x | x ∈ v 1} (v 0)) φ.core
-    monotone {C C' : Set V} (h : C ⊆ C') {v x} : Φ v C x → Φ v C' x
-
-  class Construction.Finite {k : ℕ} {φ : Blueprint k} (c : Construction V φ) where
-    finite {C : Set V} {v x} : c.Φ v C x → ∃ m, c.Φ v {y ∈ C | y < m} x
-
-  class Construction.StrongFinite {k : ℕ} {φ : Blueprint k} (c : Construction V φ) where
-    strong_finite {C : Set V} {v x} : c.Φ v C x → c.Φ v {y ∈ C | y < x} x
-
-  variable (c : Construction V φ)
-
-  def Construction.Fixpoint (v) (x : V) : Prop
-
-  theorem Construction.case [c.Finite] : c.Fixpoint v x ↔ c.Φ v {z | c.Fixpoint v z} x
-
-  theorem Construction.induction [c.StrongFinite] {P : V → Prop} (hP : Γ-[1]-Predicate P)
-      (H : ∀ C : Set V, (∀ x ∈ C, c.Fixpoint v x ∧ P x) → ∀ x, c.Φ v C x → P x) :
-      ∀ x, c.Fixpoint v x → P x
-  ```
-]
-
-Syntactic structures such as terms, formulas, and proofs are all recursively generated and can therefore be constructed using `Blueprint` and `Construction`.
-Moreover, because these structures are generated well-foundedly, they satisfy the strong finiteness property.
-It follows uniformly that the corresponding predicates are $Delta_1$-definable and satisfy the structural induction principles.
-These facts immediately yield definitions over $Universe$ of basic syntactic operations such as substitution.
-#leancode(
-  links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Formula/Basic.lean#L1218",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Proof/Basic.lean#L519",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Proof/Basic.lean#L467",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Proof/Basic.lean#L525",
-    ),
-  ),
-)[
-  ```
-  variable {L : Language} [L.Encodable] [L.LORDefinable]
-
-  instance IsSemiformula.definable : 𝚫₁-Relation[V] (IsSemiformula L)
-
-  instance Proof.definable {T : Theory L} [T.Δ₁] : 𝚫₁-Relation[V] (Proof T)
-
-  def Provable (φ : V) : Prop := ∃ d, Proof T d φ
-
-  instance Provable.definable : 𝚺₁-Predicate[V] Provable T
-  ```
-]
-
-The crucial ingredient in the proof of G2 is that the provability predicate $Pr(T)(x)$ satisfies the derivability conditions.
-Their verification is routine.
-
-#leancode(
-  links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/DerivabilityCondition/D1.lean#L23",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/DerivabilityCondition/D2.lean#L20",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/DerivabilityCondition/D3.lean#L160",
-    ),
-  ),
-)[
-  ```
-  variable {L : Language} [L.Encodable] [L.LORDefinable]
-
-  /-- Hilbert–Bernays provability condition D1 -/
-  theorem internalize_provability {φ} : T ⊢ φ → Provable T (⌜φ⌝ : V)
-
-  /-- Hilbert–Bernays provability condition D2 -/
-  theorem modus_ponens {φ ψ : Proposition L}
-      (hφψ : Provable T (⌜φ 🡒 ψ⌝ : V)) (hφ : Provable T (⌜φ⌝ : V)) :
-      Provable T (⌜ψ⌝ : V)
-
-  /-- A formalized 𝚺₁-completeness -/
-  theorem sigma_one_complete {σ : ArithmeticSentence} (hσ : Hierarchy 𝚺 1 σ) :
-      V↓[ℒₒᵣ] ⊧ σ → Provable T (⌜σ⌝ : V) := fun h ↦ by
-    simpa [tprovable_iff_provable]
-      using! Bootstrapping.Arithmetic.sigma_one_provable_of_models T hσ h
-
-  /-- Hilbert–Bernays provability condition D3 -/
-  theorem provable_internalize {σ : ArithmeticSentence} :
-      Provable T (⌜σ⌝ : V) → Provable T (⌜provabilityPred T σ⌝ : V)
-  ```
-]
-
-Finally, the second incompleteness theorem follows by the usual argument from the derivability conditions.
-
-#theorem[Gödel's Second Incompleteness Theorem @God31][
-  Let $T$ be a $Delta_1$-definable, $Sigma_1$-sound arithmetic theory stronger than $ISigma1$.
-  Then $T nproves Con(T)$,
-  where $Con(T)$ is a consistency statement of $T$.
-]<thm:G2>
-
-#leancode(
-  links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/Second.lean#L18",
-    ),
-  ),
-)[
-  ```
-  /-- Gödel's second incompleteness theorem -/
-  theorem consistent_unprovable [Consistent T] : T ⊬ T.consistent.val
-
-  theorem inconsistent_unprovable [ArithmeticTheory.SoundOnHierarchy T 𝚺 1] : T ⊬ ∼T.consistent.val
-  ```
-]
-
 == Provability abstraction <subsect:provability_abstraction>
 
 #let Godel(B) = $sans("G")_#B$
 #let Con(B) = $sans("Con")_#B$
 
-Working directly with a raw provability predicate is technically cumbersome.
-We therefore introduce the notion of _provability abstraction_, an abstraction of the provability predicate.
+Before proving G2, we introduce an abstraction of the provability predicate, called _provability abstraction_, because working directly with a raw provability predicate is technically cumbersome.
 This notion is closely related to provability logic, which treats provability as a modality (see @sect:provability_logic).
 With these abstractions, the incompleteness theorems can be mechanized abstractly, by purely syntactic manipulations.
 Concretely constructing a "provability" satisfying the abstract derivability conditions then immediately yields the concrete statements of the incompleteness theorems.
@@ -530,7 +298,7 @@ Mechanizing the incompleteness theorems via such an abstract provability has pre
   ))
   // - $bold("FC")$ (on an $cal(L)$-sentence $sigma$): $T_0 proves sigma -> Bew sigma$.
   // - $bold("S")$ (on an $L_0$-structure $M$) : $M models Bew sigma ==> T proves sigma$.
-]
+] <def:provability_abstraction>
 
 #leancode[
   ```
@@ -577,7 +345,7 @@ In fact, abstracting provability alone does not suffice to mechanize the incompl
   for any $theta(x)$. We call $fixpoint(theta)$ the _fixed point_ of $theta$.
 
   Let $T_0, T$ be $cal(L)$-theories such that $T_0$ is diagonalizable, and let $Bew$ be a provability of $T_0, T$. Then the fixed point of $not Bew (x)$ is called the _Gödel sentence_ and is denoted by $Godel(Bew)$.
-]
+] <def:diagonalization_abstraction>
 
 #leancode[
   ```
@@ -870,9 +638,307 @@ We now state Jeroslow's incompleteness theorem.
 
 Making this abstraction concrete, that is, actually constructing the desired provability $Bew$ and refutability $Wid$, is the goal of the following sections.
 
+== Second incompleteness theorem
+
+#let Universe = $bold(upright(V))$
+#let Bit = $"Bit"$
+
+前節で導入した @prop:abstract_G2 を具体化することによって，我々は第二不完全性定理を形式化することを目標とする．
+まず，We take $ISigma1$ as the base theory for our proof of G2.
+
+This theory is in fact unnecessarily strong. For a sharper result, one could weaken the base theory to Buss's theory $sans("S")^1_2$ @Bus86, over which the standard proof can be carried out with few changes#footnote[
+  In many proofs, including ours, derivability condition D3 is established using formalized $Sigma_1$-completeness.
+  Whether this principle holds in $sans("S")^1_2$ remains an open problem @BV06a.
+  One must therefore prove the sharper formalized $Sigma^"b"_1$-completeness theorem.
+].
+Moreover, Nelson's interpretation $Robinson triangle.small.r sans("S")^1_2$ extends the second incompleteness theorem to a broad class of theories that interpret Robinson arithmetic $Robinson$ @Vis11.
+Although this is an appealing direction, we do not pursue it because it would make the mechanization prohibitively complex.
+Working in $ISigma1$ makes recursive definitions of predicates and functions easier to handle, since @thm:recursive-def is available.
+
+As noted above, our internal arithmetical arguments are carried out in an arbitrarily fixed model of $ISigma1$, which we henceforth denote by $Universe$.
+A _class_ is a subset of $Universe$.
+
+Because only induction restricted to $Sigma_1$-formulas is available over $Universe$, the ($Sigma_i$-, $Pi_i$-, and $Delta_i$-) definability of relations and functions on $Universe$ is important.
+In practice, this can often be inferred automatically from the stated definition.
+To automate the substantial amount of such reasoning, we make extensive use of Aesop @LF23 whenever no explicit defining formula is needed.
+
+Let $Bit(x, y)$ be the predicate asserting that the $x$-th digit in the binary expansion of $y$ is $1$.
+Ackermann coding, obtained from the membership relation defined below, provides a means of representing hereditarily finite sets within arithmetic @Pet09.
+$
+  x in y <==> Bit(x, y)
+$
+To work with $Bit(x, y)$ in weak arithmetic, we also mechanized the well-known fact due to Gaifman and Dimitracopoulos @GD82,
+that the graph of exponentiation is representable by a $Delta_0$-formula and that its inductive properties are provable in $Ind(Delta_0)$.
+
+The $ISigma1$ version of the Knaster--Tarski theorem, stated below, is useful for defining recursively defined structures over $Universe$ with appropriate complexity.
+
+#let Fix = $bold("Fix")$
+
+#theorem[Version of the Knaster--Tarski theorem][
+  Let $Phi: cal(P)(Universe) -> cal(P)(Universe)$ be a class-valued function.
+  Assume that this satisfies the following conditions.
+  / Definability: A predicate $P(x, c) := x in Phi({z | z in c})$ is $Delta_1$-definable with parameters.
+  / Monotonicity: $bold(C) subset.eq bold(C')$ implies $Phi(bold(C)) subset.eq Phi(bold(C'))$.
+  / Finiteness: If $x in Phi(bold(C))$ holds, then $x in Phi({z in bold(C) | z < m})$ holds for some $m in Universe$.
+  Then we have a $Sigma_1$ class $Fix_Phi$ such that
+  $
+    Phi(Fix_Phi) = Fix_Phi
+  $
+  Additionally, if it satisfies following condition, $Fix_Phi$ is $Delta_1$.
+  / Strong finiteness: If $x in Phi(bold(C))$ holds, then $x in Phi({z in bold(C) | z < x})$ holds.
+]<thm:recursive-def>
+
+This satisfies the following structural induction principle.
+
+#theorem[Structural induction][
+  Assume that $Phi$ satisfies the strong finiteness property.
+  The predicate $Fix_Phi$ above satisfies the induction principle of following form.
+  Let $psi$ be a $Sigma_1$ or $Pi_1$-predicate (which may contains parameters from $Universe$):
+  $
+    fal(bold(C) subset.eq Fix_Phi)[fal(x in bold(C))psi(x) -> fal(x in Phi(bold(C)))psi(x)]
+    quad "implies" quad
+    fal(x in Fix_Phi)psi(x)
+  $
+]<thm:recursive-ind>
+
+Practically important point is that the defining formulas of $Fix_Phi$ can be explicitly constructible from the defining formula of $P(x, c)$.
+In the mechanization, we first call such a formula a `Blueprint k` (`k` is a number of parameters).
+Obviously it is purely syntactic and independent of any model.
+We then define `Construction V φ`, the model-theoretic realization of a `φ : Blueprint k`.
+Our mechanization of @thm:recursive-def and @thm:recursive-ind is stated with
+these two parameters.
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L25",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L54",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L59",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L62",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L184",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L222",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L256",
+    ),
+  ),
+)[
+  ```
+  structure Blueprint (k : ℕ) where
+    core : 𝚫₁.Semisentence (k + 2)
+
+  structure Construction {k : ℕ} (φ : Blueprint k) where
+    Φ : (Fin k → V) → Set V → V → Prop
+    defined : 𝚫₁.Defined (fun v ↦ Φ (v ·.succ.succ) {x | x ∈ v 1} (v 0)) φ.core
+    monotone {C C' : Set V} (h : C ⊆ C') {v x} : Φ v C x → Φ v C' x
+
+  class Construction.Finite {k : ℕ} {φ : Blueprint k} (c : Construction V φ) where
+    finite {C : Set V} {v x} : c.Φ v C x → ∃ m, c.Φ v {y ∈ C | y < m} x
+
+  class Construction.StrongFinite {k : ℕ} {φ : Blueprint k} (c : Construction V φ) where
+    strong_finite {C : Set V} {v x} : c.Φ v C x → c.Φ v {y ∈ C | y < x} x
+
+  variable (c : Construction V φ)
+
+  def Construction.Fixpoint (v) (x : V) : Prop
+
+  theorem Construction.case [c.Finite] : c.Fixpoint v x ↔ c.Φ v {z | c.Fixpoint v z} x
+
+  theorem Construction.induction [c.StrongFinite] {P : V → Prop} (hP : Γ-[1]-Predicate P)
+      (H : ∀ C : Set V, (∀ x ∈ C, c.Fixpoint v x ∧ P x) → ∀ x, c.Φ v C x → P x) :
+      ∀ x, c.Fixpoint v x → P x
+  ```
+]
+
+Syntactic structures such as terms, formulas, and proofs are all recursively generated and can therefore be constructed using `Blueprint` and `Construction`.
+Moreover, because these structures are generated well-foundedly, they satisfy the strong finiteness property.
+It follows uniformly that the corresponding predicates are $Delta_1$-definable and satisfy the structural induction principles.
+These facts immediately yield definitions over $Universe$ of basic syntactic operations such as substitution.
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Formula/Basic.lean#L1218",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Proof/Basic.lean#L519",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Proof/Basic.lean#L467",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Proof/Basic.lean#L525",
+    ),
+  ),
+)[
+  ```
+  variable {L : Language} [L.Encodable] [L.LORDefinable]
+
+  instance IsSemiformula.definable : 𝚫₁-Relation[V] (IsSemiformula L)
+
+  instance Proof.definable {T : Theory L} [T.Δ₁] : 𝚫₁-Relation[V] (Proof T)
+
+  def Provable (φ : V) : Prop := ∃ d, Proof T d φ
+
+  instance Provable.definable : 𝚺₁-Predicate[V] Provable T
+  ```
+]
+
+
+我々は述語 `provabilityPred` が @def:provability_abstraction で導入した provability であり，更にそれが導出可能性条件 $bold("D1"), bold("D2"), bold("D3")$ を満たすことをroutineとして確認することができる．
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/DerivabilityCondition/D1.lean#L23",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/DerivabilityCondition/D2.lean#L20",
+    ),
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/DerivabilityCondition/D3.lean#L160",
+    ),
+  ),
+)[
+  ```
+  variable {L : Language} [L.Encodable] [L.LORDefinable]
+
+  /-- Hilbert–Bernays provability condition D1 -/
+  theorem internalize_provability {φ} : T ⊢ φ → Provable T (⌜φ⌝ : V)
+
+  /-- Hilbert–Bernays provability condition D2 -/
+  theorem modus_ponens {φ ψ : Proposition L}
+      (hφψ : Provable T (⌜φ 🡒 ψ⌝ : V)) (hφ : Provable T (⌜φ⌝ : V)) :
+      Provable T (⌜ψ⌝ : V)
+
+  /-- A formalized 𝚺₁-completeness -/
+  theorem sigma_one_complete {σ : ArithmeticSentence} (hσ : Hierarchy 𝚺 1 σ) :
+      V↓[ℒₒᵣ] ⊧ σ → Provable T (⌜σ⌝ : V) := fun h ↦ by
+    simpa [tprovable_iff_provable]
+      using! Bootstrapping.Arithmetic.sigma_one_provable_of_models T hσ h
+
+  /-- Hilbert–Bernays provability condition D3 -/
+  theorem provable_internalize {σ : ArithmeticSentence} :
+      Provable T (⌜σ⌝ : V) → Provable T (⌜provabilityPred T σ⌝ : V)
+
+  // TODO: insert provabilityPred is provability and instance of satisfies D1, D2, D3
+  ```
+]
+
+一方で，@prop:abstract_G2 を具体化するには理論がdiagonalizable (@def:diagonalization_abstraction) であることが必要であった．
+$T$ が $ISigma1$ を含むことから，不動点定理が成立する．
+
+#theorem[
+  $T$ が $ISigma1$ を含むとき，任意のunaryな算術論理式 $theta(x)$ に対して，算術文 $fixpoint(theta)$ を構成できて，次を満たす．
+  $
+    T proves fixpoint(theta) ↔ theta(godel(fixpoint(theta)))
+  $
+  故に，理論 $T$ は diagonalizable である．
+] <thm:fixedpoint>
+
+#leancode()[
+  ```
+  noncomputable def diag (θ : ArithmeticSemisentence 1) : ArithmeticSemisentence 1
+    := “x. ∀ y, !ssnum y x x → !θ y”
+
+  noncomputable def fixedpoint (θ : ArithmeticSemisentence 1) : ArithmeticSentence
+    := (diag θ)/[⌜diag θ⌝]
+
+  theorem diagonal (θ : ArithmeticSemisentence 1) : T ⊢ fixedpoint θ 🡘 θ/[⌜fixedpoint θ⌝]
+
+  // TODO: insert $T$ is diagonalizable instantinate
+  ```
+]
+
+以上の結果をまとめることによって，@prop:abstract_G2 から直ちに最終結果として，we can mechanize the second incompleteness theorem.
+
+#theorem[Gödel's Second Incompleteness Theorem @God31][
+  Let $T$ be a $Delta_1$-definable, $Sigma_1$-sound arithmetic theory stronger than $ISigma1$.
+  Then $T nproves Con(T)$,
+  where $Con(T)$ is a consistency statement of $T$.
+]<thm:G2>
+
+#leancode(
+  links: (
+    (
+      "Foundation",
+      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/Second.lean#L18",
+    ),
+  ),
+)[
+  ```
+  /-- Gödel's second incompleteness theorem -/
+  theorem consistent_unprovable [Consistent T] : T ⊬ T.consistent.val
+
+  theorem inconsistent_unprovable [ArithmeticTheory.SoundOnHierarchy T 𝚺 1] : T ⊬ ∼T.consistent.val
+  ```
+]
+
 == Some further results related to the incompleteness theorems
 
 Using the tools developed so far, we have also proved several theorems related to Gödel's incompleteness theorems.
+
+=== Variants of fixedpoint lemma
+@thm:fixedpoint を一般化した，次のような不動点定理も成立する．証明は @Boo94 などを参照されたし．
+詳細は説明しないものの，これらは @sect:provability_logic で算術的完全性を示す際に必要となる．
+ここでは理論 $T$ が $ISigma1$ を含むとする．
+
+#theorem[
+  任意の $k$-arity 算術論理式 $theta(x_0, ..., x_(k - 1))$ に対して，算術文 $sans("fixedpoint")_0, ..., sans("fixedpoint")_(k - 1)$ を構成できて，任意の $i < k$ に対して次を満たす．
+  $
+    T proves sans("fixedpoint")_i ↔ theta(godel(sans("fixedpoint")_0), ..., godel(sans("fixedpoint")_(k - 1)))
+  $
+] <thm:multi_fixedpoint>
+
+#leancode()[
+  ```
+  noncomputable def multifixedpoint (θ : Fin k → ArithmeticSemisentence k) (i : Fin k)
+    : ArithmeticSentence := ...
+
+  theorem multidiagonal (θ : Fin k → ArithmeticSemisentence k)
+    : T ⊢ multifixedpoint θ i 🡘 (Rew.subst fun j ↦ ⌜multifixedpoint θ j⌝) ▹ (θ i) :=
+  ```
+]
+
+#theorem[
+  任意の $k + 1$-arity 算術論理式 $theta(x, arrow(y))$ に対して，$k$-arity 算術論理式 $fixpoint(theta)(arrow(y))$ を構成できて，次を満たす．
+  $
+    T proves forall arrow(y). (fixpoint(theta)(arrow(y)) ↔ theta(godel(fixpoint(theta)), arrow(y))
+  $
+] <thm:parameterized_fixedpoint>
+
+#leancode()[
+  ```
+  noncomputable def parameterizedFixedpoint (θ : ArithmeticSemisentence (k + 1))
+    : ArithmeticSemisentence k := ...
+
+  theorem parameterized_diagonal (θ : ArithmeticSemisentence (k + 1))
+    : T ⊢ ∀¹* (parameterizedFixedpoint θ 🡘 “!θ !!(⌜parameterizedFixedpoint θ⌝) ⋯”)
+  ```
+]
 
 === Löb's Theorem
 Instantiating the abstract version stated in @prop:abstract_Löb, we immediately obtain the concrete Löb's theorem.
@@ -910,6 +976,8 @@ By instantiating @prop:abstract_GR, we can prove the Gödel–Rosser incompleten
   ],
 )[
   ```
+  // TODO: rosser provability predicate satisfying Rosser's condition
+
   theorem incomplete_GR (T : ArithmeticTheory) [T.Δ₁] [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T] : Entailment.Incomplete T
   ```
 ]
