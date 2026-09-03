@@ -1,5 +1,4 @@
-#import "@preview/fine-lncs:0.6.5": author, institute, lncs, proof, theorem
-#import "@preview/fine-lncs:0.6.5": author, institute, lncs, proof, theorem
+#import "@preview/fine-lncs:0.6.5": author, institute, lncs
 #import "@preview/ctheorems:1.1.3": *
 #import "@preview/curryst:0.5.0": prooftree, rule
 
@@ -53,6 +52,8 @@
   )
 
   set heading(numbering: "1.1")
+
+  set math.equation(numbering: none)
 
   set text(size: base-text-size)
 
@@ -189,7 +190,7 @@
   "proof",
   [_Proof._],
   titlefmt: body => [
-    #text(font: font-alter, size: base-text-size)[#body]
+    #text(size: base-text-size)[#body]
   ],
   separator: [
     #h(.4em)
@@ -198,37 +199,17 @@
 
 
 // ================= Notations =================
-#let dand = $⩕$
-#let dor = $⩖$
-
-#let scr(it) = text(
-  features: ("ss01",),
-  box($cal(it)$),
-)
 
 // --- General math symbols ---
 
 #let Nat = $bb(N)$
-#let Rat = $bb(Q)$
-#let Real = $bb(R)$
-#let Bool = $bb(B)$
 
-#let family(x) = $cal(#x)$
 #let PowerSet = $cal(upright("P"))$
-#let nle = $lt.eq.not$
-#let And = $class("relation", \&)$
-#let Not = $class("normal", "not")$
-#let Or = $class("relation", "or")$
-#let Implies = $class("relation", "implies")$
-#let sim = $class("unary", \~)$
-
-
 
 #let proves = $class("relation", tack.r)$
 #let nproves = $class("relation", tack.r.not)$
 
 #let models = $class("relation", tack.rr)$
-#let nmodels = $class("relation", tack.rr.not)$
 
 #let Box = $class("unary", square)$
 #let Boxdot = $class("unary", ⊡)$
@@ -240,7 +221,8 @@
 #let lor = $or$
 #let lnot = $not$
 
-#let Prop = $upright("Prop")$
+// 命題変数の集合（Lean の `Prop` と衝突するので Var と書く）
+#let PropVar = $upright("Var")$
 
 #let Logic(L) = $sans(upright(#L))$
 #let sumQuasiNormal(L1, L2) = $#L1 + #L2$
@@ -258,7 +240,6 @@
 #let LogicGLPlusBoxBot(n) = $LogicGL + Box^#n bot$
 #let LogicS = Logic("S")
 #let LogicGrz = Logic("Grz")
-#let LogicKT = Logic("KT")
 
 // Intuitionistic modal logics
 #let LogiciK = Logic("iK")
@@ -294,7 +275,6 @@
 #let HilbertGL = Hilbert(LogicGL)
 #let HilbertGrz = Hilbert(LogicGrz)
 
-#let Prov(T) = $attach(br: #T, sans("Prov"))$
 // Use for *standard* provability predicate
 #let Pr(T) = $attach(br: #T, sans("Pr"))$
 #let RPr(T, f, e) = $attach(tr: chevron.l #f\, #e chevron.r, br: #T, sans("Pr"))$
@@ -320,9 +300,6 @@
 #let AxiomT = $Axiom("T")$
 #let AxiomGrz = $Axiom("Grz")$
 
-#let System(X) = $bold(#X)$
-
-#let LK1 = $System("LK")^1$
 #let LOR = $cal(L)_"OR"$
 #let Ind(x) = $sans("I")#x$
 #let ISigma1 = $Ind(Sigma_1)$
@@ -335,11 +312,8 @@
 
 #let sepWithCommaMath(..args) = args.pos().join[,]
 
-#let brak(..args) = $lr(chevron.l sepWithCommaMath(..args) chevron.r)$
 #let quant(Q, ..args) = $#Q sepWithCommaMath(..args) space.narrow$
 #let fal(..args) = $quant(forall, ..args)$
 #let exs(..args) = $quant(exists, ..args)$
-#let nexs(..args) = $quant(exists.not, ..args)$
-#let exsUniq(..args) = $quant(exists!, ..args)$
 
 #let godel(x) = $lr(⌜ #x ⌝)$
