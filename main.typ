@@ -906,6 +906,8 @@ These facts immediately yield definitions over $Universe$ of basic syntactic ope
       "Foundation",
       "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/DerivabilityCondition/D3.lean#L160",
     ),
+    ("Foundation", "Foundation/FirstOrder/Incompleteness/StandardProvability.lean#L38-L44"),
+    ("Foundation", "Foundation/FirstOrder/Incompleteness/StandardProvability.lean#L83"),
   ),
 )[
   ```
@@ -929,7 +931,13 @@ These facts immediately yield definitions over $Universe$ of basic syntactic ope
   theorem provable_internalize {σ : ArithmeticSentence} :
       Provable T (⌜σ⌝ : V) → Provable T (⌜provabilityPred T σ⌝ : V)
 
-  // TODO: insert provabilityPred is provability and instance of satisfies D1, D2, D3
+  noncomputable abbrev Theory.standardProvability : Provability 𝗜𝚺₁ T where
+    prov := provable T
+    bew_def := provable_D1
+
+  instance : T.standardProvability.HBL2 := ⟨provable_D2⟩
+
+  instance [𝗣𝗔⁻ ⪯ T] : T.standardProvability.HBL3 := ⟨provable_D3⟩
   ```
 ]
 
@@ -944,7 +952,12 @@ $T$ が $ISigma1$ を含むことから，不動点定理が成立する．
   故に，理論 $T$ は diagonalizable である．
 ] <thm:fixedpoint>
 
-#leancode()[
+#leancode(
+  links: (
+    ("Foundation", "Foundation/FirstOrder/Bootstrapping/FixedPoint.lean#L126-L131"),
+    ("Foundation", "Foundation/FirstOrder/Incompleteness/StandardProvability.lean#L18-L20"),
+  ),
+)[
   ```
   noncomputable def diag (θ : ArithmeticSemisentence 1) : ArithmeticSemisentence 1
     := “x. ∀ y, !ssnum y x x → !θ y”
@@ -954,7 +967,9 @@ $T$ が $ISigma1$ を含むことから，不動点定理が成立する．
 
   theorem diagonal (θ : ArithmeticSemisentence 1) : T ⊢ fixedpoint θ 🡘 θ/[⌜fixedpoint θ⌝]
 
-  // TODO: insert $T$ is diagonalizable instantinate
+  noncomputable instance : Diagonalization 𝗜𝚺₁ where
+    fixedpoint := fixedpoint
+    diag θ := diagonal θ
   ```
 ]
 
@@ -998,7 +1013,9 @@ Using the tools developed so far, we have also proved several theorems related t
   $
 ] <thm:multi_fixedpoint>
 
-#leancode()[
+#leancode(
+  links: (("Foundation", "Foundation/FirstOrder/Bootstrapping/FixedPoint.lean#L151-L159"),),
+)[
   ```
   noncomputable def multifixedpoint (θ : Fin k → ArithmeticSemisentence k) (i : Fin k)
     : ArithmeticSentence := ...
@@ -1015,7 +1032,9 @@ Using the tools developed so far, we have also proved several theorems related t
   $
 ] <thm:parameterized_fixedpoint>
 
-#leancode()[
+#leancode(
+  links: (("Foundation", "Foundation/FirstOrder/Bootstrapping/FixedPoint.lean#L204-L210"),),
+)[
   ```
   noncomputable def parameterizedFixedpoint (θ : ArithmeticSemisentence (k + 1))
     : ArithmeticSemisentence k := ...
@@ -1061,7 +1080,13 @@ By instantiating @prop:abstract_GR, we can prove the Gödel–Rosser incompleten
   ],
 )[
   ```
-  // TODO: rosser provability predicate satisfying Rosser's condition
+  variable {T : Theory L} [T.Δ₁] [Entailment.Consistent T]
+
+  noncomputable abbrev Theory.rosserProvability : Provability 𝗜𝚺₁ T where
+    prov := T.rosserProvable
+    bew_def := rosserProvable_D1
+
+  instance : T.rosserProvability.Rosser := ⟨rosserProvable_rosser⟩
 
   theorem incomplete_GR (T : ArithmeticTheory) [T.Δ₁] [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T] : Entailment.Incomplete T
   ```
