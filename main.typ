@@ -2767,13 +2767,13 @@ Concerning provability logic, there is much prior work on mechanizations in the 
 大まかにいって，古典論理から排中律を拒絶する論理が直観主義論理であり，このような論理の変更を行って得られる述語論理をintuitionistic first-order logic $Logic("IQL")$ と呼ぶ．
 intuitionistic first-order logicでは例えば，
 $Logic("IQL") proves phi or psi$ であるならば $Logic("IQL") proves phi$ または $Logic("IQL") proves psi$ が成立するという選言特性(disjunction property)や，
-$Logic("IQL") proves exists x phi(x)$ であるならば実際に $t$ が取れて $Logic("IQL") proves phi(t)$ といった存在特性(existence principle) といった構成的な原理が成り立つ．
+$Logic("IQL") proves exists x phi(x)$ であるならば実際に閉項 $t$ が取れて $Logic("IQL") proves phi(t)$ といった存在特性(existence property) といった構成的な原理が成り立つ．
 直観主義述語論理はまた依存型理論のCurry--Howard同型対応などの様々な関連があり興味深い体系である．
 
 現状の我々の形式化において，直観主義述語論理に関しての発展はまだそこまで行われていないが，少なくない形式化された事実としてカット除去定理がある．
 直観主義述語論理の意味論を整備することにより，シークエント計算のカット除去を意味論的に行うことが可能である (cf: @Avigad2001)．
 またこの系としてGödel--Gentzen否定変換により，Classical First-Order Logicのシークエント計算のカット除去も意味論的に可能である．
-先行研究として直観主義論理に関してのカット除去についてはHarbelinとLee @HerbelinLee2009 #footnote[See implements: #link("https://formal.hknu.ac.kr/Kripke")] によって既にRocqで形式化が報告されている．
+先行研究として直観主義論理に関してのカット除去についてはHerbelinとLee @HerbelinLee2009 #footnote[See implements: #link("https://formal.hknu.ac.kr/Kripke")] によって既にRocqで形式化が報告されている．
 我々は古典論理に関するカット除去定理 (Hauptsatz) を既に証明している．
 
 #leancode()[
@@ -2782,8 +2782,15 @@ $Logic("IQL") proves exists x phi(x)$ であるならば実際に $t$ が取れ�
   ```
 ]
 
-直観主義論理上にPeano arithmeticの公理を追加した算術体系はHeyting arithmeticと呼ばれる．
-先行研究として，Fosterら @ForsterKirstWehr2020 の研究がある．
+より広い先行研究として，Forster，Kirst，Wehrらによる一連のRocqでの形式化 @ForsterKirstWehr2021 @KirstEtAl2022 #footnote[See: #link("https://github.com/uds-psl/coq-library-fol")] がある．
+特筆すべき点として，彼らは直観主義論理をベースに，古典論理をPeirceの法則を有効にした拡張として実装する設計を採っており，Tarski流の意味論，Kripke意味論，代数的意味論，対話ゲーム意味論のそれぞれについて，完全性定理がRocqの構成的型理論の内部でどの程度の非構成的な原理を要するかを分析している．
+これは，我々の実装では基本的に古典論理に特化しているため，互いのdualをprimitiveに定義し，シークエント計算体系はTait-calculusによって定めているのと対照的である．
+
+直観主義論理上での算術について，特にPeano arithmeticの公理を追加した算術体系はHeyting arithmetic #HeytingArithmetic と呼ばれる．
+#HeytingArithmetic それ自体の機械化としては，先述のForsterらのライブラリでは直観主義自然演繹上で $Robinson$ や $PeanoArithmetic$ を議論しており，後者は #HeytingArithmetic における証明可能性に他ならない．
+KirstとHermes @KirstHermes2023 はHilbertの第10問題(MRDP Theorem)からの還元によってこれらの決定不能性を示し，さらに標準モデルにおいて健全な任意の公理化が不完全であることを導いている．
+また同ライブラリにはFriedman変換が機械化されており，古典論理の証明を最小論理の証明へ移すことでやはり最小論理算術（ないし直観主義算術）も決定不能性であることを示している．
+このような否定翻訳やFriedman翻訳の機械化は，既に古典論理側を整備している我々のフレームワークから #HeytingArithmetic 側へ渡すための現実的な実装であると考えられる．
 またHeyting arithmeticの証明可能性論理がどのような論理を成しているかといった問題は長い間難題としてずっと残されている．そのことは @subsect:provlogic_of_HA でまた言及する．
 
 == Axiomatic set theory <subsect:settheory>
