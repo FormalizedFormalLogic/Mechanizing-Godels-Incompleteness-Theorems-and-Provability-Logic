@@ -289,8 +289,8 @@
 #let ProvLogic(T, U) = $upright("PL")_(#T) (#U)$
 
 #let Theory(T) = $sans(upright(#T))$
-#let PeanoArithmetic = Theory("PA")
-#let PeanoArithmeticMinus = $PeanoArithmetic^-$
+#let Peano = Theory("PA")
+#let PAMinus = $Peano^-$
 #let TrueArithmetic = Theory("TA")
 #let HeytingArithmetic = Theory("HA")
 

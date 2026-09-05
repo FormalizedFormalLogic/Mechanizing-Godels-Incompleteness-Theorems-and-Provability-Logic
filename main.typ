@@ -913,12 +913,12 @@ We mention that Popescu and Traytel @PT21[Theorem 30] mechanized Jeroslow's theo
   ```
 ]
 
-=== $Sigma_1$-soundness and $Delta_1$-definability of $ISigma1$ and $PeanoArithmetic$
-To instantiate the theorems stated so far with a concrete theory such as $ISigma1$ or $PeanoArithmetic$, the $Sigma_1$-soundness and the $Delta_1$-definability of these theories must themselves be mechanized.
+=== $Sigma_1$-soundness and $Delta_1$-definability of $ISigma1$ and $Peano$
+To instantiate the theorems stated so far with a concrete theory such as $ISigma1$ or $Peano$, the $Sigma_1$-soundness and the $Delta_1$-definability of these theories must themselves be mechanized.
 We have done this as well.
 
 #proposition[
-  $ISigma1$ and $PeanoArithmetic$ are $Sigma_1$-sound, hence consistent.
+  $ISigma1$ and $Peano$ are $Sigma_1$-sound, hence consistent.
 ]
 
 #leancode(
@@ -941,7 +941,7 @@ We have done this as well.
 ]
 
 #proposition[
-  $ISigma1$ and $PeanoArithmetic$ are $Delta_1$-definable.
+  $ISigma1$ and $Peano$ are $Delta_1$-definable.
 ]
 
 #leancode(
@@ -963,7 +963,7 @@ We have done this as well.
   ```
 ]
 
-Hence all the theorems above can indeed be instantiated with concrete theories such as $ISigma1$ and $PeanoArithmetic$.
+Hence all the theorems above can indeed be instantiated with concrete theories such as $ISigma1$ and $Peano$.
 
 === Tarski's Undefinability Theorem
 As a corollary of the fixed point theorem, we can prove Tarski's theorem on the undefinability of truth.
@@ -1025,7 +1025,7 @@ This yields the following theorem, commonly known as Church's theorem.
   ```
 ]
 
-Now take as $T$ the theory $PeanoArithmeticMinus$, a finitely axiomatized $Sigma_1$-sound fragment of $PeanoArithmetic$ stronger than $R0$.
+Now take as $T$ the theory $PAMinus$, a finitely axiomatized $Sigma_1$-sound fragment of $Peano$ stronger than $R0$.
 Since its axioms can be conjoined into a single sentence, the deduction theorem applies, and the undecidability of first-order logic over the language of arithmetic follows.
 
 #theorem[Undecidability of First-Order Logic][
@@ -1052,7 +1052,7 @@ For the speed-up theorem (@thm:speedup) below, we have also mechanized a version
   ```
 ]
 
-Note that this version does not apply to the above proof of the undecidability of first-order logic, since $PeanoArithmeticMinus$ is weaker than $ISigma1$.
+Note that this version does not apply to the above proof of the undecidability of first-order logic, since $PAMinus$ is weaker than $ISigma1$.
 
 === On proof size
 Formalization also allows us to discuss provability by a proof of _feasible_ length or complexity in a certain sense.
@@ -1193,11 +1193,11 @@ Combined with the well-known fact that any two countable, dense, and nontrivial 
   ```
 ]
 
-That is, the Lindenbaum algebras of $ISigma1$, $PeanoArithmetic$, and even $Theory("ZF")$ (although not mechanized) are all isomorphic; in this sense these algebras are not interesting.
+That is, the Lindenbaum algebras of $ISigma1$, $Peano$, and even $Theory("ZF")$ (although not mechanized) are all isomorphic; in this sense these algebras are not interesting.
 By a theorem of Pour-El and Kripke @PK67, this isomorphism can moreover be taken to be recursive, but such a refinement has not been mechanized at present.
 
 The algebras obtained by extending the Lindenbaum algebra with provability as an explicit unary operator are called _diagonalizable algebras_ or _Magari algebras_ (cf. @Mag75 @Sha93).
-It is known, for example, that the diagonalizable algebras of $PeanoArithmetic$ and $Theory("ZF")$ are not isomorphic @Sha93a, and these algebras are deeply related to provability logic, which we discuss in @sect:provability_logic.
+It is known, for example, that the diagonalizable algebras of $Peano$ and $Theory("ZF")$ are not isomorphic @Sha93a, and these algebras are deeply related to provability logic, which we discuss in @sect:provability_logic.
 No mechanization of these algebras has been carried out at present.
 
 = Provability Logic <sect:provability_logic>
@@ -1972,7 +1972,7 @@ As a corollary, we obtain Solovay's original statement.
 
 #corollary[Solovay's (first) arithmetical completeness theorem @Sol76][
   If $T$ is $Sigma_1$-sound, then $ProvLogic(T, T) = LogicGL$.
-  In particular, $ProvLogic(PeanoArithmetic, PeanoArithmetic) = LogicGL$.
+  In particular, $ProvLogic(Peano, Peano) = LogicGL$.
 ]
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/GL/Basic.lean"),))[
   ```
@@ -2518,7 +2518,7 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
 ]
 
 #theorem[@VS83[Theorem 1]][
-  $LogicGLPoint3 proves A$ if and only if $PeanoArithmetic proves f_(Bew_PeanoArithmetic) (A)$ for every consistency realization $f$ over $PeanoArithmetic$.
+  $LogicGLPoint3 proves A$ if and only if $Peano proves f_(Bew_Peano) (A)$ for every consistency realization $f$ over $Peano$.
 ]
 #leancode(
   links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/GLPoint3/Basic.lean"),),
