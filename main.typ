@@ -2735,16 +2735,18 @@ Concerning provability logic, there is much prior work on mechanizations in the 
 == More metamathematical results
 
 まず，今回の形式化は不完全性定理を形式化したという一つのアチーブメントではあるとはいえ，これがゴールではなく，むしろスタートである．
-@subsect:further_incompleteness で細々と落穂広い的に行ったとはいえ，形式化した算術ないし不完全性定理関連のメタ数学的な事実はまだまだ大量に残されている．
-例えば， 無矛盾性の一般化でもあるreflection principleや，partial truth definition，算術の超準モデルなどの議論やarithmetized completeness theoremなどは算術に関する分析において非常に重要な道具たちが現状では実装されていない．
+@subsect:further_incompleteness で細々と落穂拾い的に行ったとはいえ，形式化した算術ないし不完全性定理関連のメタ数学的な事実はまだまだ大量に残されている．
+例えば，reflection principleやpartial truth definition，算術の超準モデルに関する議論やarithmetized completeness theoremなどは算術に関する分析において非常に重要な道具であるが，現状では実装されていない．
+特にreflection principleは， $T$ で証明可能な文は真であるという主張を図式として形式化したものであり，無矛盾性の主張はその特別な場合にあたる．
 これらの道具立てがなければ，例えば $PeanoArithmetic$ は有限公理化不可能といったRyll-Nardzewski @Ryl52 の定理などの事実を示すことや，更にそもそも @subsect:remaining_sorry_in_provlogic で保留していたいくつかの `sorry` を埋めることが出来ない．
 これらのmetamathematicalな問題については標準的な教科書である @Lin97 @HP16 などを参考に形式化を行っていきたいと考えている．
 
-また，証明論的な分析については，先行研究としてRocqによる Hydras & Co. @CDPPCZ21 @Cas24 では Hydra game @KirbyParis1982 の*Coqでの*停止性ないし，それらに関連して証明論でよく用いられる順序数に関する議論を形式化している．
-我々のフレームワークでは，LLMによるautoformalizationの実験として，例えば $PeanoArithmetic$ の $omega$-規則を備えたシークエント計算体系やそのカット除去定理，ないしGoodstein数列の停止性の $PeanoArithmetic$ が証明できないこと @KirbyParis1982 の形式化を試み，`sorry`-freeなコードを生成することに成功した．
-現在，これらの生成されたコード#footnote[詳しくは #link("https://github.com/FormalizedFormalLogic/goodstein-independence") を見なさい．]について人間によるチェック中である．
-しかしこれ以外の成果はほぼ何も形式化されていないため，今後はこの方面での整備も進めていきたい．
-証明論的な分析や順序数解析(ordinal analyisis)などは @subsect:enrich_modalities で論じる多様相の証明可能性論理などにも必要不可欠である．
+また，証明論的な分析については，先行研究としてRocqによる Hydras \& Co. @CDPPCZ21 @Cas24 が Hydra game @KirbyParis1982 の停止性や，それらに関連して証明論でよく用いられる順序数に関する議論を形式化している．
+我々のフレームワークでは，LLMによるautoformalizationの実験として， $PeanoArithmetic$ の $omega$-規則を備えたシークエント計算体系やそのカット除去定理，ないしGoodstein数列の停止性が $PeanoArithmetic$ では証明できないこと @KirbyParis1982 の形式化を試みた．
+生成されたコード#footnote[詳しくは #link("https://github.com/FormalizedFormalLogic/goodstein-independence") を見なさい．]の証明は `sorry` や追加の公理を含まないが，その定義とステートメントが意図した数学的内容を正しく表現しているかについては，現在人間による検証中である．
+これら以外の証明論的な成果はほぼ何も形式化されていないため，今後はこの方面での証明論的な分析や順序数解析(ordinal analysis)なども整備も進めていきたい．
+
+またここで上げた道具は @subsect:enrich_modalities で論じる多様相の証明可能性論理などに算術的な意味そのものを与えるものでもあり必要不可欠である．
 
 == Interpretability <subsect:future_interpretability>
 
@@ -2752,11 +2754,12 @@ Concerning provability logic, there is much prior work on mechanizations in the 
 不完全性定理は言語の選択などの細かいコーディングに依存するため，例えば，我々のフレームワークで集合論を形式化したとしても，immediatelyに不完全性定理が結論出来るわけではない．
 これについてはinterpretabilityの形式化が重要であると考えられる．
 ラフに述べれば，言語 $cal(L)_T$ の理論 $T$ と言語 $cal(L)_U$ の理論 $U$ に対して適当な翻訳 $t$ が存在して，任意の $cal(L)_T$ の文 $phi$ に対して $T proves phi ==> U proves t(phi)$ のような事態が成立するとき， $U$ は $T$ を解釈可能 (is interpretable) $U interpret T$ と書く．
-解釈可能性の用途として，例えば $U interpret T$ で $T$ が本質的に決定不能なら $U$ も決定不能である (cf: @TMR53)，といった理論の比較による無矛盾性や決定可能性の議論も行うことが出来る．
+解釈可能性の用途として，例えば $U interpret T$ で $T$ が本質的に決定不能なら $U$ も本質的に決定不能である (cf: @TMR53)，といった理論の比較による無矛盾性や決定可能性の議論も行うことが出来る．
 解釈可能性に関してのさらなる議論は例えばLindström @Lin97[Section 4]などを見なさい．
+なお我々の知る限り，証明支援系において解釈可能性それ自体を機械化した先行研究は存在しない．
 
-実用上の応用として，@subsect:settheory で述べる集合論 $Theory("ZF")$ や $Theory("ZFC")$ が $PeanoArithmetic$ を解釈するといったことを形式化すれば，今回行った算術に関する不完全性定理の議論をもう一度集合論で焼き直さずとも．$Theory("ZF")$ や $Theory("ZFC")$ でも不完全性定理が成立することが形式化できるはずであり，大きな証明のスキップになると期待される．
-また，不完全性定理についての分析は算術だけで行われるわけではなく，よりダイレクトに文字列の連結というものを表す一階理論であるtheory of concatenation $Theory("TC")$ による不完全性定理もGrzgorchyzに端を発して研究されている @Grz05 @grzegorczykUndecidabilityConcatenation．
+実用上の応用として，@subsect:settheory で述べる集合論 $Theory("ZF")$ や $Theory("ZFC")$ が $PeanoArithmetic$ を解釈するといったことを形式化すれば，今回行った算術に関する不完全性定理の議論をもう一度集合論で焼き直さずとも，$Theory("ZF")$ や $Theory("ZFC")$ でも不完全性定理が成立することが形式化できるはずであり，大きな証明のスキップになると期待される．
+また，不完全性定理についての分析は算術だけで行われるわけではなく，よりダイレクトに文字列の連結というものを表す一階理論であるtheory of concatenation $Theory("TC")$ による不完全性定理もGrzegorczykに端を発して研究されている @Grz05 @grzegorczykUndecidabilityConcatenation．
 特に，$Theory("TC") interpret Theory("Q")$ @Sterken08 @Ganea2009 @Svejdar2009 @visserGrowingCommasStudy2009 であることが知られており，
 このようなミニマルな体系は形式化において算術を直接扱うよりもより扱いやすい体系の可能性がある．
 
@@ -2787,7 +2790,7 @@ $Logic("IQL") proves exists x phi(x)$ であるならば実際に閉項 $t$ が�
 これは，我々の実装では基本的に古典論理に特化しているため，互いのdualをprimitiveに定義し，シークエント計算体系はTait-calculusによって定めているのと対照的である．
 
 直観主義論理上での算術について，特にPeano arithmeticの公理を追加した算術体系はHeyting arithmetic #HeytingArithmetic と呼ばれる．
-#HeytingArithmetic それ自体の機械化としては，先述のForsterらのライブラリでは直観主義自然演繹上で $Robinson$ や $PeanoArithmetic$ を議論しており，後者は #HeytingArithmetic における証明可能性に他ならない．
+直観主義算術については，先述のForsterらのライブラリでは直観主義自然演繹上で $Robinson$ や $PeanoArithmetic$ を議論しており，後者は #HeytingArithmetic における証明可能性に他ならない．
 KirstとHermes @KirstHermes2023 はHilbertの第10問題(MRDP Theorem)からの還元によってこれらの決定不能性を示し，さらに標準モデルにおいて健全な任意の公理化が不完全であることを導いている．
 また同ライブラリにはFriedman変換が機械化されており，古典論理の証明を最小論理の証明へ移すことでやはり最小論理算術（ないし直観主義算術）も決定不能性であることを示している．
 このような否定翻訳やFriedman翻訳の機械化は，既に古典論理側を整備している我々のフレームワークから #HeytingArithmetic 側へ渡すための現実的な実装であると考えられる．
