@@ -60,7 +60,7 @@ This fact, known as _Solovay's arithmetical completeness theorem_, was a signifi
 
 On the other hand, recently, there has been much active work on mechanizing mathematics using interactive theorem provers, guaranteeing the validity of existing and new results, and providing AI/LLM-assisted or automated proving.
 There are many well-known interactive theorem provers such as Rocq @RocqProver, Isabelle @Isabelle, HOL Light @HOLLight @HOLLightTutorial, Agda @Agda, and Lean @dMU21, and mathematics has been mechanized in each of them, including in the field of mathematical logic#footnote[Some of these mechanizations are summarized in @AwesomeLogicFormalization.].
-In particular, for mechanizing Gödel's incompleteness theorems, this line of work began with Shankar in 1986 @Sha86 @Sha97, and continues with O'Connor @OCo05 @OCo09, Harrison @Har06, Paulson @Pau15, and Popescu and Traytel @PT19 @PT21, Kirst and Peters @KP23.
+In particular, for mechanizing Gödel's incompleteness theorems, this line of work began with Shankar in 1986 @Sha86 @Sha97, and continues with O'Connor @OCo05 @OCo09, Harrison @Har06, Paulson @Pau15, and Popescu and Traytel @PT19 @PT21, Kirst et al. @KP23 @KirstHermes2023.
 As for provability logic, modal-logical properties of #LogicGL, such as its semantical completeness and automated solvers, have been mechanized by Harrison @HOLLightTutorial[Chapter 20]#footnote[We don't know when Harrison's mechanization of modal logic was carried out.], Goré and Kelly @GK07, Goré, Ramanayake and Shillito @GRS21, Maggesi and Perini Brogi @MPB21 @MPB23, Gignoux @Gig26.
 However, these are either abstract or not full mechanizations within arithmetic.
 For instance, O'Connor's implementation assumes several facts needed for the proof of G2 as axioms, and Paulson's mechanization of G2 uses hereditarily finite sets, not arithmetic.
@@ -2736,25 +2736,27 @@ Concerning provability logic, there is much prior work on mechanizations in the 
 
 まず，今回の形式化は不完全性定理を形式化したという一つのアチーブメントではあるとはいえ，これがゴールではなく，むしろスタートである．
 @subsect:further_incompleteness で細々と落穂広い的に行ったとはいえ，形式化した算術ないし不完全性定理関連のメタ数学的な事実はまだまだ大量に残されている．
-例えば， 無矛盾性の一般化でもあるreflection principleや，partial truth definitionなどは算術に関する分析において非常に重要な道具ではあるものの，関しては現状では実装されていない．
-これらの道具立てがなければ，例えば $PeanoArithmetic$ は有限公理化不可能といったRyll-Nardzewski @Ryl52 の定理などの事実は示すことが出来ない．
-また，証明論的な分析の形式化も現状ではほとんど行われていない
-#footnote[
-  我々はLLMによるautoformalizationの実験として，例えば $PeanoArithmetic$ の $omega$-規則を備えたシークエント計算体系やそのカット除去定理，ないしGoodstein数列の停止性の $PeanoArithmetic$ からの独立性（いわゆる，Kirby-Parisの定理 @KirbyParis1982）の形式化を試み，そして実験自体はある程度成功しているように思える．
-  現在，これらの生成されたコードについて人間によるチェック中である．
-  詳しくは #link("https://github.com/FormalizedFormalLogic/goodstein-independence") を見なさい．
-]．
-これらの問題については @Lin97 @HP16 などを参考に形式化を行っていきたいと考えている．
+例えば， 無矛盾性の一般化でもあるreflection principleや，partial truth definition，算術の超準モデルなどの議論やarithmetized completeness theoremなどは算術に関する分析において非常に重要な道具たちが現状では実装されていない．
+これらの道具立てがなければ，例えば $PeanoArithmetic$ は有限公理化不可能といったRyll-Nardzewski @Ryl52 の定理などの事実を示すことや，更にそもそも @subsect:remaining_sorry_in_provlogic で保留していたいくつかの `sorry` を埋めることが出来ない．
+これらのmetamathematicalな問題については標準的な教科書である @Lin97 @HP16 などを参考に形式化を行っていきたいと考えている．
+
+また，証明論的な分析については，先行研究としてRocqによる Hydras & Co. @CDPPCZ21 @Cas24 では Hydra game @KirbyParis1982 の*Coqでの*停止性ないし，それらに関連して証明論でよく用いられる順序数に関する議論を形式化している．
+我々のフレームワークでは，LLMによるautoformalizationの実験として，例えば $PeanoArithmetic$ の $omega$-規則を備えたシークエント計算体系やそのカット除去定理，ないしGoodstein数列の停止性の $PeanoArithmetic$ が証明できないこと @KirbyParis1982 の形式化を試み，`sorry`-freeなコードを生成することに成功した．
+現在，これらの生成されたコード#footnote[詳しくは #link("https://github.com/FormalizedFormalLogic/goodstein-independence") を見なさい．]について人間によるチェック中である．
+しかしこれ以外の成果はほぼ何も形式化されていないため，今後はこの方面での整備も進めていきたい．
+証明論的な分析や順序数解析(ordinal analyisis)などは @subsect:enrich_modalities で論じる多様相の証明可能性論理などにも必要不可欠である．
 
 == Interpretability <subsect:future_interpretability>
 
-今回の不完全性や決定可能性は算術（つまり LOR 言語の理論）において証明された定理であった．
-言語 $cal(L)_T$ の理論 $T$ と言語 $cal(L)_U$ の理論 $U$ に対して適当な翻訳関係 $t$ が存在して，任意の $cal(L)_T$ の文 $phi$ に対して $T proves phi ==> U proves t(phi)$ のような事態は成立するとき， $U$ は $T$ を解釈可能 (is interpretable) $U interpret T$ と書く．
+今回の不完全性定理などの系は算術（つまり言語 $LOR$ の理論）において形式化された事実であった．
+不完全性定理は言語の選択などの細かいコーディングに依存するため，例えば，我々のフレームワークで集合論を形式化したとしても，immediatelyに不完全性定理が結論出来るわけではない．
+これについてはinterpretabilityの形式化が重要であると考えられる．
+ラフに述べれば，言語 $cal(L)_T$ の理論 $T$ と言語 $cal(L)_U$ の理論 $U$ に対して適当な翻訳 $t$ が存在して，任意の $cal(L)_T$ の文 $phi$ に対して $T proves phi ==> U proves t(phi)$ のような事態が成立するとき， $U$ は $T$ を解釈可能 (is interpretable) $U interpret T$ と書く．
 解釈可能性の用途として，例えば $U interpret T$ で $T$ が本質的に決定不能なら $U$ も決定不能である (cf: @TMR53)，といった理論の比較による無矛盾性や決定可能性の議論も行うことが出来る．
 解釈可能性に関してのさらなる議論は例えばLindström @Lin97[Section 4]などを見なさい．
 
-実用上の応用として，@subsect:settheory で述べる集合論 $Theory("ZF")$ や $Theory("ZFC")$ が $PeanoArithmetic$ を解釈するといったことを形式化すれば，今回行った算術に関する不完全性定理の議論をもう一度集合論で焼き直さずとも．$Theory("ZF")$ や $Theory("ZFC")$ でもG1, G2が成立することが形式化できるはずであり，大きな証明のスキップになると期待される．
-また，G1, G2についての分析は算術だけで行われるわけではなく，よりダイレクトに文字列の連結というものを表す一階理論であるtheory of concatenation $Theory("TC")$ による不完全性定理もGrzgorchyzに端を発して研究されている @Grz05 @grzegorczykUndecidabilityConcatenation．
+実用上の応用として，@subsect:settheory で述べる集合論 $Theory("ZF")$ や $Theory("ZFC")$ が $PeanoArithmetic$ を解釈するといったことを形式化すれば，今回行った算術に関する不完全性定理の議論をもう一度集合論で焼き直さずとも．$Theory("ZF")$ や $Theory("ZFC")$ でも不完全性定理が成立することが形式化できるはずであり，大きな証明のスキップになると期待される．
+また，不完全性定理についての分析は算術だけで行われるわけではなく，よりダイレクトに文字列の連結というものを表す一階理論であるtheory of concatenation $Theory("TC")$ による不完全性定理もGrzgorchyzに端を発して研究されている @Grz05 @grzegorczykUndecidabilityConcatenation．
 特に，$Theory("TC") interpret Theory("Q")$ @Sterken08 @Ganea2009 @Svejdar2009 @visserGrowingCommasStudy2009 であることが知られており，
 このようなミニマルな体系は形式化において算術を直接扱うよりもより扱いやすい体系の可能性がある．
 
@@ -2762,19 +2764,26 @@ Concerning provability logic, there is much prior work on mechanizations in the 
 
 == Intuitionistic first-order logic and arithmetic
 
-大まかにいって古典論理から排中律を拒絶する論理が直観主義論理であり，このような論理の変更を行って得られる述語論理をintuitionistic first-order logic $Logic("IQL")$ と呼ぶ．
+大まかにいって，古典論理から排中律を拒絶する論理が直観主義論理であり，このような論理の変更を行って得られる述語論理をintuitionistic first-order logic $Logic("IQL")$ と呼ぶ．
 intuitionistic first-order logicでは例えば，
 $Logic("IQL") proves phi or psi$ であるならば $Logic("IQL") proves phi$ または $Logic("IQL") proves psi$ が成立するという選言特性(disjunction property)や，
 $Logic("IQL") proves exists x phi(x)$ であるならば実際に $t$ が取れて $Logic("IQL") proves phi(t)$ といった存在特性(existence principle) といった構成的な原理が成り立つ．
 直観主義述語論理はまた依存型理論のCurry--Howard同型対応などの様々な関連があり興味深い体系である．
 
-この体系を形式化するにあたっては多くの問題が横たわっており，今回の我々のフレームワークを素朴に修正するのみでは上手くはいかないと考えられる．
-まず，構文論的には，今回我々が行った形式化は古典論理に特化したものである．
-例えば，論理式の定義は互いにdualがprimitiveに定義され，シークエント計算体系はTait-calculusによって定めている．
-このような定義は直観主義述語論理では不可能であり，構文論の段階で大幅なコードの追加が要求される．
-// TODO: さらに意味論について
+現状の我々の形式化において，直観主義述語論理に関しての発展はまだそこまで行われていないが，少なくない形式化された事実としてカット除去定理がある．
+直観主義述語論理の意味論を整備することにより，シークエント計算のカット除去を意味論的に行うことが可能である (cf: @Avigad2001)．
+またこの系としてGödel--Gentzen否定変換により，Classical First-Order Logicのシークエント計算のカット除去も意味論的に可能である．
+先行研究として直観主義論理に関してのカット除去についてはHarbelinとLee @HerbelinLee2009 #footnote[See implements: #link("https://formal.hknu.ac.kr/Kripke")] によって既にRocqで形式化が報告されている．
+我々は古典論理に関するカット除去定理 (Hauptsatz) を既に証明している．
 
-Peano arithmetic $PeanoArithmetic$ の論理側を素朴にIntuitionisticにした算術はHeyting arithmeticと呼ばれる．
+#leancode()[
+  ```
+  def hauptsatz [L.DecidableEq] {Γ : Sequent L} : ⊢ᴸᴷ¹ Γ → {d : ⊢ᴸᴷ¹ Γ // Derivation.IsCutFree d}
+  ```
+]
+
+直観主義論理上にPeano arithmeticの公理を追加した算術体系はHeyting arithmeticと呼ばれる．
+先行研究として，Fosterら @ForsterKirstWehr2020 の研究がある．
 またHeyting arithmeticの証明可能性論理がどのような論理を成しているかといった問題は長い間難題としてずっと残されている．そのことは @subsect:provlogic_of_HA でまた言及する．
 
 == Axiomatic set theory <subsect:settheory>
@@ -2844,7 +2853,7 @@ They further proposed the _quantified reflection calculus with one modality_ #Lo
 On the other hand, Santiago-Fernández et al. @SJF24 formulated a term-rewriting-like system (a tree rewriting system) for derivations of #LogicRC, and its mechanization in Rocq appears to be in progress in @SF25.
 
 As another extension of provability logic, there is the _interpretability logic_ proposed by Visser @Vis90.
-Interpretability logic is the extension of provability logic with an additional binary modal operator $interpret$ representing interpretability (informally, $A interpret B$ means that the extended theory $T + f(A)$ is interpretable in $T + f(B)$, See also @subsect:future_interpretability).
+Interpretability logic is the extension of provability logic with an additional binary modal operator $interpret$ representing interpretability (informally, $A interpret B$ means that the extended theory $T + f(B)$ is interpretable in $T + f(A)$, See also @subsect:future_interpretability).
 There are several semantics for interpretability logic, including _de Jongh–Veltman semantics_ @dJV90 and _Verbrugge semantics_ as known as _generalized Veltman semantics_ (cf. @JRMV24).
 The latter one can handle completeness and definability for more axioms, but it has the drawback that the arguments become very involved.
 As prior work, mechanization of frame definability for Verbrugge semantics has been carried out in Agda by Rovira @Rov20.
