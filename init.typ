@@ -291,14 +291,14 @@
 #let ProvLogic(T, U) = $upright("PL")_(#T) (#U)$
 
 #let Theory(T) = $sans(upright(#T))$
-#let Peano = Theory("PA")
-#let PAMinus = $Peano^-$
-#let TrueArithmetic = Theory("TA")
-#let HeytingArithmetic = Theory("HA")
+#let PA = Theory("PA")
+#let PAMinus = $PA^-$
+#let TA = Theory("TA")
+#let HA = Theory("HA")
 #let CH = Theory("CH")
 #let ZF = Theory("ZF")
 #let ZFC = Theory("ZFC")
-#let Concatenation = Theory("TC")
+#let TC = Theory("TC")
 
 #let Axiom(A) = $upright(#A)$
 #let AxiomK = $Axiom("K")$

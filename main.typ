@@ -654,10 +654,10 @@ We first take $ISigma1$ as the base theory for our proof of G2.
   universal $LOR$-sentences describing basic properties.
   For a unary arithmetical formula $phi(x)$ (which may contain parameters), we define the formula $Ind(φ)$ expressing the universal closure of following instance of mathematical induction:
   $
-    phi(0) -> (forall x phi(x) -> phi(x + 1)) -> forall x phi(x)
+    phi(0) -> fal(x)[phi(x) -> phi(x + 1)] -> fal(x) phi(x)
   $
   For a class of formulas $Gamma$, we define $Ind(Gamma)$ as the union of $PAMinus$ with $Ind(φ)$ for every formula $φ$ belonging to $Gamma$.
-  We then let $ISigma1$ be the theory in which mathematical induction is available for all $Sigma_1$-formulas, and $Peano$ the theory in which it is available for all formulas.
+  We then let $ISigma1$ be the theory in which mathematical induction is available for all $Sigma_1$-formulas, and $PA$ the theory in which it is available for all formulas.
 ]
 
 #leancode(
@@ -1094,12 +1094,12 @@ We mention that Popescu and Traytel @PT21[Theorem 30] mechanized Jeroslow's theo
   ```
 ]
 
-=== $Sigma_1$-soundness and $Delta_1$-definability of $ISigma1$ and $Peano$
-To instantiate the theorems stated so far with a concrete theory such as $ISigma1$ or $Peano$, the $Sigma_1$-soundness and the $Delta_1$-definability of these theories must themselves be mechanized.
+=== $Sigma_1$-soundness and $Delta_1$-definability of $ISigma1$ and $PA$
+To instantiate the theorems stated so far with a concrete theory such as $ISigma1$ or $PA$, the $Sigma_1$-soundness and the $Delta_1$-definability of these theories must themselves be mechanized.
 We have done this as well.
 
 #proposition[
-  $ISigma1$ and $Peano$ are $Sigma_1$-sound, hence consistent.
+  $ISigma1$ and $PA$ are $Sigma_1$-sound, hence consistent.
 ]
 
 #leancode(
@@ -1122,7 +1122,7 @@ We have done this as well.
 ]
 
 #proposition[
-  $ISigma1$ and $Peano$ are $Delta_1$-definable.
+  $ISigma1$ and $PA$ are $Delta_1$-definable.
 ]
 
 #leancode(
@@ -1144,7 +1144,7 @@ We have done this as well.
   ```
 ]
 
-Hence all the theorems above can indeed be instantiated with concrete theories such as $ISigma1$ and $Peano$.
+Hence all the theorems above can indeed be instantiated with concrete theories such as $ISigma1$ and $PA$.
 
 === Tarski's Undefinability Theorem
 As a corollary of the fixed point theorem, we can prove Tarski's theorem on the undefinability of truth.
@@ -1168,7 +1168,7 @@ First, we prove the following lemma.
   ```
 ]
 
-Taking as $T$ the _true arithmetic_ $TrueArithmetic$, the theory of all sentences true in $Nat$, we immediately obtain the desired theorem.
+Taking as $T$ the _true arithmetic_ $TA$, the theory of all sentences true in $Nat$, we immediately obtain the desired theorem.
 
 #theorem[Tarski's Undefinability Theorem @Tar35][
   There is no truth predicate $True(x)$ such that $Nat models sigma$ if and only if $Nat models True(godel(sigma))$ for any sentence $sigma$.
@@ -1206,7 +1206,7 @@ This yields the following theorem, commonly known as Church's theorem.
   ```
 ]
 
-Now take as $T$ the theory $PAMinus$, a finitely axiomatized $Sigma_1$-sound fragment of $Peano$ stronger than $R0$.
+Now take as $T$ the theory $PAMinus$, a finitely axiomatized $Sigma_1$-sound fragment of $PA$ stronger than $R0$.
 Since its axioms can be conjoined into a single sentence, the deduction theorem applies, and the undecidability of first-order logic over the language of arithmetic follows.
 
 #theorem[Undecidability of First-Order Logic][
@@ -1374,11 +1374,11 @@ Combined with the well-known fact that any two countable, dense, and nontrivial 
   ```
 ]
 
-That is, the Lindenbaum algebras of $ISigma1$, $Peano$, and even $ZF$ (although not mechanized) are all isomorphic; in this sense these algebras are not interesting.
+That is, the Lindenbaum algebras of $ISigma1$, $PA$, and even $ZF$ (although not mechanized) are all isomorphic; in this sense these algebras are not interesting.
 By a theorem of Pour-El and Kripke @PK67, this isomorphism can moreover be taken to be recursive, but such a refinement has not been mechanized at present.
 
 The algebras obtained by extending the Lindenbaum algebra with provability as an explicit unary operator are called _diagonalizable algebras_ or _Magari algebras_ (cf. @Mag75 @Sha93).
-It is known, for example, that the diagonalizable algebras of $Peano$ and $ZF$ are not isomorphic @Sha93a, and these algebras are deeply related to provability logic, which we discuss in @sect:provability_logic.
+It is known, for example, that the diagonalizable algebras of $PA$ and $ZF$ are not isomorphic @Sha93a, and these algebras are deeply related to provability logic, which we discuss in @sect:provability_logic.
 No mechanization of these algebras has been carried out at present.
 
 = Provability Logic <sect:provability_logic>
@@ -2153,7 +2153,7 @@ As a corollary, we obtain Solovay's original statement.
 
 #corollary[Solovay's (first) arithmetical completeness theorem @Sol76][
   If $T$ is $Sigma_1$-sound, then $ProvLogic(T, T) = LogicGL$.
-  In particular, $ProvLogic(Peano, Peano) = LogicGL$.
+  In particular, $ProvLogic(PA, PA) = LogicGL$.
 ]
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/GL/Basic.lean"),))[
   ```
@@ -2164,13 +2164,13 @@ As a corollary, we obtain Solovay's original statement.
   ```
 ]
 
-Furthermore, Solovay also proved that #LogicS is arithmetically complete with respect to the true arithmetic #TrueArithmetic.
+Furthermore, Solovay also proved that #LogicS is arithmetically complete with respect to the true arithmetic #TA.
 The reduction of $LogicS$ to $LogicGL$ stated in @prop:S_characterization is essentially used in this proof.
 
 #theorem[Solovay's (second) arithmetical completeness theorem @Sol76][
   Let $T$ be a sound theory.
   For every formula $A$, $LogicS proves A$ if and only if $NN models f_(Bew_T) (A)$ for every realization $f$.
-  That is, $ProvLogic(T, TrueArithmetic) = LogicS$.
+  That is, $ProvLogic(T, TA) = LogicS$.
 ]
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/S/Basic.lean"),))[
   ```
@@ -2286,11 +2286,11 @@ The classification theorem is stated as follows.
   ```
 ]
 
-Furthermore, @Bek90 also proved the classification theorem for the _truth provability logics_, i.e., the logics of the form $ProvLogic(T, TrueArithmetic)$.
+Furthermore, @Bek90 also proved the classification theorem for the _truth provability logics_, i.e., the logics of the form $ProvLogic(T, TA)$.
 We have mechanized this fact as well.
 
 #theorem[Classification theorem of truth provability logics @Bek90 @AB05[Corollary 41]][
-  $L = ProvLogic(T, TrueArithmetic)$ is one of the following, and each case is characterized by the properties of $T$.
+  $L = ProvLogic(T, TA)$ is one of the following, and each case is characterized by the properties of $T$.
   1. $L = LogicS$ if and only if $T$ is sound.
   2. $L = LogicD$ if and only if $T$ is $Sigma_1$-sound but not sound.
   3. $L = LogicA$ if and only if $T$ is not $Sigma_1$-sound and $height(T) = omega$.
@@ -2699,7 +2699,7 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
 ]
 
 #theorem[@VS83[Theorem 1]][
-  $LogicGLPoint3 proves A$ if and only if $Peano proves f_(Bew_Peano) (A)$ for every consistency realization $f$ over $Peano$.
+  $LogicGLPoint3 proves A$ if and only if $PA proves f_(Bew_PA) (A)$ for every consistency realization $f$ over $PA$.
 ]
 #leancode(
   links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/GLPoint3/Basic.lean"),),
@@ -2723,14 +2723,14 @@ Our mechanization of the incompleteness theorems is an achievement, but it is a 
 @subsect:further_incompleteness collects several further results, but many metamathematical facts about arithmetic and the incompleteness theorems remain unmechanized.
 For example, there are many important tools for the metamathematical analysis of arithmetic, such as reflection principles, partial truth definitions, arguments about nonstandard models of arithmetic, and the arithmetized completeness theorem.
 Our development does not contain these tools at present.
-Without them, we cannot prove facts such as Ryll-Nardzewski's theorem @Ryl52, which states that $Peano$ is not finitely axiomatizable.
+Without them, we cannot prove facts such as Ryll-Nardzewski's theorem @Ryl52, which states that $PA$ is not finitely axiomatizable.
 We also cannot fill some of the `sorry`s that we left in @subsect:remaining_sorry_in_provlogic.
 For these topics, we plan to mechanize the arguments of the standard textbooks @Lin97 @HP93.
 
 Proof-theoretic analysis is another direction.
 As for prior work, Hydras \& Co. @CDPPZ21 @Cas24 is a Rocq mechanization of the termination (in Rocq) of the hydra game @KP82, and of related arguments about the ordinals that proof theory frequently uses.
 In our framework, we experimented with autoformalization by an LLM.
-We tried to mechanize the sequent calculus for $Peano$ with the $omega$-rule, its cut-elimination theorem, and the fact that $Peano$ does not prove the termination of Goodstein sequences @KP82.
+We tried to mechanize the sequent calculus for $PA$ with the $omega$-rule, its cut-elimination theorem, and the fact that $PA$ does not prove the termination of Goodstein sequences @KP82.
 The proofs in the generated code#footnote[For more details, see #link("https://github.com/FormalizedFormalLogic/goodstein-independence").] contain no `sorry` and no additional axiom.
 However, a human check of its definitions and statements is still in progress.
 We mechanized almost no other proof-theoretic result, thus we plan to work on proof-theoretic analysis and ordinal analysis in the future.
@@ -2750,11 +2750,11 @@ See, e.g., Lindström @Lin97[Section 4] for a further discussion.
 As far as we know, no prior work mechanized interpretability itself in a proof assistant.
 
 @subsect:settheory discusses the set theories $ZF$ and $ZFC$.
-If we mechanize the fact that $ZF interpret Peano$, we can also mechanize the incompleteness theorems for these set theories.
+If we mechanize the fact that $ZF interpret PA$, we can also mechanize the incompleteness theorems for these set theories.
 Then we do not have to repeat inside set theory the arguments that we carried out for arithmetic, and we expect that this skips a large part of the proof.
 In another direction, we can consider other theories, because the analysis of the incompleteness phenomena is not restricted to arithmetic.
-The theory of concatenation $Concatenation$ is a first-order theory that directly axiomatizes the concatenation of strings, and Grzegorczyk initiated its study @Grz05 @GZ08.
-In particular, $Concatenation interpret Robinson$ holds @Ste08 @Gan09 @Sve09 @Vis09.
+The theory of concatenation $TC$ is a first-order theory that directly axiomatizes the concatenation of strings, and Grzegorczyk initiated its study @Grz05 @GZ08.
+In particular, $TC interpret Robinson$ holds @Ste08 @Gan09 @Sve09 @Vis09.
 Such a minimal system can be easier to mechanize than arithmetic itself.
 
 Interpretability logic develops provability logic further and treats interpretability itself as a modality.
@@ -2765,7 +2765,7 @@ We discuss it in @subsect:enrich_modalities.
 Intuitionistic logic is classical logic without the law of excluded middle, and the corresponding predicate logic is intuitionistic first-order logic $LogicIQL$.
 $LogicIQL$ satisfies several constructive principles.
 It has the disjunction property: if $LogicIQL proves phi or psi$, then $LogicIQL proves phi$ or $LogicIQL proves psi$.
-It also has the existence property: if $LogicIQL proves exists x phi(x)$, then there is a closed term $t$ such that $LogicIQL proves phi(t)$.
+It also has the existence property: if $LogicIQL proves exs(x) phi(x)$, then there is a term $t$, possibly containing free variables, such that $LogicIQL proves phi(t)$.
 Intuitionistic predicate logic also has connections to other fields, for example to dependent type theory via the Curry--Howard correspondence.
 
 At present, our mechanization of intuitionistic predicate logic is not far advanced, but it contains the cut-elimination theorem.
@@ -2779,12 +2779,12 @@ Their design is notable: they take intuitionistic logic as the base, and they ob
 They give Tarski, Kripke, algebraic, and game semantics, and for each one they analyse which non-constructive principles the completeness theorem requires in the constructive type theory of Rocq.
 Our implementation is specific to classical logic: it defines dual connectives as primitives, and it uses a Tait calculus.
 
-Heyting arithmetic #HeytingArithmetic is intuitionistic logic together with the axioms of Peano arithmetic.
-The library of Forster et al. discusses $Robinson$ and $Peano$ over intuitionistic natural deduction, so that provability in the latter is exactly provability in #HeytingArithmetic.
+Heyting arithmetic #HA is intuitionistic logic together with the axioms of Peano arithmetic.
+The library of Forster et al. discusses $Robinson$ and $PA$ over intuitionistic natural deduction, so that provability in the latter is exactly provability in #HA.
 Kirst and Hermes @KH23 proved that these systems are undecidable, through a reduction from Hilbert's tenth problem (the MRDP theorem), and that every axiomatization that is sound in the standard model is incomplete.
-The same authors also analysed, in the same setting, Tennenbaum's theorem, which states that no nonstandard model of $Peano$ has computable addition and multiplication @HK24.
-The same library mechanizes the Friedman translation, which transforms a proof in classical logic into a proof in minimal logic, and thus shows that $Robinson$ and $Peano$ over minimal or intuitionistic logic are also undecidable.
-Our framework already covers the classical side, so the mechanization of such translations is a practical route to #HeytingArithmetic.
+The same authors also analysed, in the same setting, Tennenbaum's theorem, which states that no nonstandard model of $PA$ has computable addition and multiplication @HK24.
+The same library mechanizes the Friedman translation, which transforms a proof in classical logic into a proof in minimal logic, and thus shows that $Robinson$ and $PA$ over minimal or intuitionistic logic are also undecidable.
+Our framework already covers the classical side, so the mechanization of such translations is a practical route to #HA.
 
 The exact axiomatization of the provability logic of Heyting arithmetic has remained a difficult open problem for a long time.
 We mention it again in @subsect:provlogic_of_HA.
@@ -2834,7 +2834,7 @@ $
 $
 
 #leancode[
-  ```lean
+  ```
   lemma complete {φ : Proposition L} : ℙ⁻ ∀⊩ᶜ φ ↔ 𝐋𝐊¹ ⊢ φ
   ```
 ]
@@ -2850,7 +2850,7 @@ $
   frak(T) models phi quad "iff" quad exs(p in G)(p wforces phi)
 $
 #leancode[
-  ```lean
+  ```
   def GenericForces (p : ℙ⁻) (φ : Proposition K) : Prop := ∃ q ∈ genericFilter p, q ⊩ᶜ φ
 
   local infix: 60 " ⊫ " => GenericForces
@@ -2863,7 +2863,7 @@ Since $G$ contains ${sigma}$ and ${sigma} wforces sigma$, it follows that $frak(
 This proves the completeness theorem for $LK$.
 
 #leancode[
-  ```lean
+  ```
   lemma satisfiable_of_irrefutable (σ : Sentence L) (h : 𝐋𝐊¹ ⊬ ∼(σ : Proposition L)) :
       Satisfiable {σ}
   ```
@@ -2906,13 +2906,13 @@ Gignoux's coalgebraic mechanization of non-wellfounded proof systems for #LogicG
 
 == Provability logic of Heyting arithmetic <subsect:provlogic_of_HA>
 
-The provability logic of intuitionistic or constructive arithmetic, in particular, Heyting arithmetic #HeytingArithmetic, has been a subject of study for a long time (see @AB05[Section 9] @BV06[Section 4]).
+The provability logic of intuitionistic or constructive arithmetic, in particular, Heyting arithmetic #HA, has been a subject of study for a long time (see @AB05[Section 9] @BV06[Section 4]).
 Even among the recent developments alone, there is prior work such as @AM18 @AM19 @SM23a @Moj24 @Moj26.
 
 Here, we define #LogiciK and #LogiciGL.
 Intuitionistic modal logic #LogiciK is obtained from intuitionistic propositional logic by adding the axiom $AxiomK$ for $Box$ and the necessitation rule (note that the language does not contain $Dia$),
 and intuitionistic Gödel--Löb logic #LogiciGL is obtained by adding Löb's axiom $Box (Box A -> A) -> Box A$ to #LogiciK.
-It is known that the provability logic of #HeytingArithmetic contains at least #LogiciGL, that is, #LogiciGL is arithmetically sound with respect to #HeytingArithmetic.
+It is known that the provability logic of #HA contains at least #LogiciGL, that is, #LogiciGL is arithmetically sound with respect to #HA.
 For purely logical studies of #LogiciGL, consult @Urs79 @Lit14 @vdGI21.
 As for mechanization, Shillito and Goré @GS22 gave a refined version of the proof of cut elimination for the sequent calculus for #LogiciGL due to van der Giessen and Iemhoff @vdGI21, and this proof has been mechanized in Rocq (see also @Shi22).
 
