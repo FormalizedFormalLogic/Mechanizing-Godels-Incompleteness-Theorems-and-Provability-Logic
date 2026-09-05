@@ -1,5 +1,4 @@
 #import "init.typ": *
-#import "notation.typ": *
 
 #show: init.with(
   title: [Mechanizing Gödel's Incompleteness Theorems and Provability Logic],
@@ -266,9 +265,9 @@ $
 To work with $Bit(x, y)$ in weak arithmetic, we also mechanized the well-known fact due to Gaifman and Dimitracopoulos @GD82,
 that the graph of exponentiation is representable by a $Delta_0$-formula and that its inductive properties are provable in $Ind(Delta_0)$.
 
-The $ISigma1$ version of the Knaster–Tarski theorem, stated below, is useful for defining recursively defined structures over $Universe$ with appropriate complexity.
+The $ISigma1$ version of the Knaster--Tarski theorem, stated below, is useful for defining recursively defined structures over $Universe$ with appropriate complexity.
 
-#theorem[Version of the Knaster–Tarski theorem][
+#theorem[Version of the Knaster--Tarski theorem][
   Let $Phi: cal(P)(Universe) -> cal(P)(Universe)$ be a class-valued function.
   Assume that this satisfies the following conditions.
   / Definability: A predicate $P(x, c) := x in Phi({z | z in c})$ is $Delta_1$-definable with parameters.
@@ -711,7 +710,7 @@ In view of the reason we gave for introducing $bold("Kre")$ into the abstraction
 If we instead impose on $Bew$ the condition $bold("Ros")$, then the abstract G1 can be proved assuming only that $T$ is consistent.
 This is precisely an abstraction of the incompleteness theorem as improved by Rosser @Ros36.
 
-#proposition[Abstract version of Gödel–Rosser theorem][
+#proposition[Abstract version of Gödel--Rosser theorem][
   Assume that the provability predicate $Rosser$ satisfies $bold("Ros")$.
   In this case, the Gödel sentence for $Rosser$ is called the _Rosser sentence_.
   Then we have $T nproves Godel(Rosser)$ and $T nproves not Godel(Rosser)$.
@@ -742,7 +741,7 @@ This is precisely an abstraction of the incompleteness theorem as improved by Ro
   ```
 ]
 
-Indeed, the concrete statement of the Gödel–Rosser theorem given later, obtained by instantiating this abstraction, does not require $Sigma_1$-soundness.
+Indeed, the concrete statement of the Gödel--Rosser theorem given later, obtained by instantiating this abstraction, does not require $Sigma_1$-soundness.
 
 We next describe refutability (_Widerlegbar_) $Wid$.
 Concerning G2, formal consistency can be expressed in ways other than the formalized consistency $not Bew bot$ introduced in @prop:abstract_G2.
@@ -875,11 +874,11 @@ As related work, Löb's theorem has also been mechanized in Isabelle by Bailitis
   ```
 ]
 
-=== Gödel–Rosser First Incompleteness Theorem
+=== Gödel--Rosser First Incompleteness Theorem
 In the setting of @thm:G1, the theory $T$ was required to be $Sigma_1$-sound.
-By instantiating @prop:abstract_GR, we can prove the Gödel–Rosser incompleteness theorem @Ros36, which weakens this requirement to mere consistency.
+By instantiating @prop:abstract_GR, we can prove the Gödel--Rosser incompleteness theorem @Ros36, which weakens this requirement to mere consistency.
 
-#theorem[Gödel–Rosser First Incompleteness Theorem @Ros36][
+#theorem[Gödel--Rosser First Incompleteness Theorem @Ros36][
   Let $T supset.eq ISigma1$ be a $Delta_1$-definable and consistent theory.
   Then $T$ is incomplete.
 ] <thm:GR>
@@ -1114,9 +1113,9 @@ As a concrete example of such an $f$, we can take the superexponential function 
 In our mechanization, coding an $n$-character formula or proof yields a Gödel number roughly of the order of $2^n$.
 Hence, taking as $f$ the far faster-growing $supexp$ and taking $e$ extremely large, say $10^9$, this corollary suggests that there are true statements that humans can _practically_ never prove (or even read).
 
-Furthermore, we have also mechanized the speed-up theorem due to Ehrenfeucht–Mycielski @EM71 #footnote[Observations of this kind go back to Gödel @God36.].
+Furthermore, we have also mechanized the speed-up theorem due to Ehrenfeucht--Mycielski @EM71 #footnote[Observations of this kind go back to Gödel @God36.].
 
-#theorem[Ehrenfeucht–Mycielski speed-up theorem @EM71][
+#theorem[Ehrenfeucht--Mycielski speed-up theorem @EM71][
   Let $min_T (sigma)$ be the least Gödel number of a $T$-proof of $sigma$ if $T proves sigma$, and $0$ if $T nproves sigma$.
 
   Let $T supset.eq ISigma1$ be a $Delta_1$-definable theory and take a sentence $sigma$ with $T nproves sigma$.
@@ -1154,7 +1153,7 @@ We consider these mechanizations to be a first step in that direction.
 
 === Lindenbaum Algebra
 The _Lindenbaum algebra_ $frak(A)_T$ of a theory $T$ is obtained by the usual construction quotienting sentences by the equivalence relation given by $T proves sigma <-> pi$.
-We have also mechanized some results on these algebras: in particular, for a theory $T$ for which the Gödel–Rosser first incompleteness theorem holds, $frak(A)_T$ is a dense Boolean algebra.
+We have also mechanized some results on these algebras: in particular, for a theory $T$ for which the Gödel--Rosser first incompleteness theorem holds, $frak(A)_T$ is a dense Boolean algebra.
 
 #theorem[
   Let $T supset.eq ISigma1$ be a $Delta_1$-definable theory.
@@ -2158,7 +2157,7 @@ The other is the uniform arithmetical completeness theorem.
 The Grzegorczyk logic $LogicGrz$ is also closely related to #LogicGL.
 Unlike #LogicGL, it is an extension of $LogicS4$, so that $Box$ behaves reflexively; nevertheless, as we describe below, it is tightly connected to #LogicGL and #LogicS through the boxdot translation, and this connection yields an arithmetical completeness theorem for $LogicGrz$ with respect to a _strong_ arithmetical interpretation.
 We also mention that $LogicGrz$ has been mechanized in HOL Light by Bilotta's HOLMS project @BMPB26a.
-For instance, what they call the Kuznetsov–Goldblatt–Boolos theorem @BMPB26a[Theorem 2] is mechanized in our development as @thm:Grz_boxdot.
+For instance, what they call the Kuznetsov--Goldblatt--Boolos theorem @BMPB26a[Theorem 2] is mechanized in our development as @thm:Grz_boxdot.
 
 We first introduce the Hilbert-style proof system, which is the usual definition of $LogicGrz$.
 
@@ -2571,7 +2570,7 @@ Even among the recent developments alone, there is prior work such as @AM18 @AM1
 
 Here, we define #LogiciK and #LogiciGL.
 Intuitionistic modal logic #LogiciK is obtained from intuitionistic propositional logic by adding the axiom $AxiomK$ for $Box$ and the necessitation rule (note that the language does not contain $Dia$),
-and intuitionistic Gödel–Löb logic #LogiciGL is obtained by adding Löb's axiom $Box (Box A -> A) -> Box A$ to #LogiciK.
+and intuitionistic Gödel--Löb logic #LogiciGL is obtained by adding Löb's axiom $Box (Box A -> A) -> Box A$ to #LogiciK.
 It is known that the provability logic of #HeytingArithmetic contains at least #LogiciGL, that is, #LogiciGL is arithmetically sound with respect to #HeytingArithmetic.
 For purely logical studies of #LogiciGL, consult @Urs79 @Lit14 @vdGI21.
 As for mechanization, Shillito and Goré @GS22 gave a refined version of the proof of cut elimination for the sequent calculus for #LogiciGL due to van der Giessen and Iemhoff @vdGI21, and this proof has been mechanized in Rocq (see also @Shi22).
@@ -2602,7 +2601,7 @@ On the other hand, Santiago-Fernández et al. @SJF24 formulated a term-rewriting
 
 As another extension of provability logic, there is the _interpretability logic_ proposed by Visser @Vis90.
 Interpretability logic is the extension of provability logic with an additional binary modal operator $interpret$ representing interpretability (informally, $A interpret B$ means that the extended theory $T + f(A)$ interprets $T + f(B)$).
-There are several semantics for interpretability logic, including _de Jongh–Veltman semantics_ @dJV90 and _Verbrugge semantics_ as known as _generalized Veltman semantics_ (cf. @JRMV24).
+There are several semantics for interpretability logic, including _de Jongh--Veltman semantics_ @dJV90 and _Verbrugge semantics_ as known as _generalized Veltman semantics_ (cf. @JRMV24).
 The latter one can handle completeness and definability for more axioms, but it has the drawback that the arguments become very involved.
 As prior work, mechanization of frame definability for Verbrugge semantics has been carried out in Agda by Rovira @Rov20.
 

@@ -307,8 +307,26 @@
 #let R0 = $sans("R"_0)$
 #let Con(T) = $sans("Con")_(#T)$
 
+// 内部算術（G2 の証明で固定する IΣ₁ のモデルとその上の構成）
+#let Universe = $bold(upright(V))$
+#let Bit = $"Bit"$
+// 類上の関数 Φ の不動点（Knaster--Tarski）
+#let Fix = $bold("Fix")$
+
 #let Bew = $class("unary", frak("B"))$
 #let Wid = $class("unary", frak("W"))$
+
+// 証明可能性の抽象化
+#let Godel(B) = $sans("G")_#B$
+#let fixpoint(x) = $sans("fixedpoint")_#x$
+// Ros を満たす証明可能性述語
+#let Rosser = $frak(R)$
+
+// 反証可能性の抽象化
+#let Jeroslow(W) = $sans("J")_#W$
+#let Safe(B, W) = $sans("Safe")_(#B,#W)$
+// 形式化された無矛盾律
+#let FLoN(B, W) = $sans("FLoN")_(#B,#W)$
 
 #let sepWithCommaMath(..args) = args.pos().join[,]
 
@@ -317,3 +335,4 @@
 #let exs(..args) = $quant(exists, ..args)$
 
 #let godel(x) = $lr(⌜ #x ⌝)$
+#let num(x) = $overline(#x)$
