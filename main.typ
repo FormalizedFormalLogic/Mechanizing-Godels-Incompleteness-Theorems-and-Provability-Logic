@@ -737,7 +737,7 @@ $ISigma1$ is in fact unnecessarily strong. For a sharper result, one could weake
   One must therefore prove the sharper formalized $Sigma^"b"_1$-completeness theorem.
 ].
 Moreover, Nelson's interpretation $Robinson triangle.small.r sans("S")^1_2$ extends the second incompleteness theorem to a broad class of theories that interpret Robinson arithmetic $Robinson$ @Vis11.
-Although this is an appealing direction, we do not pursue it because it would make the mechanization prohibitively complex.
+Although this is an appealing direction, we do not pursue it because it would make the mechanization prohibitively complex (See @subsect:future_interpretability for future work).
 Working in $ISigma1$ makes recursive definitions of predicates and functions easier to handle, since @thm:recursive-def is available.
 
 As noted above, our internal arithmetical arguments are carried out in an arbitrarily fixed model of $ISigma1$, which we henceforth denote by $Universe$.
@@ -997,7 +997,7 @@ Combining the results above, @prop:abstract_G2 immediately yields our final resu
   ```
 ]
 
-== Some further results related to the incompleteness theorems
+== Some further results related to the incompleteness theorems <subsect:further_incompleteness>
 
 Using the tools developed so far, we have also proved several theorems related to Gödel's incompleteness theorems.
 
@@ -2729,7 +2729,55 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
 
 Finally, in this section, we mention some prior work related to our mechanization, that is, mechanizations of the incompleteness theorems and of facts concerning provability logic in proof assistants.
 Moreover, on that basis, we indicate several directions in which we plan to proceed.
+いくつかの形式化されていない事実に関しては @subsect:further_incompleteness ないし @subsect:remaining_sorry_in_provlogic でも触れているのでそちらも参照されたい．
 Concerning provability logic, there is much prior work on mechanizations in the broader area of modal logic in general (e.g., tense logic and epistemic logic), but since these are outside the interest of the present report, we omit them.
+
+== More metamathematical results
+
+まず，今回の形式化は不完全性定理を形式化したという一つのアチーブメントではあるとはいえ，これがゴールではなく，むしろスタートである．
+@subsect:further_incompleteness で細々と落穂広い的に行ったとはいえ，形式化した算術ないし不完全性定理関連のメタ数学的な事実はまだまだ大量に残されている．
+例えば， 無矛盾性の一般化でもあるreflection principleや，partial truth definitionなどは算術に関する分析において非常に重要な道具ではあるものの，関しては現状では実装されていない．
+これらの道具立てがなければ，例えば $PeanoArithmetic$ は有限公理化不可能といったRyll-Nardzewski @Ryl52 の定理などの事実は示すことが出来ない．
+また，証明論的な分析の形式化も現状ではほとんど行われていない
+#footnote[
+  我々はLLMによるautoformalizationの実験として，例えば $PeanoArithmetic$ の $omega$-規則を備えたシークエント計算体系やそのカット除去定理，ないしGoodstein数列の停止性の $PeanoArithmetic$ からの独立性（いわゆる，Kirby-Parisの定理 @KirbyParis1982）の形式化を試み，そして実験自体はある程度成功しているように思える．
+  現在，これらの生成されたコードについて人間によるチェック中である．
+  詳しくは #link("https://github.com/FormalizedFormalLogic/goodstein-independence") を見なさい．
+]．
+これらの問題については @Lin97 @HP16 などを参考に形式化を行っていきたいと考えている．
+
+== Interpretability <subsect:future_interpretability>
+
+今回の不完全性や決定可能性は算術（つまり LOR 言語の理論）において証明された定理であった．
+言語 $cal(L)_T$ の理論 $T$ と言語 $cal(L)_U$ の理論 $U$ に対して適当な翻訳関係 $t$ が存在して，任意の $cal(L)_T$ の文 $phi$ に対して $T proves phi ==> U proves t(phi)$ のような事態は成立するとき， $U$ は $T$ を解釈可能 (is interpretable) $U interpret T$ と書く．
+解釈可能性の用途として，例えば $U interpret T$ で $T$ が本質的に決定不能なら $U$ も決定不能である (cf: @TMR53)，といった理論の比較による無矛盾性や決定可能性の議論も行うことが出来る．
+解釈可能性に関してのさらなる議論は例えばLindström @Lin97[Section 4]などを見なさい．
+
+実用上の応用として，@subsect:settheory で述べる集合論 $Theory("ZF")$ や $Theory("ZFC")$ が $PeanoArithmetic$ を解釈するといったことを形式化すれば，今回行った算術に関する不完全性定理の議論をもう一度集合論で焼き直さずとも．$Theory("ZF")$ や $Theory("ZFC")$ でもG1, G2が成立することが形式化できるはずであり，大きな証明のスキップになると期待される．
+また，G1, G2についての分析は算術だけで行われるわけではなく，よりダイレクトに文字列の連結というものを表す一階理論であるtheory of concatenation $Theory("TC")$ による不完全性定理もGrzgorchyzに端を発して研究されている @Grz05 @grzegorczykUndecidabilityConcatenation．
+特に，$Theory("TC") interpret Theory("Q")$ @Sterken08 @Ganea2009 @Svejdar2009 @visserGrowingCommasStudy2009 であることが知られており，
+このようなミニマルな体系は形式化において算術を直接扱うよりもより扱いやすい体系の可能性がある．
+
+その他，解釈可能性自体をmodalityのように扱うことで証明可能性論理をさらに発展させた研究としてinterpretability logicがある．これについては @subsect:enrich_modalities で論じる．
+
+== Intuitionistic first-order logic and arithmetic
+
+大まかにいって古典論理から排中律を拒絶する論理が直観主義論理であり，このような論理の変更を行って得られる述語論理をintuitionistic first-order logic $Logic("IQL")$ と呼ぶ．
+intuitionistic first-order logicでは例えば，
+$Logic("IQL") proves phi or psi$ であるならば $Logic("IQL") proves phi$ または $Logic("IQL") proves psi$ が成立するという選言特性(disjunction property)や，
+$Logic("IQL") proves exists x phi(x)$ であるならば実際に $t$ が取れて $Logic("IQL") proves phi(t)$ といった存在特性(existence principle) といった構成的な原理が成り立つ．
+直観主義述語論理はまた依存型理論のCurry--Howard同型対応などの様々な関連があり興味深い体系である．
+
+この体系を形式化するにあたっては多くの問題が横たわっており，今回の我々のフレームワークを素朴に修正するのみでは上手くはいかないと考えられる．
+まず，構文論的には，今回我々が行った形式化は古典論理に特化したものである．
+例えば，論理式の定義は互いにdualがprimitiveに定義され，シークエント計算体系はTait-calculusによって定めている．
+このような定義は直観主義述語論理では不可能であり，構文論の段階で大幅なコードの追加が要求される．
+// TODO: さらに意味論について
+
+Peano arithmetic $PeanoArithmetic$ の論理側を素朴にIntuitionisticにした算術はHeyting arithmeticと呼ばれる．
+またHeyting arithmeticの証明可能性論理がどのような論理を成しているかといった問題は長い間難題としてずっと残されている．そのことは @subsect:provlogic_of_HA でまた言及する．
+
+== Axiomatic set theory <subsect:settheory>
 
 == Proof theory of provability logics <subsect:proof_theory_provability_logic>
 
@@ -2759,7 +2807,7 @@ For future work, we plan to mechanize sequent calculi with other machinery as we
 In particular, although Shamkanov's circular proofs involve infinitary structures, the studies by Sierra Miranda et al. @SM23 @SMSZ24 @HSMS25 @SMS26 have revealed that they have many applications, so their mechanization seems to be a technically challenging but worthwhile task.
 Gignoux's coalgebraic mechanization of non-wellfounded proof systems for #LogicGL @Gig26 mentioned above can be regarded as a first step in this direction.
 
-== Provability logic of Heyting arithmetic
+== Provability logic of Heyting arithmetic <subsect:provlogic_of_HA>
 
 The provability logic of intuitionistic or constructive arithmetic, in particular, Heyting arithmetic #HeytingArithmetic, has been a subject of study for a long time (see @AB05[Section 9] @BV06[Section 4]).
 Even among the recent developments alone, there is prior work such as @AM18 @AM19 @SM23a @Moj24 @Moj26.
@@ -2780,7 +2828,7 @@ Finally, the provability logic of Heyting arithmetic has been announced in Mojta
 However, at the time of writing, this preprint is still under review#footnote[The first version was submitted to arXiv in 2022.].
 In the future, we plan to mechanize these arguments, which will make it possible to verify them rigorously and thus to settle this problem in a more reliable way.
 
-== Enriched modalities
+== Enriched modalities <subsect:enrich_modalities>
 
 There are also extensions in the direction of adding further modal operators in order to express various notions related to provability.
 Here we mention two directions for which mechanizations can be found: polymodal provability logic and interpretability logic.
@@ -2796,7 +2844,7 @@ They further proposed the _quantified reflection calculus with one modality_ #Lo
 On the other hand, Santiago-Fernández et al. @SJF24 formulated a term-rewriting-like system (a tree rewriting system) for derivations of #LogicRC, and its mechanization in Rocq appears to be in progress in @SF25.
 
 As another extension of provability logic, there is the _interpretability logic_ proposed by Visser @Vis90.
-Interpretability logic is the extension of provability logic with an additional binary modal operator $interpret$ representing interpretability (informally, $A interpret B$ means that the extended theory $T + f(A)$ is interpretable in $T + f(B)$).
+Interpretability logic is the extension of provability logic with an additional binary modal operator $interpret$ representing interpretability (informally, $A interpret B$ means that the extended theory $T + f(A)$ is interpretable in $T + f(B)$, See also @subsect:future_interpretability).
 There are several semantics for interpretability logic, including _de Jongh–Veltman semantics_ @dJV90 and _Verbrugge semantics_ as known as _generalized Veltman semantics_ (cf. @JRMV24).
 The latter one can handle completeness and definability for more axioms, but it has the drawback that the arguments become very involved.
 As prior work, mechanization of frame definability for Verbrugge semantics has been carried out in Agda by Rovira @Rov20.
