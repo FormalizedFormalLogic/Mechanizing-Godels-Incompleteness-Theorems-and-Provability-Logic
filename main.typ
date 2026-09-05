@@ -263,7 +263,6 @@ $Nat models Pr(T)(godel(psi)) <==> T proves psi$; hence $D$ is r.e.
 == Provability abstraction <subsect:provability_abstraction>
 
 #let Godel(B) = $sans("G")_#B$
-#let Con(B) = $sans("Con")_#B$
 
 Before proving G2, we introduce a theory of the provability predicate, called _provability abstraction_, because working directly with a raw provability predicate is technically cumbersome.
 This notion is closely related to provability logic, which treats provability as a modality (see @sect:provability_logic).
@@ -1394,11 +1393,11 @@ Combined with the well-known fact that any two countable, dense, and nontrivial 
   ```
 ]
 
-That is, the Lindenbaum algebras of $ISigma1$, $PeanoArithmetic$, and even $ZermeloFraenkel$ (although not mechanized) are all isomorphic; in this sense these algebras are not interesting.
+That is, the Lindenbaum algebras of $ISigma1$, $PeanoArithmetic$, and even $ZF$ (although not mechanized) are all isomorphic; in this sense these algebras are not interesting.
 By a theorem of Pour-El and Kripke @PK67, this isomorphism can moreover be taken to be recursive, but such a refinement has not been mechanized at present.
 
 The algebras obtained by extending the Lindenbaum algebra with provability as an explicit unary operator are called _diagonalizable algebras_ or _Magari algebras_ (cf. @Mag75 @Sha93).
-It is known, for example, that the diagonalizable algebras of $PeanoArithmetic$ and $ZermeloFraenkel$ are not isomorphic @Sha93a, and these algebras are deeply related to provability logic, which we discuss in @sect:provability_logic.
+It is known, for example, that the diagonalizable algebras of $PeanoArithmetic$ and $ZF$ are not isomorphic @Sha93a, and these algebras are deeply related to provability logic, which we discuss in @sect:provability_logic.
 No mechanization of these algebras has been carried out at present.
 
 = Provability Logic <sect:provability_logic>
@@ -2064,7 +2063,7 @@ This suggests that labelled calculi are less suitable for mechanizing the proper
 In this section, we describe the main results of our mechanization of provability logic: the mechanization of Solovay's arithmetical completeness theorem @Sol76 and its generalization.
 
 First, we define arithmetical interpretations, which translate modal formulas into arithmetical sentences.
-In what follows, $T$ is an arithmetical theory with a $Delta_1$-definable axiomatization extending $Theory("I")Sigma_1$.
+In what follows, $T$ is an arithmetical theory with a $Delta_1$-definable axiomatization extending $ISigma1$.
 Moreover, $Bew$ denotes a provability in the sense of @subsect:provability_abstraction.
 Although the definition allows $Bew$ to be arbitrary, we mainly consider the standard provability $Bew_T$ of $T$.
 
@@ -2767,8 +2766,8 @@ Interpretability is a tool for the comparison of theories: if $U interpret T$ an
 See, e.g., Lindström @Lin97[Section 4] for a further discussion.
 As far as we know, no prior work mechanized interpretability itself in a proof assistant.
 
-@subsect:settheory discusses the set theories $ZermeloFraenkel$ and $ZermeloFraenkelChoice$.
-If we mechanize the fact that $ZermeloFraenkel interpret PeanoArithmetic$, we can also mechanize the incompleteness theorems for these set theories.
+@subsect:settheory discusses the set theories $ZF$ and $ZFC$.
+If we mechanize the fact that $ZF interpret PeanoArithmetic$, we can also mechanize the incompleteness theorems for these set theories.
 Then we do not have to repeat inside set theory the arguments that we carried out for arithmetic, and we expect that this skips a large part of the proof.
 In another direction, we can consider other theories, because the analysis of the incompleteness phenomena is not restricted to arithmetic.
 The theory of concatenation $Concatenation$ is a first-order theory that directly axiomatizes the concatenation of strings, and Grzegorczyk initiated its study @Grz05 @GZ08.
@@ -2789,14 +2788,7 @@ Intuitionistic predicate logic also has connections to other fields, for example
 At present, our mechanization of intuitionistic predicate logic is not far advanced, but it contains the cut-elimination theorem.
 If we develop the semantics of intuitionistic predicate logic, we can prove the cut elimination of the sequent calculus semantically (cf. @Avi01).
 As a corollary, via the Gödel--Gentzen negative translation, we also obtain a semantic cut elimination for classical first-order logic.
-As prior work, Herbelin and Lee @HL09#footnote[Implementation: #link("https://formal.hknu.ac.kr/Kripke").] already mechanized cut elimination for intuitionistic logic in Rocq.
-We have also proved the cut-elimination theorem (Hauptsatz) for intuitionistic logic, and for classical logic via the translation.
-
-#leancode()[
-  ```
-  def hauptsatz [L.DecidableEq] {Γ : Sequent L} : ⊢ᴸᴷ¹ Γ → {d : ⊢ᴸᴷ¹ Γ // Derivation.IsCutFree d}
-  ```
-]
+As prior work, Herbelin and Lee @HL09#footnote[Implementation: #link("https://formal.hknu.ac.kr/Kripke").] already mechanized cut elimination for intuitionistic logic in Rocq #footnote[Note that, by similar mean with negative translation, we mechanized cut-elimination theorem for classical logic. See #link("https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/FirstOrder/Hauptsatz.lean")].
 
 Forster, Kirst, Wehr, and their colleagues carried out a series of mechanizations in Rocq @FKW21 @KHD22#footnote[See #link("https://github.com/uds-psl/coq-library-fol").].
 This prior work has a wider scope than ours.
@@ -2815,35 +2807,35 @@ We mention it again in @subsect:provlogic_of_HA.
 
 == Set theory and Forcing <subsect:settheory>
 
-#let ZFC = $Theory("ZFC")$
-#let LK = $bold("LK")$
-#let LJ = $bold("LJ")$
+#let CH = Theory("CH")
+#let LK = System("LK")
+#let LJ = System("LJ")
 #let wforces = $attach(forces, br: "w")$
 
-Our current goal is to mechanize a general framework for forcing and to establish foundational results such as the independence of the continuum hypothesis.
+One of our current goal is to mechanize a general framework for forcing and to establish foundational results such as the independence of the continuum hypothesis.
 Han and van Doorn @HvD20 have already mechanized the latter result, but their approach is based on Boolean-valued models and has more limited applicability than forcing.
 
 There are several possible ways to mechanize forcing. Two basic approaches are as follows:
 1. The standard textbook model-theoretic approach:
-  As in, for example, Kunen @Kunen2011, one begins with a countable transitive model $M$ of $Theory("ZFC")$ and a forcing poset $bb(P)$ with generic filter $G subset.eq PP$, and constructs a new model by the forcing extension $M[G]$.
+  As in, for example, Kunen @Kun11, one begins with a countable transitive model $M$ of $ZFC$ and a forcing poset $PP$ with generic filter $G subset.eq PP$, and constructs a new model by the forcing extension $M[G]$.
 2. An approach using proof-theoretic forcing:
-  One constructs a kind of interpretation between theories $T_1$ and $T_2$, called a _forcing interpretation_, and establishes an appropriate conservativity result $T_1 prec.eq_Gamma T_2$ @Avigad2004.
-  For example, let $T_1 = ZFC + not""Theory("CH")$, ($Theory("CH")$: the continuum hypothesis), $T_2 := ZFC$, and $Gamma := {bot}$.
+  One constructs a kind of interpretation between theories $T_1$ and $T_2$, called a _forcing interpretation_, and establishes an appropriate conservativity result $T_1 prec.eq_Gamma T_2$ @Avi04.
+  For example, let $T_1 := ZFC + not CH$, ($CH$: the continuum hypothesis), $T_2 := ZFC$, and $Gamma := {bot}$.
   Suppose that one can construct a $Gamma$-conservative forcing interpretation of $T_1$ in $T_2$.
-  A proof of $ZFC proves Theory("CH")$ easily yield a proof of $ZFC + not""Theory("CH") proves bot$,
+  A proof of $ZFC proves CH$ easily yield a proof of $ZFC + not CH proves bot$,
   from which the forcing interpretation would in turn yield $ZFC proves bot$.
 
 The first approach is the standard choice.
-A frequently noted drawback is that the existence of a countable transitive model of $Theory("ZFC")$ (or of a similar set theory) is strictly stronger than the mere consistency of $Theory("ZFC")$.
+A frequently noted drawback is that the existence of a countable transitive model of $ZFC$ (or of a similar set theory) is strictly stronger than the mere consistency of $ZFC$.
 Given the strength of Lean as an ambient formal system, however, this is unlikely to pose a serious problem.
 
 The second approach is attractive in several respects.
-First, it yields a stronger result than the first approach: as the preceding example illustrates, proving the independence of $Theory("CH")$ requires only the consistency of $ZFC$, with no need for any additional stronger assumption.
+First, it yields a stronger result than the first approach: as the preceding example illustrates, proving the independence of $CH$ requires only the consistency of $ZFC$, with no need for any additional stronger assumption.
 It also has constructive and finitistic advantages, since the translation of proofs induced by a forcing interpretation is essentially syntactic and finitary, and can moreover be computed by a polynomial-time function.
 This is a substantively stronger result than mere independence.
 
 Although we have not yet undertaken a mechanization of forcing for set theory, we have already used a highly simplified version of forcing to mechanize the completeness theorem for first-order logic.
-The idea underlying this proof is due to Avigad @Avigad2001.
+The idea underlying this proof is due to Avigad @Avi01.
 We briefly describe it here, assuming that the language is countable.
 
 Let $PP$ be the set of $LK$-sequents $Gamma$ for which the judgment $LK proves not Gamma$ is not derivable.
@@ -2871,8 +2863,8 @@ $
 Now suppose that $LK nproves not sigma$.
 Since $p := {sigma} in PP$, we can construct a filter $G subset.eq PP$ that contains $p$ and is generic with respect to the following two countable families of dense sets:
 $
-  cal(D)_phi :=& {p in PP | p wforces phi or p wforces phi} \
-  cal(H)_psi :=& {p in PP | fal(q prec.eq p) (q wforces exs(x) psi(x) => exs(t : "term") q wforces psi(t))}
+  cal(D)_phi := & {p in PP | p wforces phi or p wforces phi} \
+  cal(H)_psi := & {p in PP | fal(q prec.eq p) (q wforces exs(x) psi(x) ==> exs(t : "term") q wforces psi(t))}
 $
 If the atomic formulas of the term model $frak(T)$ are interpreted according to $frak(T) models alpha <=> exs(p in G)(p wforces alpha)$, then the forcing lemma can be proved:
 $

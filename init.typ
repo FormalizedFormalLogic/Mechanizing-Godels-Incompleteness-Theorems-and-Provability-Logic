@@ -315,8 +315,8 @@
 #let PeanoArithmeticMinus = $PeanoArithmetic^-$
 #let TrueArithmetic = Theory("TA")
 #let HeytingArithmetic = Theory("HA")
-#let ZermeloFraenkel = Theory("ZF")
-#let ZermeloFraenkelChoice = Theory("ZFC")
+#let ZF = Theory("ZF")
+#let ZFC = Theory("ZFC")
 #let Concatenation = Theory("TC")
 
 #let Axiom(A) = $upright(#A)$
