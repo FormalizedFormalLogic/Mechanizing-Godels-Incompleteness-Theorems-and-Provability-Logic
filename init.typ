@@ -342,11 +342,5 @@
 // 形式化された無矛盾律
 #let FLoN(B, W) = $sans("FLoN")_(#B,#W)$
 
-#let sepWithCommaMath(..args) = args.pos().join[,]
-
-#let quant(Q, ..args) = $#Q sepWithCommaMath(..args) space.narrow$
-#let fal(..args) = $quant(forall, ..args)$
-#let exs(..args) = $quant(exists, ..args)$
-
 #let godel(x) = $lr(⌜ #x ⌝)$
 #let num(x) = $overline(#x)$

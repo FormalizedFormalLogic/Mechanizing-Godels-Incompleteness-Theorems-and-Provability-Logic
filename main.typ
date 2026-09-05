@@ -201,7 +201,7 @@ Among these, we use the arithmetic theory $R0$ due to Cobham (cf. @Vau62).
   $
   together with the following axiom scheme:
   $
-    fal(x)[x < num(n) <-> or.big_(i < n) (x = num(i))]
+    forall x [x < num(n) <-> or.big_(i < n) (x = num(i))]
   $
 ]
 
@@ -654,7 +654,7 @@ We first take $ISigma1$ as the base theory for our proof of G2.
   universal $LOR$-sentences describing basic properties.
   For a unary arithmetical formula $phi(x)$ (which may contain parameters), we define the formula $Ind(φ)$ expressing the universal closure of following instance of mathematical induction:
   $
-    phi(0) -> fal(x)[phi(x) -> phi(x + 1)] -> fal(x) phi(x)
+    phi(0) -> forall x [phi(x) -> phi(x + 1)] -> forall x, phi(x)
   $
   For a class of formulas $Gamma$, we define $Ind(Gamma)$ as the union of $PAMinus$ with $Ind(φ)$ for every formula $φ$ belonging to $Gamma$.
   We then let $ISigma1$ be the theory in which mathematical induction is available for all $Sigma_1$-formulas, and $PA$ the theory in which it is available for all formulas.
@@ -762,9 +762,9 @@ This satisfies the following structural induction principle.
   The predicate $Fix_Phi$ above satisfies the induction principle of the following form.
   Let $psi$ be a $Sigma_1$ or $Pi_1$-predicate (which may contain parameters from $Universe$):
   $
-    fal(bold(C) subset.eq Fix_Phi)[fal(x in bold(C))psi(x) -> fal(x in Phi(bold(C)))psi(x)]
+    forall bold(C) subset.eq Fix_Phi [forall x in bold(C), psi(x) -> forall x in Phi(bold(C)), psi(x)]
     quad "implies" quad
-    fal(x in Fix_Phi)psi(x)
+    forall x in Fix_Phi, psi(x)
   $
 ]<thm:recursive-ind>
 
@@ -2765,7 +2765,7 @@ We discuss it in @subsect:enrich_modalities.
 Intuitionistic logic is classical logic without the law of excluded middle, and the corresponding predicate logic is intuitionistic first-order logic $LogicIQL$.
 $LogicIQL$ satisfies several constructive principles.
 It has the disjunction property: if $LogicIQL proves phi or psi$, then $LogicIQL proves phi$ or $LogicIQL proves psi$.
-It also has the existence property: if $LogicIQL proves exs(x) phi(x)$, then there is a term $t$, possibly containing free variables, such that $LogicIQL proves phi(t)$.
+It also has the existence property: if $LogicIQL proves exists x, phi(x)$, then there is a term $t$, possibly containing free variables, such that $LogicIQL proves phi(t)$.
 Intuitionistic predicate logic also has connections to other fields, for example to dependent type theory via the Curry--Howard correspondence.
 
 At present, our mechanization of intuitionistic predicate logic is not far advanced, but it contains the cut-elimination theorem.
@@ -2822,7 +2822,7 @@ Endow $PP$ with the relation inductively defined by the following rules. This re
 $
   Xi prec.eq Xi \
   phi, psi, Gamma prec.eq Xi ==> phi and psi, Gamma prec.eq Xi \
-  phi(t) prec.eq Xi ==> fal(x) phi(x), Gamma prec.eq Xi \
+  phi(t) prec.eq Xi ==> forall x phi(x), Gamma prec.eq Xi \
   Delta prec.eq Xi "and" Delta subset.eq Gamma ==> Gamma prec.eq Xi
 $
 If $LK proves phi$, then the Gödel--Gentzen translation gives $LJ proves phi^"GG"$.
@@ -2830,7 +2830,7 @@ Since Kripke semantics is sound for $LJ$, we have $p forces phi^"GG"$ for every 
 Viewing $p forces phi^"GG"$ as a _weak forcing_ relation $p wforces phi$ yields a sound Kripke model for $LK$.
 Moreover, this model is canonical in the following sense: for every formula $phi$,
 $
-  LK proves phi quad "iff" quad fal(p in PP) (p wforces phi)
+  LK proves phi quad "iff" quad forall p in PP (p wforces phi)
 $
 
 #leancode[
@@ -2843,11 +2843,11 @@ Now suppose that $LK nproves not sigma$.
 Since $p := {sigma} in PP$, we can construct a filter $G subset.eq PP$ that contains $p$ and is generic with respect to the following two countable families of dense sets:
 $
   cal(D)_phi := & {p in PP | p wforces phi or p wforces not phi} \
-  cal(H)_psi := & {p in PP | fal(q prec.eq p) (q wforces exs(x) psi(x) ==> exs(t : "term") q wforces psi(t))}
+  cal(H)_psi := & {p in PP | forall q prec.eq p (q wforces exists x, psi(x) ==> exists t : "term", q wforces psi(t))}
 $
-If the atomic formulas of the term model $frak(T)$ are interpreted according to $frak(T) models alpha <=> exs(p in G)(p wforces alpha)$, then the forcing lemma can be proved:
+If the atomic formulas of the term model $frak(T)$ are interpreted according to $frak(T) models alpha <=> exists p in G (p wforces alpha)$, then the forcing lemma can be proved:
 $
-  frak(T) models phi quad "iff" quad exs(p in G)(p wforces phi)
+  frak(T) models phi quad "iff" quad exists p in G (p wforces phi)
 $
 #leancode[
   ```
