@@ -5,11 +5,11 @@
   title: [Mechanizing Gödel's Incompleteness Theorems and Provability Logic],
   authors: (
     author(
-      "Shogo Saito",
+      "Shogo Saitou",
       insts: institute(
         "Tohoku University",
         addr: "Sendai, Japan",
-        email: "saito.shogo.q8@dc.tohoku.ac.jp",
+        email: "palalansouki@gmail.com",
       ),
     ),
     author(
@@ -2864,7 +2864,7 @@ $
 Now suppose that $LK nproves not sigma$.
 Since $p := {sigma} in PP$, we can construct a filter $G subset.eq PP$ that contains $p$ and is generic with respect to the following two countable families of dense sets:
 $
-  cal(D)_phi := & {p in PP | p wforces phi or p wforces phi} \
+  cal(D)_phi := & {p in PP | p wforces phi or p wforces not phi} \
   cal(H)_psi := & {p in PP | fal(q prec.eq p) (q wforces exs(x) psi(x) ==> exs(t : "term") q wforces psi(t))}
 $
 Let term model $frak(T)$ be a model by defining $frak(T) models alpha :<=> exs(p in G)(p wforces alpha)$ for atomic formulas $alpha$,
