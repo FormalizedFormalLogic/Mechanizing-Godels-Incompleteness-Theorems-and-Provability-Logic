@@ -2743,7 +2743,7 @@ We also cannot fill some of the `sorry`s that we left in @subsect:remaining_sorr
 For these topics, we plan to mechanize the arguments of the standard textbooks @Lin97 @HP93.
 
 Proof-theoretic analysis is another direction.
-As for prior work, Hydras \& Co. @CDPPCZ21 @Cas24 is a Rocq mechanization of the termination (in Rocq) of the hydra game @KP82, and of related arguments about the ordinals that proof theory frequently uses.
+As for prior work, Hydras \& Co. @CDPPZ21 @Cas24 is a Rocq mechanization of the termination (in Rocq) of the hydra game @KP82, and of related arguments about the ordinals that proof theory frequently uses.
 In our framework, we experimented with autoformalization by an LLM.
 We tried to mechanize the sequent calculus for $PeanoArithmetic$ with the $omega$-rule, its cut-elimination theorem, and the fact that $PeanoArithmetic$ does not prove the termination of Goodstein sequences @KP82.
 The proofs in the generated code#footnote[For more details, see #link("https://github.com/FormalizedFormalLogic/goodstein-independence").] contain no `sorry` and no additional axiom.
@@ -2769,7 +2769,7 @@ If we mechanize the fact that $ZermeloFraenkel interpret PeanoArithmetic$, we ca
 Then we do not have to repeat inside set theory the arguments that we carried out for arithmetic, and we expect that this skips a large part of the proof.
 In another direction, we can consider other theories, because the analysis of the incompleteness phenomena is not restricted to arithmetic.
 The theory of concatenation $Concatenation$ is a first-order theory that directly axiomatizes the concatenation of strings, and Grzegorczyk initiated its study @Grz05 @GZ08.
-In particular, $Concatenation interpret Robinson$ holds @Sterken08 @Gan09 @Sve09 @Vis09.
+In particular, $Concatenation interpret Robinson$ holds @Ste08 @Gan09 @Sve09 @Vis09.
 Such a minimal system can be easier to mechanize than arithmetic itself.
 
 Interpretability logic develops provability logic further and treats interpretability itself as a modality.
