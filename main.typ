@@ -60,7 +60,7 @@ This fact, known as _Solovay's arithmetical completeness theorem_, was a signifi
 
 On the other hand, recently, there has been much active work on mechanizing mathematics using interactive theorem provers, guaranteeing the validity of existing and new results, and providing AI/LLM-assisted or automated proving.
 There are many well-known interactive theorem provers such as Rocq @RocqProver, Isabelle @Isabelle, HOL Light @HOLLight @HOLLightTutorial, Agda @Agda, and Lean @dMU21, and mathematics has been mechanized in each of them, including in the field of mathematical logic#footnote[Some of these mechanizations are summarized in @AwesomeLogicFormalization.].
-In particular, for mechanizing Gödel's incompleteness theorems, this line of work began with Shankar in 1986 @Sha86 @Sha97, and continues with O'Connor @OCo05 @OCo09, Harrison @Har06, Paulson @Pau15, and Popescu and Traytel @PT19 @PT21, Kirst et al. @KP23 @KirstHermes2023.
+In particular, for mechanizing Gödel's incompleteness theorems, this line of work began with Shankar in 1986 @Sha86 @Sha97, and continues with O'Connor @OCo05 @OCo09, Harrison @Har06, Paulson @Pau15, and Popescu and Traytel @PT19 @PT21, Kirst et al. @KP23 @KH23.
 As for provability logic, modal-logical properties of #LogicGL, such as its semantical completeness and automated solvers, have been mechanized by Harrison @HOLLightTutorial[Chapter 20]#footnote[We don't know when Harrison's mechanization of modal logic was carried out.], Goré and Kelly @GK07, Goré, Ramanayake and Shillito @GRS21, Maggesi and Perini Brogi @MPB21 @MPB23, Gignoux @Gig26.
 However, these are either abstract or not full mechanizations within arithmetic.
 For instance, O'Connor's implementation assumes several facts needed for the proof of G2 as axioms, and Paulson's mechanization of G2 uses hereditarily finite sets, not arithmetic.
@@ -117,7 +117,7 @@ Here, arithmetic sentence/theory means a sentence/theory in the language $LOR = 
   Then $T nproves Con(T)$.
 ]
 
-The proofs largely follow the standard approach using derivability conditions in the literature (see, for example, @HP16).
+The proofs largely follow the standard approach using derivability conditions in the literature (see, for example, @HP93).
 We therefore omit the details and instead comment on several technical and methodological aspects of the formalization.
 
 === Syntax
@@ -227,7 +227,7 @@ More precisely:
 
 #theorem[
   Let $T supset.eq R0$ be a $Sigma_1$-sound theory and let $S$ be a r.e. set.
-  Then there is a $cal(L)_"OR"$-formula $sans("Rep")_(S)(x)$ such that
+  Then there is a $LOR$-formula $sans("Rep")_(S)(x)$ such that
   $
     n in S <==> T proves sans("Rep")_(S)(num(n))
   $
@@ -272,8 +272,8 @@ Concretely constructing a "provability" satisfying the abstract derivability con
 Mechanizing the incompleteness theorems via such an abstract provability has previously been studied by Popescu and Traytel @PT19 @PT21.
 
 #definition[Provability predicate][
-  Suppose that $cal(L)$-sentences admit a Gödel numbering in the language $cal(L)_0$.
-  For an $cal(L)_0$-theory $T_0$ and an $cal(L)$-theory $T$, a unary $cal(L)_0$-semisentence $Bew(x)$ is called a _$T$-provability predicate over $T_0$_, if the following holds for every $cal(L)$-sentence $sigma$.
+  Suppose that $cal(L)$-sentences admit a Gödel numbering in the language $Lang(0)$.
+  For an $Lang(0)$-theory $T_0$ and an $cal(L)$-theory $T$, a unary $Lang(0)$-semisentence $Bew(x)$ is called a _$T$-provability predicate over $T_0$_, if the following holds for every $cal(L)$-sentence $sigma$.
 
   #align(center, table(
     columns: (auto, auto),
@@ -289,7 +289,7 @@ Mechanizing the incompleteness theorems via such an abstract provability has pre
   That is, $Bew(x)$ is required to satisfy at least the derivability condition $bold("D1")$.
   In what follows, we simply write $Bew sigma$ for $Bew(godel(sigma))$.
   We further define the following properties, where $sigma$ and $pi$ range over $cal(L)$-sentences.
-  The conditions $bold("D3")$ and $bold("Kre")$ are defined only when $T_0$ and $T$ are theories in the same language, i.e., when $cal(L)_0 = cal(L)$.
+  The conditions $bold("D3")$ and $bold("Kre")$ are defined only when $T_0$ and $T$ are theories in the same language, i.e., when $Lang(0) = cal(L)$.
 
   #align(center, table(
     columns: (auto, auto),
@@ -558,7 +558,7 @@ This allows us to formalize Jeroslow's G2 concisely.
 #let Jeroslow(W) = $sans("J")_#W$
 
 #definition[Refutability abstraction][
-  For an $cal(L)_0$-theory $T_0$ and an $cal(L)$-theory $T$, a unary $cal(L)_0$-semisentence $Wid(x)$ is called a _$T$-refutability predicate over $T_0$_, if the following holds for every $cal(L)$-sentence $sigma$.
+  For an $Lang(0)$-theory $T_0$ and an $cal(L)$-theory $T$, a unary $Lang(0)$-semisentence $Wid(x)$ is called a _$T$-refutability predicate over $T_0$_, if the following holds for every $cal(L)$-sentence $sigma$.
   $
     T proves not sigma ==> T_0 proves Wid(godel(sigma))
   $
@@ -1092,7 +1092,7 @@ By instantiating @prop:abstract_GR, we can prove the Gödel–Rosser incompleten
   ```
 ]
 
-The required provability predicate satisfying $bold("Ros")$ is constructed by so-called _witness comparison_ (see @HP16 @Lin97); we omit the details here.
+The required provability predicate satisfying $bold("Ros")$ is constructed by so-called _witness comparison_ (see @HP93 @Lin97); we omit the details here.
 
 === Jeroslow's Second Incompleteness Theorem
 Similarly, from @prop:abstract_JG2, we can also concretely mechanize Jeroslow's second incompleteness theorem @Jer73.
@@ -1204,7 +1204,7 @@ Taking as $T$ the _true arithmetic_ $TrueArithmetic$, the theory of all sentence
   ```
 ]
 
-In contrast to this theorem, it is known that for a complexity class $Gamma$ of formulas, there is a partial truth predicate $TruePartial(Gamma, x)$, obtained by replacing "for any sentence" with "for any $Gamma$-sentence" in the definition of $True(x)$, which is itself definable by a $Gamma$-formula (cf. @HP16).
+In contrast to this theorem, it is known that for a complexity class $Gamma$ of formulas, there is a partial truth predicate $TruePartial(Gamma, x)$, obtained by replacing "for any sentence" with "for any $Gamma$-sentence" in the definition of $True(x)$, which is itself definable by a $Gamma$-formula (cf. @HP93).
 This fact has not been mechanized yet; consequently, several statements of provability logic proved via partial truth predicates remain unmechanized, as we discuss further in @subsect:remaining_sorry_in_provlogic.
 
 === Church's Theorem and Undecidability of First-Order Logic
@@ -1391,11 +1391,11 @@ Combined with the well-known fact that any two countable, dense, and nontrivial 
   ```
 ]
 
-That is, the Lindenbaum algebras of $ISigma1$, $PeanoArithmetic$, and even $Theory("ZF")$ (although not mechanized) are all isomorphic; in this sense these algebras are not interesting.
+That is, the Lindenbaum algebras of $ISigma1$, $PeanoArithmetic$, and even $ZermeloFraenkel$ (although not mechanized) are all isomorphic; in this sense these algebras are not interesting.
 By a theorem of Pour-El and Kripke @PK67, this isomorphism can moreover be taken to be recursive, but such a refinement has not been mechanized at present.
 
 The algebras obtained by extending the Lindenbaum algebra with provability as an explicit unary operator are called _diagonalizable algebras_ or _Magari algebras_ (cf. @Mag75 @Sha93).
-It is known, for example, that the diagonalizable algebras of $PeanoArithmetic$ and $Theory("ZF")$ are not isomorphic @Sha93a, and these algebras are deeply related to provability logic, which we discuss in @sect:provability_logic.
+It is known, for example, that the diagonalizable algebras of $PeanoArithmetic$ and $ZermeloFraenkel$ are not isomorphic @Sha93a, and these algebras are deeply related to provability logic, which we discuss in @sect:provability_logic.
 No mechanization of these algebras has been carried out at present.
 
 = Provability Logic <sect:provability_logic>
@@ -2729,55 +2729,65 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
 
 Finally, in this section, we mention some prior work related to our mechanization, that is, mechanizations of the incompleteness theorems and of facts concerning provability logic in proof assistants.
 Moreover, on that basis, we indicate several directions in which we plan to proceed.
-いくつかの形式化されていない事実に関しては @subsect:further_incompleteness ないし @subsect:remaining_sorry_in_provlogic でも触れているのでそちらも参照されたい．
+For facts that we have not mechanized, see also @subsect:further_incompleteness and @subsect:remaining_sorry_in_provlogic.
 Concerning provability logic, there is much prior work on mechanizations in the broader area of modal logic in general (e.g., tense logic and epistemic logic), but since these are outside the interest of the present report, we omit them.
 
-== More metamathematical results
+== Further metamathematical topics
 
-まず，今回の形式化は不完全性定理を形式化したという一つのアチーブメントではあるとはいえ，これがゴールではなく，むしろスタートである．
-@subsect:further_incompleteness で細々と落穂拾い的に行ったとはいえ，形式化した算術ないし不完全性定理関連のメタ数学的な事実はまだまだ大量に残されている．
-例えば，reflection principleやpartial truth definition，算術の超準モデルに関する議論やarithmetized completeness theoremなどは算術に関する分析において非常に重要な道具であるが，現状では実装されていない．
-特にreflection principleは， $T$ で証明可能な文は真であるという主張を図式として形式化したものであり，無矛盾性の主張はその特別な場合にあたる．
-これらの道具立てがなければ，例えば $PeanoArithmetic$ は有限公理化不可能といったRyll-Nardzewski @Ryl52 の定理などの事実を示すことや，更にそもそも @subsect:remaining_sorry_in_provlogic で保留していたいくつかの `sorry` を埋めることが出来ない．
-これらのmetamathematicalな問題については標準的な教科書である @Lin97 @HP16 などを参考に形式化を行っていきたいと考えている．
+Our mechanization of the incompleteness theorems is an achievement, but it is a start rather than a goal.
+@subsect:further_incompleteness collects several further results, but many metamathematical facts about arithmetic and the incompleteness theorems remain unmechanized.
+For example, there are many important tools for the metamathematical analysis of arithmetic, such as reflection principles, partial truth definitions, arguments about nonstandard models of arithmetic, and the arithmetized completeness theorem.
+Our development does not contain these tools at present.
+Without them, we cannot prove facts such as Ryll-Nardzewski's theorem @Ryl52, which states that $PeanoArithmetic$ is not finitely axiomatizable.
+We also cannot fill some of the `sorry`s that we left in @subsect:remaining_sorry_in_provlogic.
+For these topics, we plan to mechanize the arguments of the standard textbooks @Lin97 @HP93.
 
-また，証明論的な分析については，先行研究としてRocqによる Hydras \& Co. @CDPPCZ21 @Cas24 が Hydra game @KirbyParis1982 の停止性や，それらに関連して証明論でよく用いられる順序数に関する議論を形式化している．
-我々のフレームワークでは，LLMによるautoformalizationの実験として， $PeanoArithmetic$ の $omega$-規則を備えたシークエント計算体系やそのカット除去定理，ないしGoodstein数列の停止性が $PeanoArithmetic$ では証明できないこと @KirbyParis1982 の形式化を試みた．
-生成されたコード#footnote[詳しくは #link("https://github.com/FormalizedFormalLogic/goodstein-independence") を見なさい．]の証明は `sorry` や追加の公理を含まないが，その定義とステートメントが意図した数学的内容を正しく表現しているかについては，現在人間による検証中である．
-これら以外の証明論的な成果はほぼ何も形式化されていないため，今後はこの方面での証明論的な分析や順序数解析(ordinal analysis)なども整備も進めていきたい．
+Proof-theoretic analysis is another direction.
+As for prior work, Hydras \& Co. @CDPPCZ21 @Cas24 is a Rocq mechanization of the termination (in Rocq) of the hydra game @KP82, and of related arguments about the ordinals that proof theory frequently uses.
+In our framework, we experimented with autoformalization by an LLM.
+We tried to mechanize the sequent calculus for $PeanoArithmetic$ with the $omega$-rule, its cut-elimination theorem, and the fact that $PeanoArithmetic$ does not prove the termination of Goodstein sequences @KP82.
+The proofs in the generated code#footnote[For more details, see #link("https://github.com/FormalizedFormalLogic/goodstein-independence").] contain no `sorry` and no additional axiom.
+However, a human check of its definitions and statements is still in progress.
+We mechanized almost no other proof-theoretic result, thus we plan to work on proof-theoretic analysis and ordinal analysis in the future.
 
-またここで上げた道具は @subsect:enrich_modalities で論じる多様相の証明可能性論理などに算術的な意味そのものを与えるものでもあり必要不可欠である．
+These tools are also necessary for the polymodal provability logics of @subsect:enrich_modalities, because they give the arithmetical meaning of these logics.
 
 == Interpretability <subsect:future_interpretability>
 
-今回の不完全性定理などの系は算術（つまり言語 $LOR$ の理論）において形式化された事実であった．
-不完全性定理は言語の選択などの細かいコーディングに依存するため，例えば，我々のフレームワークで集合論を形式化したとしても，immediatelyに不完全性定理が結論出来るわけではない．
-これについてはinterpretabilityの形式化が重要であると考えられる．
-ラフに述べれば，言語 $cal(L)_T$ の理論 $T$ と言語 $cal(L)_U$ の理論 $U$ に対して適当な翻訳 $t$ が存在して，任意の $cal(L)_T$ の文 $phi$ に対して $T proves phi ==> U proves t(phi)$ のような事態が成立するとき， $U$ は $T$ を解釈可能 (is interpretable) $U interpret T$ と書く．
-解釈可能性の用途として，例えば $U interpret T$ で $T$ が本質的に決定不能なら $U$ も本質的に決定不能である (cf: @TMR53)，といった理論の比較による無矛盾性や決定可能性の議論も行うことが出来る．
-解釈可能性に関してのさらなる議論は例えばLindström @Lin97[Section 4]などを見なさい．
-なお我々の知る限り，証明支援系において解釈可能性それ自体を機械化した先行研究は存在しない．
+We formalized the incompleteness theorems above in arithmetic, that is, in theories of the language $LOR$.
+They depend on the choice of the language and on the details of the coding.
+Thus, even if we mechanize set theory in our framework, we cannot conclude the incompleteness theorems for it immediately.
+The mechanization of interpretability is important for this problem.
+Let $T$ be a theory of the language $Lang(T)$, and let $U$ be a theory of the language $Lang(U)$.
+Roughly speaking, $T$ is interpretable in $U$ if there is a suitable translation $t$ such that $T proves phi ==> U proves t(phi)$ for every $Lang(T)$-sentence $phi$; we write $U interpret T$.
+Interpretability is a tool for the comparison of theories: if $U interpret T$ and $T$ is essentially undecidable, then $U$ is also essentially undecidable (cf. @TMR53).
+See, e.g., Lindström @Lin97[Section 4] for a further discussion.
+As far as we know, no prior work mechanized interpretability itself in a proof assistant.
 
-実用上の応用として，@subsect:settheory で述べる集合論 $Theory("ZF")$ や $Theory("ZFC")$ が $PeanoArithmetic$ を解釈するといったことを形式化すれば，今回行った算術に関する不完全性定理の議論をもう一度集合論で焼き直さずとも，$Theory("ZF")$ や $Theory("ZFC")$ でも不完全性定理が成立することが形式化できるはずであり，大きな証明のスキップになると期待される．
-また，不完全性定理についての分析は算術だけで行われるわけではなく，よりダイレクトに文字列の連結というものを表す一階理論であるtheory of concatenation $Theory("TC")$ による不完全性定理もGrzegorczykに端を発して研究されている @Grz05 @grzegorczykUndecidabilityConcatenation．
-特に，$Theory("TC") interpret Theory("Q")$ @Sterken08 @Ganea2009 @Svejdar2009 @visserGrowingCommasStudy2009 であることが知られており，
-このようなミニマルな体系は形式化において算術を直接扱うよりもより扱いやすい体系の可能性がある．
+@subsect:settheory discusses the set theories $ZermeloFraenkel$ and $ZermeloFraenkelChoice$.
+If we mechanize the fact that $ZermeloFraenkel interpret PeanoArithmetic$, we can also mechanize the incompleteness theorems for these set theories.
+Then we do not have to repeat inside set theory the arguments that we carried out for arithmetic, and we expect that this skips a large part of the proof.
+In another direction, we can consider other theories, because the analysis of the incompleteness phenomena is not restricted to arithmetic.
+The theory of concatenation $Concatenation$ is a first-order theory that directly axiomatizes the concatenation of strings, and Grzegorczyk initiated its study @Grz05 @GZ08.
+In particular, $Concatenation interpret Robinson$ holds @Sterken08 @Gan09 @Sve09 @Vis09.
+Such a minimal system can be easier to mechanize than arithmetic itself.
 
-その他，解釈可能性自体をmodalityのように扱うことで証明可能性論理をさらに発展させた研究としてinterpretability logicがある．これについては @subsect:enrich_modalities で論じる．
+Interpretability logic develops provability logic further and treats interpretability itself as a modality.
+We discuss it in @subsect:enrich_modalities.
 
 == Intuitionistic first-order logic and arithmetic
 
-大まかにいって，古典論理から排中律を拒絶する論理が直観主義論理であり，このような論理の変更を行って得られる述語論理をintuitionistic first-order logic $Logic("IQL")$ と呼ぶ．
-intuitionistic first-order logicでは例えば，
-$Logic("IQL") proves phi or psi$ であるならば $Logic("IQL") proves phi$ または $Logic("IQL") proves psi$ が成立するという選言特性(disjunction property)や，
-$Logic("IQL") proves exists x phi(x)$ であるならば実際に閉項 $t$ が取れて $Logic("IQL") proves phi(t)$ といった存在特性(existence property) といった構成的な原理が成り立つ．
-直観主義述語論理はまた依存型理論のCurry--Howard同型対応などの様々な関連があり興味深い体系である．
+Intuitionistic logic is classical logic without the law of excluded middle, and the corresponding predicate logic is intuitionistic first-order logic $LogicIQL$.
+$LogicIQL$ satisfies several constructive principles.
+It has the disjunction property: if $LogicIQL proves phi or psi$, then $LogicIQL proves phi$ or $LogicIQL proves psi$.
+It also has the existence property: if $LogicIQL proves exists x phi(x)$, then there is a closed term $t$ such that $LogicIQL proves phi(t)$.
+Intuitionistic predicate logic also has connections to other fields, for example to dependent type theory via the Curry--Howard correspondence.
 
-現状の我々の形式化において，直観主義述語論理に関しての発展はまだそこまで行われていないが，少なくない形式化された事実としてカット除去定理がある．
-直観主義述語論理の意味論を整備することにより，シークエント計算のカット除去を意味論的に行うことが可能である (cf: @Avigad2001)．
-またこの系としてGödel--Gentzen否定変換により，Classical First-Order Logicのシークエント計算のカット除去も意味論的に可能である．
-先行研究として直観主義論理に関してのカット除去についてはHerbelinとLee @HerbelinLee2009 #footnote[See implements: #link("https://formal.hknu.ac.kr/Kripke")] によって既にRocqで形式化が報告されている．
-我々は古典論理に関するカット除去定理 (Hauptsatz) を既に証明している．
+At present, our mechanization of intuitionistic predicate logic is not far advanced, but it contains the cut-elimination theorem.
+If we develop the semantics of intuitionistic predicate logic, we can prove the cut elimination of the sequent calculus semantically (cf. @Avi01).
+As a corollary, via the Gödel--Gentzen negative translation, we also obtain a semantic cut elimination for classical first-order logic.
+As prior work, Herbelin and Lee @HL09#footnote[Implementation: #link("https://formal.hknu.ac.kr/Kripke").] already mechanized cut elimination for intuitionistic logic in Rocq.
+We have also proved the cut-elimination theorem (Hauptsatz) for intuitionistic logic, and for classical logic via the translation.
 
 #leancode()[
   ```
@@ -2785,16 +2795,20 @@ $Logic("IQL") proves exists x phi(x)$ であるならば実際に閉項 $t$ が�
   ```
 ]
 
-より広い先行研究として，Forster，Kirst，Wehrらによる一連のRocqでの形式化 @ForsterKirstWehr2021 @KirstEtAl2022 #footnote[See: #link("https://github.com/uds-psl/coq-library-fol")] がある．
-特筆すべき点として，彼らは直観主義論理をベースに，古典論理をPeirceの法則を有効にした拡張として実装する設計を採っており，Tarski流の意味論，Kripke意味論，代数的意味論，対話ゲーム意味論のそれぞれについて，完全性定理がRocqの構成的型理論の内部でどの程度の非構成的な原理を要するかを分析している．
-これは，我々の実装では基本的に古典論理に特化しているため，互いのdualをprimitiveに定義し，シークエント計算体系はTait-calculusによって定めているのと対照的である．
+Forster, Kirst, Wehr, and their colleagues carried out a series of mechanizations in Rocq @FKW21 @KHD22#footnote[See #link("https://github.com/uds-psl/coq-library-fol").].
+This prior work has a wider scope than ours.
+Their design is notable: they take intuitionistic logic as the base, and they obtain classical logic as the extension by Peirce's law, controlled by a flag.
+They give Tarski, Kripke, algebraic, and game semantics, and for each one they analyse which non-constructive principles the completeness theorem requires in the constructive type theory of Rocq.
+Our implementation is specific to classical logic: it defines dual connectives as primitives, and it uses a Tait calculus.
 
-直観主義論理上での算術について，特にPeano arithmeticの公理を追加した算術体系はHeyting arithmetic #HeytingArithmetic と呼ばれる．
-直観主義算術については，先述のForsterらのライブラリでは直観主義自然演繹上で $Robinson$ や $PeanoArithmetic$ を議論しており，後者は #HeytingArithmetic における証明可能性に他ならない．
-KirstとHermes @KirstHermes2023 はHilbertの第10問題(MRDP Theorem)からの還元によってこれらの決定不能性を示し，さらに標準モデルにおいて健全な任意の公理化が不完全であることを導いている．
-また同ライブラリにはFriedman変換が機械化されており，古典論理の証明を最小論理の証明へ移すことでやはり最小論理算術（ないし直観主義算術）も決定不能性であることを示している．
-このような否定翻訳やFriedman翻訳の機械化は，既に古典論理側を整備している我々のフレームワークから #HeytingArithmetic 側へ渡すための現実的な実装であると考えられる．
-またHeyting arithmeticの証明可能性論理がどのような論理を成しているかといった問題は長い間難題としてずっと残されている．そのことは @subsect:provlogic_of_HA でまた言及する．
+Heyting arithmetic #HeytingArithmetic is intuitionistic logic together with the axioms of Peano arithmetic.
+The library of Forster et al. discusses $Robinson$ and $PeanoArithmetic$ over intuitionistic natural deduction, so that provability in the latter is exactly provability in #HeytingArithmetic.
+Kirst and Hermes @KH23 proved that these systems are undecidable, through a reduction from Hilbert's tenth problem (the MRDP theorem), and that every axiomatization that is sound in the standard model is incomplete.
+The same library mechanizes the Friedman translation, which transforms a proof in classical logic into a proof in minimal logic, and thus shows that $Robinson$ and $PeanoArithmetic$ over minimal or intuitionistic logic are also undecidable.
+Our framework already covers the classical side, so the mechanization of such translations is a practical route to #HeytingArithmetic.
+
+The exact axiomatization of the provability logic of Heyting arithmetic has remained a difficult open problem for a long time.
+We mention it again in @subsect:provlogic_of_HA.
 
 == Axiomatic set theory <subsect:settheory>
 

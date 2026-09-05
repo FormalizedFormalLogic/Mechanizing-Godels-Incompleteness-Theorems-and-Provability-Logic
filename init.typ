@@ -260,6 +260,8 @@
 #let LogicGrz = Logic("Grz")
 #let LogicKT = Logic("KT")
 
+#let LogicIQL = Logic("IQL")
+
 // Intuitionistic modal logics
 #let LogiciK = Logic("iK")
 #let LogiciGL = Logic("iGL")
@@ -313,6 +315,9 @@
 #let PeanoArithmeticMinus = $PeanoArithmetic^-$
 #let TrueArithmetic = Theory("TA")
 #let HeytingArithmetic = Theory("HA")
+#let ZermeloFraenkel = Theory("ZF")
+#let ZermeloFraenkelChoice = Theory("ZFC")
+#let Concatenation = Theory("TC")
 
 #let Axiom(A) = $upright(#A)$
 #let AxiomK = $Axiom("K")$
@@ -323,7 +328,8 @@
 #let System(X) = $bold(#X)$
 
 #let LK1 = $System("LK")^1$
-#let LOR = $cal(L)_"OR"$
+#let Lang(T) = $cal(L)_(#T)$
+#let LOR = Lang("OR")
 #let Ind(x) = $sans("I")#x$
 #let ISigma1 = $Ind(Sigma_1)$
 #let Robinson = $sans("Q")$
