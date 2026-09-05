@@ -2816,13 +2816,14 @@ One of our current goal is to mechanize a general framework for forcing and to e
 Han and van Doorn @HvD20 have already mechanized the latter result, but their approach is based on Boolean-valued models and has more limited applicability than forcing.
 
 There are several possible ways to mechanize forcing. Two basic approaches are as follows:
+
 1. The standard textbook model-theoretic approach:
   As in, for example, Kunen @Kun11, one begins with a countable transitive model $M$ of $ZFC$ and a forcing poset $PP$ with generic filter $G subset.eq PP$, and constructs a new model by the forcing extension $M[G]$.
 2. An approach using proof-theoretic forcing:
-  One constructs a kind of interpretation between theories $T_1$ and $T_2$, called a _forcing interpretation_, and establishes an appropriate conservativity result $T_1 prec.eq_Gamma T_2$ @Avi04.
-  For example, let $T_1 := ZFC + not CH$, ($CH$: the continuum hypothesis), $T_2 := ZFC$, and $Gamma := {bot}$.
+  One constructs a kind of interpretation between theories $T_1$ and $T_2$, called a _forcing interpretation_, and establishes an appropriate conservativity result $T_1 attach(subset.eq, br:Gamma) T_2$ @Avi04.
+  For example, let $T_1 := ZFC + class("unary", not)CH$, ($CH$: the continuum hypothesis), $T_2 := ZFC$, and $Gamma := {bot}$.
   Suppose that one can construct a $Gamma$-conservative forcing interpretation of $T_1$ in $T_2$.
-  A proof of $ZFC proves CH$ easily yield a proof of $ZFC + not CH proves bot$,
+  A proof of $ZFC proves CH$ easily yield a proof of $ZFC + class("unary", not)CH proves bot$,
   from which the forcing interpretation would in turn yield $ZFC proves bot$.
 
 The first approach is the standard choice.
@@ -2838,13 +2839,13 @@ Although we have not yet undertaken a mechanization of forcing for set theory, w
 The idea underlying this proof is due to Avigad @Avi01.
 We briefly describe it here, assuming that the language is countable.
 
-Let $PP$ be the set of $LK$-sequents $Gamma$ for which the judgment $LK proves not Gamma$ is not derivable.
+Let $PP$ be the set of $LK$-sequent $Gamma$ such that $LK nproves not Gamma$.
 Endow $PP$ with the relation inductively defined by the following rules. This relation is a preorder whose greatest element is the empty sequent:
 $
-  Xi prec.eq Xi \
-  phi, psi, Gamma prec.eq Xi ==> phi and psi, Gamma prec.eq Xi \
-  phi(t) prec.eq Xi ==> fal(x) phi(x), Gamma prec.eq Xi \
-  Delta prec.eq Xi "and" Delta subset.eq Gamma ==> Gamma prec.eq Xi
+  Xi prec.eq& Xi \
+  phi, psi, Gamma prec.eq Xi =>& phi and psi, Gamma prec.eq Xi \
+  phi(t) prec.eq Xi =>& fal(x) phi(x), Gamma prec.eq Xi \
+  Delta prec.eq Xi "and" Delta subset.eq Gamma =>& Gamma prec.eq Xi
 $
 If $LK proves phi$, then the Gödel--Gentzen translation gives $LJ proves phi^"GG"$.
 Since Kripke semantics is sound for $LJ$, we have $p forces phi^"GG"$ for every $p in PP$.
@@ -2866,7 +2867,8 @@ $
   cal(D)_phi := & {p in PP | p wforces phi or p wforces phi} \
   cal(H)_psi := & {p in PP | fal(q prec.eq p) (q wforces exs(x) psi(x) ==> exs(t : "term") q wforces psi(t))}
 $
-If the atomic formulas of the term model $frak(T)$ are interpreted according to $frak(T) models alpha <=> exs(p in G)(p wforces alpha)$, then the forcing lemma can be proved:
+Let term model $frak(T)$ be a model by defining $frak(T) models alpha :<=> exs(p in G)(p wforces alpha)$ for atomic formulas $alpha$,
+then the forcing lemma can be proved:
 $
   frak(T) models phi quad "iff" quad exs(p in G)(p wforces phi)
 $
