@@ -2782,6 +2782,7 @@ Our implementation is specific to classical logic: it defines dual connectives a
 Heyting arithmetic #HeytingArithmetic is intuitionistic logic together with the axioms of Peano arithmetic.
 The library of Forster et al. discusses $Robinson$ and $Peano$ over intuitionistic natural deduction, so that provability in the latter is exactly provability in #HeytingArithmetic.
 Kirst and Hermes @KH23 proved that these systems are undecidable, through a reduction from Hilbert's tenth problem (the MRDP theorem), and that every axiomatization that is sound in the standard model is incomplete.
+The same authors also analysed, in the same setting, Tennenbaum's theorem, which states that no nonstandard model of $Peano$ has computable addition and multiplication @HK24.
 The same library mechanizes the Friedman translation, which transforms a proof in classical logic into a proof in minimal logic, and thus shows that $Robinson$ and $Peano$ over minimal or intuitionistic logic are also undecidable.
 Our framework already covers the classical side, so the mechanization of such translations is a practical route to #HeytingArithmetic.
 
@@ -2841,7 +2842,7 @@ $
 Now suppose that $LK nproves not sigma$.
 Since $p := {sigma} in PP$, we can construct a filter $G subset.eq PP$ that contains $p$ and is generic with respect to the following two countable families of dense sets:
 $
-  cal(D)_phi := & {p in PP | p wforces phi or p wforces phi} \
+  cal(D)_phi := & {p in PP | p wforces phi or p wforces not phi} \
   cal(H)_psi := & {p in PP | fal(q prec.eq p) (q wforces exs(x) psi(x) ==> exs(t : "term") q wforces psi(t))}
 $
 If the atomic formulas of the term model $frak(T)$ are interpreted according to $frak(T) models alpha <=> exs(p in G)(p wforces alpha)$, then the forcing lemma can be proved:
