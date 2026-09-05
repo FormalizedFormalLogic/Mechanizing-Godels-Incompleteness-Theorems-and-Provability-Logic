@@ -2820,48 +2820,44 @@ We mention it again in @subsect:provlogic_of_HA.
 #let LJ = $bold("LJ")$
 #let wforces = $attach(forces, br: "w")$
 
-現在の目標は forcing のフレームワークの形式化と continuum hypothesis の独立性のような基礎的な結果を示すことである．
-後者は Han-van Doorn @HvD20 において達成されているが，彼らの方法は boolean-valued model であり，
-forcing と比較すれば汎用性は限定される．
+Our current goal is to mechanize a general framework for forcing and to establish foundational results such as the independence of the continuum hypothesis.
+Han and van Doorn @HvD20 have already mechanized the latter result, but their approach is based on Boolean-valued models and has more limited applicability than forcing.
 
-さて，forcing の形式化にも複数の選択がある．基本的なものは次のとおりである：
-1. 教科書的なモデル論的なもの：
-  すなわち，例えば Kunen @Kunen2011 にあるように，はじめに $Theory("ZFC")$ の countable transitive model $M$ と
-  その強制性順序 $bb(P)$ を取って， forcing extention $M[bb(P)]$ によって新しいモデルを構成するもの．
-2. Proof-theoretic forcing を用いるもの：
-  これは理論 $T_1$, $T_2$ 間にある種の interpretation: _forcing interpretation_ を構成して
-  適当な conservation result $T_1 prec.eq_Gamma T_2$ を示す @Avigad2004 ．
-  例えば $T_1 = ZFC + not""Theory("CH")$ (ここで $Theory("CH")$ は continuum hypothesis を表す)，
-  $T_2 := ZFC$, $Gamma := {bot}$ としよう． $T_1$ から $T_2$ への $Gamma$-conservative な forcing interpretation が構成できたなら，
-  $ZFC proves Theory("CH")$ の証明から $ZFC + not""Theory("CH") proves bot$ の証明が得られるから，
-  その結果から forcing interpretation により $ZFC proves bot$ が従う．
+There are several possible ways to mechanize forcing. Two basic approaches are as follows:
+1. The standard textbook model-theoretic approach:
+  As in, for example, Kunen @Kunen2011, one begins with a countable transitive model $M$ of $Theory("ZFC")$ and a forcing poset $bb(P)$ with generic filter $G subset.eq PP$, and constructs a new model by the forcing extension $M[G]$.
+2. An approach using proof-theoretic forcing:
+  One constructs a kind of interpretation between theories $T_1$ and $T_2$, called a _forcing interpretation_, and establishes an appropriate conservativity result $T_1 prec.eq_Gamma T_2$ @Avigad2004.
+  For example, let $T_1 = ZFC + not""Theory("CH")$, ($Theory("CH")$: the continuum hypothesis), $T_2 := ZFC$, and $Gamma := {bot}$.
+  Suppose that one can construct a $Gamma$-conservative forcing interpretation of $T_1$ in $T_2$.
+  A proof of $ZFC proves Theory("CH")$ easily yield a proof of $ZFC + not""Theory("CH") proves bot$,
+  from which the forcing interpretation would in turn yield $ZFC proves bot$.
 
-典型的な選択は 1. である．
-しばしば指摘される問題点は $Theory("ZFC")$ （やそれに類する集合論的理論） の countable transitive model の存在が $Theory("ZFC")$
-の無矛盾性より真に強くなることだが，これは Lean の証明能力の強力さのため，ほとんど問題にならないだろう．
+The first approach is the standard choice.
+A frequently noted drawback is that the existence of a countable transitive model of $Theory("ZFC")$ (or of a similar set theory) is strictly stronger than the mere consistency of $Theory("ZFC")$.
+Given the strength of Lean as an ambient formal system, however, this is unlikely to pose a serious problem.
 
-2 の手法は様々な点で魅力的である．まず，得られる結果は 1. よりも強い．例で示したように $Theory("CH")$ の独立性に必要なのは
-$ZFC$ の無矛盾性だけで良いから余計に強い仮定が必要ない．
-加えて構成的・有限主義的な面で利点も持つ．なぜなら forcing interpretation による証明の翻訳は本質的に構文論敵・有限的であり，さらにこの操作は多項式時間関数で行える．
-これは単なる独立性より本質的に強い結果である．
+The second approach is attractive in several respects.
+First, it yields a stronger result than the first approach: as the preceding example illustrates, proving the independence of $Theory("CH")$ requires only the consistency of $ZFC$, with no need for any additional stronger assumption.
+It also has constructive and finitistic advantages, since the translation of proofs induced by a forcing interpretation is essentially syntactic and finitary, and can moreover be computed by a polynomial-time function.
+This is a substantively stronger result than mere independence.
 
-私達は集合論に対する forcing の形式化はまだ取り組んでいないが，
-forcing の非常に簡素化したモデルはすでに first-order logic の completeness theorem の形式化のために用いている
-（この証明のアイデアは @Avigad2001 による）．
-これを簡単に説明しよう．言語は可算とする
+Although we have not yet undertaken a mechanization of forcing for set theory, we have already used a highly simplified version of forcing to mechanize the completeness theorem for first-order logic.
+The idea underlying this proof is due to Avigad @Avigad2001.
+We briefly describe it here, assuming that the language is countable.
 
-$PP$ を $LK proves not Gamma$ が証明できないような $LK$-sequnet $Gamma$ からなる集合とする．
-これに次のように帰納的に定義された順序を入れると， empty sequent を最大値とする preorder をなす．
+Let $PP$ be the set of $LK$-sequents $Gamma$ for which the judgment $LK proves not Gamma$ is not derivable.
+Endow $PP$ with the relation inductively defined by the following rules. This relation is a preorder whose greatest element is the empty sequent:
 $
   Xi prec.eq Xi \
   phi, psi, Gamma prec.eq Xi ==> phi and psi, Gamma prec.eq Xi \
   phi(t) prec.eq Xi ==> fal(x) phi(x), Gamma prec.eq Xi \
   Delta prec.eq Xi "and" Delta subset.eq Gamma ==> Gamma prec.eq Xi
 $
-さて， $LK proves phi$ ならば， Gödel-Gentzen translation により $LJ proves phi^"GG"$ である．
-Kripke model は $LJ$ に対して健全だから，すべての $p in PP$ について， $p forces phi^"GG"$.
-これを _weak forcing_ $wforces$ とみなせば $LK$ は健全な Kripke model を得たことになる．
-さらに，このモデルは適当な意味で_canonnical_ である．すなわち，すべての論理式 $phi$ について次が成り立つ．
+If $LK proves phi$, then the Gödel--Gentzen translation gives $LJ proves phi^"GG"$.
+Since Kripke semantics is sound for $LJ$, we have $p forces phi^"GG"$ for every $p in PP$.
+Viewing $p forces phi^"GG"$ as a _weak forcing_ relation $p wforces phi$ yields a sound Kripke model for $LK$.
+Moreover, this model is canonical in the following sense: for every formula $phi$,
 $
   LK proves phi quad "iff" quad fal(p in PP) (p wforces phi)
 $
@@ -2872,14 +2868,13 @@ $
   ```
 ]
 
-さて， $LK nproves not sigma$ と仮定する． $p := {sigma} in PP$ だから， $p$ を含みかつ次の
-２つの加算な dense set の集合族に対してジェネリックなフィルター $G subset.eq PP$ が構成できる．
+Now suppose that $LK nproves not sigma$.
+Since $p := {sigma} in PP$, we can construct a filter $G subset.eq PP$ that contains $p$ and is generic with respect to the following two countable families of dense sets:
 $
   cal(D)_phi :=& {p in PP | p wforces phi or p wforces phi} \
   cal(H)_psi :=& {p in PP | fal(q prec.eq p) (q wforces exs(x) psi(x) => exs(t : "term") q wforces psi(t))}
 $
-term model $frak(T)$ について， $frak(T) models alpha <=> exs(p in G)(p wforces alpha)$ と atomic formula の解釈を定義すれば，
-いわゆる forcing lemma が証明できる．
+If the atomic formulas of the term model $frak(T)$ are interpreted according to $frak(T) models alpha <=> exs(p in G)(p wforces alpha)$, then the forcing lemma can be proved:
 $
   frak(T) models phi quad "iff" quad exs(p in G)(p wforces phi)
 $
@@ -2893,8 +2888,8 @@ $
       φ.Eval (s := termModelOf p) bv fv ↔ p ⊫ Rew.bind bv fv ▹ φ :=
   ```
 ]
-$G$ は ${sigma}$ を含み， ${sigma} wforces sigma$ が成立することから， $frak(T) models sigma$ が従う．
-よって $LK$ の completeness theorem が示された．
+Since $G$ contains ${sigma}$ and ${sigma} wforces sigma$, it follows that $frak(T) models sigma$.
+This proves the completeness theorem for $LK$.
 
 #leancode[
   ```lean
@@ -2903,12 +2898,12 @@ $G$ は ${sigma}$ を含み， ${sigma} wforces sigma$ が成立することか�
   ```
 ]
 
-さて，集合論に於いて forcing interpretation の議論を行うには，上のような議論を集合論の内部で行う必要がある．
-これを syntactic に行うのは，不完全性定理の mechanization について説明したように (@subsubsection:internal)
-非常にこんなんだと予想される．そして考えられる解決策も同様である．
-すなわち，完全性定理を通してモデル論的に行えば良い．
-この際に outernal に定義した $wforces$ や Kripke model の一般論が使用できる可能性がある．
-さらに，このような outernal な議論は典型的な集合論者のおこなう強制法と技術的に類似する可能性がある．
+To develop forcing interpretations for set theory, an argument of the kind just described must be carried out _internally_ to the set theory.
+As discussed in the section of incompleteness theorems (@subsubsection:internal), a direct syntactic treatment is likely to be too complex.
+
+The same remedy may be applicable here: one can instead proceed model-theoretically via the completeness theorem.
+This may make it possible to reuse the externally defined weak forcing relation $wforces$ and the general theory of Kripke models.
+Moreover, such an external argument may be technically close to the forcing arguments ordinarily employed by set theorists.
 
 == Proof theory of provability logics <subsect:proof_theory_provability_logic>
 
