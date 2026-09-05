@@ -154,7 +154,7 @@ We mechanized the type of semiformulas that may contain free variables of type $
 Mechanization using semiterm/semiformulas is more than a technical device to deal with quantifiers; it also offers practical advantages.
 For example, a frequently encountered situation in proof theory and model theory, such as a formula $phi(x, y, z)$ with parameters from $M$, can be expressed by the solely type `Semiformula M 3`.
 
-=== On internal argument
+=== On internal argument<subsubsection:internal>
 In proofs of the incompleteness theorems, especially G2, the principal obstacle is often the internalization of metamathematics---terms, formulas, provability, elementary proof theory, and so forth---a process commonly called _arithmetization_ or _bootstrapping_.
 In other words, these notions must be formally defined and their properties proved _within_ the formalized deductive system itself, which in our case is $ISigma1$.
 A naïve, purely syntactic approach to this task encounters the following difficulties#footnote[
@@ -211,11 +211,11 @@ Among these, we use the arithmetical theory $R0$ due to Cobham (cf. @Vau62).
 #leancode[
   ```
   inductive R0 : ArithmeticTheory
-    | equal : ∀ φ ∈ 𝗘𝗤 ℒₒᵣ, R0 φ
-    | Ω₁ (n m : ℕ) : R0 “↑n + ↑m = ↑(n + m)”
-    | Ω₂ (n m : ℕ) : R0 “↑n * ↑m = ↑(n * m)”
-    | Ω₃ (n m : ℕ) : n ≠ m → R0 “↑n ≠ ↑m”
-    | Ω₄ (n : ℕ) : R0 “∀ x, x < ↑n ↔ ⋁ i < n, x = ↑i”
+  | equal : ∀ φ ∈ 𝗘𝗤 ℒₒᵣ, R0 φ
+  | Ω₁ (n m : ℕ) : R0 “↑n + ↑m = ↑(n + m)”
+  | Ω₂ (n m : ℕ) : R0 “↑n * ↑m = ↑(n * m)”
+  | Ω₃ (n m : ℕ) : n ≠ m → R0 “↑n ≠ ↑m”
+  | Ω₄ (n : ℕ) : R0 “∀ x, x < ↑n ↔ ⋁ i < n, x = ↑i”
 
   notation "𝗥₀" => R0
   ```
@@ -265,14 +265,14 @@ $Nat models Pr(T)(godel(psi)) <==> T proves psi$; hence $D$ is r.e.
 #let Godel(B) = $sans("G")_#B$
 #let Con(B) = $sans("Con")_#B$
 
-Before proving G2, we introduce an abstraction of the provability predicate, called _provability abstraction_, because working directly with a raw provability predicate is technically cumbersome.
+Before proving G2, we introduce a theory of the provability predicate, called _provability abstraction_, because working directly with a raw provability predicate is technically cumbersome.
 This notion is closely related to provability logic, which treats provability as a modality (see @sect:provability_logic).
 With these abstractions, the incompleteness theorems can be mechanized abstractly, by purely syntactic manipulations.
 Concretely constructing a "provability" satisfying the abstract derivability conditions then immediately yields the concrete statements of the incompleteness theorems.
 Mechanizing the incompleteness theorems via such an abstract provability has previously been studied by Popescu and Traytel @PT19 @PT21.
 
 #definition[Provability predicate][
-  Suppose that $cal(L)$-sentences admit a Gödel numbering in the language $Lang(0)$.
+  Suppose that $cal(L)$-sentences admit a Gödel numbering in language $Lang(0)$.
   For an $Lang(0)$-theory $T_0$ and an $cal(L)$-theory $T$, a unary $Lang(0)$-semisentence $Bew(x)$ is called a _$T$-provability predicate over $T_0$_, if the following holds for every $cal(L)$-sentence $sigma$.
 
   #align(center, table(
@@ -663,12 +663,14 @@ Making this abstraction concrete, that is, actually constructing the desired pro
 #let Universe = $bold(upright(V))$
 #let Bit = $"Bit"$
 
-By making the abstraction @prop:abstract_G2 introduced in the previous section concrete, the goal of this section is to mechanize the second incompleteness theorem.
+By making the abstraction @prop:abstract_G2 introduced in the previous section concrete, the goal of this section is to
+construct a _standard_ provability predicate.
 We first take $ISigma1$ as the base theory for our proof of G2.
 
 #definition[
-  We call $PeanoArithmeticMinus$ (the theory of discrete ordered semirings) the finite axiom system consisting of the equality axioms for $LOR$ together with 17 further axioms.
-  For a unary arithmetical formula $phi(x)$, we define the formula $Ind(φ)$ expressing the following instance of mathematical induction:
+  We call $PeanoArithmeticMinus$ (the theory of discrete ordered semirings) the finite axiom system consisting of
+  universal $LOR$-sentences describing basic properties.
+  For a unary arithmetical formula $phi(x)$ (which may contains parameters), we define the formula $Ind(φ)$ expressing the universal closure of following instance of mathematical induction:
   $
     phi(0) -> (forall x phi(x) -> phi(x + 1)) -> forall x phi(x)
   $
@@ -890,7 +892,8 @@ These facts immediately yield definitions over $Universe$ of basic syntactic ope
 ]
 
 
-We can routinely verify that the predicate `provabilityPred` is a provability in the sense of @def:provability_abstraction, and moreover that it satisfies the derivability conditions $bold("D1")$, $bold("D2")$, $bold("D3")$.
+We can routinely verify that the predicate `provabilityPred` is a provability predicate in the sense of @def:provability_abstraction,
+and moreover that it satisfies the derivability conditions $bold("D1")$, $bold("D2")$, $bold("D3")$, and $bold("Kre")$.
 
 #leancode(
   links: (
@@ -959,11 +962,11 @@ Since $T supset.eq ISigma1$, the fixed point theorem holds.
   ),
 )[
   ```
-  noncomputable def diag (θ : ArithmeticSemisentence 1) : ArithmeticSemisentence 1
-    := “x. ∀ y, !ssnum y x x → !θ y”
+  noncomputable def diag (θ : ArithmeticSemisentence 1) : ArithmeticSemisentence 1 :=
+    “x. ∀ y, !ssnum y x x → !θ y”
 
-  noncomputable def fixedpoint (θ : ArithmeticSemisentence 1) : ArithmeticSentence
-    := (diag θ)/[⌜diag θ⌝]
+  noncomputable def fixedpoint (θ : ArithmeticSemisentence 1) : ArithmeticSentence :=
+    (diag θ)/[⌜diag θ⌝]
 
   theorem diagonal (θ : ArithmeticSemisentence 1) : T ⊢ fixedpoint θ 🡘 θ/[⌜fixedpoint θ⌝]
 
@@ -2810,7 +2813,102 @@ Our framework already covers the classical side, so the mechanization of such tr
 The exact axiomatization of the provability logic of Heyting arithmetic has remained a difficult open problem for a long time.
 We mention it again in @subsect:provlogic_of_HA.
 
-== Axiomatic set theory <subsect:settheory>
+== Set theory and Forcing <subsect:settheory>
+
+#let ZFC = $Theory("ZFC")$
+#let LK = $bold("LK")$
+#let LJ = $bold("LJ")$
+#let wforces = $attach(forces, br: "w")$
+
+現在の目標は forcing のフレームワークの形式化と continuum hypothesis の独立性のような基礎的な結果を示すことである．
+後者は Han-van Doorn @HvD20 において達成されているが，彼らの方法は boolean-valued model であり，
+forcing と比較すれば汎用性は限定される．
+
+さて，forcing の形式化にも複数の選択がある．基本的なものは次のとおりである：
+1. 教科書的なモデル論的なもの：
+  すなわち，例えば Kunen @Kunen2011 にあるように，はじめに $Theory("ZFC")$ の countable transitive model $M$ と
+  その強制性順序 $bb(P)$ を取って， forcing extention $M[bb(P)]$ によって新しいモデルを構成するもの．
+2. Proof-theoretic forcing を用いるもの：
+  これは理論 $T_1$, $T_2$ 間にある種の interpretation: _forcing interpretation_ を構成して
+  適当な conservation result $T_1 prec.eq_Gamma T_2$ を示す @Avigad2004 ．
+  例えば $T_1 = ZFC + not""Theory("CH")$ (ここで $Theory("CH")$ は continuum hypothesis を表す)，
+  $T_2 := ZFC$, $Gamma := {bot}$ としよう． $T_1$ から $T_2$ への $Gamma$-conservative な forcing interpretation が構成できたなら，
+  $ZFC proves Theory("CH")$ の証明から $ZFC + not""Theory("CH") proves bot$ の証明が得られるから，
+  その結果から forcing interpretation により $ZFC proves bot$ が従う．
+
+典型的な選択は 1. である．
+しばしば指摘される問題点は $Theory("ZFC")$ （やそれに類する集合論的理論） の countable transitive model の存在が $Theory("ZFC")$
+の無矛盾性より真に強くなることだが，これは Lean の証明能力の強力さのため，ほとんど問題にならないだろう．
+
+2 の手法は様々な点で魅力的である．まず，得られる結果は 1. よりも強い．例で示したように $Theory("CH")$ の独立性に必要なのは
+$ZFC$ の無矛盾性だけで良いから余計に強い仮定が必要ない．
+加えて構成的・有限主義的な面で利点も持つ．なぜなら forcing interpretation による証明の翻訳は本質的に構文論敵・有限的であり，さらにこの操作は多項式時間関数で行える．
+これは単なる独立性より本質的に強い結果である．
+
+私達は集合論に対する forcing の形式化はまだ取り組んでいないが，
+forcing の非常に簡素化したモデルはすでに first-order logic の completeness theorem の形式化のために用いている
+（この証明のアイデアは @Avigad2001 による）．
+これを簡単に説明しよう．言語は可算とする
+
+$PP$ を $LK proves not Gamma$ が証明できないような $LK$-sequnet $Gamma$ からなる集合とする．
+これに次のように帰納的に定義された順序を入れると， empty sequent を最大値とする preorder をなす．
+$
+  Xi prec.eq Xi \
+  phi, psi, Gamma prec.eq Xi ==> phi and psi, Gamma prec.eq Xi \
+  phi(t) prec.eq Xi ==> fal(x) phi(x), Gamma prec.eq Xi \
+  Delta prec.eq Xi "and" Delta subset.eq Gamma ==> Gamma prec.eq Xi
+$
+さて， $LK proves phi$ ならば， Gödel-Gentzen translation により $LJ proves phi^"GG"$ である．
+Kripke model は $LJ$ に対して健全だから，すべての $p in PP$ について， $p forces phi^"GG"$.
+これを _weak forcing_ $wforces$ とみなせば $LK$ は健全な Kripke model を得たことになる．
+さらに，このモデルは適当な意味で_canonnical_ である．すなわち，すべての論理式 $phi$ について次が成り立つ．
+$
+  LK proves phi quad "iff" quad fal(p in PP) (p wforces phi)
+$
+
+#leancode[
+  ```lean
+  lemma complete {φ : Proposition L} : ℙ⁻ ∀⊩ᶜ φ ↔ 𝐋𝐊¹ ⊢ φ
+  ```
+]
+
+さて， $LK nproves not sigma$ と仮定する． $p := {sigma} in PP$ だから， $p$ を含みかつ次の
+２つの加算な dense set の集合族に対してジェネリックなフィルター $G subset.eq PP$ が構成できる．
+$
+  cal(D)_phi :=& {p in PP | p wforces phi or p wforces phi} \
+  cal(H)_psi :=& {p in PP | fal(q prec.eq p) (q wforces exs(x) psi(x) => exs(t : "term") q wforces psi(t))}
+$
+term model $frak(T)$ について， $frak(T) models alpha <=> exs(p in G)(p wforces alpha)$ と atomic formula の解釈を定義すれば，
+いわゆる forcing lemma が証明できる．
+$
+  frak(T) models phi quad "iff" quad exs(p in G)(p wforces phi)
+$
+#leancode[
+  ```lean
+  def GenericForces (p : ℙ⁻) (φ : Proposition K) : Prop := ∃ q ∈ genericFilter p, q ⊩ᶜ φ
+
+  local infix: 60 " ⊫ " => GenericForces
+
+  lemma forcing_lemma (φ : Semiformula K ξ n) {fv : ξ → 𝔗} {bv : Fin n → 𝔗} :
+      φ.Eval (s := termModelOf p) bv fv ↔ p ⊫ Rew.bind bv fv ▹ φ :=
+  ```
+]
+$G$ は ${sigma}$ を含み， ${sigma} wforces sigma$ が成立することから， $frak(T) models sigma$ が従う．
+よって $LK$ の completeness theorem が示された．
+
+#leancode[
+  ```lean
+  lemma satisfiable_of_irrefutable (σ : Sentence L) (h : 𝐋𝐊¹ ⊬ ∼(σ : Proposition L)) :
+      Satisfiable {σ}
+  ```
+]
+
+さて，集合論に於いて forcing interpretation の議論を行うには，上のような議論を集合論の内部で行う必要がある．
+これを syntactic に行うのは，不完全性定理の mechanization について説明したように (@subsubsection:internal)
+非常にこんなんだと予想される．そして考えられる解決策も同様である．
+すなわち，完全性定理を通してモデル論的に行えば良い．
+この際に outernal に定義した $wforces$ や Kripke model の一般論が使用できる可能性がある．
+さらに，このような outernal な議論は典型的な集合論者のおこなう強制法と技術的に類似する可能性がある．
 
 == Proof theory of provability logics <subsect:proof_theory_provability_logic>
 
