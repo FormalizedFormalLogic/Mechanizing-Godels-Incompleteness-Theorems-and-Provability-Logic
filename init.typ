@@ -221,7 +221,6 @@
 #let lor = $or$
 #let lnot = $not$
 
-// 命題変数の集合（Lean の `Prop` と衝突するので Var と書く）
 #let PropVar = $upright("Var")$
 
 #let Logic(L) = $sans(upright(#L))$
@@ -293,9 +292,7 @@
 #let Thm(T) = $upright("Thm")(#T)$
 #let Rfn(G, T) = $upright("Rfn")_(#G) (#T)$
 #let Rep(S) = $sans("Rep")_(#S)$
-// 算術の文全体
 #let ArithSent = $upright("Sent")_upright("A")$
-// 強解釈 f^s_B
 #let StrongInterpret(f, B) = $#f^(upright("s"))_(#B)$
 
 #let Theory(T) = $sans(upright(#T))$
@@ -314,7 +311,6 @@
 #let AxiomT = $Axiom("T")$
 #let AxiomGrz = $Axiom("Grz")$
 
-// Derivability conditions
 #let Cond(C) = $bold(#C)$
 #let CondD1 = $Cond("D1")$
 #let CondD2 = $Cond("D2")$
@@ -324,7 +320,6 @@
 
 #let System(X) = $bold(#X)$
 
-// 集合論・強制法（§4.4）
 #let LK = System("LK")
 #let LJ = System("LJ")
 #let wforces = $attach(forces, br: "w")$
@@ -338,26 +333,26 @@
 #let BussS12 = $sans("S")^1_2$
 #let Con(T) = $sans("Con")_(#T)$
 
-// 内部算術（G2 の証明で固定する IΣ₁ のモデルとその上の構成）
 #let Universe = $bold(upright(V))$
 #let Bit = $"Bit"$
-// 類上の関数 Φ の不動点（Knaster--Tarski）
 #let Fix = $bold("Fix")$
 
 #let Bew = $class("unary", frak("B"))$
 #let Wid = $class("unary", frak("W"))$
 
-// 証明可能性の抽象化
 #let Godel(B) = $sans("G")_#B$
 #let fixpoint(x) = $sans("fixedpoint")_#x$
-// Ros を満たす証明可能性述語
 #let Rosser = $frak(R)$
 
-// 反証可能性の抽象化
 #let Jeroslow(W) = $sans("J")_#W$
 #let Safe(B, W) = $sans("Safe")_(#B,#W)$
-// 形式化された無矛盾律
 #let FLoN(B, W) = $sans("FLoN")_(#B,#W)$
 
-#let godel(x) = $lr(⌜ #x ⌝)$
+#let sepWithCommaMath(..args) = args.pos().join[,]
+
+#let quant(Q, ..args) = $#Q sepWithCommaMath(..args) space.narrow$
+#let fal(..args) = $quant(forall, ..args)$
+#let exs(..args) = $quant(exists, ..args)$
+
+#let godelize(x) = $lr(⌜ #x ⌝)$
 #let num(x) = $overline(#x)$

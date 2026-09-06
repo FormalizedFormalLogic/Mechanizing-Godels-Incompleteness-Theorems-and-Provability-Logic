@@ -201,7 +201,7 @@ Among these, we use the arithmetic theory $R0$ due to Cobham (cf. @Vau62).
   $
   together with the following axiom scheme:
   $
-    forall x [x < num(n) <-> or.big_(i < n) (x = num(i))]
+    fal(x)[x < num(n) <-> or.big_(i < n) (x = num(i))]
   $
 ]
 
@@ -230,10 +230,10 @@ More precisely:
   $
 ]<thm:repr>
 
-Let $godel(bullet)$ denote a Gödel coding of formulas.
-Define the set $D$ by $godel(phi) in D <==> T proves not phi(godel(phi))$.
+Let $godelize(bullet)$ denote a Gödel coding of formulas.
+Define the set $D$ by $godelize(phi) in D <==> T proves not phi(godelize(phi))$.
 As shown below, there is a provability predicate $Pr(T)(x)$, definable by a $Sigma_1$-formula, such that
-$Nat models Pr(T)(godel(psi)) <==> T proves psi$; hence $D$ is r.e.
+$Nat models Pr(T)(godelize(psi)) <==> T proves psi$; hence $D$ is r.e.
 @thm:G1 now follows from @thm:repr by the standard diagonal argument.
 
 #theorem[Gödel's First Incompleteness Theorem @God31 @Vau62 @JS83][
@@ -276,12 +276,12 @@ Mechanizing the incompleteness theorems via such an abstract provability has pre
     stroke: none,
     $CondD1$,
     [
-      $T proves sigma ==> T_0 proves Bew(godel(sigma))$
+      $T proves sigma ==> T_0 proves Bew(godelize(sigma))$
     ],
   ))
 
   That is, $Bew(x)$ is required to satisfy at least the derivability condition $CondD1$.
-  In what follows, we simply write $Bew sigma$ for $Bew(godel(sigma))$.
+  In what follows, we simply write $Bew sigma$ for $Bew(godelize(sigma))$.
   We further define the following properties, where $sigma$ and $pi$ range over $cal(L)$-sentences.
   The conditions $CondD3$ and $CondKre$ are defined only when $T_0$ and $T$ are theories in the same language, i.e., when $Lang(0) = cal(L)$.
 
@@ -352,7 +352,7 @@ In fact, abstracting provability alone does not suffice to mechanize the incompl
   An $cal(L)$-theory $T$ is called _diagonalizable_ if one can construct a map $fixpoint(bullet)$, sending an unary $cal(L)$-formula to an $cal(L)$-sentence,
   such that
   $
-    T proves fixpoint(theta) <-> theta (godel(fixpoint(theta)))
+    T proves fixpoint(theta) <-> theta (godelize(fixpoint(theta)))
   $
   for any $theta(x)$. We call $fixpoint(theta)$ the _fixed point_ of $theta$.
 
@@ -548,10 +548,10 @@ This allows us to formalize Jeroslow's G2 concisely.
 #definition[Refutability abstraction][
   For an $Lang(0)$-theory $T_0$ and an $cal(L)$-theory $T$, a unary $Lang(0)$-semisentence $Wid(x)$ is called a _$T$-refutability predicate over $T_0$_, if the following holds for every $cal(L)$-sentence $sigma$.
   $
-    T proves not sigma ==> T_0 proves Wid(godel(sigma))
+    T proves not sigma ==> T_0 proves Wid(godelize(sigma))
   $
 
-  As with $Bew$, we abbreviate $Wid(godel(sigma))$ as $Wid sigma$.
+  As with $Bew$, we abbreviate $Wid(godelize(sigma))$ as $Wid sigma$.
   We say that $Wid$ is _sound on_ an $cal(L)$-sentence $sigma$ if $T proves Wid sigma ==> T proves not sigma$.
 
   Let $Wid$ be a $T$-refutability predicate over $T_0$ and suppose that $T_0$ is diagonalizable. Then the fixed point of $Wid(x)$ is called the _Jeroslow sentence_ and is denoted by $Jeroslow(Wid)$.
@@ -654,7 +654,7 @@ We first take $ISigma1$ as the base theory for our proof of G2.
   universal $LOR$-sentences describing basic properties.
   For a unary arithmetical formula $phi(x)$ (which may contain parameters), we define the formula $Ind(φ)$ expressing the universal closure of following instance of mathematical induction:
   $
-    phi(0) -> forall x [phi(x) -> phi(x + 1)] -> forall x, phi(x)
+    phi(0) -> fal(x)[phi(x) -> phi(x + 1)] -> fal(x) phi(x)
   $
   For a class of formulas $Gamma$, we define $Ind(Gamma)$ as the union of $PAMinus$ with $Ind(φ)$ for every formula $φ$ belonging to $Gamma$.
   We then let $ISigma1$ be the theory in which mathematical induction is available for all $Sigma_1$-formulas, and $PA$ the theory in which it is available for all formulas.
@@ -762,9 +762,9 @@ This satisfies the following structural induction principle.
   The predicate $Fix_Phi$ above satisfies the induction principle of the following form.
   Let $psi$ be a $Sigma_1$ or $Pi_1$-predicate (which may contain parameters from $Universe$):
   $
-    forall bold(C) subset.eq Fix_Phi [forall x in bold(C), psi(x) -> forall x in Phi(bold(C)), psi(x)]
+    fal(bold(C) subset.eq Fix_Phi)[fal(x in bold(C))psi(x) -> fal(x in Phi(bold(C)))psi(x)]
     quad "implies" quad
-    forall x in Fix_Phi, psi(x)
+    fal(x in Fix_Phi)psi(x)
   $
 ]<thm:recursive-ind>
 
@@ -930,7 +930,7 @@ Since $T supset.eq ISigma1$, the fixed point theorem holds.
 #theorem[
   Suppose $T supset.eq ISigma1$. For any unary arithmetical formula $theta(x)$, one can construct an arithmetic sentence $fixpoint(theta)$ such that
   $
-    T proves fixpoint(theta) <-> theta (godel(fixpoint(theta)))
+    T proves fixpoint(theta) <-> theta (godelize(fixpoint(theta)))
   $
   Hence the theory $T$ is diagonalizable.
 ] <thm:fixedpoint>
@@ -992,7 +992,7 @@ Throughout this subsection, we assume $T supset.eq ISigma1$.
 #theorem[
   For any family $(theta_i)_(i < k)$ of $k$-arity arithmetical formulas $theta_i (x_0, ..., x_(k - 1))$, one can construct arithmetic sentences $fixpoint(0), ..., fixpoint(k - 1)$ such that, for every $i < k$,
   $
-    T proves fixpoint(i) <-> theta_i (godel(fixpoint(0)), ..., godel(fixpoint(k - 1)))
+    T proves fixpoint(i) <-> theta_i (godelize(fixpoint(0)), ..., godelize(fixpoint(k - 1)))
   $
 ] <thm:multi_fixedpoint>
 
@@ -1011,7 +1011,7 @@ Throughout this subsection, we assume $T supset.eq ISigma1$.
 #theorem[
   For any $(k + 1)$-arity arithmetical formula $theta(x, arrow(y))$, one can construct a $k$-arity arithmetical formula $fixpoint(theta)(arrow(y))$ such that
   $
-    T proves forall arrow(y), (fixpoint(theta)(arrow(y)) <-> theta(godel(fixpoint(theta)), arrow(y)))
+    T proves forall arrow(y), (fixpoint(theta)(arrow(y)) <-> theta(godelize(fixpoint(theta)), arrow(y)))
   $
 ] <thm:parameterized_fixedpoint>
 
@@ -1033,8 +1033,8 @@ As related work, Löb's theorem has also been mechanized in Isabelle by Bailitis
 
 #theorem[Löb's theorem and formalized Löb's theorem @Lob55][
   Let $T supset.eq ISigma1$ be a $Delta_1$-definable theory and let $sigma$ be any sentence.
-  / Löb's theorem: If $T proves Pr(T)(godel(sigma)) -> sigma$, then $T proves sigma$.
-  / Formalized Löb's theorem: $ISigma1 proves Pr(T)(godel(Pr(T)(godel(sigma)) -> sigma)) -> Pr(T)(godel(sigma))$.
+  / Löb's theorem: If $T proves Pr(T)(godelize(sigma)) -> sigma$, then $T proves sigma$.
+  / Formalized Löb's theorem: $ISigma1 proves Pr(T)(godelize(Pr(T)(godelize(sigma)) -> sigma)) -> Pr(T)(godelize(sigma))$.
 ]
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Löb.lean"),))[
@@ -1084,7 +1084,7 @@ We mention that Popescu and Traytel @PT21[Theorem 30] mechanized Jeroslow's theo
 #theorem[Jeroslow's Second Incompleteness Theorem @Jer73][
   Let $T supset.eq ISigma1$ be a $Delta_1$-definable and consistent theory.
   Then $T nproves forall x. not (Pr(T)(x) and Pr(T)(dot(not) x))$,
-  where $dot(not)$ denotes the function taking the Gödel number of a sentence to that of its negation, i.e., $dot(not) godel(sigma) = godel(not sigma)$.
+  where $dot(not)$ denotes the function taking the Gödel number of a sentence to that of its negation, i.e., $dot(not) godelize(sigma) = godelize(not sigma)$.
 ]
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Jeroslow.lean"),))[
@@ -1152,7 +1152,7 @@ First, we prove the following lemma.
 
 #lemma[
   Let $T supset.eq ISigma1$ be a consistent theory.
-  Then there is no unary formula $tau(x)$ such that $T proves sigma <-> tau(godel(sigma))$ for any sentence $sigma$.
+  Then there is no unary formula $tau(x)$ such that $T proves sigma <-> tau(godelize(sigma))$ for any sentence $sigma$.
 ]
 
 #leancode(
@@ -1171,7 +1171,7 @@ First, we prove the following lemma.
 Taking as $T$ the _true arithmetic_ $TA$, the theory of all sentences true in $Nat$, we immediately obtain the desired theorem.
 
 #theorem[Tarski's Undefinability Theorem @Tar35][
-  There is no truth predicate $True(x)$ such that $Nat models sigma$ if and only if $Nat models True(godel(sigma))$ for any sentence $sigma$.
+  There is no truth predicate $True(x)$ such that $Nat models sigma$ if and only if $Nat models True(godelize(sigma))$ for any sentence $sigma$.
 ]<thm:undefinability_of_truth>
 
 #leancode(
@@ -2596,7 +2596,7 @@ We briefly describe these results.
   where $Delta != emptyset$ and ${S_1, dots, S_m} = PowerSet(Delta) without {emptyset}$ (hence $m = 2^(|Delta|) - 1$).
 
   #align(center, prooftree(rule(
-    name: [($Box$GL.3)],
+    name: [($Box_LogicGLPoint3$)],
     $Box Gamma => Box Delta$,
     $Gamma, Box Gamma, Box S_1 => S_1, Box(Delta without S_1)$,
     $dots.c$,
@@ -2765,7 +2765,7 @@ We discuss it in @subsect:enrich_modalities.
 Intuitionistic logic is classical logic without the law of excluded middle, and the corresponding predicate logic is intuitionistic first-order logic $LogicIQL$.
 $LogicIQL$ satisfies several constructive principles.
 It has the disjunction property: if $LogicIQL proves phi or psi$, then $LogicIQL proves phi$ or $LogicIQL proves psi$.
-It also has the existence property: if $LogicIQL proves exists x, phi(x)$, then there is a term $t$, possibly containing free variables, such that $LogicIQL proves phi(t)$.
+It also has the existence property: if $LogicIQL proves exs(x) phi(x)$, then there is a term $t$, possibly containing free variables, such that $LogicIQL proves phi(t)$.
 Intuitionistic predicate logic also has connections to other fields, for example to dependent type theory via the Curry--Howard correspondence.
 
 At present, our mechanization of intuitionistic predicate logic is not far advanced, but it contains the cut-elimination theorem.
@@ -2822,7 +2822,7 @@ Endow $PP$ with the relation inductively defined by the following rules. This re
 $
   Xi prec.eq Xi \
   phi, psi, Gamma prec.eq Xi ==> phi and psi, Gamma prec.eq Xi \
-  phi(t) prec.eq Xi ==> forall x phi(x), Gamma prec.eq Xi \
+  phi(t) prec.eq Xi ==> fal(x) phi(x), Gamma prec.eq Xi \
   Delta prec.eq Xi "and" Delta subset.eq Gamma ==> Gamma prec.eq Xi
 $
 If $LK proves phi$, then the Gödel--Gentzen translation gives $LJ proves phi^"GG"$.
@@ -2830,7 +2830,7 @@ Since Kripke semantics is sound for $LJ$, we have $p forces phi^"GG"$ for every 
 Viewing $p forces phi^"GG"$ as a _weak forcing_ relation $p wforces phi$ yields a sound Kripke model for $LK$.
 Moreover, this model is canonical in the following sense: for every formula $phi$,
 $
-  LK proves phi quad "iff" quad forall p in PP (p wforces phi)
+  LK proves phi quad "iff" quad fal(p in PP) (p wforces phi)
 $
 
 #leancode[
@@ -2843,11 +2843,11 @@ Now suppose that $LK nproves not sigma$.
 Since $p := {sigma} in PP$, we can construct a filter $G subset.eq PP$ that contains $p$ and is generic with respect to the following two countable families of dense sets:
 $
   cal(D)_phi := & {p in PP | p wforces phi or p wforces not phi} \
-  cal(H)_psi := & {p in PP | forall q prec.eq p (q wforces exists x, psi(x) ==> exists t : "term", q wforces psi(t))}
+  cal(H)_psi := & {p in PP | fal(q prec.eq p) (q wforces exs(x) psi(x) ==> exs(t : "term") q wforces psi(t))}
 $
-If the atomic formulas of the term model $frak(T)$ are interpreted according to $frak(T) models alpha <=> exists p in G (p wforces alpha)$, then the forcing lemma can be proved:
+If the atomic formulas of the term model $frak(T)$ are interpreted according to $frak(T) models alpha <=> exs(p in G)(p wforces alpha)$, then the forcing lemma can be proved:
 $
-  frak(T) models phi quad "iff" quad exists p in G (p wforces phi)
+  frak(T) models phi quad "iff" quad exs(p in G)(p wforces phi)
 $
 #leancode[
   ```
