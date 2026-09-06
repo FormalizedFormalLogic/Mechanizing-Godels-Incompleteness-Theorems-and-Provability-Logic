@@ -716,7 +716,7 @@ We first take $ISigma1$ as the base theory for our proof of G2.
 ]
 
 $ISigma1$ is in fact unnecessarily strong. For a sharper result, one could weaken the base theory to Buss's theory $BussS12$ @Bus86, over which the standard proof can be carried out with few changes#footnote[
-  In many proofs, including ours, derivability condition D3 is established using formalized $Sigma_1$-completeness.
+  In many proofs, including ours, derivability condition $D3$ is established using formalized $Sigma_1$-completeness.
   Whether this principle holds in $BussS12$ remains an open problem @BV06.
   One must therefore prove the sharper formalized $Sigma^"b"_1$-completeness theorem.
 ].
@@ -2930,7 +2930,7 @@ In the future, we plan to mechanize these arguments, which will make it possible
 There are also extensions in the direction of adding further modal operators in order to express various notions related to provability.
 Here we mention two directions for which mechanizations can be found: polymodal provability logic and interpretability logic.
 
-Japaridze @Jap86 @Jap88 extended the modality of #LogicGL to infinitely many modal operators $[1], [2], ...$ together with their duals $brak(1), brak(2), ...$, and introduced the logic #LogicGLP.
+Japaridze @Jap86 @Jap88 extended the modality of #LogicGL to infinitely many modal operators $[1], [2], ...$ together with their duals $chevron.l 1 chevron.r, chevron.l 2 chevron.r, ...$, and introduced the logic #LogicGLP.
 For the meaning of these modal operators, we may consult @AB05[Chapter 8.3].
 #LogicGLP is useful in the proof-theoretic analysis of arithmetic and is moreover decidable, but it is also known to be Kripke incomplete.
 It is complete with respect to topological semantics, but that semantics has the drawback of being technically hard to work with.
