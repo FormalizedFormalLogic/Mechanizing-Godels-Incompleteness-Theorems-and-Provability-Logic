@@ -1,6 +1,5 @@
 #import "init.typ": *
 
-#show: thmrules
 #show: init.with(
   title: [Mechanizing Gödel's Incompleteness Theorems and Provability Logic],
   authors: (
@@ -61,10 +60,10 @@ This fact, known as _Solovay's arithmetical completeness theorem_, was a signifi
 On the other hand, recently, there has been much active work on mechanizing mathematics using interactive theorem provers, guaranteeing the validity of existing and new results, and providing AI/LLM-assisted or automated proving.
 There are many well-known interactive theorem provers such as Rocq @RocqProver, Isabelle @Isabelle, HOL Light @HOLLight @HOLLightTutorial, Agda @Agda, and Lean @dMU21, and mathematics has been mechanized in each of them, including in the field of mathematical logic#footnote[Some of these mechanizations are summarized in @AwesomeLogicFormalization.].
 In particular, for mechanizing Gödel's incompleteness theorems, this line of work began with Shankar in 1986 @Sha86 @Sha97, and continues with O'Connor @OCo05 @OCo09, Harrison @Har06, Paulson @Pau15, and Popescu and Traytel @PT19 @PT21, Kirst et al. @KP23 @KH23.
-As for provability logic, modal-logical properties of #LogicGL, such as its semantical completeness and automated solvers, have been mechanized by Harrison @HOLLightTutorial[Chapter 20]#footnote[We don't know when Harrison's mechanization of modal logic was carried out.], Goré and Kelly @GK07, Goré, Ramanayake and Shillito @GRS21, Maggesi and Perini Brogi @MPB21 @MPB23, Gignoux @Gig26.
+As for provability logic, modal-logical properties of #LogicGL, such as its semantical completeness and automated solvers, have been mechanized by Harrison @HOLLightTutorial[Chapter 20]#footnote[We do not know when Harrison's mechanization of modal logic was carried out.], Goré and Kelly @GK07, Goré, Ramanayake and Shillito @GRS21, Maggesi and Perini Brogi @MPB21 @MPB23, Gignoux @Gig26.
 However, these are either abstract or not full mechanizations within arithmetic.
-For instance, O'Connor's implementation assumes several facts needed for the proof of G2 as axioms, and Paulson's mechanization of G2 uses hereditarily finite sets, not arithmetic.
-To the best of our knowledge, no full formalization of the incompleteness theorems entirely within arithmetic is known, and consequently, no mechanization about provability logic has been reported.
+For instance, O'Connor's implementation assumes several facts needed for the proof of G2 as axioms, and Paulson's mechanization of G2 uses hereditarily finite sets, not arithmetic @Pau14.
+To the best of our knowledge, no full mechanization of the incompleteness theorems entirely within arithmetic has been reported, and consequently neither has any mechanization of the arithmetical side of provability logic, such as Solovay's arithmetical completeness theorem.
 
 In the present paper, we describe our mechanizations of Gödel's first and second incompleteness theorems and Solovay's arithmetical completeness theorem.
 Our work is carried out in Lean 4, an interactive theorem prover, together with mathlib4 @Mathlib2020, its community-developed mathematics library.
@@ -108,7 +107,7 @@ We mechanized the following two results.
 Here, arithmetic sentence/theory means a sentence/theory in the language $LOR = {0, 1, +, dot, <, =}$.
 
 #theorem(number: thmnumber(<thm:G1>))[Gödel's First Incompleteness Theorem][
-  Let $T$ be a $Delta_1$-definable, $Sigma_1$-sound arithmetic theory stronger than $R0$,
+  Let $T$ be a $Delta_1$-definable, $Sigma_1$-sound arithmetic theory stronger than $R0$.
   Then $T$ is incomplete.
 ]
 
@@ -125,7 +124,7 @@ We use a locally nameless representation for terms and formulas of first-order l
 A similar approach is adopted in @HvD20.
 
 In standard logical terminology, this amounts to using _semiterms_ and _semiformulas_, which generalize terms and formulas, respectively @Bus98a.
-Variable symbols are divided into two classes: infinite _free variables_ and finite _bound variables_.
+Variable symbols are divided into two classes: infinitely many _free variables_ and finitely many _bound variables_.
 A semiterm is a term generated using these two variables.
 A semiformula is generated from semiterms in the usual way, but may contain bound variables that are not bound by any quantifier.
 We mechanized the type of semiformulas that may contain free variables of type $xi$ and $n$ bound variables as `Semiformula L ξ n`:
@@ -152,26 +151,26 @@ We mechanized the type of semiformulas that may contain free variables of type $
 ]
 
 Mechanization using semiterm/semiformulas is more than a technical device to deal with quantifiers; it also offers practical advantages.
-For example, a frequently encountered situation in proof theory and model theory, such as a formula $phi(x, y, z)$ with parameters from $M$, can be expressed by the solely type `Semiformula M 3`.
+For example, a frequently encountered situation in proof theory and model theory, such as a formula $phi(x, y, z)$ with parameters from $M$, can be expressed by the single type `Semiformula L M 3`.
 
 === On internal argument<subsubsection:internal>
 In proofs of the incompleteness theorems, especially G2, the principal obstacle is often the internalization of metamathematics---terms, formulas, provability, elementary proof theory, and so forth---a process commonly called _arithmetization_ or _bootstrapping_.
 In other words, these notions must be formally defined and their properties proved _within_ the formalized deductive system itself, which in our case is $ISigma1$.
 A naïve, purely syntactic approach to this task encounters the following difficulties#footnote[
   Nevertheless, carrying out such a construction is worthwhile.
-  These syntactic operations are constructive and can be developed over very weak base theories, such as $sans("S")^1_2$.
+  These syntactic operations are constructive and can be developed over very weak base theories, such as $BussS12$.
 ].
 
 / Bureaucracy of the deductive system:
-  When sufficiently complex formulas are involved (which is most of the case in practice), the deductive system can become unmanageably intricate.
-  A task that is already difficult to formalize in Lean becomes exceedingly burdensome when it must instead be carried out within a still more restrictive formal system defined in formal system (Lean).
+  When sufficiently complex formulas are involved (which is most often the case in practice), the deductive system can become unmanageably intricate.
+  A task that is already difficult to formalize in Lean becomes exceedingly burdensome when it must instead be carried out within a still more restrictive formal system that is itself defined inside a formal system (Lean).
   Moreover, tackling G2 requires climbing yet another level.
   One would have to work with a formal system inside a formal system inside a formal system, which is hardly practical.
 / Non-canonicity of bootstrapping:
   Bootstrapping is a formalization of metamathematics.
   This requires encoding of the metamathematical notions, the _Gödel numbering_.
   Unfortunately, there is neither a canonical choice of encoding nor a unique mathematically natural construction.
-  One must instead develop a large body of intrinsically complicated combinatorics, often involving numerous ad-hoc constructions...
+  One must instead develop a large body of intrinsically complicated combinatorics, often involving numerous ad-hoc constructions.
   This complicates the proofs and, for the reasons just discussed, makes mechanization difficult.
 
 Our solution is to avoid syntactic bureaucracy by employing a model-theoretic argument via the completeness theorem of first-order logic.
@@ -187,12 +186,10 @@ For example, the second incompleteness theorem asserts $T nproves Con(T)$, and s
 
 In addition, to avoid directly handling formalized statements, such as $Pr(T)(x)$, as much as possible, we use an abstract characterization of provability predicates when discussing the derivability conditions. We discuss this in detail in @subsect:provability_abstraction.
 
-#let num(x) = $overline(#x)$
-
 == First incompleteness theorem
 
-It is known that the first incompleteness theorem holds even for extremely weak arithmetical theories.
-Among these, we use the arithmetical theory $R0$ due to Cobham (cf. @Vau62).
+It is known that the first incompleteness theorem holds even for extremely weak arithmetic theories.
+Among these, we use the arithmetic theory $R0$ due to Cobham (cf. @Vau62).
 
 #definition[
   The theory $R0$ consists of the equality axioms for $LOR$, together with the following variable-free atomic formulas in $LOR$,
@@ -226,23 +223,23 @@ The key theorem is that every $Sigma_1$-sound theory extending $R0$ has a weak r
 More precisely:
 
 #theorem[
-  Let $T supset.eq R0$ be a $Sigma_1$-sound theory and let $S$ be a r.e. set.
-  Then there is a $LOR$-formula $sans("Rep")_(S)(x)$ such that
+  Let $T supset.eq R0$ be a $Sigma_1$-sound theory and let $S$ be an r.e. set.
+  Then there is a $LOR$-formula $Rep(S)(x)$ such that
   $
-    n in S <==> T proves sans("Rep")_(S)(num(n))
+    n in S <==> T proves Rep(S)(num(n))
   $
 ]<thm:repr>
 
-Let $godel(bullet)$ denote a Gödel coding of formulas.
-Define the set $D$ by $godel(phi) in D <==> T proves not phi(godel(phi))$.
+Let $godelize(bullet)$ denote a Gödel coding of formulas.
+Define the set $D$ by $godelize(phi) in D <==> T proves not phi(godelize(phi))$.
 As shown below, there is a provability predicate $Pr(T)(x)$, definable by a $Sigma_1$-formula, such that
-$Nat models Pr(T)(godel(psi)) <==> T proves psi$; hence $D$ is r.e.
+$Nat models Pr(T)(godelize(psi)) <==> T proves psi$; hence $D$ is r.e.
 @thm:G1 now follows from @thm:repr by the standard diagonal argument.
 
 #theorem[Gödel's First Incompleteness Theorem @God31 @Vau62 @JS83][
-  Let $T$ be a $Delta_1$-definable, $Sigma_1$-sound arithmetic theory stronger than $R0$,
-  Then $T$ is incomplete,
-  that is, there exists a arithmetic sentence $phi$ such that $T nproves phi$ and $T nproves not phi$.
+  Let $T$ be a $Delta_1$-definable, $Sigma_1$-sound arithmetic theory stronger than $R0$.
+  Then $T$ is incomplete;
+  that is, there exists an arithmetic sentence $phi$ such that $T nproves phi$ and $T nproves not phi$.
 ]<thm:G1>
 
 #leancode(
@@ -253,7 +250,7 @@ $Nat models Pr(T)(godel(psi)) <==> T proves psi$; hence $D$ is r.e.
     ),
   ),
   note: [
-    Here `Incomplete T` is a abbreviation of `∃ φ, T ⊬ φ ∧ T ⊬ ∼φ`.
+    Here `Incomplete T` is an abbreviation of `∃ φ, T ⊬ φ ∧ T ⊬ ∼φ`.
   ],
 )[
   ```
@@ -261,8 +258,6 @@ $Nat models Pr(T)(godel(psi)) <==> T proves psi$; hence $D$ is r.e.
   ```
 ]
 == Provability abstraction <subsect:provability_abstraction>
-
-#let Godel(B) = $sans("G")_#B$
 
 Before proving G2, we introduce a theory of the provability predicate, called _provability abstraction_, because working directly with a raw provability predicate is technically cumbersome.
 This notion is closely related to provability logic, which treats provability as a modality (see @sect:provability_logic).
@@ -279,38 +274,38 @@ Mechanizing the incompleteness theorems via such an abstract provability has pre
     inset: 6pt,
     align: (right + horizon, left + horizon),
     stroke: none,
-    $bold("D1")$,
+    $D1$,
     [
-      $T proves sigma ==> T_0 proves Bew(godel(sigma))$
+      $T proves sigma ==> T_0 proves Bew(godelize(sigma))$
     ],
   ))
 
-  That is, $Bew(x)$ is required to satisfy at least the derivability condition $bold("D1")$.
-  In what follows, we simply write $Bew sigma$ for $Bew(godel(sigma))$.
+  That is, $Bew(x)$ is required to satisfy at least the derivability condition $D1$.
+  In what follows, we simply write $Bew sigma$ for $Bew(godelize(sigma))$.
   We further define the following properties, where $sigma$ and $pi$ range over $cal(L)$-sentences.
-  The conditions $bold("D3")$ and $bold("Kre")$ are defined only when $T_0$ and $T$ are theories in the same language, i.e., when $Lang(0) = cal(L)$.
+  The conditions $D3$ and $Kre$ are defined only when $T_0$ and $T$ are theories in the same language, i.e., when $Lang(0) = cal(L)$.
 
   #align(center, table(
     columns: (auto, auto),
     inset: 6pt,
     align: (right + horizon, left + horizon),
     stroke: none,
-    $bold("D2")$,
+    $D2$,
     [
       $T_0 proves Bew (sigma -> pi) -> Bew sigma -> Bew pi$
     ],
 
-    $bold("D3")$,
+    $D3$,
     [
       $T_0 proves Bew sigma -> Bew Bew sigma$
     ],
 
-    $bold("Kre")$,
+    $Kre$,
     [
       $T proves Bew sigma$ implies $T proves sigma$
     ],
 
-    $bold("Ros")$,
+    $Ros$,
     [
       $T proves not sigma$ implies $T_0 proves not Bew sigma$
     ],
@@ -344,22 +339,20 @@ Mechanizing the incompleteness theorems via such an abstract provability has pre
   ```
 ]
 
-The standard provability predicate $Pr(T)$ satisfies $bold("D2")$, $bold("D3")$ and $bold("Kre")$.
+The standard provability predicate $Pr(T)$ satisfies $D2$, $D3$ and $Kre$.
 In provability logic discussed in @sect:provability_logic, we mainly assume those conditions on the provability predicate.
-The condition $bold("Kre")$ is a derivability condition introduced by Visser @Vis21 under the name _Kreisel's condition_ #footnote[Visser attributes the origin of this condition to @Kre54. To be precise, Visser required both directions.].
+The condition $Kre$ is a derivability condition introduced by Visser @Vis21 under the name _Kreisel's condition_ #footnote[Visser attributes the origin of this condition to @Kre54. To be precise, Visser required both directions.].
 /*Our motivation for this abstraction is to formalize the arguments in a purely syntactic way, without involving models or structures.*/
-Anticipating the later construction, the standard provability predicate is a $Sigma_1$-predicate, so the condition $bold("Kre")$ can be regarded as a purely syntactic counterpart of the $Sigma_1$-soundness and $Sigma_1$-completeness of $T$.
+Anticipating the later construction, the standard provability predicate is a $Sigma_1$-predicate, so the condition $Kre$ can be regarded as a purely syntactic counterpart of the $Sigma_1$-soundness of $T$; the converse implication, which corresponds to $Sigma_1$-completeness, is the content of $D1$.
 
 In fact, abstracting provability alone does not suffice to mechanize the incompleteness theorems: we also need to abstract the diagonalization.
-
-#let fixpoint(x) = $sans("fixedpoint")_#x$
 
 #definition[Diagonalization abstraction][
   Suppose that $cal(L)$-sentences admit a Gödel numbering in $cal(L)$.
   An $cal(L)$-theory $T$ is called _diagonalizable_ if one can construct a map $fixpoint(bullet)$, sending an unary $cal(L)$-formula to an $cal(L)$-sentence,
   such that
   $
-    T proves fixpoint(theta) <-> theta (godel(fixpoint(theta)))
+    T proves fixpoint(theta) <-> theta (godelize(fixpoint(theta)))
   $
   for any $theta(x)$. We call $fixpoint(theta)$ the _fixed point_ of $theta$.
 
@@ -402,7 +395,7 @@ The first incompleteness theorem is proved as follows.
 
 #proposition[Abstract version of G1][
   1. $T nproves Godel(Bew)$.
-  2. If $Bew$ satisfies $bold("Kre")$, then $T nproves not Godel(Bew)$.
+  2. If $Bew$ satisfies $Kre$, then $T nproves not Godel(Bew)$.
 
   Hence $Godel(Bew)$ is independent of $T$, and therefore $T$ is incomplete.
 ] <prop:abstract_G1>
@@ -433,11 +426,11 @@ The first incompleteness theorem is proved as follows.
 The second incompleteness theorem can likewise be mechanized.
 
 #proposition[Abstract version of G2][
-  Assume that $Bew$ satisfies $bold("D2")$ and $bold("D3")$.
+  Assume that $Bew$ satisfies $D2$ and $D3$.
   The sentence $not Bew bot$ is a natural expression of consistency; we denote it by $Con(Bew)$.
   Then the following hold.
   1. $T nproves Con(Bew)$.
-  2. If $Bew$ satisfies $bold("Kre")$, then $T nproves not Con(Bew)$. Hence $Con(Bew)$ is also independent of $T$.
+  2. If $Bew$ satisfies $Kre$, then $T nproves not Con(Bew)$. Hence $Con(Bew)$ is also independent of $T$.
 ] <prop:abstract_G2>
 
 #leancode(
@@ -471,7 +464,7 @@ Variants of G2 arising from this view are discussed later.
 As further results, we can also mechanize Löb's theorem and the formalized Löb's theorem.
 
 #proposition[Abstract version of Löb's Theorem][
-  Assume that $Bew$ satisfies $bold("D2")$ and $bold("D3")$. Then the following hold,
+  Assume that $Bew$ satisfies $D2$ and $D3$. Then the following hold,
   where $sigma$ is an arbitrary $cal(L)$-sentence.
 
   #align(center, table(
@@ -497,26 +490,24 @@ As further results, we can also mechanize Löb's theorem and the formalized Löb
   variable {T₀ T : Theory L} [Diagonalization T₀] [T₀ ⪯ T]
   variable {𝔅 : Provability T₀ T} [𝔅.HBL]
 
-  theorem löb_theorem {σ : Sentence L}　(H : T ⊢ 𝔅 σ 🡒 σ) : T ⊢ σ
+  theorem löb_theorem {σ : Sentence L} (H : T ⊢ 𝔅 σ 🡒 σ) : T ⊢ σ
 
   theorem formalized_löb_theorem {σ : Sentence L} : T₀ ⊢ 𝔅 (𝔅 σ 🡒 σ) 🡒 𝔅 σ
   ```
 ]
 
-Note that $bold("D1"), bold("D2"), bold("D3")$ and the formalized Löb's theorem correspond roughly to the necessitation rule and the axioms $AxiomK$, $Axiom("4")$, and $Axiom("L")$ of modal logic, respectively.
+Note that $D1, D2, D3$ and the formalized Löb's theorem correspond roughly to the necessitation rule and the axioms $AxiomK$, $Axiom("4")$, and $Axiom("L")$ of modal logic, respectively.
 This yields the observation that arithmetical soundness holds for the standard provability predicate.
 
-In view of the reason we gave for introducing $bold("Kre")$ into the abstraction, requiring $bold("Kre")$ in the abstract G1 of @prop:abstract_G1 corresponds to requiring the $Sigma_1$-soundness of $T$.
-If we instead impose on $Bew$ the condition $bold("Ros")$, then the abstract G1 can be proved assuming only that $T$ is consistent.
+In view of the reason we gave for introducing $Kre$ into the abstraction, requiring $Kre$ in the abstract G1 of @prop:abstract_G1 corresponds to requiring the $Sigma_1$-soundness of $T$.
+If we instead impose on $Bew$ the condition $Ros$, then the abstract G1 can be proved assuming only that $T$ is consistent.
 This is precisely an abstraction of the incompleteness theorem as improved by Rosser @Ros36.
 
-#let Rosser = $frak(R)$
-
 #proposition[Abstract version of Gödel--Rosser theorem][
-  Assume that the provability predicate $Rosser$ satisfies $bold("Ros")$.
+  Assume that the provability predicate $Rosser$ satisfies $Ros$.
   In this case, the Gödel sentence for $Rosser$ is called the _Rosser sentence_.
   Then we have $T nproves Godel(Rosser)$ and $T nproves not Godel(Rosser)$.
-  That is, $Godel(Rosser)$ is independent of $T$; note in particular that $bold("Kre")$ is not required.
+  That is, $Godel(Rosser)$ is independent of $T$; note in particular that $Kre$ is not required.
   On the other hand, for the consistency statement $Con(Rosser)$ defined above, we have $T proves Con(Rosser)$ #footnote[In the Japanese mathematical logic community, this is often called _Kreisel's remark_.].
 ] <prop:abstract_GR>
 
@@ -554,15 +545,13 @@ The reason is that $Bew$ is in fact an arithmetical predicate taking the Gödel 
 We therefore abstract refutability itself, rather than a function computing the Gödel number of a negation.
 This allows us to formalize Jeroslow's G2 concisely.
 
-#let Jeroslow(W) = $sans("J")_#W$
-
 #definition[Refutability abstraction][
   For an $Lang(0)$-theory $T_0$ and an $cal(L)$-theory $T$, a unary $Lang(0)$-semisentence $Wid(x)$ is called a _$T$-refutability predicate over $T_0$_, if the following holds for every $cal(L)$-sentence $sigma$.
   $
-    T proves not sigma ==> T_0 proves Wid(godel(sigma))
+    T proves not sigma ==> T_0 proves Wid(godelize(sigma))
   $
 
-  As with $Bew$, we abbreviate $Wid(godel(sigma))$ as $Wid sigma$.
+  As with $Bew$, we abbreviate $Wid(godelize(sigma))$ as $Wid sigma$.
   We say that $Wid$ is _sound on_ an $cal(L)$-sentence $sigma$ if $T proves Wid sigma ==> T proves not sigma$.
 
   Let $Wid$ be a $T$-refutability predicate over $T_0$ and suppose that $T_0$ is diagonalizable. Then the fixed point of $Wid(x)$ is called the _Jeroslow sentence_ and is denoted by $Jeroslow(Wid)$.
@@ -614,9 +603,6 @@ The following is immediate for the Jeroslow sentence.
 
 We now state Jeroslow's incompleteness theorem.
 
-#let Safe(B, W) = $sans("Safe")_(#B,#W)$
-#let FLoN(B, W) = $sans("FLoN")_(#B,#W)$
-
 #proposition[Abstract version of Jeroslow's G2 @Jer73][
   Let $Safe(Bew, Wid) (x) equiv not (Bew x and Wid x)$ be the unary formula stating that a sentence is not both provable and refutable (_safe_), and let $FLoN(Bew, Wid) equiv forall x, Safe(Bew, Wid)(x)$ be the sentence expressing consistency in the sense that every sentence is safe (the _formalized law of non-contradiction_).
 
@@ -659,22 +645,19 @@ Making this abstraction concrete, that is, actually constructing the desired pro
 
 == Second incompleteness theorem
 
-#let Universe = $bold(upright(V))$
-#let Bit = $"Bit"$
-
 By making the abstraction @prop:abstract_G2 introduced in the previous section concrete, the goal of this section is to
 construct a _standard_ provability predicate.
 We first take $ISigma1$ as the base theory for our proof of G2.
 
 #definition[
-  We call $PeanoArithmeticMinus$ (the theory of discrete ordered semirings) the finite axiom system consisting of
+  We call $PAMinus$ (the theory of discrete ordered semirings) the finite axiom system consisting of
   universal $LOR$-sentences describing basic properties.
-  For a unary arithmetical formula $phi(x)$ (which may contains parameters), we define the formula $Ind(φ)$ expressing the universal closure of following instance of mathematical induction:
+  For a unary arithmetical formula $phi(x)$ (which may contain parameters), we define the formula $Ind(φ)$ expressing the universal closure of following instance of mathematical induction:
   $
-    phi(0) -> (forall x phi(x) -> phi(x + 1)) -> forall x phi(x)
+    phi(0) -> fal(x)[phi(x) -> phi(x + 1)] -> fal(x) phi(x)
   $
-  For a class of formulas $Gamma$, we define $Ind(Gamma)$ as the union of $PeanoArithmeticMinus$ with $Ind(φ)$ for every formula $φ$ belonging to $Gamma$.
-  We then let $ISigma1$ be the theory in which mathematical induction is available for all $Sigma_1$-formulas, and $PeanoArithmetic$ the theory in which it is available for all formulas.
+  For a class of formulas $Gamma$, we define $Ind(Gamma)$ as the union of $PAMinus$ with $Ind(φ)$ for every formula $φ$ belonging to $Gamma$.
+  We then let $ISigma1$ be the theory in which mathematical induction is available for all $Sigma_1$-formulas, and $PA$ the theory in which it is available for all formulas.
 ]
 
 #leancode(
@@ -715,7 +698,7 @@ We first take $ISigma1$ as the base theory for our proof of G2.
     | ...
   notation "𝗣𝗔⁻" => PeanoMinus
 
-  def succInd {ξ} (φ : Semiformula L ξ 1) : Formula L ξ　:=
+  def succInd {ξ} (φ : Semiformula L ξ 1) : Formula L ξ :=
     “!φ 0 → (∀ x, !φ x → !φ (x + 1)) → ∀ x, !φ x”
 
   def InductionScheme (Γ : Semiformula L ℕ 1 → Prop) : Theory L :=
@@ -732,12 +715,12 @@ We first take $ISigma1$ as the base theory for our proof of G2.
   ```
 ]
 
-$ISigma1$ is in fact unnecessarily strong. For a sharper result, one could weaken the base theory to Buss's theory $sans("S")^1_2$ @Bus86, over which the standard proof can be carried out with few changes#footnote[
-  In many proofs, including ours, derivability condition D3 is established using formalized $Sigma_1$-completeness.
-  Whether this principle holds in $sans("S")^1_2$ remains an open problem @BV06a.
+$ISigma1$ is in fact unnecessarily strong. For a sharper result, one could weaken the base theory to Buss's theory $BussS12$ @Bus86, over which the standard proof can be carried out with few changes#footnote[
+  In many proofs, including ours, derivability condition $D3$ is established using formalized $Sigma_1$-completeness.
+  Whether this principle holds in $BussS12$ remains an open problem @BV06.
   One must therefore prove the sharper formalized $Sigma^"b"_1$-completeness theorem.
 ].
-Moreover, Nelson's interpretation $Robinson triangle.small.r sans("S")^1_2$ extends the second incompleteness theorem to a broad class of theories that interpret Robinson arithmetic $Robinson$ @Vis11.
+Moreover, Nelson's interpretation $Robinson triangle.small.r BussS12$ extends the second incompleteness theorem to a broad class of theories that interpret Robinson arithmetic $Robinson$ @Vis11.
 Although this is an appealing direction, we do not pursue it because it would make the mechanization prohibitively complex (See @subsect:future_interpretability for future work).
 Working in $ISigma1$ makes recursive definitions of predicates and functions easier to handle, since @thm:recursive-def is available.
 
@@ -758,8 +741,6 @@ that the graph of exponentiation is representable by a $Delta_0$-formula and tha
 
 The $ISigma1$ version of the Knaster--Tarski theorem, stated below, is useful for defining recursively defined structures over $Universe$ with appropriate complexity.
 
-#let Fix = $bold("Fix")$
-
 #theorem[Version of the Knaster--Tarski theorem][
   Let $Phi: cal(P)(Universe) -> cal(P)(Universe)$ be a class-valued function.
   Assume that this satisfies the following conditions.
@@ -770,7 +751,7 @@ The $ISigma1$ version of the Knaster--Tarski theorem, stated below, is useful fo
   $
     Phi(Fix_Phi) = Fix_Phi
   $
-  Additionally, if it satisfies following condition, $Fix_Phi$ is $Delta_1$.
+  Additionally, if it satisfies the following condition, $Fix_Phi$ is $Delta_1$.
   / Strong finiteness: If $x in Phi(bold(C))$ holds, then $x in Phi({z in bold(C) | z < x})$ holds.
 ]<thm:recursive-def>
 
@@ -778,8 +759,8 @@ This satisfies the following structural induction principle.
 
 #theorem[Structural induction][
   Assume that $Phi$ satisfies the strong finiteness property.
-  The predicate $Fix_Phi$ above satisfies the induction principle of following form.
-  Let $psi$ be a $Sigma_1$ or $Pi_1$-predicate (which may contains parameters from $Universe$):
+  The predicate $Fix_Phi$ above satisfies the induction principle of the following form.
+  Let $psi$ be a $Sigma_1$ or $Pi_1$-predicate (which may contain parameters from $Universe$):
   $
     fal(bold(C) subset.eq Fix_Phi)[fal(x in bold(C))psi(x) -> fal(x in Phi(bold(C)))psi(x)]
     quad "implies" quad
@@ -787,7 +768,7 @@ This satisfies the following structural induction principle.
   $
 ]<thm:recursive-ind>
 
-Practically important point is that the defining formulas of $Fix_Phi$ can be explicitly constructible from the defining formula of $P(x, c)$.
+A practically important point is that the defining formulas of $Fix_Phi$ can be explicitly constructible from the defining formula of $P(x, c)$.
 In the mechanization, we first call such a formula a `Blueprint k` (`k` is a number of parameters).
 Obviously it is purely syntactic and independent of any model.
 We then define `Construction V φ`, the model-theoretic realization of a `φ : Blueprint k`.
@@ -892,7 +873,7 @@ These facts immediately yield definitions over $Universe$ of basic syntactic ope
 
 
 We can routinely verify that the predicate `provabilityPred` is a provability predicate in the sense of @def:provability_abstraction,
-and moreover that it satisfies the derivability conditions $bold("D1")$, $bold("D2")$, $bold("D3")$, and $bold("Kre")$.
+and moreover that it satisfies the derivability conditions $D1$, $D2$, $D3$, and $Kre$.
 
 #leancode(
   links: (
@@ -947,9 +928,9 @@ On the other hand, making @prop:abstract_G2 concrete requires the theory to be d
 Since $T supset.eq ISigma1$, the fixed point theorem holds.
 
 #theorem[
-  Suppose $T supset.eq ISigma1$. For any unary arithmetical formula $theta(x)$, one can construct an arithmetical sentence $fixpoint(theta)$ such that
+  Suppose $T supset.eq ISigma1$. For any unary arithmetical formula $theta(x)$, one can construct an arithmetic sentence $fixpoint(theta)$ such that
   $
-    T proves fixpoint(theta) <-> theta (godel(fixpoint(theta)))
+    T proves fixpoint(theta) <-> theta (godelize(fixpoint(theta)))
   $
   Hence the theory $T$ is diagonalizable.
 ] <thm:fixedpoint>
@@ -1009,9 +990,9 @@ Although we omit the details, they are needed when we establish arithmetical com
 Throughout this subsection, we assume $T supset.eq ISigma1$.
 
 #theorem[
-  For any family $(theta_i)_(i < k)$ of $k$-arity arithmetical formulas $theta_i (x_0, ..., x_(k - 1))$, one can construct arithmetical sentences $sans("fixedpoint")_0, ..., sans("fixedpoint")_(k - 1)$ such that, for every $i < k$,
+  For any family $(theta_i)_(i < k)$ of $k$-arity arithmetical formulas $theta_i (x_0, ..., x_(k - 1))$, one can construct arithmetic sentences $fixpoint(0), ..., fixpoint(k - 1)$ such that, for every $i < k$,
   $
-    T proves sans("fixedpoint")_i <-> theta_i (godel(sans("fixedpoint")_0), ..., godel(sans("fixedpoint")_(k - 1)))
+    T proves fixpoint(i) <-> theta_i (godelize(fixpoint(0)), ..., godelize(fixpoint(k - 1)))
   $
 ] <thm:multi_fixedpoint>
 
@@ -1030,7 +1011,7 @@ Throughout this subsection, we assume $T supset.eq ISigma1$.
 #theorem[
   For any $(k + 1)$-arity arithmetical formula $theta(x, arrow(y))$, one can construct a $k$-arity arithmetical formula $fixpoint(theta)(arrow(y))$ such that
   $
-    T proves forall arrow(y), (fixpoint(theta)(arrow(y)) <-> theta(godel(fixpoint(theta)), arrow(y)))
+    T proves forall arrow(y), (fixpoint(theta)(arrow(y)) <-> theta(godelize(fixpoint(theta)), arrow(y)))
   $
 ] <thm:parameterized_fixedpoint>
 
@@ -1048,12 +1029,12 @@ Throughout this subsection, we assume $T supset.eq ISigma1$.
 
 === Löb's Theorem
 Instantiating the abstract version stated in @prop:abstract_Löb, we immediately obtain the concrete Löb's theorem.
-As related work, Löb's theorem has also been mechanized in Isabelle by Bailitis, on top of Paulson's mechanization of the incompleteness theorems (see @AFP-Incompleteness[Chapter 13]).
+As related work, Löb's theorem has also been mechanized in Isabelle by Bailitis, on top of Paulson's mechanization of the incompleteness theorems (see @AFP-Incompleteness[Chapter 13]), and in Rocq by Bailitis @Bai24.
 
 #theorem[Löb's theorem and formalized Löb's theorem @Lob55][
   Let $T supset.eq ISigma1$ be a $Delta_1$-definable theory and let $sigma$ be any sentence.
-  / Löb's theorem: If $T proves Pr(T)(godel(sigma)) -> sigma$, then $T proves sigma$.
-  / Formalized Löb's theorem: $ISigma1 proves Pr(T)(godel(Pr(T)(godel(sigma)) -> sigma)) -> Pr(T)(godel(sigma))$.
+  / Löb's theorem: If $T proves Pr(T)(godelize(sigma)) -> sigma$, then $T proves sigma$.
+  / Formalized Löb's theorem: $ISigma1 proves Pr(T)(godelize(Pr(T)(godelize(sigma)) -> sigma)) -> Pr(T)(godelize(sigma))$.
 ]
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Löb.lean"),))[
@@ -1066,11 +1047,11 @@ As related work, Löb's theorem has also been mechanized in Isabelle by Bailitis
   ```
 ]
 
-=== Gödel–Rosser First Incompleteness Theorem
+=== Gödel--Rosser First Incompleteness Theorem
 In the setting of @thm:G1, the theory $T$ was required to be $Sigma_1$-sound.
-By instantiating @prop:abstract_GR, we can prove the Gödel–Rosser incompleteness theorem @Ros36, which weakens this requirement to mere consistency.
+By instantiating @prop:abstract_GR, we can prove the Gödel--Rosser incompleteness theorem @Ros36, which weakens this requirement to mere consistency.
 
-#theorem[Gödel–Rosser First Incompleteness Theorem @Ros36][
+#theorem[Gödel--Rosser First Incompleteness Theorem @Ros36][
   Let $T supset.eq ISigma1$ be a $Delta_1$-definable and consistent theory.
   Then $T$ is incomplete.
 ] <thm:GR>
@@ -1094,7 +1075,7 @@ By instantiating @prop:abstract_GR, we can prove the Gödel–Rosser incompleten
   ```
 ]
 
-The required provability predicate satisfying $bold("Ros")$ is constructed by so-called _witness comparison_ (see @HP93 @Lin97); we omit the details here.
+The required provability predicate satisfying $Ros$ is constructed by so-called _witness comparison_ (see @HP93 @Lin97); we omit the details here.
 
 === Jeroslow's Second Incompleteness Theorem
 Similarly, from @prop:abstract_JG2, we can also concretely mechanize Jeroslow's second incompleteness theorem @Jer73.
@@ -1103,7 +1084,7 @@ We mention that Popescu and Traytel @PT21[Theorem 30] mechanized Jeroslow's theo
 #theorem[Jeroslow's Second Incompleteness Theorem @Jer73][
   Let $T supset.eq ISigma1$ be a $Delta_1$-definable and consistent theory.
   Then $T nproves forall x. not (Pr(T)(x) and Pr(T)(dot(not) x))$,
-  where $dot(not)$ denotes the function taking the Gödel number of a sentence to that of its negation, i.e., $dot(not) godel(sigma) = godel(not sigma)$.
+  where $dot(not)$ denotes the function taking the Gödel number of a sentence to that of its negation, i.e., $dot(not) godelize(sigma) = godelize(not sigma)$.
 ]
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Jeroslow.lean"),))[
@@ -1113,12 +1094,12 @@ We mention that Popescu and Traytel @PT21[Theorem 30] mechanized Jeroslow's theo
   ```
 ]
 
-=== $Sigma_1$-soundness and $Delta_1$-definability of $ISigma1$ and $PeanoArithmetic$
-To instantiate the theorems stated so far with a concrete theory such as $ISigma1$ or $PeanoArithmetic$, the $Sigma_1$-soundness and the $Delta_1$-definability of these theories must themselves be mechanized.
+=== $Sigma_1$-soundness and $Delta_1$-definability of $ISigma1$ and $PA$
+To instantiate the theorems stated so far with a concrete theory such as $ISigma1$ or $PA$, the $Sigma_1$-soundness and the $Delta_1$-definability of these theories must themselves be mechanized.
 We have done this as well.
 
 #proposition[
-  $ISigma1$ and $PeanoArithmetic$ are $Sigma_1$-sound, hence consistent.
+  $ISigma1$ and $PA$ are $Sigma_1$-sound, hence consistent.
 ]
 
 #leancode(
@@ -1141,7 +1122,7 @@ We have done this as well.
 ]
 
 #proposition[
-  $ISigma1$ and $PeanoArithmetic$ are $Delta_1$-definable.
+  $ISigma1$ and $PA$ are $Delta_1$-definable.
 ]
 
 #leancode(
@@ -1163,7 +1144,7 @@ We have done this as well.
   ```
 ]
 
-Hence all the theorems above can indeed be instantiated with concrete theories such as $ISigma1$ and $PeanoArithmetic$.
+Hence all the theorems above can indeed be instantiated with concrete theories such as $ISigma1$ and $PA$.
 
 === Tarski's Undefinability Theorem
 As a corollary of the fixed point theorem, we can prove Tarski's theorem on the undefinability of truth.
@@ -1171,7 +1152,7 @@ First, we prove the following lemma.
 
 #lemma[
   Let $T supset.eq ISigma1$ be a consistent theory.
-  Then there is no unary formula $tau(x)$ such that $T proves sigma <-> tau(godel(sigma))$ for any sentence $sigma$.
+  Then there is no unary formula $tau(x)$ such that $T proves sigma <-> tau(godelize(sigma))$ for any sentence $sigma$.
 ]
 
 #leancode(
@@ -1187,10 +1168,10 @@ First, we prove the following lemma.
   ```
 ]
 
-Taking as $T$ the _true arithmetic_ $TrueArithmetic$, the theory of all sentences true in $Nat$, we immediately obtain the desired theorem.
+Taking as $T$ the _true arithmetic_ $TA$, the theory of all sentences true in $Nat$, we immediately obtain the desired theorem.
 
 #theorem[Tarski's Undefinability Theorem @Tar35][
-  There is no truth predicate $True(x)$ such that $Nat models sigma$ if and only if $Nat models True(godel(sigma))$ for any sentence $sigma$.
+  There is no truth predicate $True(x)$ such that $Nat models sigma$ if and only if $Nat models True(godelize(sigma))$ for any sentence $sigma$.
 ]<thm:undefinability_of_truth>
 
 #leancode(
@@ -1211,11 +1192,11 @@ This fact has not been mechanized yet; consequently, several statements of prova
 
 === Church's Theorem and Undecidability of First-Order Logic
 In Mathlib, computability of a predicate (at the meta level of Lean) is defined by `ComputablePred` (cf. @Car19), which requires the types of the domain and the range to be `Primcodable` #footnote[That is, encoding into and decoding from natural numbers are primitive recursive.].
-Since the type of formulas of our arithmetic is `Primcodable` via a suitable encoding, we can ask whether the set $upright("Thm")(T)$ of sentences provable from a theory $T$ is computable.
+Since the type of formulas of our arithmetic is `Primcodable` via a suitable encoding, we can ask whether the set $Thm(T)$ of sentences provable from a theory $T$ is computable.
 This yields the following theorem, commonly known as Church's theorem.
 
 #theorem[Church's Theorem (for $Sigma_1$-sound theories)][
-  For a $Sigma_1$-sound theory $T supset.eq R0$, $upright("Thm")(T)$ is not computable.
+  For a $Sigma_1$-sound theory $T supset.eq R0$, $Thm(T)$ is not computable.
 ]
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Church.lean"),))[
@@ -1225,7 +1206,7 @@ This yields the following theorem, commonly known as Church's theorem.
   ```
 ]
 
-Now take as $T$ the theory $PeanoArithmeticMinus$, a finitely axiomatized $Sigma_1$-sound fragment of $PeanoArithmetic$ stronger than $R0$.
+Now take as $T$ the theory $PAMinus$, a finitely axiomatized $Sigma_1$-sound fragment of $PA$ stronger than $R0$.
 Since its axioms can be conjoined into a single sentence, the deduction theorem applies, and the undecidability of first-order logic over the language of arithmetic follows.
 
 #theorem[Undecidability of First-Order Logic][
@@ -1242,7 +1223,7 @@ Since its axioms can be conjoined into a single sentence, the deduction theorem 
 For the speed-up theorem (@thm:speedup) below, we have also mechanized a version that weakens $Sigma_1$-soundness to mere consistency, at the cost of strengthening the base theory from $R0$ to $ISigma1$.
 
 #theorem[Church's Theorem (for consistent theories)][
-  For a consistent theory $T supset.eq ISigma1$, $upright("Thm")(T)$ is not computable.
+  For a consistent theory $T supset.eq ISigma1$, $Thm(T)$ is not computable.
 ] <thm:church2>
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Church.lean"),))[
@@ -1252,7 +1233,7 @@ For the speed-up theorem (@thm:speedup) below, we have also mechanized a version
   ```
 ]
 
-Note that this version does not apply to the above proof of the undecidability of first-order logic, since $PeanoArithmeticMinus$ is weaker than $ISigma1$.
+Note that this version does not apply to the above proof of the undecidability of first-order logic, since $PAMinus$ is weaker than $ISigma1$.
 
 === On proof size
 Formalization also allows us to discuss provability by a proof of _feasible_ length or complexity in a certain sense.
@@ -1313,9 +1294,9 @@ As a concrete example of such an $f$, we can take the superexponential function 
 In our mechanization, coding an $n$-character formula or proof yields a Gödel number roughly of the order of $2^n$.
 Hence, taking as $f$ the far faster-growing $supexp$ and taking $e$ extremely large, say $10^9$, this corollary suggests that there are true statements that humans can _practically_ never prove (or even read).
 
-Furthermore, we have also mechanized the speed-up theorem due to Ehrenfeucht–Mycielski @EM71 #footnote[Observations of this kind go back to Gödel @God36.].
+Furthermore, we have also mechanized the speed-up theorem due to Ehrenfeucht--Mycielski @EM71 #footnote[Observations of this kind go back to Gödel @God36.].
 
-#theorem[Ehrenfeucht–Mycielski speed-up theorem @EM71][
+#theorem[Ehrenfeucht--Mycielski speed-up theorem @EM71][
   Let $min_T (sigma)$ be the least Gödel number of a $T$-proof of $sigma$ if $T proves sigma$, and $0$ if $T nproves sigma$.
 
   Let $T supset.eq ISigma1$ be a $Delta_1$-definable theory and take a sentence $sigma$ with $T nproves sigma$.
@@ -1353,7 +1334,7 @@ We consider these mechanizations to be a first step in that direction.
 
 === Lindenbaum Algebra
 The _Lindenbaum algebra_ $frak(A)_T$ of a theory $T$ is obtained by the usual construction quotienting sentences by the equivalence relation given by $T proves sigma <-> pi$.
-We have also mechanized some results on these algebras: in particular, for a theory $T$ for which the Gödel–Rosser first incompleteness theorem holds, $frak(A)_T$ is a dense Boolean algebra.
+We have also mechanized some results on these algebras: in particular, for a theory $T$ for which the Gödel--Rosser first incompleteness theorem holds, $frak(A)_T$ is a dense Boolean algebra.
 
 #theorem[
   Let $T supset.eq ISigma1$ be a $Delta_1$-definable theory.
@@ -1393,11 +1374,11 @@ Combined with the well-known fact that any two countable, dense, and nontrivial 
   ```
 ]
 
-That is, the Lindenbaum algebras of $ISigma1$, $PeanoArithmetic$, and even $ZF$ (although not mechanized) are all isomorphic; in this sense these algebras are not interesting.
+That is, the Lindenbaum algebras of $ISigma1$, $PA$, and even $ZF$ (although not mechanized) are all isomorphic; in this sense these algebras are not interesting.
 By a theorem of Pour-El and Kripke @PK67, this isomorphism can moreover be taken to be recursive, but such a refinement has not been mechanized at present.
 
 The algebras obtained by extending the Lindenbaum algebra with provability as an explicit unary operator are called _diagonalizable algebras_ or _Magari algebras_ (cf. @Mag75 @Sha93).
-It is known, for example, that the diagonalizable algebras of $PeanoArithmetic$ and $ZF$ are not isomorphic @Sha93a, and these algebras are deeply related to provability logic, which we discuss in @sect:provability_logic.
+It is known, for example, that the diagonalizable algebras of $PA$ and $ZF$ are not isomorphic @Sha93a, and these algebras are deeply related to provability logic, which we discuss in @sect:provability_logic.
 No mechanization of these algebras has been carried out at present.
 
 = Provability Logic <sect:provability_logic>
@@ -1413,7 +1394,7 @@ For the details of modal logic and provability logic, we refer the reader to the
 We first set up the basic framework of modal logic.
 
 #definition[
-  Formulas of modal logic are built from propositional variables (denoted by #Prop), the primitive logical connectives $bot$ and $limp$, and the modal operator $Box$.
+  Formulas of modal logic are built from propositional variables (denoted by #PropVar), the primitive logical connectives $bot$ and $limp$, and the modal operator $Box$.
   The remaining operators $top, lnot, land, lor, liff, Dia$ are introduced as the usual abbreviations.
   We also abbreviate $Boxdot A equiv A land Box A$.
   A _substitution_ is a map $s$ assigning a formula to each propositional variable, and $A[s]$ denotes the formula obtained from $A$ by replacing every occurrence of each propositional variable $p$ with $s(p)$.
@@ -1562,7 +1543,7 @@ Since we are not concerned with modal logic in general, we omit the notion of fr
 
 #definition[
   Let $W$ be a nonempty set, whose elements are called _worlds_ or _points_.
-  A _Kripke model_ is a triple $M = chevron.l W, R, V chevron.r$, where $R subset.eq W times W$ (the _accessibility relation_) and $V colon W -> Prop -> 2$ (the _valuation_).
+  A _Kripke model_ is a triple $M = brak(W, R, V)$, where $R subset.eq W times W$ (the _accessibility relation_) and $V colon W times PropVar -> {0, 1}$ (the _valuation_).
   When there is no danger of confusion, we write $x prec y$ for $x R y$.
 
   We use the following terminology for models.
@@ -1616,7 +1597,7 @@ For later use, we also introduce the notions of the _rank_ of a point and the _h
 
 #definition[
   Let $M$ be a finite $LogicGL$-model.
-  - The _rank_ $upright("rank")(x) < omega$ of a point $x$ is the maximal length $n$ of the $R$-chains $x prec y_1 prec dots.c prec y_n$ starting from $x$.
+  - The _rank_ $rank(x) < omega$ of a point $x$ is the maximal length $n$ of the $R$-chains $x prec y_1 prec dots.c prec y_n$ starting from $x$.
   - The _height_ of a rooted finite $LogicGL$-model $M$ is the rank of its root.
   These notions are well-defined since $M$ is conversely well-founded.
 ]
@@ -1981,7 +1962,6 @@ First, since it is a pure sequent calculus, the Craig interpolation property (CI
   ```
 ]
 
-// TODO: 不動点定理を de Jongh と Sambin に帰属させるべきかは要事実確認
 The CIP of $LogicGL$ is important in particular because it yields the fixed point theorem of #LogicGL @Smo78 @Boo79.
 We have also mechanized the fixed point theorem of $LogicGL$ via the sequent calculus.
 
@@ -2062,14 +2042,14 @@ This suggests that labelled calculi are less suitable for mechanizing the proper
 
 In this section, we describe the main results of our mechanization of provability logic: the mechanization of Solovay's arithmetical completeness theorem @Sol76 and its generalization.
 
-First, we define arithmetical interpretations, which translate modal formulas into arithmetical sentences.
-In what follows, $T$ is an arithmetical theory with a $Delta_1$-definable axiomatization extending $ISigma1$.
+First, we define arithmetical interpretations, which translate modal formulas into arithmetic sentences.
+In what follows, $T$ is an arithmetic theory with a $Delta_1$-definable axiomatization extending $ISigma1$.
 Moreover, $Bew$ denotes a provability in the sense of @subsect:provability_abstraction.
 Although the definition allows $Bew$ to be arbitrary, we mainly consider the standard provability $Bew_T$ of $T$.
 
 #definition[
-  A map $f colon Prop -> upright("Sent")_upright("A")$, where $upright("Sent")_upright("A")$ denotes the set of arithmetical sentences, is called an _arithmetical realization_ (or simply a _realization_).
-  Given a realization $f$ and a provability $Bew$, the _arithmetical interpretation_ of $A$ by $Bew$, denoted $f_Bew (A)$, is the extension of $f$ translating each modal formula $A$ into an arithmetical sentence as follows.
+  A map $f colon PropVar -> ArithSent$, where $ArithSent$ denotes the set of arithmetic sentences, is called an _arithmetical realization_ (or simply a _realization_).
+  Given a realization $f$ and a provability $Bew$, the _arithmetical interpretation_ of $A$ by $Bew$, denoted $f_Bew (A)$, is the extension of $f$ translating each modal formula $A$ into an arithmetic sentence as follows.
 
   - $f_Bew (p) & = f(p)$
   - $f_Bew (bot) & = bot$
@@ -2173,7 +2153,7 @@ As a corollary, we obtain Solovay's original statement.
 
 #corollary[Solovay's (first) arithmetical completeness theorem @Sol76][
   If $T$ is $Sigma_1$-sound, then $ProvLogic(T, T) = LogicGL$.
-  In particular, $ProvLogic(PeanoArithmetic, PeanoArithmetic) = LogicGL$.
+  In particular, $ProvLogic(PA, PA) = LogicGL$.
 ]
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/GL/Basic.lean"),))[
   ```
@@ -2184,13 +2164,13 @@ As a corollary, we obtain Solovay's original statement.
   ```
 ]
 
-Furthermore, Solovay also proved that #LogicS is arithmetically complete with respect to the true arithmetic #TrueArithmetic.
+Furthermore, Solovay also proved that #LogicS is arithmetically complete with respect to the true arithmetic #TA.
 The reduction of $LogicS$ to $LogicGL$ stated in @prop:S_characterization is essentially used in this proof.
 
 #theorem[Solovay's (second) arithmetical completeness theorem @Sol76][
   Let $T$ be a sound theory.
   For every formula $A$, $LogicS proves A$ if and only if $NN models f_(Bew_T) (A)$ for every realization $f$.
-  That is, $ProvLogic(T, TrueArithmetic) = LogicS$.
+  That is, $ProvLogic(T, TA) = LogicS$.
 ]
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/S/Basic.lean"),))[
   ```
@@ -2204,7 +2184,7 @@ The reduction of $LogicS$ to $LogicGL$ stated in @prop:S_characterization is ess
 
 == The classification theorem of provability logics
 
-The classification of the provability logics obtained as $ProvLogic(T, U)$ for arbitrary theories $T$ and $U$ was studied by Artemov, Beklemishev, Visser, Japaridze, and others, and was finally completed by Beklemishev @Bek90.
+The classification of the provability logics obtained as $ProvLogic(T, U)$, where $T$ is as in @sect:arithmetical_completeness and $U$ is an arbitrary arithmetic theory, was studied by Artemov, Beklemishev, Visser, Japaridze, and others, and was finally completed by Beklemishev @Bek90.
 We have also mechanized this classification theorem.
 Since its proof involves difficult arguments in both arithmetic and Kripke semantics, we again omit the details of the proofs and list the main results.
 For the details, see @Bek90 @AB05.
@@ -2283,7 +2263,8 @@ One is proved by an arithmetical argument, and the other by a Kripke-semantical 
 The classification theorem is stated as follows.
 
 #theorem[Classification theorem of provability logics @Bek90 @AB05[Theorem 40]][
-  Let $L = ProvLogic(T, U)$ for arbitrary theories $T$ and $U$. Then $L$ is classified as follows:
+  Let $L = ProvLogic(T, U)$, where $T$ is a $Delta_1$-definable arithmetic theory extending $ISigma1$ and $U$ is an arbitrary arithmetic theory.
+  Then $L$ is classified as follows:
   1. If $trace(L)$ is coinfinite, then $L = LogicGLAlpha(trace(L))$.
   2. If $trace(L)$ is cofinite and $L subset.eq.not LogicS$, then $L = LogicGLBetaMinus(trace(L))$.
   3. If $trace(L)$ is cofinite and $L subset.eq LogicS$, then $L$ is one of $LogicGLAlpha(trace(L))$, $LogicD inter LogicGLBetaMinus(trace(L))$, and $LogicS inter LogicGLBetaMinus(trace(L))$.
@@ -2305,11 +2286,11 @@ The classification theorem is stated as follows.
   ```
 ]
 
-Furthermore, @Bek90 also proved the classification theorem for the _truth provability logics_, i.e., the logics of the form $ProvLogic(T, TrueArithmetic)$.
+Furthermore, @Bek90 also proved the classification theorem for the _truth provability logics_, i.e., the logics of the form $ProvLogic(T, TA)$.
 We have mechanized this fact as well.
 
 #theorem[Classification theorem of truth provability logics @Bek90 @AB05[Corollary 41]][
-  $L = ProvLogic(T, TrueArithmetic)$ is one of the following, and each case is characterized by the properties of $T$.
+  $L = ProvLogic(T, TA)$ is one of the following, and each case is characterized by the properties of $T$.
   1. $L = LogicS$ if and only if $T$ is sound.
   2. $L = LogicD$ if and only if $T$ is $Sigma_1$-sound but not sound.
   3. $L = LogicA$ if and only if $T$ is not $Sigma_1$-sound and $height(T) = omega$.
@@ -2333,15 +2314,16 @@ We note them here.
 
 The first is the statement that $LogicD$ is indeed a provability logic, which is currently not `sorry`-free.
 #theorem[@Jap86 @AB05[Example 60]][
-  $LogicD = ProvLogic(T, T + upright("Rfn")_(Sigma_1)(T))$,
-  where $upright("Rfn")_(Sigma_1)(T)$ is the (local) reflection principle for $Sigma_1$ formulas of $T$.
+  Let $T$ be $Sigma_1$-sound. Then
+  $LogicD = ProvLogic(T, T + Rfn(Sigma_1, T))$,
+  where $Rfn(Sigma_1, T)$ is the (local) reflection principle for $Sigma_1$ formulas of $T$.
 ] <thm:D_is_provability_logic>
 
 This is because the following fact has not been mechanized in our development.
 Proving it requires arguments involving partial truth definitions, which we have not yet completed.
 
 #theorem[Unboundedness @KL68 @AB05[Theorem 23]][
-  $upright("Rfn")_(Sigma_n)(T)$ is not provable in any consistent r.e. extension of $T$ by $Pi_n$ sentences.
+  For $T$ as above, $Rfn(Sigma_n, T)$ is not provable in any consistent r.e. extension of $T$ by $Pi_n$ sentences.
 ]
 
 The other is the uniform arithmetical completeness theorem.
@@ -2432,6 +2414,7 @@ Next we introduce the Kripke semantics.
 
 Finally we introduce the sequent calculus.
 Sequent calculi for $LogicGrz$ were formulated by Avron @Avr84 and by Borga and Gentilini @BG86; the former gives a semantic cut elimination, the latter a syntactic one.
+Non-wellfounded proof systems for $LogicGrz$ are studied by Savateev and Shamkanov @SS21.
 
 #definition[
   The sequent calculus $GentzenGrz$ for $LogicGrz$ is obtained from $GentzenGL$ by replacing the rule $(Box_LogicGL)$ with the following two rules.
@@ -2523,14 +2506,14 @@ Furthermore, $LogicGrz$ is related to #LogicGL and #LogicS through the boxdot tr
   ```
 ]
 
-Using this fact, Goldblatt @Gol78 and Boolos @Boo80 showed that $LogicGrz$ is arithmetical complete with respect to the _strong_ arithmetical interpretation, in which $Box$ is read as "provable and true" rather than merely "provable".
+Using this fact, Goldblatt @Gol78 and Boolos @Boo80 showed that $LogicGrz$ is arithmetically complete with respect to the _strong_ arithmetical interpretation, in which $Box$ is read as "provable and true" rather than merely "provable".
 
 #definition[Strong interpretation][
-  Given a realization $f$ and a provability $Bew$, the _strong (arithmetical) interpretation_ $f^upright("s")_(Bew)(A)$ is defined exactly as the interpretation $f_(Bew)(A)$ of @def:arithmetical_interpretation except for the modal clause, which reads
+  Given a realization $f$ and a provability $Bew$, the _strong (arithmetical) interpretation_ $StrongInterpret(f, Bew)(A)$ is defined exactly as the interpretation $f_(Bew)(A)$ of @def:arithmetical_interpretation except for the modal clause, which reads
   $
-    f^upright("s")_(Bew) (Box A) = f^upright("s")_(Bew) (A) land Bew (f^upright("s")_(Bew) (A)).
+    StrongInterpret(f, Bew) (Box A) = StrongInterpret(f, Bew) (A) land Bew (StrongInterpret(f, Bew) (A)).
   $
-  Equivalently, $f^upright("s")_(Bew)(A)$ is $T$-provably equivalent to $f_(Bew)(A^Boxdot)$, and this is how the arithmetical completeness of $LogicGrz$ is reduced to that of #LogicGL and #LogicS.
+  Equivalently, $StrongInterpret(f, Bew)(A)$ is $T$-provably equivalent to $f_(Bew)(A^Boxdot)$, and this is how the arithmetical completeness of $LogicGrz$ is reduced to that of #LogicGL and #LogicS.
 ]
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/StrongInterpret.lean"),))[
   ```
@@ -2552,8 +2535,8 @@ Using this fact, Goldblatt @Gol78 and Boolos @Boo80 showed that $LogicGrz$ is ar
 
 #theorem[Arithmetical completeness of $LogicGrz$ @Gol78 @Boo80][
   Let $T$ be a theory with $height(T) = omega$ (in particular, any $Sigma_1$-sound $T$).
-  Then $LogicGrz proves A$ if and only if $T proves f^upright("s")_(Bew_T) (A)$ for every realization $f$.
-  Moreover, if $T$ is sound, then $LogicGrz proves A$ if and only if $NN models f^upright("s")_(Bew_T) (A)$ for every realization $f$.
+  Then $LogicGrz proves A$ if and only if $T proves StrongInterpret(f, Bew_T) (A)$ for every realization $f$.
+  Moreover, if $T$ is sound, then $LogicGrz proves A$ if and only if $NN models StrongInterpret(f, Bew_T) (A)$ for every realization $f$.
 ] <thm:Grz_arithmetical_completeness>
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/Grz/Basic.lean"),))[
   ```
@@ -2573,7 +2556,7 @@ Using this fact, Goldblatt @Gol78 and Boolos @Boo80 showed that $LogicGrz$ is ar
 == On $LogicGLPoint3$
 
 A sequent calculus for $LogicGLPoint3$ was given by Valentini and Solitro @VS83 and Valentini @Val86.
-In particular, @VS83 shows that $LogicGLPoint3$ enjoys a certain arithmetical completeness with respect to the class of arithmetical sentences called consistency assertions.
+In particular, @VS83 shows that $LogicGLPoint3$ enjoys a certain arithmetical completeness with respect to the class of arithmetic sentences called consistency assertions.
 We briefly describe these results.
 
 #definition[
@@ -2609,11 +2592,11 @@ We briefly describe these results.
 ]
 
 #definition[
-  The sequent calculus $GentzenGLPoint3$ for $LogicGLPoint3$ is obtained from the sequent calculus for #LogicGL by replacing the $Box upright("GL")$ rule with the following rule,
+  The sequent calculus $GentzenGLPoint3$ for $LogicGLPoint3$ is obtained from the sequent calculus for #LogicGL by replacing the $(Box_LogicGL)$ rule with the following rule,
   where $Delta != emptyset$ and ${S_1, dots, S_m} = PowerSet(Delta) without {emptyset}$ (hence $m = 2^(|Delta|) - 1$).
 
   #align(center, prooftree(rule(
-    name: [($Box$GL.3)],
+    name: [($Box_LogicGLPoint3$)],
     $Box Gamma => Box Delta$,
     $Gamma, Box Gamma, Box S_1 => S_1, Box(Delta without S_1)$,
     $dots.c$,
@@ -2716,7 +2699,7 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
 ]
 
 #theorem[@VS83[Theorem 1]][
-  $LogicGLPoint3 proves A$ if and only if $PeanoArithmetic proves f_(Bew_PeanoArithmetic) (A)$ for every consistency realization $f$ over $PeanoArithmetic$.
+  $LogicGLPoint3 proves A$ if and only if $PA proves f_(Bew_PA) (A)$ for every consistency realization $f$ over $PA$.
 ]
 #leancode(
   links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/GLPoint3/Basic.lean"),),
@@ -2740,14 +2723,14 @@ Our mechanization of the incompleteness theorems is an achievement, but it is a 
 @subsect:further_incompleteness collects several further results, but many metamathematical facts about arithmetic and the incompleteness theorems remain unmechanized.
 For example, there are many important tools for the metamathematical analysis of arithmetic, such as reflection principles, partial truth definitions, arguments about nonstandard models of arithmetic, and the arithmetized completeness theorem.
 Our development does not contain these tools at present.
-Without them, we cannot prove facts such as Ryll-Nardzewski's theorem @Ryl52, which states that $PeanoArithmetic$ is not finitely axiomatizable.
+Without them, we cannot prove facts such as Ryll-Nardzewski's theorem @Ryl52, which states that $PA$ is not finitely axiomatizable.
 We also cannot fill some of the `sorry`s that we left in @subsect:remaining_sorry_in_provlogic.
 For these topics, we plan to mechanize the arguments of the standard textbooks @Lin97 @HP93.
 
 Proof-theoretic analysis is another direction.
 As for prior work, Hydras \& Co. @CDPPZ21 @Cas24 is a Rocq mechanization of the termination (in Rocq) of the hydra game @KP82, and of related arguments about the ordinals that proof theory frequently uses.
 In our framework, we experimented with autoformalization by an LLM.
-We tried to mechanize the sequent calculus for $PeanoArithmetic$ with the $omega$-rule, its cut-elimination theorem, and the fact that $PeanoArithmetic$ does not prove the termination of Goodstein sequences @KP82.
+We tried to mechanize the sequent calculus for $PA$ with the $omega$-rule, its cut-elimination theorem, and the fact that $PA$ does not prove the termination of Goodstein sequences @KP82.
 The proofs in the generated code#footnote[For more details, see #link("https://github.com/FormalizedFormalLogic/goodstein-independence").] contain no `sorry` and no additional axiom.
 However, a human check of its definitions and statements is still in progress.
 We mechanized almost no other proof-theoretic result, thus we plan to work on proof-theoretic analysis and ordinal analysis in the future.
@@ -2767,11 +2750,11 @@ See, e.g., Lindström @Lin97[Section 4] for a further discussion.
 As far as we know, no prior work mechanized interpretability itself in a proof assistant.
 
 @subsect:settheory discusses the set theories $ZF$ and $ZFC$.
-If we mechanize the fact that $ZF interpret PeanoArithmetic$, we can also mechanize the incompleteness theorems for these set theories.
+If we mechanize the fact that $ZF interpret PA$, we can also mechanize the incompleteness theorems for these set theories.
 Then we do not have to repeat inside set theory the arguments that we carried out for arithmetic, and we expect that this skips a large part of the proof.
 In another direction, we can consider other theories, because the analysis of the incompleteness phenomena is not restricted to arithmetic.
-The theory of concatenation $Concatenation$ is a first-order theory that directly axiomatizes the concatenation of strings, and Grzegorczyk initiated its study @Grz05 @GZ08.
-In particular, $Concatenation interpret Robinson$ holds @Ste08 @Gan09 @Sve09 @Vis09.
+The theory of concatenation $TC$ is a first-order theory that directly axiomatizes the concatenation of strings, and Grzegorczyk initiated its study @Grz05 @GZ08.
+In particular, $TC interpret Robinson$ holds @Ste08 @Gan09 @Sve09 @Vis09.
 Such a minimal system can be easier to mechanize than arithmetic itself.
 
 Interpretability logic develops provability logic further and treats interpretability itself as a modality.
@@ -2782,7 +2765,7 @@ We discuss it in @subsect:enrich_modalities.
 Intuitionistic logic is classical logic without the law of excluded middle, and the corresponding predicate logic is intuitionistic first-order logic $LogicIQL$.
 $LogicIQL$ satisfies several constructive principles.
 It has the disjunction property: if $LogicIQL proves phi or psi$, then $LogicIQL proves phi$ or $LogicIQL proves psi$.
-It also has the existence property: if $LogicIQL proves exists x phi(x)$, then there is a closed term $t$ such that $LogicIQL proves phi(t)$.
+It also has the existence property: if $LogicIQL proves exs(x) phi(x)$, then there is a term $t$, possibly containing free variables, such that $LogicIQL proves phi(t)$.
 Intuitionistic predicate logic also has connections to other fields, for example to dependent type theory via the Curry--Howard correspondence.
 
 At present, our mechanization of intuitionistic predicate logic is not far advanced, but it contains the cut-elimination theorem.
@@ -2796,21 +2779,17 @@ Their design is notable: they take intuitionistic logic as the base, and they ob
 They give Tarski, Kripke, algebraic, and game semantics, and for each one they analyse which non-constructive principles the completeness theorem requires in the constructive type theory of Rocq.
 Our implementation is specific to classical logic: it defines dual connectives as primitives, and it uses a Tait calculus.
 
-Heyting arithmetic #HeytingArithmetic is intuitionistic logic together with the axioms of Peano arithmetic.
-The library of Forster et al. discusses $Robinson$ and $PeanoArithmetic$ over intuitionistic natural deduction, so that provability in the latter is exactly provability in #HeytingArithmetic.
+Heyting arithmetic #HA is intuitionistic logic together with the axioms of Peano arithmetic.
+The library of Forster et al. discusses $Robinson$ and $PA$ over intuitionistic natural deduction, so that provability in the latter is exactly provability in #HA.
 Kirst and Hermes @KH23 proved that these systems are undecidable, through a reduction from Hilbert's tenth problem (the MRDP theorem), and that every axiomatization that is sound in the standard model is incomplete.
-The same library mechanizes the Friedman translation, which transforms a proof in classical logic into a proof in minimal logic, and thus shows that $Robinson$ and $PeanoArithmetic$ over minimal or intuitionistic logic are also undecidable.
-Our framework already covers the classical side, so the mechanization of such translations is a practical route to #HeytingArithmetic.
+The same authors also analysed, in the same setting, Tennenbaum's theorem, which states that no nonstandard model of $PA$ has computable addition and multiplication @HK24.
+The same library mechanizes the Friedman translation, which transforms a proof in classical logic into a proof in minimal logic, and thus shows that $Robinson$ and $PA$ over minimal or intuitionistic logic are also undecidable.
+Our framework already covers the classical side, so the mechanization of such translations is a practical route to #HA.
 
 The exact axiomatization of the provability logic of Heyting arithmetic has remained a difficult open problem for a long time.
 We mention it again in @subsect:provlogic_of_HA.
 
 == Set theory and Forcing <subsect:settheory>
-
-#let CH = Theory("CH")
-#let LK = System("LK")
-#let LJ = System("LJ")
-#let wforces = $attach(forces, br: "w")$
 
 One of our current goal is to mechanize a general framework for forcing and to establish foundational results such as the independence of the continuum hypothesis.
 Han and van Doorn @HvD20 have already mechanized the latter result, but their approach is based on Boolean-valued models and has more limited applicability than forcing.
@@ -2856,7 +2835,7 @@ $
 $
 
 #leancode[
-  ```lean
+  ```
   lemma complete {φ : Proposition L} : ℙ⁻ ∀⊩ᶜ φ ↔ 𝐋𝐊¹ ⊢ φ
   ```
 ]
@@ -2873,7 +2852,7 @@ $
   frak(T) models phi quad "iff" quad exs(p in G)(p wforces phi)
 $
 #leancode[
-  ```lean
+  ```
   def GenericForces (p : ℙ⁻) (φ : Proposition K) : Prop := ∃ q ∈ genericFilter p, q ⊩ᶜ φ
 
   local infix: 60 " ⊫ " => GenericForces
@@ -2886,7 +2865,7 @@ Since $G$ contains ${sigma}$ and ${sigma} wforces sigma$, it follows that $frak(
 This proves the completeness theorem for $LK$.
 
 #leancode[
-  ```lean
+  ```
   lemma satisfiable_of_irrefutable (σ : Sentence L) (h : 𝐋𝐊¹ ⊬ ∼(σ : Proposition L)) :
       Satisfiable {σ}
   ```
@@ -2929,15 +2908,15 @@ Gignoux's coalgebraic mechanization of non-wellfounded proof systems for #LogicG
 
 == Provability logic of Heyting arithmetic <subsect:provlogic_of_HA>
 
-The provability logic of intuitionistic or constructive arithmetic, in particular, Heyting arithmetic #HeytingArithmetic, has been a subject of study for a long time (see @AB05[Section 9] @BV06[Section 4]).
+The provability logic of intuitionistic or constructive arithmetic, in particular, Heyting arithmetic #HA, has been a subject of study for a long time (see @AB05[Section 9] @BV06[Section 4]).
 Even among the recent developments alone, there is prior work such as @AM18 @AM19 @SM23a @Moj24 @Moj26.
 
 Here, we define #LogiciK and #LogiciGL.
 Intuitionistic modal logic #LogiciK is obtained from intuitionistic propositional logic by adding the axiom $AxiomK$ for $Box$ and the necessitation rule (note that the language does not contain $Dia$),
 and intuitionistic Gödel--Löb logic #LogiciGL is obtained by adding Löb's axiom $Box (Box A -> A) -> Box A$ to #LogiciK.
-It is known that the provability logic of #HeytingArithmetic contains at least #LogiciGL, that is, #LogiciGL is arithmetically sound with respect to #HeytingArithmetic.
+It is known that the provability logic of #HA contains at least #LogiciGL, that is, #LogiciGL is arithmetically sound with respect to #HA.
 For purely logical studies of #LogiciGL, consult @Urs79 @Lit14 @vdGI21.
-As for mechanization, Shillito and Goré @GS22 gave a refined version of the proof of cut elimination for the sequent calculus for #LogiciGL due to van der Giessen and Iemhoff @vdGI21, and this proof has been mechanized in Rocq.
+As for mechanization, Shillito and Goré @GS22 gave a refined version of the proof of cut elimination for the sequent calculus for #LogiciGL due to van der Giessen and Iemhoff @vdGI21, and this proof has been mechanized in Rocq (see also @Shi22).
 
 On the other hand, the logic called the intuitionistic strong Löb logic #LogiciSL, obtained by adding the strong Löb axiom $(Box A -> A) -> A$ to #LogiciK, is also important.
 For a survey of #LogiciSL itself as a logic, see, e.g., @VL24.
@@ -2964,8 +2943,8 @@ They further proposed the _quantified reflection calculus with one modality_ #Lo
 On the other hand, Santiago-Fernández et al. @SJF24 formulated a term-rewriting-like system (a tree rewriting system) for derivations of #LogicRC, and its mechanization in Rocq appears to be in progress in @SF25.
 
 As another extension of provability logic, there is the _interpretability logic_ proposed by Visser @Vis90.
-Interpretability logic is the extension of provability logic with an additional binary modal operator $interpret$ representing interpretability (informally, $A interpret B$ means that the extended theory $T + f(B)$ is interpretable in $T + f(A)$, See also @subsect:future_interpretability).
-There are several semantics for interpretability logic, including _de Jongh–Veltman semantics_ @dJV90 and _Verbrugge semantics_ as known as _generalized Veltman semantics_ (cf. @JRMV24).
+Interpretability logic is the extension of provability logic with an additional binary modal operator $interpret$ representing interpretability (informally, $A interpret B$ means that the extended theory $T + f(A)$ interprets $T + f(B)$; see also @subsect:future_interpretability).
+There are several semantics for interpretability logic, including _de Jongh--Veltman semantics_ @dJV90 and _Verbrugge semantics_ as known as _generalized Veltman semantics_ (cf. @JRMV24).
 The latter one can handle completeness and definability for more axioms, but it has the drawback that the arguments become very involved.
 As prior work, mechanization of frame definability for Verbrugge semantics has been carried out in Agda by Rovira @Rov20.
 
