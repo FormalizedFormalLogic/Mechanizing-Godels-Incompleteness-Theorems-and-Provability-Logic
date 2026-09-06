@@ -274,38 +274,38 @@ Mechanizing the incompleteness theorems via such an abstract provability has pre
     inset: 6pt,
     align: (right + horizon, left + horizon),
     stroke: none,
-    $CondD1$,
+    $D1$,
     [
       $T proves sigma ==> T_0 proves Bew(godelize(sigma))$
     ],
   ))
 
-  That is, $Bew(x)$ is required to satisfy at least the derivability condition $CondD1$.
+  That is, $Bew(x)$ is required to satisfy at least the derivability condition $D1$.
   In what follows, we simply write $Bew sigma$ for $Bew(godelize(sigma))$.
   We further define the following properties, where $sigma$ and $pi$ range over $cal(L)$-sentences.
-  The conditions $CondD3$ and $CondKre$ are defined only when $T_0$ and $T$ are theories in the same language, i.e., when $Lang(0) = cal(L)$.
+  The conditions $D3$ and $Kre$ are defined only when $T_0$ and $T$ are theories in the same language, i.e., when $Lang(0) = cal(L)$.
 
   #align(center, table(
     columns: (auto, auto),
     inset: 6pt,
     align: (right + horizon, left + horizon),
     stroke: none,
-    $CondD2$,
+    $D2$,
     [
       $T_0 proves Bew (sigma -> pi) -> Bew sigma -> Bew pi$
     ],
 
-    $CondD3$,
+    $D3$,
     [
       $T_0 proves Bew sigma -> Bew Bew sigma$
     ],
 
-    $CondKre$,
+    $Kre$,
     [
       $T proves Bew sigma$ implies $T proves sigma$
     ],
 
-    $CondRos$,
+    $Ros$,
     [
       $T proves not sigma$ implies $T_0 proves not Bew sigma$
     ],
@@ -339,11 +339,11 @@ Mechanizing the incompleteness theorems via such an abstract provability has pre
   ```
 ]
 
-The standard provability predicate $Pr(T)$ satisfies $CondD2$, $CondD3$ and $CondKre$.
+The standard provability predicate $Pr(T)$ satisfies $D2$, $D3$ and $Kre$.
 In provability logic discussed in @sect:provability_logic, we mainly assume those conditions on the provability predicate.
-The condition $CondKre$ is a derivability condition introduced by Visser @Vis21 under the name _Kreisel's condition_ #footnote[Visser attributes the origin of this condition to @Kre54. To be precise, Visser required both directions.].
+The condition $Kre$ is a derivability condition introduced by Visser @Vis21 under the name _Kreisel's condition_ #footnote[Visser attributes the origin of this condition to @Kre54. To be precise, Visser required both directions.].
 /*Our motivation for this abstraction is to formalize the arguments in a purely syntactic way, without involving models or structures.*/
-Anticipating the later construction, the standard provability predicate is a $Sigma_1$-predicate, so the condition $CondKre$ can be regarded as a purely syntactic counterpart of the $Sigma_1$-soundness of $T$; the converse implication, which corresponds to $Sigma_1$-completeness, is the content of $CondD1$.
+Anticipating the later construction, the standard provability predicate is a $Sigma_1$-predicate, so the condition $Kre$ can be regarded as a purely syntactic counterpart of the $Sigma_1$-soundness of $T$; the converse implication, which corresponds to $Sigma_1$-completeness, is the content of $D1$.
 
 In fact, abstracting provability alone does not suffice to mechanize the incompleteness theorems: we also need to abstract the diagonalization.
 
@@ -395,7 +395,7 @@ The first incompleteness theorem is proved as follows.
 
 #proposition[Abstract version of G1][
   1. $T nproves Godel(Bew)$.
-  2. If $Bew$ satisfies $CondKre$, then $T nproves not Godel(Bew)$.
+  2. If $Bew$ satisfies $Kre$, then $T nproves not Godel(Bew)$.
 
   Hence $Godel(Bew)$ is independent of $T$, and therefore $T$ is incomplete.
 ] <prop:abstract_G1>
@@ -426,11 +426,11 @@ The first incompleteness theorem is proved as follows.
 The second incompleteness theorem can likewise be mechanized.
 
 #proposition[Abstract version of G2][
-  Assume that $Bew$ satisfies $CondD2$ and $CondD3$.
+  Assume that $Bew$ satisfies $D2$ and $D3$.
   The sentence $not Bew bot$ is a natural expression of consistency; we denote it by $Con(Bew)$.
   Then the following hold.
   1. $T nproves Con(Bew)$.
-  2. If $Bew$ satisfies $CondKre$, then $T nproves not Con(Bew)$. Hence $Con(Bew)$ is also independent of $T$.
+  2. If $Bew$ satisfies $Kre$, then $T nproves not Con(Bew)$. Hence $Con(Bew)$ is also independent of $T$.
 ] <prop:abstract_G2>
 
 #leancode(
@@ -464,7 +464,7 @@ Variants of G2 arising from this view are discussed later.
 As further results, we can also mechanize Löb's theorem and the formalized Löb's theorem.
 
 #proposition[Abstract version of Löb's Theorem][
-  Assume that $Bew$ satisfies $CondD2$ and $CondD3$. Then the following hold,
+  Assume that $Bew$ satisfies $D2$ and $D3$. Then the following hold,
   where $sigma$ is an arbitrary $cal(L)$-sentence.
 
   #align(center, table(
@@ -496,18 +496,18 @@ As further results, we can also mechanize Löb's theorem and the formalized Löb
   ```
 ]
 
-Note that $CondD1, CondD2, CondD3$ and the formalized Löb's theorem correspond roughly to the necessitation rule and the axioms $AxiomK$, $Axiom("4")$, and $Axiom("L")$ of modal logic, respectively.
+Note that $D1, D2, D3$ and the formalized Löb's theorem correspond roughly to the necessitation rule and the axioms $AxiomK$, $Axiom("4")$, and $Axiom("L")$ of modal logic, respectively.
 This yields the observation that arithmetical soundness holds for the standard provability predicate.
 
-In view of the reason we gave for introducing $CondKre$ into the abstraction, requiring $CondKre$ in the abstract G1 of @prop:abstract_G1 corresponds to requiring the $Sigma_1$-soundness of $T$.
-If we instead impose on $Bew$ the condition $CondRos$, then the abstract G1 can be proved assuming only that $T$ is consistent.
+In view of the reason we gave for introducing $Kre$ into the abstraction, requiring $Kre$ in the abstract G1 of @prop:abstract_G1 corresponds to requiring the $Sigma_1$-soundness of $T$.
+If we instead impose on $Bew$ the condition $Ros$, then the abstract G1 can be proved assuming only that $T$ is consistent.
 This is precisely an abstraction of the incompleteness theorem as improved by Rosser @Ros36.
 
 #proposition[Abstract version of Gödel--Rosser theorem][
-  Assume that the provability predicate $Rosser$ satisfies $CondRos$.
+  Assume that the provability predicate $Rosser$ satisfies $Ros$.
   In this case, the Gödel sentence for $Rosser$ is called the _Rosser sentence_.
   Then we have $T nproves Godel(Rosser)$ and $T nproves not Godel(Rosser)$.
-  That is, $Godel(Rosser)$ is independent of $T$; note in particular that $CondKre$ is not required.
+  That is, $Godel(Rosser)$ is independent of $T$; note in particular that $Kre$ is not required.
   On the other hand, for the consistency statement $Con(Rosser)$ defined above, we have $T proves Con(Rosser)$ #footnote[In the Japanese mathematical logic community, this is often called _Kreisel's remark_.].
 ] <prop:abstract_GR>
 
@@ -873,7 +873,7 @@ These facts immediately yield definitions over $Universe$ of basic syntactic ope
 
 
 We can routinely verify that the predicate `provabilityPred` is a provability predicate in the sense of @def:provability_abstraction,
-and moreover that it satisfies the derivability conditions $CondD1$, $CondD2$, $CondD3$, and $CondKre$.
+and moreover that it satisfies the derivability conditions $D1$, $D2$, $D3$, and $Kre$.
 
 #leancode(
   links: (
@@ -1075,7 +1075,7 @@ By instantiating @prop:abstract_GR, we can prove the Gödel--Rosser incompletene
   ```
 ]
 
-The required provability predicate satisfying $CondRos$ is constructed by so-called _witness comparison_ (see @HP93 @Lin97); we omit the details here.
+The required provability predicate satisfying $Ros$ is constructed by so-called _witness comparison_ (see @HP93 @Lin97); we omit the details here.
 
 === Jeroslow's Second Incompleteness Theorem
 Similarly, from @prop:abstract_JG2, we can also concretely mechanize Jeroslow's second incompleteness theorem @Jer73.
@@ -1543,7 +1543,7 @@ Since we are not concerned with modal logic in general, we omit the notion of fr
 
 #definition[
   Let $W$ be a nonempty set, whose elements are called _worlds_ or _points_.
-  A _Kripke model_ is a triple $M = chevron.l W, R, V chevron.r$, where $R subset.eq W times W$ (the _accessibility relation_) and $V colon W times PropVar -> {0, 1}$ (the _valuation_).
+  A _Kripke model_ is a triple $M = brak(W, R, V)$, where $R subset.eq W times W$ (the _accessibility relation_) and $V colon W times PropVar -> {0, 1}$ (the _valuation_).
   When there is no danger of confusion, we write $x prec y$ for $x R y$.
 
   We use the following terminology for models.
@@ -2930,7 +2930,7 @@ In the future, we plan to mechanize these arguments, which will make it possible
 There are also extensions in the direction of adding further modal operators in order to express various notions related to provability.
 Here we mention two directions for which mechanizations can be found: polymodal provability logic and interpretability logic.
 
-Japaridze @Jap86 @Jap88 extended the modality of #LogicGL to infinitely many modal operators $[1], [2], ...$ together with their duals $chevron.l 1 chevron.r, chevron.l 2 chevron.r, ...$, and introduced the logic #LogicGLP.
+Japaridze @Jap86 @Jap88 extended the modality of #LogicGL to infinitely many modal operators $[1], [2], ...$ together with their duals $brak(1), brak(2), ...$, and introduced the logic #LogicGLP.
 For the meaning of these modal operators, we may consult @AB05[Chapter 8.3].
 #LogicGLP is useful in the proof-theoretic analysis of arithmetic and is moreover decidable, but it is also known to be Kripke incomplete.
 It is complete with respect to topological semantics, but that semantics has the drawback of being technically hard to work with.

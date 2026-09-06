@@ -312,11 +312,11 @@
 #let AxiomGrz = $Axiom("Grz")$
 
 #let Cond(C) = $bold(#C)$
-#let CondD1 = $Cond("D1")$
-#let CondD2 = $Cond("D2")$
-#let CondD3 = $Cond("D3")$
-#let CondKre = $Cond("Kre")$
-#let CondRos = $Cond("Ros")$
+#let D1 = $Cond("D1")$
+#let D2 = $Cond("D2")$
+#let D3 = $Cond("D3")$
+#let Kre = $Cond("Kre")$
+#let Ros = $Cond("Ros")$
 
 #let System(X) = $bold(#X)$
 
@@ -348,11 +348,14 @@
 #let Safe(B, W) = $sans("Safe")_(#B,#W)$
 #let FLoN(B, W) = $sans("FLoN")_(#B,#W)$
 
-#let sepWithCommaMath(..args) = args.pos().join[,]
+#let sepWithCommaMath(..args) = args.pos().join($,$)
 
+#let brak(..args) = $lr(chevron.l sepWithCommaMath(..args) chevron.r)$
 #let quant(Q, ..args) = $#Q sepWithCommaMath(..args) space.narrow$
 #let fal(..args) = $quant(forall, ..args)$
 #let exs(..args) = $quant(exists, ..args)$
+#let nexs(..args) = $quant(exists.not, ..args)$
+#let exsUniq(..args) = $quant(exists!, ..args)$
 
 #let godelize(x) = $lr(⌜ #x ⌝)$
 #let num(x) = $overline(#x)$
