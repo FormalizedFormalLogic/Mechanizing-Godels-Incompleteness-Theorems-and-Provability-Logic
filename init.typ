@@ -285,10 +285,18 @@
 #let iterexp(x, y) = $attach(tr: #y, br: #x, 2)$
 
 #let height(T) = $upright("hgt")(#T)$
+#let rank(x) = $upright("rank")(#x)$
 
 #let True(x) = $sans("True")(#x)$
 #let TruePartial(Gamma, x) = $sans("True")_(#Gamma) (#x)$
 #let ProvLogic(T, U) = $upright("PL")_(#T) (#U)$
+#let Thm(T) = $upright("Thm")(#T)$
+#let Rfn(G, T) = $upright("Rfn")_(#G) (#T)$
+#let Rep(S) = $sans("Rep")_(#S)$
+// 算術の文全体
+#let ArithSent = $upright("Sent")_upright("A")$
+// 強解釈 f^s_B
+#let StrongInterpret(f, B) = $#f^(upright("s"))_(#B)$
 
 #let Theory(T) = $sans(upright(#T))$
 #let PA = Theory("PA")
@@ -306,6 +314,14 @@
 #let AxiomT = $Axiom("T")$
 #let AxiomGrz = $Axiom("Grz")$
 
+// Derivability conditions
+#let Cond(C) = $bold(#C)$
+#let CondD1 = $Cond("D1")$
+#let CondD2 = $Cond("D2")$
+#let CondD3 = $Cond("D3")$
+#let CondKre = $Cond("Kre")$
+#let CondRos = $Cond("Ros")$
+
 #let System(X) = $bold(#X)$
 
 // 集合論・強制法（§4.4）
@@ -319,6 +335,7 @@
 #let ISigma1 = $Ind(Sigma_1)$
 #let Robinson = $sans("Q")$
 #let R0 = $sans("R"_0)$
+#let BussS12 = $sans("S")^1_2$
 #let Con(T) = $sans("Con")_(#T)$
 
 // 内部算術（G2 の証明で固定する IΣ₁ のモデルとその上の構成）

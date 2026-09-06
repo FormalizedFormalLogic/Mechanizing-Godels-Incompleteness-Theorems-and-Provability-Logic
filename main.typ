@@ -158,7 +158,7 @@ In proofs of the incompleteness theorems, especially G2, the principal obstacle 
 In other words, these notions must be formally defined and their properties proved _within_ the formalized deductive system itself, which in our case is $ISigma1$.
 A naïve, purely syntactic approach to this task encounters the following difficulties#footnote[
   Nevertheless, carrying out such a construction is worthwhile.
-  These syntactic operations are constructive and can be developed over very weak base theories, such as $sans("S")^1_2$.
+  These syntactic operations are constructive and can be developed over very weak base theories, such as $BussS12$.
 ].
 
 / Bureaucracy of the deductive system:
@@ -224,9 +224,9 @@ More precisely:
 
 #theorem[
   Let $T supset.eq R0$ be a $Sigma_1$-sound theory and let $S$ be an r.e. set.
-  Then there is a $LOR$-formula $sans("Rep")_(S)(x)$ such that
+  Then there is a $LOR$-formula $Rep(S)(x)$ such that
   $
-    n in S <==> T proves sans("Rep")_(S)(num(n))
+    n in S <==> T proves Rep(S)(num(n))
   $
 ]<thm:repr>
 
@@ -274,38 +274,38 @@ Mechanizing the incompleteness theorems via such an abstract provability has pre
     inset: 6pt,
     align: (right + horizon, left + horizon),
     stroke: none,
-    $bold("D1")$,
+    $CondD1$,
     [
       $T proves sigma ==> T_0 proves Bew(godel(sigma))$
     ],
   ))
 
-  That is, $Bew(x)$ is required to satisfy at least the derivability condition $bold("D1")$.
+  That is, $Bew(x)$ is required to satisfy at least the derivability condition $CondD1$.
   In what follows, we simply write $Bew sigma$ for $Bew(godel(sigma))$.
   We further define the following properties, where $sigma$ and $pi$ range over $cal(L)$-sentences.
-  The conditions $bold("D3")$ and $bold("Kre")$ are defined only when $T_0$ and $T$ are theories in the same language, i.e., when $Lang(0) = cal(L)$.
+  The conditions $CondD3$ and $CondKre$ are defined only when $T_0$ and $T$ are theories in the same language, i.e., when $Lang(0) = cal(L)$.
 
   #align(center, table(
     columns: (auto, auto),
     inset: 6pt,
     align: (right + horizon, left + horizon),
     stroke: none,
-    $bold("D2")$,
+    $CondD2$,
     [
       $T_0 proves Bew (sigma -> pi) -> Bew sigma -> Bew pi$
     ],
 
-    $bold("D3")$,
+    $CondD3$,
     [
       $T_0 proves Bew sigma -> Bew Bew sigma$
     ],
 
-    $bold("Kre")$,
+    $CondKre$,
     [
       $T proves Bew sigma$ implies $T proves sigma$
     ],
 
-    $bold("Ros")$,
+    $CondRos$,
     [
       $T proves not sigma$ implies $T_0 proves not Bew sigma$
     ],
@@ -339,11 +339,11 @@ Mechanizing the incompleteness theorems via such an abstract provability has pre
   ```
 ]
 
-The standard provability predicate $Pr(T)$ satisfies $bold("D2")$, $bold("D3")$ and $bold("Kre")$.
+The standard provability predicate $Pr(T)$ satisfies $CondD2$, $CondD3$ and $CondKre$.
 In provability logic discussed in @sect:provability_logic, we mainly assume those conditions on the provability predicate.
-The condition $bold("Kre")$ is a derivability condition introduced by Visser @Vis21 under the name _Kreisel's condition_ #footnote[Visser attributes the origin of this condition to @Kre54. To be precise, Visser required both directions.].
+The condition $CondKre$ is a derivability condition introduced by Visser @Vis21 under the name _Kreisel's condition_ #footnote[Visser attributes the origin of this condition to @Kre54. To be precise, Visser required both directions.].
 /*Our motivation for this abstraction is to formalize the arguments in a purely syntactic way, without involving models or structures.*/
-Anticipating the later construction, the standard provability predicate is a $Sigma_1$-predicate, so the condition $bold("Kre")$ can be regarded as a purely syntactic counterpart of the $Sigma_1$-soundness of $T$; the converse implication, which corresponds to $Sigma_1$-completeness, is the content of $bold("D1")$.
+Anticipating the later construction, the standard provability predicate is a $Sigma_1$-predicate, so the condition $CondKre$ can be regarded as a purely syntactic counterpart of the $Sigma_1$-soundness of $T$; the converse implication, which corresponds to $Sigma_1$-completeness, is the content of $CondD1$.
 
 In fact, abstracting provability alone does not suffice to mechanize the incompleteness theorems: we also need to abstract the diagonalization.
 
@@ -395,7 +395,7 @@ The first incompleteness theorem is proved as follows.
 
 #proposition[Abstract version of G1][
   1. $T nproves Godel(Bew)$.
-  2. If $Bew$ satisfies $bold("Kre")$, then $T nproves not Godel(Bew)$.
+  2. If $Bew$ satisfies $CondKre$, then $T nproves not Godel(Bew)$.
 
   Hence $Godel(Bew)$ is independent of $T$, and therefore $T$ is incomplete.
 ] <prop:abstract_G1>
@@ -426,11 +426,11 @@ The first incompleteness theorem is proved as follows.
 The second incompleteness theorem can likewise be mechanized.
 
 #proposition[Abstract version of G2][
-  Assume that $Bew$ satisfies $bold("D2")$ and $bold("D3")$.
+  Assume that $Bew$ satisfies $CondD2$ and $CondD3$.
   The sentence $not Bew bot$ is a natural expression of consistency; we denote it by $Con(Bew)$.
   Then the following hold.
   1. $T nproves Con(Bew)$.
-  2. If $Bew$ satisfies $bold("Kre")$, then $T nproves not Con(Bew)$. Hence $Con(Bew)$ is also independent of $T$.
+  2. If $Bew$ satisfies $CondKre$, then $T nproves not Con(Bew)$. Hence $Con(Bew)$ is also independent of $T$.
 ] <prop:abstract_G2>
 
 #leancode(
@@ -464,7 +464,7 @@ Variants of G2 arising from this view are discussed later.
 As further results, we can also mechanize Löb's theorem and the formalized Löb's theorem.
 
 #proposition[Abstract version of Löb's Theorem][
-  Assume that $Bew$ satisfies $bold("D2")$ and $bold("D3")$. Then the following hold,
+  Assume that $Bew$ satisfies $CondD2$ and $CondD3$. Then the following hold,
   where $sigma$ is an arbitrary $cal(L)$-sentence.
 
   #align(center, table(
@@ -496,18 +496,18 @@ As further results, we can also mechanize Löb's theorem and the formalized Löb
   ```
 ]
 
-Note that $bold("D1"), bold("D2"), bold("D3")$ and the formalized Löb's theorem correspond roughly to the necessitation rule and the axioms $AxiomK$, $Axiom("4")$, and $Axiom("L")$ of modal logic, respectively.
+Note that $CondD1, CondD2, CondD3$ and the formalized Löb's theorem correspond roughly to the necessitation rule and the axioms $AxiomK$, $Axiom("4")$, and $Axiom("L")$ of modal logic, respectively.
 This yields the observation that arithmetical soundness holds for the standard provability predicate.
 
-In view of the reason we gave for introducing $bold("Kre")$ into the abstraction, requiring $bold("Kre")$ in the abstract G1 of @prop:abstract_G1 corresponds to requiring the $Sigma_1$-soundness of $T$.
-If we instead impose on $Bew$ the condition $bold("Ros")$, then the abstract G1 can be proved assuming only that $T$ is consistent.
+In view of the reason we gave for introducing $CondKre$ into the abstraction, requiring $CondKre$ in the abstract G1 of @prop:abstract_G1 corresponds to requiring the $Sigma_1$-soundness of $T$.
+If we instead impose on $Bew$ the condition $CondRos$, then the abstract G1 can be proved assuming only that $T$ is consistent.
 This is precisely an abstraction of the incompleteness theorem as improved by Rosser @Ros36.
 
 #proposition[Abstract version of Gödel--Rosser theorem][
-  Assume that the provability predicate $Rosser$ satisfies $bold("Ros")$.
+  Assume that the provability predicate $Rosser$ satisfies $CondRos$.
   In this case, the Gödel sentence for $Rosser$ is called the _Rosser sentence_.
   Then we have $T nproves Godel(Rosser)$ and $T nproves not Godel(Rosser)$.
-  That is, $Godel(Rosser)$ is independent of $T$; note in particular that $bold("Kre")$ is not required.
+  That is, $Godel(Rosser)$ is independent of $T$; note in particular that $CondKre$ is not required.
   On the other hand, for the consistency statement $Con(Rosser)$ defined above, we have $T proves Con(Rosser)$ #footnote[In the Japanese mathematical logic community, this is often called _Kreisel's remark_.].
 ] <prop:abstract_GR>
 
@@ -715,12 +715,12 @@ We first take $ISigma1$ as the base theory for our proof of G2.
   ```
 ]
 
-$ISigma1$ is in fact unnecessarily strong. For a sharper result, one could weaken the base theory to Buss's theory $sans("S")^1_2$ @Bus86, over which the standard proof can be carried out with few changes#footnote[
+$ISigma1$ is in fact unnecessarily strong. For a sharper result, one could weaken the base theory to Buss's theory $BussS12$ @Bus86, over which the standard proof can be carried out with few changes#footnote[
   In many proofs, including ours, derivability condition D3 is established using formalized $Sigma_1$-completeness.
-  Whether this principle holds in $sans("S")^1_2$ remains an open problem @BV06.
+  Whether this principle holds in $BussS12$ remains an open problem @BV06.
   One must therefore prove the sharper formalized $Sigma^"b"_1$-completeness theorem.
 ].
-Moreover, Nelson's interpretation $Robinson triangle.small.r sans("S")^1_2$ extends the second incompleteness theorem to a broad class of theories that interpret Robinson arithmetic $Robinson$ @Vis11.
+Moreover, Nelson's interpretation $Robinson triangle.small.r BussS12$ extends the second incompleteness theorem to a broad class of theories that interpret Robinson arithmetic $Robinson$ @Vis11.
 Although this is an appealing direction, we do not pursue it because it would make the mechanization prohibitively complex (See @subsect:future_interpretability for future work).
 Working in $ISigma1$ makes recursive definitions of predicates and functions easier to handle, since @thm:recursive-def is available.
 
@@ -873,7 +873,7 @@ These facts immediately yield definitions over $Universe$ of basic syntactic ope
 
 
 We can routinely verify that the predicate `provabilityPred` is a provability predicate in the sense of @def:provability_abstraction,
-and moreover that it satisfies the derivability conditions $bold("D1")$, $bold("D2")$, $bold("D3")$, and $bold("Kre")$.
+and moreover that it satisfies the derivability conditions $CondD1$, $CondD2$, $CondD3$, and $CondKre$.
 
 #leancode(
   links: (
@@ -990,9 +990,9 @@ Although we omit the details, they are needed when we establish arithmetical com
 Throughout this subsection, we assume $T supset.eq ISigma1$.
 
 #theorem[
-  For any family $(theta_i)_(i < k)$ of $k$-arity arithmetical formulas $theta_i (x_0, ..., x_(k - 1))$, one can construct arithmetic sentences $sans("fixedpoint")_0, ..., sans("fixedpoint")_(k - 1)$ such that, for every $i < k$,
+  For any family $(theta_i)_(i < k)$ of $k$-arity arithmetical formulas $theta_i (x_0, ..., x_(k - 1))$, one can construct arithmetic sentences $fixpoint(0), ..., fixpoint(k - 1)$ such that, for every $i < k$,
   $
-    T proves sans("fixedpoint")_i <-> theta_i (godel(sans("fixedpoint")_0), ..., godel(sans("fixedpoint")_(k - 1)))
+    T proves fixpoint(i) <-> theta_i (godel(fixpoint(0)), ..., godel(fixpoint(k - 1)))
   $
 ] <thm:multi_fixedpoint>
 
@@ -1075,7 +1075,7 @@ By instantiating @prop:abstract_GR, we can prove the Gödel--Rosser incompletene
   ```
 ]
 
-The required provability predicate satisfying $bold("Ros")$ is constructed by so-called _witness comparison_ (see @HP93 @Lin97); we omit the details here.
+The required provability predicate satisfying $CondRos$ is constructed by so-called _witness comparison_ (see @HP93 @Lin97); we omit the details here.
 
 === Jeroslow's Second Incompleteness Theorem
 Similarly, from @prop:abstract_JG2, we can also concretely mechanize Jeroslow's second incompleteness theorem @Jer73.
@@ -1192,11 +1192,11 @@ This fact has not been mechanized yet; consequently, several statements of prova
 
 === Church's Theorem and Undecidability of First-Order Logic
 In Mathlib, computability of a predicate (at the meta level of Lean) is defined by `ComputablePred` (cf. @Car19), which requires the types of the domain and the range to be `Primcodable` #footnote[That is, encoding into and decoding from natural numbers are primitive recursive.].
-Since the type of formulas of our arithmetic is `Primcodable` via a suitable encoding, we can ask whether the set $upright("Thm")(T)$ of sentences provable from a theory $T$ is computable.
+Since the type of formulas of our arithmetic is `Primcodable` via a suitable encoding, we can ask whether the set $Thm(T)$ of sentences provable from a theory $T$ is computable.
 This yields the following theorem, commonly known as Church's theorem.
 
 #theorem[Church's Theorem (for $Sigma_1$-sound theories)][
-  For a $Sigma_1$-sound theory $T supset.eq R0$, $upright("Thm")(T)$ is not computable.
+  For a $Sigma_1$-sound theory $T supset.eq R0$, $Thm(T)$ is not computable.
 ]
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Church.lean"),))[
@@ -1223,7 +1223,7 @@ Since its axioms can be conjoined into a single sentence, the deduction theorem 
 For the speed-up theorem (@thm:speedup) below, we have also mechanized a version that weakens $Sigma_1$-soundness to mere consistency, at the cost of strengthening the base theory from $R0$ to $ISigma1$.
 
 #theorem[Church's Theorem (for consistent theories)][
-  For a consistent theory $T supset.eq ISigma1$, $upright("Thm")(T)$ is not computable.
+  For a consistent theory $T supset.eq ISigma1$, $Thm(T)$ is not computable.
 ] <thm:church2>
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Church.lean"),))[
@@ -1597,7 +1597,7 @@ For later use, we also introduce the notions of the _rank_ of a point and the _h
 
 #definition[
   Let $M$ be a finite $LogicGL$-model.
-  - The _rank_ $upright("rank")(x) < omega$ of a point $x$ is the maximal length $n$ of the $R$-chains $x prec y_1 prec dots.c prec y_n$ starting from $x$.
+  - The _rank_ $rank(x) < omega$ of a point $x$ is the maximal length $n$ of the $R$-chains $x prec y_1 prec dots.c prec y_n$ starting from $x$.
   - The _height_ of a rooted finite $LogicGL$-model $M$ is the rank of its root.
   These notions are well-defined since $M$ is conversely well-founded.
 ]
@@ -2048,7 +2048,7 @@ Moreover, $Bew$ denotes a provability in the sense of @subsect:provability_abstr
 Although the definition allows $Bew$ to be arbitrary, we mainly consider the standard provability $Bew_T$ of $T$.
 
 #definition[
-  A map $f colon PropVar -> upright("Sent")_upright("A")$, where $upright("Sent")_upright("A")$ denotes the set of arithmetic sentences, is called an _arithmetical realization_ (or simply a _realization_).
+  A map $f colon PropVar -> ArithSent$, where $ArithSent$ denotes the set of arithmetic sentences, is called an _arithmetical realization_ (or simply a _realization_).
   Given a realization $f$ and a provability $Bew$, the _arithmetical interpretation_ of $A$ by $Bew$, denoted $f_Bew (A)$, is the extension of $f$ translating each modal formula $A$ into an arithmetic sentence as follows.
 
   - $f_Bew (p) & = f(p)$
@@ -2315,15 +2315,15 @@ We note them here.
 The first is the statement that $LogicD$ is indeed a provability logic, which is currently not `sorry`-free.
 #theorem[@Jap86 @AB05[Example 60]][
   Let $T$ be $Sigma_1$-sound. Then
-  $LogicD = ProvLogic(T, T + upright("Rfn")_(Sigma_1)(T))$,
-  where $upright("Rfn")_(Sigma_1)(T)$ is the (local) reflection principle for $Sigma_1$ formulas of $T$.
+  $LogicD = ProvLogic(T, T + Rfn(Sigma_1, T))$,
+  where $Rfn(Sigma_1, T)$ is the (local) reflection principle for $Sigma_1$ formulas of $T$.
 ] <thm:D_is_provability_logic>
 
 This is because the following fact has not been mechanized in our development.
 Proving it requires arguments involving partial truth definitions, which we have not yet completed.
 
 #theorem[Unboundedness @KL68 @AB05[Theorem 23]][
-  For $T$ as above, $upright("Rfn")_(Sigma_n)(T)$ is not provable in any consistent r.e. extension of $T$ by $Pi_n$ sentences.
+  For $T$ as above, $Rfn(Sigma_n, T)$ is not provable in any consistent r.e. extension of $T$ by $Pi_n$ sentences.
 ]
 
 The other is the uniform arithmetical completeness theorem.
@@ -2509,11 +2509,11 @@ Furthermore, $LogicGrz$ is related to #LogicGL and #LogicS through the boxdot tr
 Using this fact, Goldblatt @Gol78 and Boolos @Boo80 showed that $LogicGrz$ is arithmetically complete with respect to the _strong_ arithmetical interpretation, in which $Box$ is read as "provable and true" rather than merely "provable".
 
 #definition[Strong interpretation][
-  Given a realization $f$ and a provability $Bew$, the _strong (arithmetical) interpretation_ $f^upright("s")_(Bew)(A)$ is defined exactly as the interpretation $f_(Bew)(A)$ of @def:arithmetical_interpretation except for the modal clause, which reads
+  Given a realization $f$ and a provability $Bew$, the _strong (arithmetical) interpretation_ $StrongInterpret(f, Bew)(A)$ is defined exactly as the interpretation $f_(Bew)(A)$ of @def:arithmetical_interpretation except for the modal clause, which reads
   $
-    f^upright("s")_(Bew) (Box A) = f^upright("s")_(Bew) (A) land Bew (f^upright("s")_(Bew) (A)).
+    StrongInterpret(f, Bew) (Box A) = StrongInterpret(f, Bew) (A) land Bew (StrongInterpret(f, Bew) (A)).
   $
-  Equivalently, $f^upright("s")_(Bew)(A)$ is $T$-provably equivalent to $f_(Bew)(A^Boxdot)$, and this is how the arithmetical completeness of $LogicGrz$ is reduced to that of #LogicGL and #LogicS.
+  Equivalently, $StrongInterpret(f, Bew)(A)$ is $T$-provably equivalent to $f_(Bew)(A^Boxdot)$, and this is how the arithmetical completeness of $LogicGrz$ is reduced to that of #LogicGL and #LogicS.
 ]
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/StrongInterpret.lean"),))[
   ```
@@ -2535,8 +2535,8 @@ Using this fact, Goldblatt @Gol78 and Boolos @Boo80 showed that $LogicGrz$ is ar
 
 #theorem[Arithmetical completeness of $LogicGrz$ @Gol78 @Boo80][
   Let $T$ be a theory with $height(T) = omega$ (in particular, any $Sigma_1$-sound $T$).
-  Then $LogicGrz proves A$ if and only if $T proves f^upright("s")_(Bew_T) (A)$ for every realization $f$.
-  Moreover, if $T$ is sound, then $LogicGrz proves A$ if and only if $NN models f^upright("s")_(Bew_T) (A)$ for every realization $f$.
+  Then $LogicGrz proves A$ if and only if $T proves StrongInterpret(f, Bew_T) (A)$ for every realization $f$.
+  Moreover, if $T$ is sound, then $LogicGrz proves A$ if and only if $NN models StrongInterpret(f, Bew_T) (A)$ for every realization $f$.
 ] <thm:Grz_arithmetical_completeness>
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/Grz/Basic.lean"),))[
   ```
@@ -2592,7 +2592,7 @@ We briefly describe these results.
 ]
 
 #definition[
-  The sequent calculus $GentzenGLPoint3$ for $LogicGLPoint3$ is obtained from the sequent calculus for #LogicGL by replacing the $Box upright("GL")$ rule with the following rule,
+  The sequent calculus $GentzenGLPoint3$ for $LogicGLPoint3$ is obtained from the sequent calculus for #LogicGL by replacing the $(Box_LogicGL)$ rule with the following rule,
   where $Delta != emptyset$ and ${S_1, dots, S_m} = PowerSet(Delta) without {emptyset}$ (hence $m = 2^(|Delta|) - 1$).
 
   #align(center, prooftree(rule(
