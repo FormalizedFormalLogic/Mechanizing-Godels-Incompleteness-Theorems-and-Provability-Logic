@@ -42,6 +42,21 @@
     if an.len() == 2 [#an.at(0) and #an.at(1)] else { none }
   }
 
+  // ctheorems の thmenv 参照ルールを lncs より外側にも置く．
+  // `show: thmrules` は lncs の内側にあるため，脚注の中では効かず，
+  // 脚注内の `@thm:...` が章番号付きの "2.3" ではなく素の figure カウンタの "5" になる．
+  // 本文側は内側の thmrules が先に処理するので，このルールは脚注などの取りこぼしにだけ効く．
+  show ref: it => {
+    if it.element == none { return it }
+    if it.element.func() != figure { return it }
+    if it.element.kind != "thmenv" { return it }
+    let supplement = it.element.supplement
+    if it.citation.supplement != none { supplement = it.citation.supplement }
+    let thms = query(selector(<meta:thmenvcounter>).after(it.element.location()))
+    let number = thmcounters.at(thms.first().location()).at("latest")
+    link(it.target, [#supplement~#numbering(it.element.numbering, ..number)])
+  }
+
   show: lncs.with(
     title: title,
     authors: authors,
@@ -294,6 +309,9 @@
 #let Rep(S) = $sans("Rep")_(#S)$
 #let ArithSent = $upright("Sent")_upright("A")$
 #let StrongInterpret(f, B) = $#f^(upright("s"))_(#B)$
+
+// Craig companion: Craig's trick で r.e. 理論から得られる同等な原始再帰的理論
+#let Craig(T) = $#T^upright("C")$
 
 #let Theory(T) = $sans(upright(#T))$
 #let PA = Theory("PA")
