@@ -258,11 +258,12 @@ $Nat models Pr(T)(godelize(psi)) <==> T proves psi$; hence $D$ is r.e.
   ```
 ]
 
-G1の系として，以下の事実の形のGödelの定理も示すことが出来る．
+As a corollary of @thm:G1, we can also prove Gödel's theorem in the following form.
 
 #corollary[
   Let $T$ be a $Delta_1$-definable, $Sigma_1$-sound arithmetic theory stronger than $R0$.
-  このとき，正しいが $T$ で証明出来ない文 $sigma$ が存在する．つまり，$NN models sigma$ だが $T nproves sigma$．
+  Then there exists a sentence $sigma$ that is true but unprovable in $T$;
+  that is, $NN models sigma$ but $T nproves sigma$.
 ] <cor:true_but_unprovable>
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/First.lean"),))[
@@ -1181,17 +1182,20 @@ By instantiating @prop:abstract_GR, we can prove the Gödel--Rosser incompletene
 ]
 
 The required provability predicate satisfying $Ros$ is constructed by so-called _witness comparison_ (see @HP93 @Lin97); we omit the details here.
-またこの証明は内部的には不動点定理 (@thm:fixedpoint) を使うため，@thm:G1 と違い，$T$ は $R0$ よりも強い $ISigma1$ の拡大であることを仮定していることに注意しなさい．
-また同様に @cor:true_but_unprovable も強める事ができる（省略する）．
+Note also that this proof internally uses the fixed point theorem (@thm:fixedpoint);
+hence, unlike @thm:G1, we assume that $T$ extends $ISigma1$, which is stronger than $R0$.
+Similarly, @cor:true_but_unprovable can also be strengthened; we omit the statement.
 
 === Craig's trick, soundness and definability
 
-更に，以下のCraig's trickと呼ばれる手法によって，$Delta_1$-definabilityの条件も r.e. へ弱めることが出来る．
-Church's theoremの際に解説したように，論理式などに $NN$ への自然なエンコードがLean上に実装されているため，理論がr.e.であるとは $sigma in T$ がr.e.であると定義して良い．
+Moreover, by the technique known as _Craig's trick_ below, the requirement of $Delta_1$-definability can also be weakened to being r.e.
+As explained in connection with Church's theorem, a natural encoding of formulas and the like into $NN$ is implemented in Lean;
+hence we may simply define a theory $T$ to be r.e. when the predicate $sigma in T$ is r.e.
 
 #theorem[Craig's trick][
-  理論 $T$ が r.e. のとき，原始再帰的な $Craig(T)$ が構成できて，これは同等である：つまり，任意の文 $sigma$ に対して $T proves sigma <==> Craig(T) proves sigma$．
-  特に，$T$ が無矛盾なら $Craig(T)$ も無矛盾であるし，$T$ が不完全なら $Craig(T)$ も不完全．
+  For an r.e. theory $T$, one can construct a primitive recursive theory $Craig(T)$ equivalent to $T$;
+  that is, $T proves sigma <==> Craig(T) proves sigma$ for every sentence $sigma$.
+  In particular, $Craig(T)$ is consistent if $T$ is, and $Craig(T)$ is incomplete if $T$ is.
 ]
 
 #leancode(
@@ -1200,7 +1204,7 @@ Church's theoremの際に解説したように，論理式などに $NN$ への�
     ("Foundation", "Foundation/FirstOrder/Bootstrapping/Syntax/CraigTrick.lean"),
   ),
   note: [
-    `T ≊ T.craig` は理論が等価であることを表す．
+    Here `T ≊ T.craig` expresses that the two theories are equivalent.
   ],
 )[
   ```
@@ -1224,12 +1228,13 @@ Church's theoremの際に解説したように，論理式などに $NN$ への�
   ```
 ]
 
-このtrickより，@thm:GR ないし @cor:true_but_unprovable を更に強めることが出来る．これが我々が形式化した中で最も強い（仮定の弱い）G1のステートメントの一つである #footnote[仮定は $ISigma1$ の拡大理論に修正しているので，単純に $R0$ の拡大で成立する @thm:G1 と比較はできない． ]．
+By this trick, @thm:GR and @cor:true_but_unprovable can be strengthened further.
+This is one of the strongest statements of G1 -- that is, one with the weakest assumptions -- that we have mechanized #footnote[Since the assumption is changed to extending $ISigma1$, it is not comparable with @thm:G1, which holds for any extension of $R0$.].
 
-#theorem[G1 for r.e. theory][
-  Let $T supset.eq ISigma1$ be a r.e. and consistent theory.
+#theorem[G1 for r.e. theories][
+  Let $T supset.eq ISigma1$ be an r.e. and consistent theory.
   Then $T$ is incomplete.
-  更に真だが $T$ で証明出来ない文も存在する．
+  Moreover, there also exists a sentence that is true but unprovable in $T$.
 ]
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/RosserProvability.lean"),))[
@@ -1242,11 +1247,11 @@ Church's theoremの際に解説したように，論理式などに $NN$ への�
   ```
 ]
 
-なお，G2については，現状では算術化におけるコーディングの問題により，以下の形で述べられる．
+As for G2, at present it can only be stated in the following form, because of an issue with coding in the arithmetization.
 
-#theorem[G2 for r.e. theory][
-  Let $T$ be a r.e., consistent arithmetic theory stronger than $ISigma1$.
-  Then $T nproves Con(Craig(T))$, i.e. $T$ cannot prove consistency statement of $Craig(T)$.
+#theorem[G2 for r.e. theories][
+  Let $T$ be an r.e., consistent arithmetic theory stronger than $ISigma1$.
+  Then $T nproves Con(Craig(T))$, i.e. $T$ cannot prove the consistency statement of $Craig(T)$.
 ] <thm:G2_RE>
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Second.lean"),))[
@@ -1257,12 +1262,14 @@ Church's theoremの際に解説したように，論理式などに $NN$ への�
 ]
 
 #remark[
-  このステートメントを $T$ それ自身のconsistencyに修正するためには，$T proves fal(x) [Pr(T)(x) <-> Pr(Craig(T))(x)]$ であることを形式化する必要がある．
-  しかしこのことは，
-  $Pr(T)(x)$ が $Delta_1$-definableではなく r.e. な理論でもコーディング出来るといった微妙な修正や，Craig's trick自体を算術の中で形式化(formalize)して実行するといった面倒な作業があるため，まだ形式化(mechanize)出来ていない．
+  To restate this in terms of the consistency of $T$ itself, one would have to mechanize $T proves fal(x) [Pr(T)(x) <-> Pr(Craig(T))(x)]$.
+  This, however, requires delicate adjustments, such as making $Pr(T)(x)$ codable for theories that are merely r.e. rather than $Delta_1$-definable,
+  as well as the laborious task of formalizing Craig's trick itself within arithmetic and carrying it out there;
+  we have therefore not mechanized it yet.
 ] <rmk:craig_RE>
 
-さて，ここで述べた定理や系に対して，理論 $T$ として具体的に $ISigma1$ や $PA$ などを取るためには，これらが $Sigma_1$-sound (and thus consistent) であることや，r.e.であることを形式化しなくてはならない．
+To instantiate the theorems and corollaries stated here with a concrete theory $T$ such as $ISigma1$ or $PA$,
+the $Sigma_1$-soundness (and hence consistency) of these theories, as well as the fact that they are r.e., must themselves be mechanized.
 We have done this as well.
 
 #proposition[
@@ -1284,7 +1291,8 @@ We have done this as well.
   ```
 ]
 
-更に以下のことも成り立つ．ただし $Delta_1$-definablilityは @rmk:craig_RE で指摘したような問題のために置いてあるだけで，本質的ではない（通常の数学的には，r.e.であることから従う）．
+The following also holds.
+Here $Delta_1$-definability is stated only because of the issue pointed out in @rmk:craig_RE, and is not essential; in ordinary mathematical practice, being r.e. suffices.
 
 #proposition[
   $ISigma1$ and $PA$ are r.e. and $Delta_1$-definable.
@@ -1307,7 +1315,7 @@ We have done this as well.
 ]
 
 
-故に，今回形式化した定理たちに対して，具体的に $ISigma1$ や $PA$ を取ることが出来る．
+Hence all the theorems mechanized here can indeed be instantiated with concrete theories such as $ISigma1$ and $PA$.
 
 === Jeroslow's Second Incompleteness Theorem
 Similarly, from @prop:abstract_JG2, we can also concretely mechanize Jeroslow's second incompleteness theorem @Jer73.
