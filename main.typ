@@ -65,17 +65,35 @@ However, these are either abstract or not full mechanizations within arithmetic.
 For instance, O'Connor's implementation assumes several facts needed for the proof of G2 as axioms, and Paulson's mechanization of G2 uses hereditarily finite sets, not arithmetic @Pau14.
 To the best of our knowledge, no full mechanization of the incompleteness theorems entirely within arithmetic has been reported, and consequently neither has any mechanization of the arithmetical side of provability logic, such as Solovay's arithmetical completeness theorem.
 
-In the present paper, we describe our mechanizations of Gödel's first and second incompleteness theorems and Solovay's arithmetical completeness theorem.
+我々は論理学の形式化プロジェクト *Formalized Formal Logic*（以下 *FFL* と省略する）で行った形式化について報告する．
+この論文の主結果は，Gödelの第一不完全性定理 (@thm:G1) および第2定理 (@thm:G2) ないし，Solovay's arithmetical completeness theorem (@thm:arithmetical_completeness) の完全に`sorry`-freeな形式化である．
+その他にも様々な系も証明してあるが，それらは各々のセクションを参考にせよ．
 Our work is carried out in Lean 4, an interactive theorem prover, together with mathlib4 @Mathlib2020, its community-developed mathematics library.
 Lean 4 is based on the Calculus of Inductive Constructions (CIC) @dMU21,
 and features dependent types, quotient types, and support for noncomputable definitions, making it highly expressive.
 In addition, its powerful metaprogramming infrastructure like `aesop` @LF23 and `grind` @MdM26 enables efficient proof automation and extensibility.
 
-Our mechanization is currently hosted as a repository on GitHub, and the version we refer to is #link(REPO_SOURCES.at("Foundation")).
-In the present paper, we will briefly and informally introduce the mathematical facts without omitting the essentials, and show the code of our mechanization corresponding to those facts.
-However, for the sake of readability, note that in some places we have modified the hosted code.
-Moreover, owing to motivations other than the incompleteness theorems and provability logic that the present paper focuses on, some implementations are stated as more general definitions.
-We add comments where we deem it necessary, but for the actual working (verified) code, refer to the repository.
+== Paper strcuture
+
+この報告の構成は以下のとおり．
+- @sect:Incompleteness では，不完全性定理やそれに関する系に関する形式化や技術的な詳細を概説する．
+- @sect:provability_logic では証明可能性論理についてSolovayの算術的完全性定理や分類定理について述べる．
+- @sect:futurework ではFFLの今後の進展や展望を先行研究なども交えつつ示していく．
+- @sect:vibe-formalizing ではAppendixとして，本形式化におけるAIの使用について軽く述べておく．
+
+なお，数学的な定義や事実に関しては，ここで全てを述べるわけにはいかないため，証明は基本的に読者に既知とし，またある程度インフォーマルな形で述べることにする．
+それぞれのセクションの冒頭に記載された参考文献などを参照すること．
+また，Leanのプログラミング言語・定理証明支援系としての記法などもやはり読者には既知のものとする．
+必要なら，例えば標準的な教材 @TPiL4 を参考にしなさい．
+
+== Repositories
+
+Our mechanization is currently hosted as a repository on GitHub．
+我々の形式化は執筆時現在でもまだ開発が進んでおり，最新のバージョンではステートメントや定義の修正が為されている可能性があることに留意せよ．
+このレポートは以下の固定されたバージョンに基づく．
+
+- @sect:Incompleteness，不完全性定理に関する形式化: #link(REPO_SOURCES.at("Foundation")).
+- @sect:provability_logic，証明可能性論理に関する形式化: #link(REPO_SOURCES.at("ProvabilityLogic")).
 
 == Declaration of AI usage
 
@@ -92,7 +110,7 @@ This can be verified from the following commits, at which each result first beca
 - Gödel's second incompleteness theorem: #commit-link("2da7151e1da0ce40ae222fec1651756f8ee7acce") (2024/09/04).
 - Solovay's arithmetical completeness theorem: #commit-link("4a34d75c074c7614a1f16661ac73fd0725263c32") (2025/04/06).
 Some proofs in modal logic and provability logic make use of AI-assisted mechanizations. This is discussed in detail in
-Appendix: @subsect:vibe-formalizing.
+Appendix: @sect:vibe-formalizing.
 
 == Acknowledgement
 
@@ -102,7 +120,7 @@ We also received financial support: this work was partially supported by JST CRE
 In addition, we received financial support from individuals and companies #footnote[See: #link("https://formalizedformallogic.github.io#financial-supports")].
 We gratefully acknowledge all of this support here.
 
-= Mechanization of the incompleteness theorems
+= Mechanization of the incompleteness theorems <sect:Incompleteness>
 
 We mechanized the following two results.
 Here, arithmetic sentence/theory means a sentence/theory in the language $LOR = {0, 1, +, dot, <, =}$.
@@ -2711,7 +2729,7 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
   ```
 ]
 
-= Related work and future work <sect:provabilitylogic_futurework>
+= Related work and future work <sect:futurework>
 
 Finally, in this section, we mention some prior work related to our mechanization, that is, mechanizations of the incompleteness theorems and of facts concerning provability logic in proof assistants.
 Moreover, on that basis, we indicate several directions in which we plan to proceed.
@@ -2954,7 +2972,7 @@ However, we have not yet established modal completeness with respect to frames, 
 
 // = Concluding and Future works
 
-= Appendix: Vibe formalizing <subsect:vibe-formalizing>
+= Appendix: Vibe formalizing <sect:vibe-formalizing>
 
 We describe how the AI is used in our development.
 Claude does not mechanize everything autonomously: the author first fixes the overall strategy for proving the main theorems and writes their formal statements, and only then delegates the actual proofs to Claude.
