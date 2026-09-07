@@ -286,25 +286,23 @@ Mechanizing the incompleteness theorems via such an abstract provability has pre
   The conditions $D3$ and $Kre$ are defined only when $T_0$ and $T$ are theories in the same language, i.e., when $Lang(0) = cal(L)$.
 
   #align(center, table(
-    columns: (auto, auto),
+    columns: (auto, auto, auto, auto),
     inset: 6pt,
-    align: (right + horizon, left + horizon),
+    align: (right + horizon, left + horizon, right + horizon, left + horizon),
     stroke: none,
     $D2$,
     [
       $T_0 proves Bew (sigma -> pi) -> Bew sigma -> Bew pi$
+    ],
+    $Kre$,
+    [
+      $T proves Bew sigma$ implies $T proves sigma$
     ],
 
     $D3$,
     [
       $T_0 proves Bew sigma -> Bew Bew sigma$
     ],
-
-    $Kre$,
-    [
-      $T proves Bew sigma$ implies $T proves sigma$
-    ],
-
     $Ros$,
     [
       $T proves not sigma$ implies $T_0 proves not Bew sigma$
