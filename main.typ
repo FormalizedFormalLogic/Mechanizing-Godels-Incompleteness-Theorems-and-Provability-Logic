@@ -66,7 +66,7 @@ For instance, O'Connor's implementation assumes several facts needed for the pro
 To the best of our knowledge, no full mechanization of the incompleteness theorems entirely within arithmetic has been reported, and consequently neither has any mechanization of the arithmetical side of provability logic, such as Solovay's arithmetical completeness theorem.
 
 We report our project: _Formalized Formal Logic_ (abbreviated as _FFL_ below), for mechanizing mathematical logic.
-The main contribution of this paper are completely `sorry`-free mechanizations of Gödel's first (@thm:G1) and second (@thm:G2) incompleteness theorems and of Solovay's arithmetical completeness theorem (@thm:arithmetical_completeness).
+The main contributions of this paper are completely `sorry`-free mechanizations of Gödel's first (@thm:G1) and second (@thm:G2) incompleteness theorems and of Solovay's arithmetical completeness theorem (@thm:arithmetical_completeness).
 We have also proved various corollaries; for these, we refer the reader to the respective sections.
 
 Our work is carried out in Lean 4, an interactive theorem prover, together with mathlib4 @Mathlib2020, its community-developed mathematics library.
@@ -82,15 +82,15 @@ This report is organized as follows.
 - @sect:futurework describes the future development and direction of FFL, with reference to related work.
 - @sect:vibe-formalizing is an appendix that briefly describes the use of AI in our mechanization.
 
-Since it is not our point that state all of the mathematical definitions and facts here, we omit the mathematical discussion and generally assume that their proofs are known to the reader, and we state them somewhat informally, so, see the references given at the beginning of each section.
-Moreover, we also assume that the reader is familiar with the notation, syntax, functionalities of Lean4 as either programming language and interactive theorem prover.
-If not familiar with Lean, consult standard textbook such as @TPiL4.
+Since it is not our purpose to state all of the mathematical definitions and facts here, we state them somewhat informally and generally assume that their proofs are known to the reader; see the references given at the beginning of each section.
+Moreover, we also assume that the reader is familiar with the notation, syntax, and functionalities of Lean 4, both as a programming language and as an interactive theorem prover.
+Readers unfamiliar with Lean may consult a standard textbook such as @TPiL4.
 
 == Repositories
 
-Our mechanization is currently hosted as repositories on GitHub.
-We note that, our mechanization is still under development at the time of writing this paper, so statements and definitions describing this paper may have been revised in the latest version of this repositories.
-This report is based on the following fixed versions. Each excerpted code snippet is also roughly annotated with the URL of its source as a reference.
+Our mechanization is currently hosted in several repositories on GitHub.
+We note that our mechanization is still under development at the time of writing this paper, so the statements and definitions described in this paper may have been revised in the latest versions of these repositories.
+This report is based on the following fixed versions. Each excerpted code snippet is annotated with the URL of its source as a reference.
 
 - @sect:Incompleteness, the mechanization of the incompleteness theorems: #link(REPO_SOURCES.at("Foundation")).
 - @sect:provability_logic, the mechanization of provability logic: #link(REPO_SOURCES.at("ProvabilityLogic")).
@@ -115,8 +115,8 @@ Appendix: @sect:vibe-formalizing.
 == Acknowledgement
 
 As for mathematical review, ... .
-In development, we thank C7X (#link("https://github.com/indiscernibles")[\@indiscernibles]) and Trevor Morris (#link("https://github.com/gotrevor")[\@gotrevor]), who were mainly engaged in active discussion and experimentation for the development of FFL.
-We also received financial support: this work was partially supported by JST CREST JPMJCR25I5 and JST BOOST JPMJBY24E2.
+During the development of FFL, we thank C7X (#link("https://github.com/indiscernibles")[\@indiscernibles]) and Trevor Morris (#link("https://github.com/gotrevor")[\@gotrevor]), who were mainly engaged in active discussion and experimentation.
+We also received financial support; this work was partially supported by JST CREST JPMJCR25I5 and JST BOOST JPMJBY24E2.
 In addition, we received financial support from individuals and companies #footnote[See: #link("https://formalizedformallogic.github.io#financial-supports")].
 We gratefully acknowledge all of this support here.
 
