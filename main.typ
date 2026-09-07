@@ -278,6 +278,23 @@ $Nat models Pr(T)(godelize(psi)) <==> T proves psi$; hence $D$ is r.e.
   theorem incomplete (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHierarchy 𝚺 1] : Incomplete T
   ```
 ]
+
+As a corollary of @thm:G1, we can also prove Gödel's theorem in the following form.
+
+#corollary[
+  Let $T$ be a $Delta_1$-definable, $Sigma_1$-sound arithmetic theory stronger than $R0$.
+  Then there exists a sentence $sigma$ that is true but unprovable in $T$;
+  that is, $NN models sigma$ but $T nproves sigma$.
+] <cor:true_but_unprovable>
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/First.lean"),))[
+  ```
+  theorem exists_true_but_unprovable_sentence_of_sigma1sound
+    (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHierarchy 𝚺 1] :
+    ∃ δ : ArithmeticSentence, ℕ↓[ℒₒᵣ] ⊧ δ ∧ T ⊬ δ
+  ```
+]
+
 == Provability abstraction <subsect:provability_abstraction>
 
 Before proving G2, we introduce a theory of the provability predicate, called _provability abstraction_, because working directly with a raw provability predicate is technically cumbersome.
@@ -308,28 +325,12 @@ Mechanizing the incompleteness theorems via such an abstract provability has pre
 
   #align(center, table(
     columns: (auto, auto),
-    inset: 6pt,
-    align: (right + horizon, left + horizon),
+    inset: (x: 12pt, y: 8pt),
+    align: (left + horizon, left + horizon),
     stroke: none,
-    $D2$,
-    [
-      $T_0 proves Bew (sigma -> pi) -> Bew sigma -> Bew pi$
-    ],
+    [$D2: T_0 proves Bew (sigma -> pi) -> Bew sigma -> Bew pi$], [$Kre: T proves Bew sigma$ implies $T proves sigma$],
 
-    $D3$,
-    [
-      $T_0 proves Bew sigma -> Bew Bew sigma$
-    ],
-
-    $Kre$,
-    [
-      $T proves Bew sigma$ implies $T proves sigma$
-    ],
-
-    $Ros$,
-    [
-      $T proves not sigma$ implies $T_0 proves not Bew sigma$
-    ],
+    [$D3: T_0 proves Bew sigma -> Bew Bew sigma$], [$Ros: T proves not sigma$ implies $T_0 proves not Bew sigma$],
   ))
   // - $bold("FC")$ (on an $cal(L)$-sentence $sigma$): $T_0 proves sigma -> Bew sigma$.
   // - $bold("S")$ (on an $L_0$-structure $M$) : $M models Bew sigma ==> T proves sigma$.
@@ -375,9 +376,9 @@ In fact, abstracting provability alone does not suffice to mechanize the incompl
   $
     T proves fixpoint(theta) <-> theta (godelize(fixpoint(theta)))
   $
-  for any $theta(x)$. We call $fixpoint(theta)$ the _fixed point_ of $theta$.
+  for any $theta(x)$. We call $fixpoint(theta)$ the _fixpoint_ of $theta$.
 
-  Let $T_0, T$ be $cal(L)$-theories such that $T_0$ is diagonalizable, and let $Bew$ be a provability of $T_0, T$. Then the fixed point of $not Bew (x)$ is called the _Gödel sentence_ and is denoted by $Godel(Bew)$.
+  Let $T_0, T$ be $cal(L)$-theories such that $T_0$ is diagonalizable, and let $Bew$ be a provability of $T_0, T$. Then the fixpoint of $not Bew (x)$ is called the _Gödel sentence_ and is denoted by $Godel(Bew)$.
 ] <def:diagonalization_abstraction>
 
 #leancode[
@@ -575,7 +576,7 @@ This allows us to formalize Jeroslow's G2 concisely.
   As with $Bew$, we abbreviate $Wid(godelize(sigma))$ as $Wid sigma$.
   We say that $Wid$ is _sound on_ an $cal(L)$-sentence $sigma$ if $T proves Wid sigma ==> T proves not sigma$.
 
-  Let $Wid$ be a $T$-refutability predicate over $T_0$ and suppose that $T_0$ is diagonalizable. Then the fixed point of $Wid(x)$ is called the _Jeroslow sentence_ and is denoted by $Jeroslow(Wid)$.
+  Let $Wid$ be a $T$-refutability predicate over $T_0$ and suppose that $T_0$ is diagonalizable. Then the fixpoint of $Wid(x)$ is called the _Jeroslow sentence_ and is denoted by $Jeroslow(Wid)$.
 ]
 
 #leancode(
@@ -946,9 +947,9 @@ and moreover that it satisfies the derivability conditions $D1$, $D2$, $D3$, and
 ]
 
 On the other hand, making @prop:abstract_G2 concrete requires the theory to be diagonalizable (@def:diagonalization_abstraction).
-Since $T supset.eq ISigma1$, the fixed point theorem holds.
+Since $T supset.eq ISigma1$, the fixpoint theorem holds.
 
-#theorem[
+#theorem[Fixpoint Theorem][
   Suppose $T supset.eq ISigma1$. For any unary arithmetical formula $theta(x)$, one can construct an arithmetic sentence $fixpoint(theta)$ such that
   $
     T proves fixpoint(theta) <-> theta (godelize(fixpoint(theta)))
@@ -1006,7 +1007,7 @@ Combining the results above, @prop:abstract_G2 immediately yields our final resu
 Using the tools developed so far, we have also proved several theorems related to Gödel's incompleteness theorems.
 
 === Variants of fixedpoint lemma
-The following fixed point theorems, which generalize @thm:fixedpoint, also hold; see @Boo94 for the proofs.
+The following fixpoint theorems, which generalize @thm:fixedpoint, also hold; see @Boo94 for the proofs.
 Although we omit the details, they are needed when we establish arithmetical completeness in @sect:provability_logic.
 Throughout this subsection, we assume $T supset.eq ISigma1$.
 
@@ -1068,107 +1069,8 @@ As related work, Löb's theorem has also been mechanized in Isabelle by Bailitis
   ```
 ]
 
-=== Gödel--Rosser First Incompleteness Theorem
-In the setting of @thm:G1, the theory $T$ was required to be $Sigma_1$-sound.
-By instantiating @prop:abstract_GR, we can prove the Gödel--Rosser incompleteness theorem @Ros36, which weakens this requirement to mere consistency.
-
-#theorem[Gödel--Rosser First Incompleteness Theorem @Ros36][
-  Let $T supset.eq ISigma1$ be a $Delta_1$-definable and consistent theory.
-  Then $T$ is incomplete.
-] <thm:GR>
-
-#leancode(
-  links: (("Foundation", "Foundation/FirstOrder/Incompleteness/RosserProvability.lean"),),
-  note: [
-    Note that the assumption `[T.SoundOnHierarchy 𝚺 1]` in the mechanization of @thm:G1 is replaced by `[Entailment.Consistent T]`.
-  ],
-)[
-  ```
-  variable {T : Theory L} [T.Δ₁] [Entailment.Consistent T]
-
-  noncomputable abbrev Theory.rosserProvability : Provability 𝗜𝚺₁ T where
-    prov := T.rosserProvable
-    bew_def := rosserProvable_D1
-
-  instance : T.rosserProvability.Rosser := ⟨rosserProvable_rosser⟩
-
-  theorem incomplete_GR (T : ArithmeticTheory) [T.Δ₁] [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T] : Entailment.Incomplete T
-  ```
-]
-
-The required provability predicate satisfying $Ros$ is constructed by so-called _witness comparison_ (see @HP93 @Lin97); we omit the details here.
-
-=== Jeroslow's Second Incompleteness Theorem
-Similarly, from @prop:abstract_JG2, we can also concretely mechanize Jeroslow's second incompleteness theorem @Jer73.
-We mention that Popescu and Traytel @PT21[Theorem 30] mechanized Jeroslow's theorem only at the abstract level.
-
-#theorem[Jeroslow's Second Incompleteness Theorem @Jer73][
-  Let $T supset.eq ISigma1$ be a $Delta_1$-definable and consistent theory.
-  Then $T nproves forall x. not (Pr(T)(x) and Pr(T)(dot(not) x))$,
-  where $dot(not)$ denotes the function taking the Gödel number of a sentence to that of its negation, i.e., $dot(not) godelize(sigma) = godelize(not sigma)$.
-]
-
-#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Jeroslow.lean"),))[
-  ```
-  theorem unprovable_formalized_law_of_noncontradiction {T : ArithmeticTheory} [T.Δ₁] [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T]
-  : T ⊬ (∀¹ ∼(T.provable ⋏ T.refutable))
-  ```
-]
-
-=== $Sigma_1$-soundness and $Delta_1$-definability of $ISigma1$ and $PA$
-To instantiate the theorems stated so far with a concrete theory such as $ISigma1$ or $PA$, the $Sigma_1$-soundness and the $Delta_1$-definability of these theories must themselves be mechanized.
-We have done this as well.
-
-#proposition[
-  $ISigma1$ and $PA$ are $Sigma_1$-sound, hence consistent.
-]
-
-#leancode(
-  links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/12fc07a5019847beb6b2217d2a5edbd853c24258/Foundation/FirstOrder/Arithmetic/Schemata.lean#L390",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/12fc07a5019847beb6b2217d2a5edbd853c24258/Foundation/FirstOrder/Arithmetic/Schemata.lean#L392",
-    ),
-  ),
-)[
-  ```
-  instance sigmaOneSound_ISigmaOne : 𝗜𝚺₁.SoundOnHierarchy 𝚺 1
-
-  instance sigmaOneSound_Peano : 𝗣𝗔.SoundOnHierarchy 𝚺 1
-  ```
-]
-
-#proposition[
-  $ISigma1$ and $PA$ are $Delta_1$-definable.
-]
-
-#leancode(
-  links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Incompleteness/InductionSchemeDelta1.lean#L1386",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Incompleteness/InductionSchemeDelta1.lean#L1389",
-    ),
-  ),
-)[
-  ```
-  noncomputable instance PA_delta1Definable : 𝗣𝗔.Δ₁
-
-  noncomputable instance ISigma1_delta1Definable : 𝗜𝚺₁.Δ₁
-  ```
-]
-
-Hence all the theorems above can indeed be instantiated with concrete theories such as $ISigma1$ and $PA$.
-
 === Tarski's Undefinability Theorem
-As a corollary of the fixed point theorem, we can prove Tarski's theorem on the undefinability of truth.
+As a corollary of the fixpoint theorem, we can prove Tarski's theorem on the undefinability of truth.
 First, we prove the following lemma.
 
 #lemma[
@@ -1256,13 +1158,195 @@ For the speed-up theorem (@thm:speedup) below, we have also mechanized a version
 
 Note that this version does not apply to the above proof of the undecidability of first-order logic, since $PAMinus$ is weaker than $ISigma1$.
 
+=== Gödel--Rosser First Incompleteness Theorem
+In the setting of @thm:G1, the theory $T$ was required to be $Sigma_1$-sound.
+By instantiating @prop:abstract_GR, we can prove the Gödel--Rosser incompleteness theorem @Ros36, which weakens this requirement to mere consistency.
+
+#theorem[Gödel--Rosser First Incompleteness Theorem @Ros36][
+  Let $T supset.eq ISigma1$ be a $Delta_1$-definable and consistent theory.
+  Then $T$ is incomplete.
+] <thm:GR>
+
+#leancode(
+  links: (("Foundation", "Foundation/FirstOrder/Incompleteness/RosserProvability.lean"),),
+  note: [
+    Note that the assumption `[T.SoundOnHierarchy 𝚺 1]` in the mechanization of @thm:G1 is replaced by `[Entailment.Consistent T]`.
+  ],
+)[
+  ```
+  variable {T : Theory L} [T.Δ₁] [Entailment.Consistent T]
+
+  noncomputable abbrev Theory.rosserProvability : Provability 𝗜𝚺₁ T where
+    prov := T.rosserProvable
+    bew_def := rosserProvable_D1
+
+  instance : T.rosserProvability.Rosser := ⟨rosserProvable_rosser⟩
+
+  theorem incomplete_GR (T : ArithmeticTheory) [T.Δ₁] [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T] : Entailment.Incomplete T
+  ```
+]
+
+The required provability predicate satisfying $Ros$ is constructed by so-called _witness comparison_ (see @HP93 @Lin97); we omit the details here.
+Note also that this proof internally uses the fixpoint theorem (@thm:fixedpoint);
+hence, unlike @thm:G1, we assume that $T$ extends $ISigma1$, which is stronger than $R0$.
+Similarly, @cor:true_but_unprovable can also be strengthened; we omit the statement.
+
+=== Craig's trick, soundness and definability
+
+Moreover, by the technique known as _Craig's trick_ below, the requirement of $Delta_1$-definability can also be weakened to being r.e.
+As explained in connection with Church's theorem, a natural encoding of formulas and the like into $NN$ is implemented in Lean;
+hence we may simply define a theory $T$ to be r.e. when the predicate $sigma in T$ is r.e.
+
+#theorem[Craig's trick][
+  For an r.e. theory $T$, one can construct a primitive recursive theory $Craig(T)$ equivalent to $T$;
+  that is, $T proves sigma <==> Craig(T) proves sigma$ for every sentence $sigma$.
+  In particular, $Craig(T)$ is consistent if $T$ is, and $Craig(T)$ is incomplete if $T$ is.
+]
+
+#leancode(
+  links: (
+    ("Foundation", "Foundation/FirstOrder/Bootstrapping/Syntax/Theory.lean"),
+    ("Foundation", "Foundation/FirstOrder/Bootstrapping/Syntax/CraigTrick.lean"),
+  ),
+  note: [
+    Here `T ≊ T.craig` expresses that the two theories are equivalent.
+  ],
+)[
+  ```
+  class Theory.RE (T : Theory L) : Prop where
+    re : REPred (· ∈ T)
+
+  class Theory.Primrec (T : Theory L) : Prop where
+    primrec : PrimrecPred (· ∈ T)
+
+  instance {T : Theory L} [T.Primrec] : T.RE
+
+  def Theory.craig (T : Theory L) [T.RE] : Theory L
+
+  instance : T.craig.Primrec
+
+  noncomputable instance : (T.craig).Δ₁
+
+  instance : T ≊ T.craig
+
+  instance [Consistent T] : Consistent T.craig
+  ```
+]
+
+By this trick, @thm:GR and @cor:true_but_unprovable can be strengthened further.
+This is one of the strongest (i.e., with the weakest assumptions) statements of G1 that we have mechanized #footnote[Since the assumption is changed to extending $ISigma1$, it is not comparable with @thm:G1, which holds for any extension of $R0$.].
+
+#theorem[G1 for r.e. theories][
+  Let $T supset.eq ISigma1$ be an r.e. and consistent theory.
+  Then $T$ is incomplete.
+  Moreover, there also exists a sentence that is true but unprovable in $T$.
+]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/RosserProvability.lean"),))[
+  ```
+  theorem incomplete_GR_of_RE (T : ArithmeticTheory) [T.RE] [𝗜𝚺₁ ⪯ T] [Consistent T] : Incomplete T
+
+  theorem exists_true_but_unprovable_sentence_of_RE_of_consistent
+    (T : ArithmeticTheory) [T.RE] [𝗜𝚺₁ ⪯ T] [Consistent T] :
+    ∃ δ : ArithmeticSentence, ℕ↓[ℒₒᵣ] ⊧ δ ∧ T ⊬ δ
+  ```
+]
+
+As for G2, at present it can only be stated in the following form, because of an issue with coding in the arithmetization.
+
+#theorem[G2 for r.e. theories][
+  Let $T$ be an r.e., consistent arithmetic theory stronger than $ISigma1$.
+  Then $T nproves Con(Craig(T))$, i.e. $T$ cannot prove the consistency statement of $Craig(T)$.
+] <thm:G2_RE>
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Second.lean"),))[
+  ```
+  theorem craig_consistent_unprovable_of_RE (T : ArithmeticTheory) [T.RE] [𝗜𝚺₁ ⪯ T] [Consistent T]
+  : T ⊬ T.craig.consistent.val
+  ```
+]
+
+#remark[
+  To restate this in terms of the consistency of $T$ itself, one would have to mechanize $T proves fal(x) [Pr(T)(x) <-> Pr(Craig(T))(x)]$.
+  This, however, requires delicate adjustments, such as making $Pr(T)(x)$ codable for theories that are merely r.e. rather than $Delta_1$-definable,
+  as well as the cumbersome task of formalizing Craig's trick itself within arithmetic and carrying it out there;
+  we have therefore not mechanized it yet.
+] <rmk:craig_RE>
+
+To instantiate the theorems and corollaries stated in this paper with a concrete theory $T$ such as $ISigma1$ or $PA$,
+the $Sigma_1$-soundness (and hence consistency) and the recursive enumerability of these theories must themselves be mechanized.
+We have done this as well.
+
+#proposition[
+  $ISigma1$ and $PA$ are $Sigma_1$-sound, hence consistent.
+]
+
+#leancode(
+  links: (
+    ("Foundation", "Foundation/FirstOrder/Arithmetic/Schemata.lean"),
+    ("Foundation", "Foundation/FirstOrder/Arithmetic/Basic/Hierarchy.lean"),
+  ),
+)[
+  ```
+  instance sigmaOneSound_ISigmaOne : 𝗜𝚺₁.SoundOnHierarchy 𝚺 1
+
+  instance sigmaOneSound_Peano : 𝗣𝗔.SoundOnHierarchy 𝚺 1
+
+  instance (T : ArithmeticTheory) [T.SoundOnHierarchy 𝚺 1] : Entailment.Consistent T
+  ```
+]
+
+The following also holds.
+Here $Delta_1$-definability is stated only because of the issue pointed out in @rmk:craig_RE,
+and is not essential; in ordinary mathematics one may always replace an r.e. theory by an equivalent $Delta_1$-definable one via Craig's trick.
+
+#proposition[
+  $ISigma1$ and $PA$ are r.e. and $Delta_1$-definable.
+]
+
+#leancode(
+  links: (
+    ("Foundation", "Foundation/FirstOrder/Incompleteness/Definability.lean"),
+  ),
+)[
+  ```
+  instance : 𝗣𝗔.RE
+
+  instance : 𝗜𝚺₁.RE
+
+  noncomputable instance : 𝗣𝗔.Δ₁
+
+  noncomputable instance : 𝗜𝚺₁.Δ₁
+  ```
+]
+
+
+Hence all the theorems mechanized here can indeed be instantiated with concrete theories such as $ISigma1$ and $PA$.
+
+=== Jeroslow's Second Incompleteness Theorem
+Similarly, from @prop:abstract_JG2, we can also concretely mechanize Jeroslow's second incompleteness theorem @Jer73.
+We mention that Popescu and Traytel @PT21[Theorem 30] mechanized Jeroslow's theorem only at the abstract level.
+
+#theorem[Jeroslow's Second Incompleteness Theorem @Jer73][
+  Let $T supset.eq ISigma1$ be a $Delta_1$-definable and consistent theory.
+  Then $T nproves forall x. not (Pr(T)(x) and Pr(T)(dot(not) x))$,
+  where $dot(not)$ denotes the function taking the Gödel number of a sentence to that of its negation, i.e., $dot(not) godelize(sigma) = godelize(not sigma)$.
+]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Jeroslow.lean"),))[
+  ```
+  theorem unprovable_formalized_law_of_noncontradiction {T : ArithmeticTheory} [T.Δ₁] [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T]
+  : T ⊬ (∀¹ ∼(T.provable ⋏ T.refutable))
+  ```
+]
+
 === On proof size
 Formalization also allows us to discuss provability by a proof of _feasible_ length or complexity in a certain sense.
 
 #theorem[
   Let $T supset.eq ISigma1$ be a $Delta_1$-definable and $Sigma_1$-sound theory, let $f$ be a $Sigma_1$-definable function, and let $e$ be an arbitrary natural number.
   Then we can construct the _restricted provability predicate_ $RPr(T, f, e) (x)$, a further restriction of the provability predicate expressing that "provable by a $T$-proof whose Gödel number is less than $f(e)$".
-  As with the usual Gödel sentence, let $RGodel(T, f, e)$ be a fixed point of $not RPr(T, f, e) (x)$.
+  As with the usual Gödel sentence, let $RGodel(T, f, e)$ be a fixpoint of $not RPr(T, f, e) (x)$.
 
   Then $NN models RGodel(T, f, e)$ and $T proves RGodel(T, f, e)$, but every $T$-proof of $RGodel(T, f, e)$ has code at least $f(e)$.
 ]
@@ -1329,7 +1413,7 @@ Furthermore, we have also mechanized the speed-up theorem due to Ehrenfeucht--My
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Speedup.lean"),))[
   ```
   noncomputable def Theory.minProof (T : Theory L) [T.Δ₁] (σ : Sentence L) : ℕ
-    := sInf {d : ℕ | Proof T d (⌜σ⌝ : ℕ)}
+    := sInf (Set.range λ d : T ⊢!₂! (σ : Proposition L) ↦ (⌜d⌝ : ℕ))
 
   theorem ehrenfeucht_mycielski_speedup {T : Theory L} [T.Δ₁] {σ : Sentence L}
     (hU : ¬ComputablePred (insert (∼σ) T).theory) (f : ℕ → ℕ) (hf : Computable f) :
@@ -1464,7 +1548,7 @@ We first set up the basic framework of modal logic.
 
 In the present paper, we mainly characterize the logic #LogicGL in three ways: by a Gentzen-style sequent calculus, by Kripke semantics, and by a Hilbert-style proof system.
 Although #LogicGL is usually defined in the Hilbert style, when proving the Kripke completeness, introducing a sequent calculus makes both the mathematical proofs and the implementation of the mechanization simpler.
-Moreover, as applications, the interpolation theorem and the fixed point theorem can be derived easily via the sequent calculus (we will discuss this in @sect:application-of-sequent-calculus).
+Moreover, as applications, the interpolation theorem and the fixpoint theorem can be derived easily via the sequent calculus (we will discuss this in @sect:application-of-sequent-calculus).
 Hence, in our mechanization we first define the Gentzen-style sequent calculus, and eventually prove the equivalence of all these characterizations (@thm:GL_TFAE).
 
 We first introduce the Gentzen-style sequent calculus.
@@ -1983,8 +2067,8 @@ First, since it is a pure sequent calculus, the Craig interpolation property (CI
   ```
 ]
 
-The CIP of $LogicGL$ is important in particular because it yields the fixed point theorem of #LogicGL @Smo78 @Boo79.
-We have also mechanized the fixed point theorem of $LogicGL$ via the sequent calculus.
+The CIP of $LogicGL$ is important in particular because it yields the fixpoint theorem of #LogicGL @Smo78 @Boo79.
+We have also mechanized the fixpoint theorem of $LogicGL$ via the sequent calculus.
 
 #definition[
   A propositional variable $p$ is _modalized_ in a formula $A$ if every occurrence of $p$ in $A$ is within the scope of $Box$.
@@ -1999,16 +2083,16 @@ We have also mechanized the fixed point theorem of $LogicGL$ via the sequent cal
   ```
 ]
 
-#theorem[Fixed point theorem of #LogicGL @SV82][
+#theorem[Fixpoint theorem of #LogicGL @SV82][
   Suppose that $p$ is modalized in $A$.
   Then there exists a formula $D$ not containing $p$ and consisting only of propositional variables of $A$ such that
   $ LogicGL proves A[p := D] <-> D $
-  Moreover, such a fixed point is unique up to provable equivalence: for any formula $E$ such that $LogicGL proves A[p := E] <-> E$, we have $LogicGL proves D <-> E$.
+  Moreover, such a fixpoint is unique up to provable equivalence: for any formula $E$ such that $LogicGL proves A[p := E] <-> E$, we have $LogicGL proves D <-> E$.
 ] <thm:GL_fixpoint>
 #leancode(
   links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GL/Fixedpoint.lean"),),
   note: [
-    The fresh propositional variable `q` serves only as a placeholder in the construction of the fixed point.
+    The fresh propositional variable `q` serves only as a placeholder in the construction of the fixpoint.
   ],
 )[
   ```
@@ -2019,9 +2103,9 @@ We have also mechanized the fixed point theorem of $LogicGL$ via the sequent cal
   ```
 ]
 
-A special case of the fixed point theorem of #LogicGL has also been mechanized in Lean by Gignoux @Gig26, as a supporting lemma for a mechanization of the CIP of #LogicGL based on non-wellfounded proof systems formulated coalgebraically.
-We note that Gignoux's mechanization treats formulas of the form $Box A$ and $Dia A$ and proves the fixed point equivalence semantically over Kripke frames, and its interpolants are given by a noncomputable function, whereas in our mechanization the interpolants and the fixed points can be computed constructively inside Lean from derivation trees of the sequent calculus.
-However, at present derivation trees of the sequent calculus cannot be constructed automatically by proof search or the like, so concrete derivation trees have to be input by hand. Also, when $LogicGL proves A$ is proved non-constructively, e.g., via Kripke semantics, the interpolants and the fixed points are of course not computable in Lean.
+A special case of the fixpoint theorem of #LogicGL has also been mechanized in Lean by Gignoux @Gig26, as a supporting lemma for a mechanization of the CIP of #LogicGL based on non-wellfounded proof systems formulated coalgebraically.
+We note that Gignoux's mechanization treats formulas of the form $Box A$ and $Dia A$ and proves the fixpoint equivalence semantically over Kripke frames, and its interpolants are given by a noncomputable function, whereas in our mechanization the interpolants and the fixpoints can be computed constructively inside Lean from derivation trees of the sequent calculus.
+However, at present derivation trees of the sequent calculus cannot be constructed automatically by proof search or the like, so concrete derivation trees have to be input by hand. Also, when $LogicGL proves A$ is proved non-constructively, e.g., via Kripke semantics, the interpolants and the fixpoints are of course not computable in Lean.
 
 Finally, we have also mechanized facts on the CIP of $LogicS$ and $LogicD$, which we briefly mention.
 
