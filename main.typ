@@ -96,11 +96,11 @@ Appendix: @subsect:vibe-formalizing.
 
 == Acknowledgement
 
-数学的なレビューとしては...に開発する．
-開発においては，主にFFLの開発において積極的な意見交換や実験などを行ってくれたC7X (#link("https://github.com/indiscernibles")[\@indiscernibles]) とTrevor Morris (#link("https://github.com/gotrevor")[\@gotrevor]) に感謝する．
-また金銭的な支援として，this work was partially supported by JST CREST JPMJCR25I5 and JST BOOST JPMJBY24E2.
-また，個人ないし企業からの金銭的なサポートも受けた #footnote[See: #link("https://formalizedformallogic.github.io#financial-supports")]．
-ここに感謝する．
+As for mathematical review, ... .
+In development, we thank C7X (#link("https://github.com/indiscernibles")[\@indiscernibles]) and Trevor Morris (#link("https://github.com/gotrevor")[\@gotrevor]), who were mainly engaged in active discussion and experimentation for the development of FFL.
+We also received financial support: this work was partially supported by JST CREST JPMJCR25I5 and JST BOOST JPMJBY24E2.
+In addition, we received financial support from individuals and companies #footnote[See: #link("https://formalizedformallogic.github.io#financial-supports")].
+We gratefully acknowledge all of this support here.
 
 = Mechanization of the incompleteness theorems
 
