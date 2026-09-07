@@ -1299,6 +1299,10 @@ We have done this as well.
   instance : 𝗣𝗔.RE
 
   instance : 𝗜𝚺₁.RE
+
+  noncomputable instance : 𝗣𝗔.Δ₁
+
+  noncomputable instance : 𝗜𝚺₁.Δ₁
   ```
 ]
 
