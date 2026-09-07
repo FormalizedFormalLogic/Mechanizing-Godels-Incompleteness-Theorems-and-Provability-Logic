@@ -1292,7 +1292,8 @@ We have done this as well.
 ]
 
 The following also holds.
-Here $Delta_1$-definability is stated only because of the issue pointed out in @rmk:craig_RE, and is not essential; in ordinary mathematics, being r.e. suffices.
+Here $Delta_1$-definability is stated only because of the issue pointed out in @rmk:craig_RE,
+and is not essential; in ordinary mathematics one may always replace an r.e. theory by an equivalent $Delta_1$-definable one via Craig's trick.
 
 #proposition[
   $ISigma1$ and $PA$ are r.e. and $Delta_1$-definable.
