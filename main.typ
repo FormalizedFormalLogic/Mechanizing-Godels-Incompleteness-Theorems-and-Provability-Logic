@@ -257,6 +257,14 @@ $Nat models Pr(T)(godelize(psi)) <==> T proves psi$; hence $D$ is r.e.
   theorem incomplete (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHierarchy 𝚺 1] : Incomplete T
   ```
 ]
+
+G1の系として，以下の事実の形のGödelの定理も示すことが出来る．
+
+#corollary[
+  Let $T$ be a $Delta_1$-definable, $Sigma_1$-sound arithmetic theory stronger than $R0$.
+  このとき，正しいが $T$ で証明出来ない文 $sigma$ が存在する．つまり，$NN models sigma$ だが $T nproves sigma$．
+] <cor:true_but_unprovable>
+
 == Provability abstraction <subsect:provability_abstraction>
 
 Before proving G2, we introduce a theory of the provability predicate, called _provability abstraction_, because working directly with a raw provability predicate is technically cumbersome.
@@ -927,7 +935,7 @@ and moreover that it satisfies the derivability conditions $D1$, $D2$, $D3$, and
 On the other hand, making @prop:abstract_G2 concrete requires the theory to be diagonalizable (@def:diagonalization_abstraction).
 Since $T supset.eq ISigma1$, the fixed point theorem holds.
 
-#theorem[
+#theorem[Fixpoint Lemma][
   Suppose $T supset.eq ISigma1$. For any unary arithmetical formula $theta(x)$, one can construct an arithmetic sentence $fixpoint(theta)$ such that
   $
     T proves fixpoint(theta) <-> theta (godelize(fixpoint(theta)))
@@ -1076,26 +1084,74 @@ By instantiating @prop:abstract_GR, we can prove the Gödel--Rosser incompletene
 ]
 
 The required provability predicate satisfying $Ros$ is constructed by so-called _witness comparison_ (see @HP93 @Lin97); we omit the details here.
+またこの構成には不動点補題 (@thm:fixedpoint) を使うため，@thm:G1 と違い，$T$ は $R0$ よりも強い $ISigma1$ よりも強いことを仮定していることに注意しなさい．
+また同様に @cor:true_but_unprovable も強める事ができる（省略する）．
 
-=== Jeroslow's Second Incompleteness Theorem
-Similarly, from @prop:abstract_JG2, we can also concretely mechanize Jeroslow's second incompleteness theorem @Jer73.
-We mention that Popescu and Traytel @PT21[Theorem 30] mechanized Jeroslow's theorem only at the abstract level.
+=== Craig's trick, soundness and definability
 
-#theorem[Jeroslow's Second Incompleteness Theorem @Jer73][
-  Let $T supset.eq ISigma1$ be a $Delta_1$-definable and consistent theory.
-  Then $T nproves forall x. not (Pr(T)(x) and Pr(T)(dot(not) x))$,
-  where $dot(not)$ denotes the function taking the Gödel number of a sentence to that of its negation, i.e., $dot(not) godelize(sigma) = godelize(not sigma)$.
+更に，以下のCraig's trickと呼ばれる手法によって，$Delta_1$-definabilityの条件もrecursive enumerable (r.e.) へ弱めることが出来る．
+
+#theorem[Craig's trick][
+  理論 $T$ が r.e. のとき，等価な $Delta_1$-definable な理論 $T^upright("C")$ が構成できる．
+  特に，$T$ が無矛盾なら $T^upright("C")$ も無矛盾であるし，$T$ が不完全なら $T^upright("C")$ も不完全．
 ]
 
-#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Jeroslow.lean"),))[
+#leancode(
+  links: (
+    ("Foundation", "Foundation/FirstOrder/Bootstrapping/Syntax/Theory.lean"),
+    ("Foundation", "Foundation/FirstOrder/Bootstrapping/Syntax/CraigTrick.lean"),
+  ),
+)[
   ```
-  theorem unprovable_formalized_law_of_noncontradiction {T : ArithmeticTheory} [T.Δ₁] [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T]
-  : T ⊬ (∀¹ ∼(T.provable ⋏ T.refutable))
+  class Theory.RE (T : Theory L) : Prop where
+    re : REPred (· ∈ T)
+
+  def Theory.craig (T : Theory L) [T.RE] : Theory L
+
+  noncomputable instance : (T.craig).Δ₁
+
+  instance : T ≊ T.craig
+
+  instance [Consistent T] : Consistent T.craig
   ```
 ]
 
-=== $Sigma_1$-soundness and $Delta_1$-definability of $ISigma1$ and $PA$
-To instantiate the theorems stated so far with a concrete theory such as $ISigma1$ or $PA$, the $Sigma_1$-soundness and the $Delta_1$-definability of these theories must themselves be mechanized.
+このtrickより，@thm:GR ないし @cor:true_but_unprovable を更に強めることが出来る．これが我々が形式化した中で最も強いG1のステートメントである．
+
+#theorem[
+  Let $T supset.eq ISigma1$ be a r.e. and consistent theory.
+  Then $T$ is incomplete.
+  更に真だが $T$ で証明出来ない文も存在する．
+]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/RosserProvability.lean"),))[
+  ```
+  theorem incomplete_GR_of_RE (T : ArithmeticTheory) [T.RE] [𝗜𝚺₁ ⪯ T] [Consistent T] : Incomplete T
+
+  theorem exists_true_but_unprovable_sentence_of_RE_of_consistent
+    (T : ArithmeticTheory) [T.RE] [𝗜𝚺₁ ⪯ T] [Consistent T] :
+    ∃ δ : ArithmeticSentence, ℕ↓[ℒₒᵣ] ⊧ δ ∧ T ⊬ δ
+  ```
+]
+
+なお，G2については，コーディングの問題によって現状では以下の形で述べざるを得ない．
+
+#theorem[
+  Let $T$ be a r.e., consistent arithmetic theory stronger than $ISigma1$.
+  Then $T nproves Con(T^upright("C"))$, i.e. $T$ cannot prove consistency statement of $T^upright("C")$.
+]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Second.lean"),))[
+  ```
+  theorem craig_consistent_unprovable_of_RE (T : ArithmeticTheory) [T.RE] [𝗜𝚺₁ ⪯ T] [Consistent T]
+  : T ⊬ T.craig.consistent.val
+  ```
+]
+
+このステートメントを $T$ 自身のconsistencyに修正するためには，任意の $T proves fal(x) [Pr(T)(x) <-> Pr(T^upright("C"))(x)]$ であることを形式化する必要がある．
+しかしこのことはCraig's trick自体を算術の中で形式化(formalize)して実行するといった面倒な作業があるため，まだ形式化(mechanize)出来ていない．
+
+さて，これらの理論 $T$ として具体的に $ISigma1$ や $PA$ などを取るためには，これらが $Sigma_1$-soundness (and thus consistency) であることや，r.e.であることを形式化しなくてはならない．
 We have done this as well.
 
 #proposition[
@@ -1118,33 +1174,43 @@ We have done this as well.
   instance sigmaOneSound_ISigmaOne : 𝗜𝚺₁.SoundOnHierarchy 𝚺 1
 
   instance sigmaOneSound_Peano : 𝗣𝗔.SoundOnHierarchy 𝚺 1
+
+  instance (T : ArithmeticTheory) [T.SoundOnHierarchy 𝚺 1] : Entailment.Consistent T
   ```
 ]
 
 #proposition[
-  $ISigma1$ and $PA$ are $Delta_1$-definable.
+  $ISigma1$ and $PA$ are r.e.
 ]
 
 #leancode(
-  links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Incompleteness/InductionSchemeDelta1.lean#L1386",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Incompleteness/InductionSchemeDelta1.lean#L1389",
-    ),
-  ),
+  links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Definability.lean"),),
 )[
   ```
-  noncomputable instance PA_delta1Definable : 𝗣𝗔.Δ₁
+  instance : 𝗣𝗔.RE
 
-  noncomputable instance ISigma1_delta1Definable : 𝗜𝚺₁.Δ₁
+  instance : 𝗜𝚺₁.RE
   ```
 ]
 
-Hence all the theorems above can indeed be instantiated with concrete theories such as $ISigma1$ and $PA$.
+故に，今回形式化した定理たちに対して，具体的に $ISigma1$ や $PA$ を取ることが出来る（面倒なのでそれらに対して具体的なステートメントはコードとしては置いていない．）．
+
+=== Jeroslow's Second Incompleteness Theorem
+Similarly, from @prop:abstract_JG2, we can also concretely mechanize Jeroslow's second incompleteness theorem @Jer73.
+We mention that Popescu and Traytel @PT21[Theorem 30] mechanized Jeroslow's theorem only at the abstract level.
+
+#theorem[Jeroslow's Second Incompleteness Theorem @Jer73][
+  Let $T supset.eq ISigma1$ be a $Delta_1$-definable and consistent theory.
+  Then $T nproves forall x. not (Pr(T)(x) and Pr(T)(dot(not) x))$,
+  where $dot(not)$ denotes the function taking the Gödel number of a sentence to that of its negation, i.e., $dot(not) godelize(sigma) = godelize(not sigma)$.
+]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Jeroslow.lean"),))[
+  ```
+  theorem unprovable_formalized_law_of_noncontradiction {T : ArithmeticTheory} [T.Δ₁] [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T]
+  : T ⊬ (∀¹ ∼(T.provable ⋏ T.refutable))
+  ```
+]
 
 === Tarski's Undefinability Theorem
 As a corollary of the fixed point theorem, we can prove Tarski's theorem on the undefinability of truth.
@@ -1308,7 +1374,7 @@ Furthermore, we have also mechanized the speed-up theorem due to Ehrenfeucht--My
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Speedup.lean"),))[
   ```
   noncomputable def Theory.minProof (T : Theory L) [T.Δ₁] (σ : Sentence L) : ℕ
-    := sInf {d : ℕ | Proof T d (⌜σ⌝ : ℕ)}
+    := sInf (Set.range λ d : T ⊢!₂! (σ : Proposition L) ↦ (⌜d⌝ : ℕ))
 
   theorem ehrenfeucht_mycielski_speedup {T : Theory L} [T.Δ₁] {σ : Sentence L}
     (hU : ¬ComputablePred (insert (∼σ) T).theory) (f : ℕ → ℕ) (hf : Computable f) :
@@ -2799,7 +2865,7 @@ There are several possible ways to mechanize forcing. Two basic approaches are a
 1. The standard textbook model-theoretic approach:
   As in, for example, Kunen @Kun11, one begins with a countable transitive model $M$ of $ZFC$ and a forcing poset $PP$ with generic filter $G subset.eq PP$, and constructs a new model by the forcing extension $M[G]$.
 2. An approach using proof-theoretic forcing:
-  One constructs a kind of interpretation between theories $T_1$ and $T_2$, called a _forcing interpretation_, and establishes an appropriate conservativity result $T_1 attach(subset.eq, br:Gamma) T_2$ @Avi04.
+  One constructs a kind of interpretation between theories $T_1$ and $T_2$, called a _forcing interpretation_, and establishes an appropriate conservativity result $T_1 attach(subset.eq, br: Gamma) T_2$ @Avi04.
   For example, let $T_1 := ZFC + class("unary", not)CH$, ($CH$: the continuum hypothesis), $T_2 := ZFC$, and $Gamma := {bot}$.
   Suppose that one can construct a $Gamma$-conservative forcing interpretation of $T_1$ in $T_2$.
   A proof of $ZFC proves CH$ easily yield a proof of $ZFC + class("unary", not)CH proves bot$,
@@ -2821,10 +2887,10 @@ We briefly describe it here, assuming that the language is countable.
 Let $PP$ be the set of $LK$-sequent $Gamma$ such that $LK nproves not Gamma$.
 Endow $PP$ with the relation inductively defined by the following rules. This relation is a preorder whose greatest element is the empty sequent:
 $
-  Xi prec.eq& Xi \
-  phi, psi, Gamma prec.eq Xi =>& phi and psi, Gamma prec.eq Xi \
-  phi(t) prec.eq Xi =>& fal(x) phi(x), Gamma prec.eq Xi \
-  Delta prec.eq Xi "and" Delta subset.eq Gamma =>& Gamma prec.eq Xi
+                                       Xi prec.eq & Xi \
+                    phi, psi, Gamma prec.eq Xi => & phi and psi, Gamma prec.eq Xi \
+                             phi(t) prec.eq Xi => & fal(x) phi(x), Gamma prec.eq Xi \
+  Delta prec.eq Xi "and" Delta subset.eq Gamma => & Gamma prec.eq Xi
 $
 If $LK proves phi$, then the Gödel--Gentzen translation gives $LJ proves phi^"GG"$.
 Since Kripke semantics is sound for $LJ$, we have $p forces phi^"GG"$ for every $p in PP$.
