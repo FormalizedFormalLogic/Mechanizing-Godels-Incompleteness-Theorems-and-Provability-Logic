@@ -48,11 +48,11 @@ _Gödel's incompleteness theorems_ are among the most significant results in mat
 In his seminal paper @God31, he proved what is now known as the first incompleteness theorem (G1), and in a footnote, he outlined the second incompleteness theorem (G2).
 G2 was later proved rigorously by Hilbert and Bernays @HB39.
 We state the theorems in modern terms:
-G1, with Rosser's improvement @Ros36, states that for any consistent axiomatic system capable of expressing a sufficient amount of arithmetic, there exists a proposition that can neither be proved nor disproved within the system.
+G1, with Rosser's improvement @Ros36, states that for any consistent axiomatic system with sufficient expressive power to execute arithmetic, there exists a proposition that can neither be proved nor disproved within the system.
 G2 states that, for any consistent reasonable axiomatic system as in G1, the proposition formally representing the system's own consistency cannot be proved within the system itself.
 
 Gödel also made another important observation: that provability can be regarded as a modality.
-In his early work @God33, he observed that intuitionistic logic can be interpreted by reading the modal operator $Box$ of the modal logic now called #LogicS4 as a kind of provability (_Bewiesbar_, #Bew).
+In his early work @God33, he observed that the provability (_Bewiesbar_, #Bew) of intuitionistic logic can be treated similarly to the modal operator $Box$ in the modal logic now called #LogicS4.
 However, it follows from G2 that abstracting the behavior of the provability predicate, the most central notion of the incompleteness theorems, does not yield #LogicS4.
 Solovay @Sol76 showed that the modal logic called #LogicGL precisely captures the behavior of the standard provability predicate.
 This fact, known as _Solovay's arithmetical completeness theorem_, was a significant result that opened up the subfield of modal logic called _provability logic_.
@@ -725,8 +725,7 @@ We first take $ISigma1$ as the base theory for our proof of G2.
   def InductionScheme (Γ : Semiformula L ℕ 1 → Prop) : Theory L :=
     { ψ | ∃ φ : Semiformula L ℕ 1, Γ φ ∧ ψ = .univCl (succInd φ) }
 
-  abbrev InductionOnHierarchy (Γ : Polarity) (k : ℕ) : ArithmeticTheory :=
-    𝗣𝗔⁻ ∪ InductionScheme ℒₒᵣ (Arithmetic.Hierarchy Γ k)
+  abbrev InductionOnHierarchy (Γ : Polarity) (k : ℕ) : ArithmeticTheory := 𝗣𝗔⁻ ∪ InductionScheme ℒₒᵣ (Arithmetic.Hierarchy Γ k)
   prefix:max "𝗜𝗡𝗗 " => InductionOnHierarchy
 
   abbrev ISigma (k : ℕ) : ArithmeticTheory := 𝗜𝗡𝗗 𝚺 k
@@ -1064,8 +1063,7 @@ As related work, Bailitis has mechanized Löb's theorem both in Isabelle, on top
 
   theorem löb_theorem : T ⊢ provabilityPred T σ 🡒 σ → T ⊢ σ
 
-  theorem formalized_löb_theorem :
-    𝗜𝚺₁ ⊢ provabilityPred T (provabilityPred T σ 🡒 σ) 🡒 provabilityPred T σ
+  theorem formalized_löb_theorem : 𝗜𝚺₁ ⊢ provabilityPred T (provabilityPred T σ 🡒 σ) 🡒 provabilityPred T σ
   ```
 ]
 
@@ -1087,8 +1085,7 @@ First, we prove the following lemma.
   ),
 )[
   ```
-  lemma not_exists_tarski_predicate {T : ArithmeticTheory} [𝗜𝚺₁ ⪯ T] [Consistent T] :
-    ¬∃ τ : ArithmeticSemisentence 1, ∀ σ, T ⊢ σ 🡘 τ/[⌜σ⌝]
+  lemma not_exists_tarski_predicate {T : ArithmeticTheory} [𝗜𝚺₁ ⪯ T] [Consistent T] : ¬∃ τ : ArithmeticSemisentence 1, ∀ σ, T ⊢ σ 🡘 τ/[⌜σ⌝]
   ```
 ]
 
@@ -1107,8 +1104,7 @@ Taking as $T$ the _true arithmetic_ $TA$, the theory of all sentences true in $N
   ),
 )[
   ```
-  theorem undefinability_of_truth :
-    ¬∃ τ : ArithmeticSemisentence 1, ∀ σ : ArithmeticSentence, ℕ↓[ℒₒᵣ] ⊧ σ ↔ ℕ↓[ℒₒᵣ] ⊧ τ/[⌜σ⌝]
+  theorem undefinability_of_truth : ¬∃ τ : ArithmeticSemisentence 1, ∀ σ : ArithmeticSentence, ℕ↓[ℒₒᵣ] ⊧ σ ↔ ℕ↓[ℒₒᵣ] ⊧ τ/[⌜σ⌝]
   ```
 ]
 
@@ -1126,8 +1122,8 @@ This yields the following theorem, commonly known as Church's theorem.
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Church.lean"),))[
   ```
-  theorem uncomputable_theory_of_sigma1Sound
-    {T : ArithmeticTheory} [𝗥₀ ⪯ T] [T.SoundOnHierarchy 𝚺 1] : ¬ComputablePred T.theory
+  theorem uncomputable_theory_of_sigma1Sound {T : ArithmeticTheory} [𝗥₀ ⪯ T] [T.SoundOnHierarchy 𝚺 1]
+  : ¬ComputablePred T.theory
   ```
 ]
 
@@ -1153,8 +1149,8 @@ For the speed-up theorem (@thm:speedup) below, we have also mechanized a version
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Church.lean"),))[
   ```
-  theorem uncomputable_theory_of_consistent
-    {T : ArithmeticTheory} [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T] : ¬ComputablePred T.theory
+  theorem uncomputable_theory_of_consistent {T : ArithmeticTheory} [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T]
+  : ¬ComputablePred T.theory
   ```
 ]
 
@@ -1184,8 +1180,7 @@ By instantiating @prop:abstract_GR, we can prove the Gödel--Rosser incompletene
 
   instance : T.rosserProvability.Rosser := ⟨rosserProvable_rosser⟩
 
-  theorem incomplete_GR (T : ArithmeticTheory) [T.Δ₁] [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T] :
-    Entailment.Incomplete T
+  theorem incomplete_GR (T : ArithmeticTheory) [T.Δ₁] [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T] : Entailment.Incomplete T
   ```
 ]
 
@@ -1264,8 +1259,8 @@ As for G2, at present it can only be stated in the following form, because of an
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Second.lean"),))[
   ```
-  theorem craig_consistent_unprovable_of_RE
-    (T : ArithmeticTheory) [T.RE] [𝗜𝚺₁ ⪯ T] [Consistent T] : T ⊬ T.craig.consistent.val
+  theorem craig_consistent_unprovable_of_RE (T : ArithmeticTheory) [T.RE] [𝗜𝚺₁ ⪯ T] [Consistent T]
+  : T ⊬ T.craig.consistent.val
   ```
 ]
 
@@ -1338,14 +1333,13 @@ We mention that Popescu and Traytel @PT21[Theorem 30] mechanized Jeroslow's theo
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Jeroslow.lean"),))[
   ```
-  theorem unprovable_formalized_law_of_noncontradiction
-    {T : ArithmeticTheory} [T.Δ₁] [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T] :
-    T ⊬ (∀¹ ∼(T.provable ⋏ T.refutable))
+  theorem unprovable_formalized_law_of_noncontradiction {T : ArithmeticTheory} [T.Δ₁] [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T]
+  : T ⊬ (∀¹ ∼(T.provable ⋏ T.refutable))
   ```
 ]
 
 === On proof size
-Our framework also allows us to discuss, in a certain sense, provability by proofs of _feasible_ length or complexity.
+Formalization also allows us to discuss provability by a proof of _feasible_ length or complexity in a certain sense.
 
 #theorem[
   Let $T supset.eq ISigma1$ be a $Delta_1$-definable and $Sigma_1$-sound theory, let $f$ be a $Sigma_1$-definable function, and let $e$ be an arbitrary natural number.
@@ -1621,9 +1615,8 @@ Our sequent calculus for #LogicGL is due to Sambin and Valentini @SV82.
 
   inductive LogicGL.GentzenWithCutProof : Sequent α → Type u
   | ...
-  | cut {Γ₁ Γ₂ Δ₁ Δ₂ A} :
-      GentzenWithCutProof (Γ₁ ⟹ insert A Δ₁) → GentzenWithCutProof (insert A Γ₂ ⟹ Δ₂) →
-      GentzenWithCutProof (Γ₁ ∪ Γ₂ ⟹ Δ₁ ∪ Δ₂)
+  | cut {Γ₁ Γ₂ Δ₁ Δ₂ A} : GentzenWithCutProof (Γ₁ ⟹ insert A Δ₁) → GentzenWithCutProof (insert A Γ₂ ⟹ Δ₂) →
+                          GentzenWithCutProof (Γ₁ ∪ Γ₂ ⟹ Δ₁ ∪ Δ₂)
   notation:120 "⊢ᵍᶜ[GL]! " S:121 => LogicGL.GentzenWithCutProof S
 
   abbrev LogicGL.GentzenWithCutProvable (S : Sequent α) : Prop := Nonempty (⊢ᵍᶜ[GL]! S)
@@ -2796,12 +2789,9 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
     | incon     : IsConsistencyAssertion 𝔅 (𝔅 ⊥)
     | prov {σ}  : IsConsistencyAssertion 𝔅 σ → IsConsistencyAssertion 𝔅 (𝔅 σ)
     | neg {σ}   : IsConsistencyAssertion 𝔅 σ → IsConsistencyAssertion 𝔅 (∼σ)
-    | and {σ τ} : IsConsistencyAssertion 𝔅 σ → IsConsistencyAssertion 𝔅 τ →
-                  IsConsistencyAssertion 𝔅 (σ ⋏ τ)
-    | or {σ τ}  : IsConsistencyAssertion 𝔅 σ → IsConsistencyAssertion 𝔅 τ →
-                  IsConsistencyAssertion 𝔅 (σ ⋎ τ)
-    | imp {σ τ} : IsConsistencyAssertion 𝔅 σ → IsConsistencyAssertion 𝔅 τ →
-                  IsConsistencyAssertion 𝔅 (σ 🡒 τ)
+    | and {σ τ} : IsConsistencyAssertion 𝔅 σ → IsConsistencyAssertion 𝔅 τ → IsConsistencyAssertion 𝔅 (σ ⋏ τ)
+    | or {σ τ}  : IsConsistencyAssertion 𝔅 σ → IsConsistencyAssertion 𝔅 τ → IsConsistencyAssertion 𝔅 (σ ⋎ τ)
+    | imp {σ τ} : IsConsistencyAssertion 𝔅 σ → IsConsistencyAssertion 𝔅 τ → IsConsistencyAssertion 𝔅 (σ 🡒 τ)
 
   def Realization.IsConsistencyRealization (f : Realization α L) (𝔅 : Provability T₀ T) : Prop :=
     ∀ a, 𝔅.IsConsistencyAssertion (f.val a)
@@ -2962,8 +2952,8 @@ $
   cal(D)_phi := & {p in PP | p wforces phi or p wforces not phi} \
   cal(H)_psi := & {p in PP | fal(q prec.eq p) (q wforces exs(x) psi(x) ==> exs(t : "term") q wforces psi(t))}
 $
-Define the term model $frak(T)$ by letting $frak(T) models alpha :<=> exs(p in G)(p wforces alpha)$ for atomic formulas $alpha$.
-Then the forcing lemma can be proved:
+Let term model $frak(T)$ be a model by defining $frak(T) models alpha :<=> exs(p in G)(p wforces alpha)$ for atomic formulas $alpha$,
+then the forcing lemma can be proved:
 $
   frak(T) models phi quad "iff" quad exs(p in G)(p wforces phi)
 $
