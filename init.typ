@@ -295,6 +295,9 @@
 #let ArithSent = $upright("Sent")_upright("A")$
 #let StrongInterpret(f, B) = $#f^(upright("s"))_(#B)$
 
+// Craig companion: Craig's trick で r.e. 理論から得られる同等な原始再帰的理論
+#let Craig(T) = $#T^upright("C")$
+
 #let Theory(T) = $sans(upright(#T))$
 #let PA = Theory("PA")
 #let PAMinus = $PA^-$

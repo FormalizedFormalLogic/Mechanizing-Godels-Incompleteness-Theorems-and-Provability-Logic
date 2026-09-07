@@ -265,6 +265,14 @@ G1の系として，以下の事実の形のGödelの定理も示すことが出
   このとき，正しいが $T$ で証明出来ない文 $sigma$ が存在する．つまり，$NN models sigma$ だが $T nproves sigma$．
 ] <cor:true_but_unprovable>
 
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/First.lean"),))[
+  ```
+  theorem exists_true_but_unprovable_sentence_of_sigma1sound
+    (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHierarchy 𝚺 1] :
+    ∃ δ : ArithmeticSentence, ℕ↓[ℒₒᵣ] ⊧ δ ∧ T ⊬ δ
+  ```
+]
+
 == Provability abstraction <subsect:provability_abstraction>
 
 Before proving G2, we introduce a theory of the provability predicate, called _provability abstraction_, because working directly with a raw provability predicate is technically cumbersome.
@@ -1055,163 +1063,6 @@ As related work, Löb's theorem has also been mechanized in Isabelle by Bailitis
   ```
 ]
 
-=== Gödel--Rosser First Incompleteness Theorem
-In the setting of @thm:G1, the theory $T$ was required to be $Sigma_1$-sound.
-By instantiating @prop:abstract_GR, we can prove the Gödel--Rosser incompleteness theorem @Ros36, which weakens this requirement to mere consistency.
-
-#theorem[Gödel--Rosser First Incompleteness Theorem @Ros36][
-  Let $T supset.eq ISigma1$ be a $Delta_1$-definable and consistent theory.
-  Then $T$ is incomplete.
-] <thm:GR>
-
-#leancode(
-  links: (("Foundation", "Foundation/FirstOrder/Incompleteness/RosserProvability.lean"),),
-  note: [
-    Note that the assumption `[T.SoundOnHierarchy 𝚺 1]` in the mechanization of @thm:G1 is replaced by `[Entailment.Consistent T]`.
-  ],
-)[
-  ```
-  variable {T : Theory L} [T.Δ₁] [Entailment.Consistent T]
-
-  noncomputable abbrev Theory.rosserProvability : Provability 𝗜𝚺₁ T where
-    prov := T.rosserProvable
-    bew_def := rosserProvable_D1
-
-  instance : T.rosserProvability.Rosser := ⟨rosserProvable_rosser⟩
-
-  theorem incomplete_GR (T : ArithmeticTheory) [T.Δ₁] [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T] : Entailment.Incomplete T
-  ```
-]
-
-The required provability predicate satisfying $Ros$ is constructed by so-called _witness comparison_ (see @HP93 @Lin97); we omit the details here.
-またこの構成には不動点補題 (@thm:fixedpoint) を使うため，@thm:G1 と違い，$T$ は $R0$ よりも強い $ISigma1$ よりも強いことを仮定していることに注意しなさい．
-また同様に @cor:true_but_unprovable も強める事ができる（省略する）．
-
-=== Craig's trick, soundness and definability
-
-更に，以下のCraig's trickと呼ばれる手法によって，$Delta_1$-definabilityの条件もrecursive enumerable (r.e.) へ弱めることが出来る．
-
-#theorem[Craig's trick][
-  理論 $T$ が r.e. のとき，等価な $Delta_1$-definable な理論 $T^upright("C")$ が構成できる．
-  特に，$T$ が無矛盾なら $T^upright("C")$ も無矛盾であるし，$T$ が不完全なら $T^upright("C")$ も不完全．
-]
-
-#leancode(
-  links: (
-    ("Foundation", "Foundation/FirstOrder/Bootstrapping/Syntax/Theory.lean"),
-    ("Foundation", "Foundation/FirstOrder/Bootstrapping/Syntax/CraigTrick.lean"),
-  ),
-)[
-  ```
-  class Theory.RE (T : Theory L) : Prop where
-    re : REPred (· ∈ T)
-
-  def Theory.craig (T : Theory L) [T.RE] : Theory L
-
-  noncomputable instance : (T.craig).Δ₁
-
-  instance : T ≊ T.craig
-
-  instance [Consistent T] : Consistent T.craig
-  ```
-]
-
-このtrickより，@thm:GR ないし @cor:true_but_unprovable を更に強めることが出来る．これが我々が形式化した中で最も強いG1のステートメントである．
-
-#theorem[
-  Let $T supset.eq ISigma1$ be a r.e. and consistent theory.
-  Then $T$ is incomplete.
-  更に真だが $T$ で証明出来ない文も存在する．
-]
-
-#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/RosserProvability.lean"),))[
-  ```
-  theorem incomplete_GR_of_RE (T : ArithmeticTheory) [T.RE] [𝗜𝚺₁ ⪯ T] [Consistent T] : Incomplete T
-
-  theorem exists_true_but_unprovable_sentence_of_RE_of_consistent
-    (T : ArithmeticTheory) [T.RE] [𝗜𝚺₁ ⪯ T] [Consistent T] :
-    ∃ δ : ArithmeticSentence, ℕ↓[ℒₒᵣ] ⊧ δ ∧ T ⊬ δ
-  ```
-]
-
-なお，G2については，コーディングの問題によって現状では以下の形で述べざるを得ない．
-
-#theorem[
-  Let $T$ be a r.e., consistent arithmetic theory stronger than $ISigma1$.
-  Then $T nproves Con(T^upright("C"))$, i.e. $T$ cannot prove consistency statement of $T^upright("C")$.
-]
-
-#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Second.lean"),))[
-  ```
-  theorem craig_consistent_unprovable_of_RE (T : ArithmeticTheory) [T.RE] [𝗜𝚺₁ ⪯ T] [Consistent T]
-  : T ⊬ T.craig.consistent.val
-  ```
-]
-
-このステートメントを $T$ 自身のconsistencyに修正するためには，任意の $T proves fal(x) [Pr(T)(x) <-> Pr(T^upright("C"))(x)]$ であることを形式化する必要がある．
-しかしこのことはCraig's trick自体を算術の中で形式化(formalize)して実行するといった面倒な作業があるため，まだ形式化(mechanize)出来ていない．
-
-さて，これらの理論 $T$ として具体的に $ISigma1$ や $PA$ などを取るためには，これらが $Sigma_1$-soundness (and thus consistency) であることや，r.e.であることを形式化しなくてはならない．
-We have done this as well.
-
-#proposition[
-  $ISigma1$ and $PA$ are $Sigma_1$-sound, hence consistent.
-]
-
-#leancode(
-  links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/12fc07a5019847beb6b2217d2a5edbd853c24258/Foundation/FirstOrder/Arithmetic/Schemata.lean#L390",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/12fc07a5019847beb6b2217d2a5edbd853c24258/Foundation/FirstOrder/Arithmetic/Schemata.lean#L392",
-    ),
-  ),
-)[
-  ```
-  instance sigmaOneSound_ISigmaOne : 𝗜𝚺₁.SoundOnHierarchy 𝚺 1
-
-  instance sigmaOneSound_Peano : 𝗣𝗔.SoundOnHierarchy 𝚺 1
-
-  instance (T : ArithmeticTheory) [T.SoundOnHierarchy 𝚺 1] : Entailment.Consistent T
-  ```
-]
-
-#proposition[
-  $ISigma1$ and $PA$ are r.e.
-]
-
-#leancode(
-  links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Definability.lean"),),
-)[
-  ```
-  instance : 𝗣𝗔.RE
-
-  instance : 𝗜𝚺₁.RE
-  ```
-]
-
-故に，今回形式化した定理たちに対して，具体的に $ISigma1$ や $PA$ を取ることが出来る（面倒なのでそれらに対して具体的なステートメントはコードとしては置いていない．）．
-
-=== Jeroslow's Second Incompleteness Theorem
-Similarly, from @prop:abstract_JG2, we can also concretely mechanize Jeroslow's second incompleteness theorem @Jer73.
-We mention that Popescu and Traytel @PT21[Theorem 30] mechanized Jeroslow's theorem only at the abstract level.
-
-#theorem[Jeroslow's Second Incompleteness Theorem @Jer73][
-  Let $T supset.eq ISigma1$ be a $Delta_1$-definable and consistent theory.
-  Then $T nproves forall x. not (Pr(T)(x) and Pr(T)(dot(not) x))$,
-  where $dot(not)$ denotes the function taking the Gödel number of a sentence to that of its negation, i.e., $dot(not) godelize(sigma) = godelize(not sigma)$.
-]
-
-#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Jeroslow.lean"),))[
-  ```
-  theorem unprovable_formalized_law_of_noncontradiction {T : ArithmeticTheory} [T.Δ₁] [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T]
-  : T ⊬ (∀¹ ∼(T.provable ⋏ T.refutable))
-  ```
-]
-
 === Tarski's Undefinability Theorem
 As a corollary of the fixed point theorem, we can prove Tarski's theorem on the undefinability of truth.
 First, we prove the following lemma.
@@ -1300,6 +1151,176 @@ For the speed-up theorem (@thm:speedup) below, we have also mechanized a version
 ]
 
 Note that this version does not apply to the above proof of the undecidability of first-order logic, since $PAMinus$ is weaker than $ISigma1$.
+
+=== Gödel--Rosser First Incompleteness Theorem
+In the setting of @thm:G1, the theory $T$ was required to be $Sigma_1$-sound.
+By instantiating @prop:abstract_GR, we can prove the Gödel--Rosser incompleteness theorem @Ros36, which weakens this requirement to mere consistency.
+
+#theorem[Gödel--Rosser First Incompleteness Theorem @Ros36][
+  Let $T supset.eq ISigma1$ be a $Delta_1$-definable and consistent theory.
+  Then $T$ is incomplete.
+] <thm:GR>
+
+#leancode(
+  links: (("Foundation", "Foundation/FirstOrder/Incompleteness/RosserProvability.lean"),),
+  note: [
+    Note that the assumption `[T.SoundOnHierarchy 𝚺 1]` in the mechanization of @thm:G1 is replaced by `[Entailment.Consistent T]`.
+  ],
+)[
+  ```
+  variable {T : Theory L} [T.Δ₁] [Entailment.Consistent T]
+
+  noncomputable abbrev Theory.rosserProvability : Provability 𝗜𝚺₁ T where
+    prov := T.rosserProvable
+    bew_def := rosserProvable_D1
+
+  instance : T.rosserProvability.Rosser := ⟨rosserProvable_rosser⟩
+
+  theorem incomplete_GR (T : ArithmeticTheory) [T.Δ₁] [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T] : Entailment.Incomplete T
+  ```
+]
+
+The required provability predicate satisfying $Ros$ is constructed by so-called _witness comparison_ (see @HP93 @Lin97); we omit the details here.
+またこの証明は内部的には不動点定理 (@thm:fixedpoint) を使うため，@thm:G1 と違い，$T$ は $R0$ よりも強い $ISigma1$ の拡大であることを仮定していることに注意しなさい．
+また同様に @cor:true_but_unprovable も強める事ができる（省略する）．
+
+=== Craig's trick, soundness and definability
+
+更に，以下のCraig's trickと呼ばれる手法によって，$Delta_1$-definabilityの条件も r.e. へ弱めることが出来る．
+Church's theoremの際に解説したように，論理式などに $NN$ への自然なエンコードがLean上に実装されているため，理論がr.e.であるとは $sigma in T$ がr.e.であると定義して良い．
+
+#theorem[Craig's trick][
+  理論 $T$ が r.e. のとき，原始再帰的な $Craig(T)$ が構成できて，これは同等である：つまり，任意の文 $sigma$ に対して $T proves sigma <==> Craig(T) proves sigma$．
+  特に，$T$ が無矛盾なら $Craig(T)$ も無矛盾であるし，$T$ が不完全なら $Craig(T)$ も不完全．
+]
+
+#leancode(
+  links: (
+    ("Foundation", "Foundation/FirstOrder/Bootstrapping/Syntax/Theory.lean"),
+    ("Foundation", "Foundation/FirstOrder/Bootstrapping/Syntax/CraigTrick.lean"),
+  ),
+  note: [
+    `T ≊ T.craig` は理論が等価であることを表す．
+  ],
+)[
+  ```
+  class Theory.RE (T : Theory L) : Prop where
+    re : REPred (· ∈ T)
+
+  class Theory.Primrec (T : Theory L) : Prop where
+    primrec : PrimrecPred (· ∈ T)
+
+  instance {T : Theory L} [T.Primrec] : T.RE
+
+  def Theory.craig (T : Theory L) [T.RE] : Theory L
+
+  instance : T.craig.Primrec
+
+  noncomputable instance : (T.craig).Δ₁
+
+  instance : T ≊ T.craig
+
+  instance [Consistent T] : Consistent T.craig
+  ```
+]
+
+このtrickより，@thm:GR ないし @cor:true_but_unprovable を更に強めることが出来る．これが我々が形式化した中で最も強い（仮定の弱い）G1のステートメントの一つである #footnote[仮定は $ISigma1$ の拡大理論に修正しているので，単純に $R0$ の拡大で成立する @thm:G1 と比較はできない． ]．
+
+#theorem[G1 for r.e. theory][
+  Let $T supset.eq ISigma1$ be a r.e. and consistent theory.
+  Then $T$ is incomplete.
+  更に真だが $T$ で証明出来ない文も存在する．
+]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/RosserProvability.lean"),))[
+  ```
+  theorem incomplete_GR_of_RE (T : ArithmeticTheory) [T.RE] [𝗜𝚺₁ ⪯ T] [Consistent T] : Incomplete T
+
+  theorem exists_true_but_unprovable_sentence_of_RE_of_consistent
+    (T : ArithmeticTheory) [T.RE] [𝗜𝚺₁ ⪯ T] [Consistent T] :
+    ∃ δ : ArithmeticSentence, ℕ↓[ℒₒᵣ] ⊧ δ ∧ T ⊬ δ
+  ```
+]
+
+なお，G2については，現状では算術化におけるコーディングの問題により，以下の形で述べられる．
+
+#theorem[G2 for r.e. theory][
+  Let $T$ be a r.e., consistent arithmetic theory stronger than $ISigma1$.
+  Then $T nproves Con(Craig(T))$, i.e. $T$ cannot prove consistency statement of $Craig(T)$.
+] <thm:G2_RE>
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Second.lean"),))[
+  ```
+  theorem craig_consistent_unprovable_of_RE (T : ArithmeticTheory) [T.RE] [𝗜𝚺₁ ⪯ T] [Consistent T]
+  : T ⊬ T.craig.consistent.val
+  ```
+]
+
+#remark[
+  このステートメントを $T$ それ自身のconsistencyに修正するためには，$T proves fal(x) [Pr(T)(x) <-> Pr(Craig(T))(x)]$ であることを形式化する必要がある．
+  しかしこのことは，
+  $Pr(T)(x)$ が $Delta_1$-definableではなく r.e. な理論でもコーディング出来るといった微妙な修正や，Craig's trick自体を算術の中で形式化(formalize)して実行するといった面倒な作業があるため，まだ形式化(mechanize)出来ていない．
+] <rmk:craig_RE>
+
+さて，ここで述べた定理や系に対して，理論 $T$ として具体的に $ISigma1$ や $PA$ などを取るためには，これらが $Sigma_1$-sound (and thus consistent) であることや，r.e.であることを形式化しなくてはならない．
+We have done this as well.
+
+#proposition[
+  $ISigma1$ and $PA$ are $Sigma_1$-sound, hence consistent.
+]
+
+#leancode(
+  links: (
+    ("Foundation", "Foundation/FirstOrder/Arithmetic/Schemata.lean"),
+    ("Foundation", "Foundation/FirstOrder/Arithmetic/Basic/Hierarchy.lean"),
+  ),
+)[
+  ```
+  instance sigmaOneSound_ISigmaOne : 𝗜𝚺₁.SoundOnHierarchy 𝚺 1
+
+  instance sigmaOneSound_Peano : 𝗣𝗔.SoundOnHierarchy 𝚺 1
+
+  instance (T : ArithmeticTheory) [T.SoundOnHierarchy 𝚺 1] : Entailment.Consistent T
+  ```
+]
+
+更に以下のことも成り立つ．ただし $Delta_1$-definablilityは @rmk:craig_RE で指摘したような問題のために置いてあるだけで，本質的ではない（通常の数学的には，r.e.であることから従う）．
+
+#proposition[
+  $ISigma1$ and $PA$ are r.e. and $Delta_1$-definable.
+]
+
+#leancode(
+  links: (
+    ("Foundation", "Foundation/FirstOrder/Incompleteness/Definability.lean"),
+  ),
+)[
+  ```
+  instance : 𝗣𝗔.RE
+
+  instance : 𝗜𝚺₁.RE
+  ```
+]
+
+
+故に，今回形式化した定理たちに対して，具体的に $ISigma1$ や $PA$ を取ることが出来る．
+
+=== Jeroslow's Second Incompleteness Theorem
+Similarly, from @prop:abstract_JG2, we can also concretely mechanize Jeroslow's second incompleteness theorem @Jer73.
+We mention that Popescu and Traytel @PT21[Theorem 30] mechanized Jeroslow's theorem only at the abstract level.
+
+#theorem[Jeroslow's Second Incompleteness Theorem @Jer73][
+  Let $T supset.eq ISigma1$ be a $Delta_1$-definable and consistent theory.
+  Then $T nproves forall x. not (Pr(T)(x) and Pr(T)(dot(not) x))$,
+  where $dot(not)$ denotes the function taking the Gödel number of a sentence to that of its negation, i.e., $dot(not) godelize(sigma) = godelize(not sigma)$.
+]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Jeroslow.lean"),))[
+  ```
+  theorem unprovable_formalized_law_of_noncontradiction {T : ArithmeticTheory} [T.Δ₁] [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T]
+  : T ⊬ (∀¹ ∼(T.provable ⋏ T.refutable))
+  ```
+]
 
 === On proof size
 Formalization also allows us to discuss provability by a proof of _feasible_ length or complexity in a certain sense.
