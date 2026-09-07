@@ -90,10 +90,12 @@ Readers unfamiliar with Lean may consult a standard textbook such as @TPiL4.
 
 Our mechanization is currently hosted in several repositories on GitHub.
 We note that our mechanization is still under development at the time of writing this paper, so the statements and definitions described in this paper may have been revised in the latest versions of these repositories.
-This report is based on the following fixed versions. Each excerpted code snippet is annotated with the URL of its source as a reference.
+This report is based on the following fixed versions.
 
 - @sect:Incompleteness, the mechanization of the incompleteness theorems: #link(REPO_SOURCES.at("Foundation")).
 - @sect:provability_logic, the mechanization of provability logic: #link(REPO_SOURCES.at("ProvabilityLogic")).
+
+Each excerpted code snippet is annotated with the URL of its source as a reference.
 
 == Declaration of AI usage
 
