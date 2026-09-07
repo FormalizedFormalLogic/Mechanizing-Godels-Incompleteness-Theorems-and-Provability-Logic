@@ -9,6 +9,8 @@
 #let title-text-size = 14pt
 #let font-text = ("New Computer Modern", "Libertinus Serif")
 #let font-math = ("New Computer Modern Math", "Libertinus Serif")
+
+#let font-code-size = 9.5pt
 #let font-code = "JuliaMono"
 
 #let paper-size = "a4"
@@ -316,7 +318,7 @@
       block(
         inset: 1em,
         text(
-          size: 8pt,
+          size: font-code-size,
           font: font-code,
           raw(
             lang: "lean",
