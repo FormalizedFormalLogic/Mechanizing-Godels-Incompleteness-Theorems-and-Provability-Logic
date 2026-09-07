@@ -5,3 +5,5 @@
 .envrc
 
 CLAUDE.local.md
+
+.claude/worktrees/

@@ -48,8 +48,8 @@ _Gödel's incompleteness theorems_ are among the most significant results in mat
 In his seminal paper @God31, he proved what is now known as the first incompleteness theorem (G1), and in a footnote, he outlined the second incompleteness theorem (G2).
 G2 was later proved rigorously by Hilbert and Bernays @HB39.
 We state the theorems in modern terms:
-G1, with Rosser's improvement @Ros36, states that for any consistent axiomatic system with sufficient expressive power to execute arithmetic, there exists a proposition that can neither be proved nor disproved within the system (see @thm:G1 and @thm:GR).
-G2 states that, for any consistent reasonable axiomatic system as in G1, the proposition formally representing the system's own consistency cannot be proved within the system itself (see @thm:G2).
+G1, with Rosser's improvement @Ros36, states that for any consistent axiomatic system with sufficient expressive power to execute arithmetic, there exists a proposition that can neither be proved nor disproved within the system.
+G2 states that, for any consistent reasonable axiomatic system as in G1, the proposition formally representing the system's own consistency cannot be proved within the system itself.
 
 Gödel also made another important observation: that provability can be regarded as a modality.
 In his early work @God33, he observed that the provability of intuitionistic logic can be treated similarly to the modal operator $Box$ in the modal logic now called #LogicS4.
@@ -65,19 +65,39 @@ However, these are either abstract or not full mechanizations within arithmetic.
 For instance, O'Connor's implementation assumes several facts needed for the proof of G2 as axioms, and Paulson's mechanization of G2 uses hereditarily finite sets, not arithmetic @Pau14.
 To the best of our knowledge, no full mechanization of the incompleteness theorems entirely within arithmetic has been reported, and consequently neither has any mechanization of the arithmetical side of provability logic, such as Solovay's arithmetical completeness theorem.
 
-In the present paper, we describe our mechanizations of Gödel's first and second incompleteness theorems and Solovay's arithmetical completeness theorem.
+We report our project: _Formalized Formal Logic_ (abbreviated as _FFL_ below), for mechanizing mathematical logic.
+The main contributions of this paper are completely `sorry`-free mechanizations of Gödel's first (@thm:G1) and second (@thm:G2) incompleteness theorems and of Solovay's arithmetical completeness theorem (@thm:arithmetical_completeness).
+We have also proved various corollaries; for these, we refer the reader to the respective sections.
+
 Our work is carried out in Lean 4, an interactive theorem prover, together with mathlib4 @Mathlib2020, its community-developed mathematics library.
 Lean 4 is based on the Calculus of Inductive Constructions (CIC) @dMU21,
 and features dependent types, quotient types, and support for noncomputable definitions, making it highly expressive.
 In addition, its powerful metaprogramming infrastructure like `aesop` @LF23 and `grind` @MdM26 enables efficient proof automation and extensibility.
 
-Our mechanization is currently hosted as a repository on GitHub, and the version we refer to is #link(REPO_SOURCES.at("Foundation")).
-In the present paper, we will briefly and informally introduce the mathematical facts without omitting the essentials, and show the code of our mechanization corresponding to those facts.
-However, for the sake of readability, note that in some places we have modified the hosted code.
-Moreover, owing to motivations other than the incompleteness theorems and provability logic that the present paper focuses on, some implementations are stated as more general definitions.
-We add comments where we deem it necessary, but for the actual working (verified) code, refer to the repository.
+== Paper structure
 
-=== Declaration of AI usage
+This report is organized as follows.
+- @sect:Incompleteness describes the mechanization of the incompleteness theorems and their corollaries, together with the technical details.
+- @sect:provability_logic describes provability logic, in particular Solovay's arithmetical completeness theorem and the classification theorem.
+- @sect:futurework describes the future development and direction of FFL, with reference to related work.
+- @sect:vibe-formalizing is an appendix that briefly describes the use of AI in our mechanization.
+
+Since it is not our purpose to state all of the mathematical definitions and facts here, we state them somewhat informally and generally assume that their proofs are known to the reader; see the references given at the beginning of each section.
+Moreover, we also assume that the reader is familiar with the notation, syntax, and functionalities of Lean 4, both as a programming language and as an interactive theorem prover.
+Readers unfamiliar with Lean may consult a standard textbook such as @TPiL4.
+
+== Repositories
+
+Our mechanization is currently hosted in several repositories on GitHub.
+We note that our mechanization is still under development at the time of writing this paper, so the statements and definitions described in this paper may have been revised in the latest versions of these repositories.
+This report is based on the following fixed versions.
+
+- @sect:Incompleteness, the mechanization of the incompleteness theorems: #link(REPO_SOURCES.at("Foundation")).
+- @sect:provability_logic, the mechanization of provability logic: #link(REPO_SOURCES.at("ProvabilityLogic")).
+
+Each excerpted code snippet is annotated with the URL of its source as a reference.
+
+== Declaration of AI usage
 
 // In the interest of novelty and fairness, we declare here how AI/LLMs were used in our development.
 Our main mechanizations of the three results, the first and second incompleteness theorems and Solovay's arithmetical completeness theorem were done between 2023 and 2025, and up to that point they contained no AI-generated code.
@@ -92,16 +112,17 @@ This can be verified from the following commits, at which each result first beca
 - Gödel's second incompleteness theorem: #commit-link("2da7151e1da0ce40ae222fec1651756f8ee7acce") (2024/09/04).
 - Solovay's arithmetical completeness theorem: #commit-link("4a34d75c074c7614a1f16661ac73fd0725263c32") (2025/04/06).
 Some proofs in modal logic and provability logic make use of AI-assisted mechanizations. This is discussed in detail in
-Appendix: @subsect:vibe-formalizing.
+Appendix: @sect:vibe-formalizing.
 
-/*
-On the other hand, since June 2026, the second author has adopted AI/LLM-assisted _vibe coding_ in Lean for #link(REPO_SOURCES.at("ProvabilityLogic"))[FormalizedFormalLogic/ProvabilityLogic], using interactive coding agents such as Anthropic's Claude both for refactoring the code and for mechanizing the new results, namely the sequent calculi for modal logics and the classification theorem of provability logics.
-We have verified that the main parts of the generated code do not rely on any device regarded as illegitimate for mechanizing mathematics in Lean, such as `sorry`, additional nontrivial axioms, or `native_decide`#footnote[Some parts still contain `sorry`s; they are isolated from the main results of this paper and do not compromise the validity of the mechanization. See @subsect:remaining_sorry_in_provlogic.].
-In @subsect:vibe-formalizing, we give a brief report on how we carried out the writing and generation of mechanized proofs using AI/LLMs in this project.
-*/
-// *The authors take full responsibility for the final artifact, including its AI-generated code.*
+== Acknowledgement
 
-= Mechanization of the incompleteness theorems
+As for mathematical review, ... .
+During the development of FFL, we thank C7X (#link("https://github.com/indiscernibles")[\@indiscernibles]) and Trevor Morris (#link("https://github.com/gotrevor")[\@gotrevor]), who were mainly engaged in active discussion and experimentation.
+We also received financial support; this work was partially supported by JST CREST JPMJCR25I5 and JST BOOST JPMJBY24E2.
+In addition, we received financial support from individuals and companies #footnote[See: #link("https://formalizedformallogic.github.io#financial-supports")].
+We gratefully acknowledge all of this support here.
+
+= Mechanization of the incompleteness theorems <sect:Incompleteness>
 
 We mechanized the following two results.
 Here, arithmetic sentence/theory means a sentence/theory in the language $LOR = {0, 1, +, dot, <, =}$.
@@ -2794,7 +2815,7 @@ Finally, we state the arithmetical completeness of $LogicGLPoint3$ with respect 
   ```
 ]
 
-= Related work and future work <sect:provabilitylogic_futurework>
+= Related work and future work <sect:futurework>
 
 Finally, in this section, we mention some prior work related to our mechanization, that is, mechanizations of the incompleteness theorems and of facts concerning provability logic in proof assistants.
 Moreover, on that basis, we indicate several directions in which we plan to proceed.
@@ -3037,7 +3058,7 @@ However, we have not yet established modal completeness with respect to frames, 
 
 // = Concluding and Future works
 
-= Appendix: Vibe formalizing <subsect:vibe-formalizing>
+= Appendix: Vibe formalizing <sect:vibe-formalizing>
 
 We describe how the AI is used in our development.
 Claude does not mechanize everything autonomously: the author first fixes the overall strategy for proving the main theorems and writes their formal statements, and only then delegates the actual proofs to Claude.
@@ -3045,3 +3066,4 @@ Within the proofs as well, the author gives appropriate directions and tactics, 
 As a rule of thumb in pure mathematical logic, a fact proved by such an induction requires no special idea: one simply carries out the calculation, and on paper one typically works out a few representative cases and omits the rest.
 In a mechanization, every case must be treated without omission; we saw little value in a human spending time on such code, so we actively delegated it to the AI.
 In practice, the overall refactoring of #link(REPO_SOURCES.at("ProvabilityLogic"))[FormalizedFormalLogic/ProvabilityLogic] and the mechanization of the classification theorem were mostly completed in about three weeks of actual work, which the second author regards as a substantial gain in speed and efficiency.
+
