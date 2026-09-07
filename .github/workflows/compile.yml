@@ -42,27 +42,6 @@ jobs:
           font-name: Libertinus Serif
       - name: Install "Julia Mono"
         uses: SnO2WMaN/install-juliamono-action@v0.0.1
-      - name: Install "New Computer Modern Mono"
-        # fine-lncs が著者アドレスのメール表示に "New Computer Modern Mono" を
-        # 直接指定しているが，Typst に同梱されているのは "New Computer Modern"
-        # と "New Computer Modern Math" のみで Mono 版は同梱されていない．
-        # CTAN 版 newcomputermodern パッケージのフォント名は
-        # "NewComputerModern Mono"（スペース無し）なので，Typst 側が期待する
-        # "New Computer Modern Mono" にリネームしてインストールする．
-        run: |
-          curl -sL https://mirrors.ctan.org/fonts/newcomputermodern.zip -o /tmp/newcm.zip
-          unzip -q /tmp/newcm.zip -d /tmp/newcm
-          pip install --quiet fonttools
-          mkdir -p /tmp/newcm-mono
-          for style in Regular Bold Italic BoldOblique; do
-            python3 .github/scripts/rename-font-family.py \
-              "NewComputerModern" "New Computer Modern" \
-              "/tmp/newcm/newcomputermodern/otf/NewCMMono10-$style.otf" \
-              "/tmp/newcm-mono/NewCMMono10-$style.otf"
-          done
-          sudo mkdir -p /usr/share/fonts/new-computer-modern-mono
-          sudo cp /tmp/newcm-mono/*.otf /usr/share/fonts/new-computer-modern-mono/
-          fc-cache -fv
       - uses: typst-community/setup-typst@v5.1.0
       - name: Check available fonts in Typst
         run: typst fonts

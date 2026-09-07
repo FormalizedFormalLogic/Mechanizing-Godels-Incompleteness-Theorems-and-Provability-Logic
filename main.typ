@@ -18,7 +18,7 @@
         addr: "Kobe, Japan",
         email: "me@sno2wman.net",
       ),
-      oicd: "0009-0000-8653-3403",
+      orcid: "0009-0000-8653-3403",
     ),
   ),
   abstract: [
@@ -104,10 +104,10 @@ Our main mechanizations of the three results, the first and second incompletenes
 This can be verified from the following commits, at which each result first became `sorry`-free.
 #footnote[The first two commits were made in #link("https://github.com/FormalizedFormalLogic/Arithmetization")[FormalizedFormalLogic/Arithmetization], later merged into Foundation as a subtree.]
 
-#let commit-link(hash) = link("https://github.com/FormalizedFormalLogic/Foundation/commit/" + hash)[#raw(hash.slice(
+#let commit-link(hash) = link("https://github.com/FormalizedFormalLogic/Foundation/commit/" + hash)[#hash.slice(
   0,
   8,
-))]
+)]
 - Gödel's first incompleteness theorem: #commit-link("e9325d82f6e4284b8dca530c8f9719650d7a21cf") (2024/09/04).
 - Gödel's second incompleteness theorem: #commit-link("2da7151e1da0ce40ae222fec1651756f8ee7acce") (2024/09/04).
 - Solovay's arithmetical completeness theorem: #commit-link("4a34d75c074c7614a1f16661ac73fd0725263c32") (2025/04/06).
@@ -140,7 +140,7 @@ Here, arithmetic sentence/theory means a sentence/theory in the language $LOR = 
 The proofs largely follow the standard approach using derivability conditions in the literature (see, for example, @HP93).
 We therefore omit the details and instead comment on several technical and methodological aspects of the formalization.
 
-=== Syntax
+== Syntax
 We use a locally nameless representation for terms and formulas of first-order logic.
 A similar approach is adopted in @HvD20.
 
@@ -174,7 +174,7 @@ We mechanized the type of semiformulas that may contain free variables of type $
 Mechanization using semiterm/semiformulas is more than a technical device to deal with quantifiers; it also offers practical advantages.
 For example, a frequently encountered situation in proof theory and model theory, such as a formula $phi(x, y, z)$ with parameters from $M$, can be expressed by the single type `Semiformula L M 3`.
 
-=== On internal argument<subsubsection:internal>
+== On internal argument<subsubsection:internal>
 In proofs of the incompleteness theorems, especially G2, the principal obstacle is often the internalization of metamathematics---terms, formulas, provability, elementary proof theory, and so forth---a process commonly called _arithmetization_ or _bootstrapping_.
 In other words, these notions must be formally defined and their properties proved _within_ the formalized deductive system itself, which in our case is $ISigma1$.
 A naïve, purely syntactic approach to this task encounters the following difficulties#footnote[
