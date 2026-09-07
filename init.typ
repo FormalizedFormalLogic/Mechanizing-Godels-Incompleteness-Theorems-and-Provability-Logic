@@ -20,8 +20,8 @@
 
 // リンクのパスの先頭ディレクトリ（リポジトリ名）から宛先リポジトリを解決する
 #let REPO_SOURCES = (
-  "Foundation": "https://github.com/FormalizedFormalLogic/Foundation/blob/master",
-  "ProvabilityLogic": "https://github.com/FormalizedFormalLogic/ProvabilityLogic/blob/main",
+  "Foundation": "https://github.com/FormalizedFormalLogic/Foundation/blob/v1",
+  "ProvabilityLogic": "https://github.com/FormalizedFormalLogic/ProvabilityLogic/blob/v1",
 )
 // リンクは (リポジトリ名, リポジトリ内パス) のタプルで指定する
 #let lean-link(index, l) = {

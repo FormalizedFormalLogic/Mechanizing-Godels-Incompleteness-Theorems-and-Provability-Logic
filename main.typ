@@ -92,8 +92,8 @@ Our mechanization is currently hosted in several repositories on GitHub.
 We note that our mechanization is still under development at the time of writing this paper, so the statements and definitions described in this paper may have been revised in the latest versions of these repositories.
 This report is based on the following fixed versions.
 
-- @sect:Incompleteness, the mechanization of the incompleteness theorems: #link(REPO_SOURCES.at("Foundation")).
-- @sect:provability_logic, the mechanization of provability logic: #link(REPO_SOURCES.at("ProvabilityLogic")).
+- @sect:Incompleteness, the mechanization of the incompleteness theorems: #link(REPO_SOURCES.at("Foundation").replace("/blob/", "/tree/")).
+- @sect:provability_logic, the mechanization of provability logic: #link(REPO_SOURCES.at("ProvabilityLogic").replace("/blob/", "/tree/")).
 
 Each excerpted code snippet is annotated with the URL of its source as a reference.
 
@@ -152,7 +152,7 @@ We mechanized the type of semiformulas that may contain free variables of type $
 
 #leancode(
   links: (
-    ("Foundation", "Foundation/FirstOrder/Basic/Syntax/Formula.lean#L24-L32"),
+    ("Foundation", "Foundation/FirstOrder/Basic/Syntax/Formula.lean"),
   ),
   note: [
     We write `Formula L ξ` for `Semiformula L ξ 0`, and `Sentence L` for sentences, namely `Formula L Empty`.
@@ -226,7 +226,7 @@ Among these, we use the arithmetic theory $R0$ due to Cobham (cf. @Vau62).
   $
 ]
 
-#leancode[
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Arithmetic/R0/Basic.lean"),))[
   ```
   inductive R0 : ArithmeticTheory
   | equal : ∀ φ ∈ 𝗘𝗤 ℒₒᵣ, R0 φ
@@ -264,12 +264,7 @@ $Nat models Pr(T)(godelize(psi)) <==> T proves psi$; hence $D$ is r.e.
 ]<thm:G1>
 
 #leancode(
-  links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/ee84d9d25d88aec25a0c6b5203881e8515437f40/Foundation/FirstOrder/Incompleteness/First.lean#L16",
-    ),
-  ),
+  links: (("Foundation", "Foundation/FirstOrder/Incompleteness/First.lean"),),
   note: [
     Here `Incomplete T` is an abbreviation of `∃ φ, T ⊬ φ ∧ T ⊬ ∼φ`.
   ],
@@ -336,7 +331,7 @@ Mechanizing the incompleteness theorems via such an abstract provability has pre
   // - $bold("S")$ (on an $L_0$-structure $M$) : $M models Bew sigma ==> T proves sigma$.
 ] <def:provability_abstraction>
 
-#leancode[
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean"),))[
   ```
   structure Provability [L.ReferenceableBy L₀] (T₀ : Theory L₀) (T : Theory L) where
     prov : Semisentence L₀ 1
@@ -381,7 +376,7 @@ In fact, abstracting provability alone does not suffice to mechanize the incompl
   Let $T_0, T$ be $cal(L)$-theories such that $T_0$ is diagonalizable, and let $Bew$ be a provability of $T_0, T$. Then the fixpoint of $not Bew (x)$ is called the _Gödel sentence_ and is denoted by $Godel(Bew)$.
 ] <def:diagonalization_abstraction>
 
-#leancode[
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean"),))[
   ```
   class Diagonalization [L.ReferenceableBy L] (T : Theory L) where
     fixedpoint : Semisentence L 1 → Sentence L
@@ -397,12 +392,7 @@ For the arithmetic theory stronger than $ISigma1$, we have a _standard diagonali
 which is obtained by the standard construction of diagonalization.
 
 #leancode(
-  links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/25dda5090b03e9d74b23d4537ca76e546c7197af/Foundation/FirstOrder/Bootstrapping/FixedPoint.lean#L130",
-    ),
-  ),
+  links: (("Foundation", "Foundation/FirstOrder/Bootstrapping/FixedPoint.lean"),),
 )[
   ```
   theorem diagonal {T : ArithmeticTheory} [𝗜𝚺₁ ⪯ T] (θ : ArithmeticSemisentence 1) :
@@ -423,12 +413,7 @@ The first incompleteness theorem is proved as follows.
 ] <prop:abstract_G1>
 
 #leancode(
-  links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean#L194",
-    ),
-  ),
+  links: (("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean"),),
 )[
   ```
   variable {L : Language} [L.ReferenceableBy L] [L.DecidableEq]
@@ -456,12 +441,7 @@ The second incompleteness theorem can likewise be mechanized.
 ] <prop:abstract_G2>
 
 #leancode(
-  links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean#L35",
-    ),
-  ),
+  links: (("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean"),),
 )[
   ```
   variable {L₀ L : Language} [L.ReferenceableBy L₀] {T₀ : Theory L₀} {T : Theory L}
@@ -500,12 +480,7 @@ As further results, we can also mechanize Löb's theorem and the formalized Löb
 ] <prop:abstract_Löb>
 
 #leancode(
-  links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean#L286",
-    ),
-  ),
+  links: (("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean"),),
 )[
   ```
   variable {L : Language} [L.ReferenceableBy L] [L.DecidableEq]
@@ -534,12 +509,7 @@ This is precisely an abstraction of the incompleteness theorem as improved by Ro
 ] <prop:abstract_GR>
 
 #leancode(
-  links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean#L323",
-    ),
-  ),
+  links: (("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean"),),
 )[
   ```
   variable {L : Language} [L.ReferenceableBy L]
@@ -580,12 +550,7 @@ This allows us to formalize Jeroslow's G2 concisely.
 ]
 
 #leancode(
-  links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Refutability.lean#L15",
-    ),
-  ),
+  links: (("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Refutability.lean"),),
 )[
   ```
   structure Refutability [L.ReferenceableBy L₀] (T₀ : Theory L₀) (T : Theory L) where
@@ -611,12 +576,7 @@ The following is immediate for the Jeroslow sentence.
 ]
 
 #leancode(
-  links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Refutability.lean#L73",
-    ),
-  ),
+  links: (("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Refutability.lean"),),
 )[
   ```
   lemma unprovable_jeroslow [T₀ ⪯ T] [Consistent T] [𝔚.SoundOn (jeroslow 𝔚)] : T ⊬ jeroslow 𝔚
@@ -633,14 +593,8 @@ We now state Jeroslow's incompleteness theorem.
 
 #leancode(
   links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Refutability.lean#L90",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean#L84",
-    ),
+    ("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Refutability.lean"),
+    ("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean"),
   ),
   note: [
     The hypothesis $T_0 proves Jeroslow(Wid) -> Bew Jeroslow(Wid)$ is mechanized as the class `FormalizedCompleteOn`, which is an abstract version of formalized $Gamma$-completeness for $Bew$.
@@ -683,14 +637,8 @@ We first take $ISigma1$ as the base theory for our proof of G2.
 
 #leancode(
   links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Refutability.lean#L90",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean#L84",
-    ),
+    ("Foundation", "Foundation/FirstOrder/Arithmetic/PeanoMinus/Basic.lean"),
+    ("Foundation", "Foundation/FirstOrder/Arithmetic/Schemata.lean"),
   ),
 )[
   ```
@@ -797,36 +745,7 @@ Our mechanization of @thm:recursive-def and @thm:recursive-ind is stated with
 these two parameters.
 
 #leancode(
-  links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L25",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L54",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L59",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L62",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L184",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L222",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean#L256",
-    ),
-  ),
+  links: (("Foundation", "Foundation/FirstOrder/Arithmetic/HFS/Fixpoint.lean"),),
 )[
   ```
   structure Blueprint (k : ℕ) where
@@ -861,22 +780,8 @@ It follows uniformly that the corresponding predicates are $Delta_1$-definable a
 These facts immediately yield definitions over $Universe$ of basic syntactic operations such as substitution.
 #leancode(
   links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Formula/Basic.lean#L1218",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Proof/Basic.lean#L519",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Proof/Basic.lean#L467",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/Syntax/Proof/Basic.lean#L525",
-    ),
+    ("Foundation", "Foundation/FirstOrder/Bootstrapping/Syntax/Formula/Basic.lean"),
+    ("Foundation", "Foundation/FirstOrder/Bootstrapping/Syntax/Proof/Basic.lean"),
   ),
 )[
   ```
@@ -898,20 +803,10 @@ and moreover that it satisfies the derivability conditions $D1$, $D2$, $D3$, and
 
 #leancode(
   links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/DerivabilityCondition/D1.lean#L23",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/DerivabilityCondition/D2.lean#L20",
-    ),
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Bootstrapping/DerivabilityCondition/D3.lean#L160",
-    ),
-    ("Foundation", "Foundation/FirstOrder/Incompleteness/StandardProvability.lean#L38-L44"),
-    ("Foundation", "Foundation/FirstOrder/Incompleteness/StandardProvability.lean#L83"),
+    ("Foundation", "Foundation/FirstOrder/Bootstrapping/DerivabilityCondition/D1.lean"),
+    ("Foundation", "Foundation/FirstOrder/Bootstrapping/DerivabilityCondition/D2.lean"),
+    ("Foundation", "Foundation/FirstOrder/Bootstrapping/DerivabilityCondition/D3.lean"),
+    ("Foundation", "Foundation/FirstOrder/Incompleteness/StandardProvability.lean"),
   ),
 )[
   ```
@@ -925,11 +820,10 @@ and moreover that it satisfies the derivability conditions $D1$, $D2$, $D3$, and
       (hφψ : Provable T (⌜φ 🡒 ψ⌝ : V)) (hφ : Provable T (⌜φ⌝ : V)) :
       Provable T (⌜ψ⌝ : V)
 
-  /-- A formalized 𝚺₁-completeness -/
+  /-- Hilbert–Bernays provability condition D3 -/
   theorem sigma_one_complete {σ : ArithmeticSentence} (hσ : Hierarchy 𝚺 1 σ) :
       V↓[ℒₒᵣ] ⊧ σ → Provable T (⌜σ⌝ : V)
 
-  /-- Hilbert–Bernays provability condition D3 -/
   theorem provable_internalize {σ : ArithmeticSentence} :
       Provable T (⌜σ⌝ : V) → Provable T (⌜provabilityPred T σ⌝ : V)
 
@@ -956,8 +850,8 @@ Since $T supset.eq ISigma1$, the fixpoint theorem holds.
 
 #leancode(
   links: (
-    ("Foundation", "Foundation/FirstOrder/Bootstrapping/FixedPoint.lean#L126-L131"),
-    ("Foundation", "Foundation/FirstOrder/Incompleteness/StandardProvability.lean#L18-L20"),
+    ("Foundation", "Foundation/FirstOrder/Bootstrapping/FixedPoint.lean"),
+    ("Foundation", "Foundation/FirstOrder/Incompleteness/StandardProvability.lean"),
   ),
 )[
   ```
@@ -985,12 +879,7 @@ Combining the results above, @prop:abstract_G2 immediately yields our final resu
 ]<thm:G2>
 
 #leancode(
-  links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/a3dd617f88bda178eb6c206dd5db91f88b6a2a42/Foundation/FirstOrder/Incompleteness/Second.lean#L18",
-    ),
-  ),
+  links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Second.lean"),),
 )[
   ```
   /-- Gödel's second incompleteness theorem -/
@@ -1017,7 +906,7 @@ Throughout this subsection, we assume $T supset.eq ISigma1$.
 ] <thm:multi_fixedpoint>
 
 #leancode(
-  links: (("Foundation", "Foundation/FirstOrder/Bootstrapping/FixedPoint.lean#L151-L159"),),
+  links: (("Foundation", "Foundation/FirstOrder/Bootstrapping/FixedPoint.lean"),),
 )[
   ```
   noncomputable def multifixedpoint (θ : Fin k → ArithmeticSemisentence k) (i : Fin k)
@@ -1036,7 +925,7 @@ Throughout this subsection, we assume $T supset.eq ISigma1$.
 ] <thm:parameterized_fixedpoint>
 
 #leancode(
-  links: (("Foundation", "Foundation/FirstOrder/Bootstrapping/FixedPoint.lean#L204-L210"),),
+  links: (("Foundation", "Foundation/FirstOrder/Bootstrapping/FixedPoint.lean"),),
 )[
   ```
   noncomputable def parameterizedFixedpoint (θ : ArithmeticSemisentence (k + 1))
@@ -1077,12 +966,7 @@ First, we prove the following lemma.
 ]
 
 #leancode(
-  links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Incompleteness/Tarski.lean#L12",
-    ),
-  ),
+  links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Tarski.lean"),),
 )[
   ```
   lemma not_exists_tarski_predicate {T : ArithmeticTheory} [𝗜𝚺₁ ⪯ T] [Consistent T] : ¬∃ τ : ArithmeticSemisentence 1, ∀ σ, T ⊢ σ 🡘 τ/[⌜σ⌝]
@@ -1096,12 +980,7 @@ Taking as $T$ the _true arithmetic_ $TA$, the theory of all sentences true in $N
 ]<thm:undefinability_of_truth>
 
 #leancode(
-  links: (
-    (
-      "Foundation",
-      "https://github.com/FormalizedFormalLogic/Foundation/blob/8f2c66de8c404e51758bcb5988545858150d828d/Foundation/FirstOrder/Incompleteness/Tarski.lean#L20",
-    ),
-  ),
+  links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Tarski.lean"),),
 )[
   ```
   theorem undefinability_of_truth : ¬∃ τ : ArithmeticSemisentence 1, ∀ σ : ArithmeticSentence, ℕ↓[ℒₒᵣ] ⊧ σ ↔ ℕ↓[ℒₒᵣ] ⊧ τ/[⌜σ⌝]
@@ -1303,9 +1182,7 @@ and is not essential; in ordinary mathematics one may always replace an r.e. the
 ]
 
 #leancode(
-  links: (
-    ("Foundation", "Foundation/FirstOrder/Incompleteness/Definability.lean"),
-  ),
+  links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Definability.lean"),),
 )[
   ```
   instance : 𝗣𝗔.RE
@@ -1334,7 +1211,7 @@ We mention that Popescu and Traytel @PT21[Theorem 30] mechanized Jeroslow's theo
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Jeroslow.lean"),))[
   ```
   theorem unprovable_formalized_law_of_noncontradiction {T : ArithmeticTheory} [T.Δ₁] [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T]
-  : T ⊬ (∀¹ ∼(T.provable ⋏ T.refutable))
+  : T ⊬ (∀¹ ∼(provable T ⋏ T.refutable))
   ```
 ]
 
@@ -1413,7 +1290,7 @@ Furthermore, we have also mechanized the speed-up theorem due to Ehrenfeucht--My
   noncomputable def Theory.minProof (T : Theory L) [T.Δ₁] (σ : Sentence L) : ℕ
     := sInf (Set.range λ d : T ⊢!₂! (σ : Proposition L) ↦ (⌜d⌝ : ℕ))
 
-  theorem ehrenfeucht_mycielski_speedup {T : Theory L} [T.Δ₁] {σ : Sentence L}
+  theorem ehrenfeucht_mycielski_speedup {T : Theory L} [T.Δ₁] {σ : Sentence L} [L.Primcodable]
     (hU : ¬ComputablePred (insert (∼σ) T).theory) (f : ℕ → ℕ) (hf : Computable f) :
     ∃ π : Sentence L, T ⊢ π ∧ f ((insert σ T).minProof π) < T.minProof π
 
@@ -2198,11 +2075,11 @@ Although the definition allows $Bew$ to be arbitrary, we mainly consider the sta
 ]
 #leancode(links: (("ProvabilityLogic", "ProvabilityLogic/ProvabilityLogic/Interpret.lean"),))[
   ```
-  def LO.FirstOrder.ArithmeticTheory.provabilityLogicRelativeTo
+  def FirstOrder.ArithmeticTheory.provabilityLogicRelativeTo
     (T U : FirstOrder.ArithmeticTheory) [T.Δ₁] : Logic α :=
     {A | ∀ f : Realization α ℒₒᵣ, U ⊢ f T A}
 
-  abbrev LO.FirstOrder.ArithmeticTheory.provabilityLogic
+  abbrev FirstOrder.ArithmeticTheory.provabilityLogic
     (T : FirstOrder.ArithmeticTheory) [T.Δ₁] : Logic α := T.provabilityLogicRelativeTo T
   ```
 ]
@@ -2877,7 +2754,7 @@ It also has the existence property: if $LogicIQL proves exs(x) phi(x)$, then the
 Intuitionistic predicate logic also has connections to other fields, for example to dependent type theory via the Curry--Howard correspondence.
 
 At present, our mechanization of intuitionistic predicate logic is not far advanced: it contains the syntax, a Hilbert-style deduction system, and Kripke semantics.
-Nevertheless, we have already used it to mechanize the cut-elimination theorem for classical first-order logic semantically, following Avigad @Avi01: a classical derivation is translated by the Gödel--Gentzen negative translation into a derivation in minimal logic, and the soundness of minimal logic with respect to a Kripke-style forcing relation yields a cut-free classical derivation#footnote[See #link("https://github.com/FormalizedFormalLogic/Foundation/blob/master/Foundation/FirstOrder/Hauptsatz.lean"). The underlying forcing argument is described in @subsect:settheory.].
+Nevertheless, we have already used it to mechanize the cut-elimination theorem for classical first-order logic semantically, following Avigad @Avi01: a classical derivation is translated by the Gödel--Gentzen negative translation into a derivation in minimal logic, and the soundness of minimal logic with respect to a Kripke-style forcing relation yields a cut-free classical derivation#footnote[See #link(REPO_SOURCES.at("Foundation") + "/Foundation/FirstOrder/Hauptsatz.lean"). The underlying forcing argument is described in @subsect:settheory.].
 Cut elimination for the intuitionistic sequent calculus itself has not been mechanized yet; we plan to prove it semantically in the same way, by developing the Kripke semantics of intuitionistic predicate logic further.
 As prior work, Herbelin and Lee @HL09#footnote[Implementation: #link("https://formal.hknu.ac.kr/Kripke").] already mechanized cut elimination for intuitionistic logic in Rocq.
 
@@ -2942,7 +2819,7 @@ $
   LK proves phi quad "iff" quad fal(p in PP) (p wforces phi)
 $
 
-#leancode[
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Completeness/CanonicalModel.lean"),))[
   ```
   lemma complete {φ : Proposition L} : ℙ⁻ ∀⊩ᶜ φ ↔ 𝐋𝐊¹ ⊢ φ
   ```
@@ -2959,7 +2836,7 @@ then the forcing lemma can be proved:
 $
   frak(T) models phi quad "iff" quad exs(p in G)(p wforces phi)
 $
-#leancode[
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Completeness/CounterModel.lean"),))[
   ```
   def GenericForces (p : ℙ⁻) (φ : Proposition K) : Prop := ∃ q ∈ genericFilter p, q ⊩ᶜ φ
 
@@ -2972,7 +2849,7 @@ $
 Since $G$ contains ${sigma}$ and ${sigma} wforces sigma$, it follows that $frak(T) models sigma$.
 This proves the completeness theorem for $LK$.
 
-#leancode[
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Completeness/CounterModel.lean"),))[
   ```
   lemma satisfiable_of_irrefutable (σ : Sentence L) (h : 𝐋𝐊¹ ⊬ ∼(σ : Proposition L)) :
       Satisfiable {σ}
@@ -3068,7 +2945,7 @@ Claude does not mechanize everything autonomously: the author first fixes the ov
 Within the proofs as well, the author gives appropriate directions and tactics, e.g., to proceed by induction on the structure of formulas or on the rules of a sequent calculus.
 As a rule of thumb in pure mathematical logic, a fact proved by such an induction requires no special idea: one simply carries out the calculation, and on paper one typically works out a few representative cases and omits the rest.
 In a mechanization, every case must be treated without omission; we saw little value in a human spending time on such code, so we actively delegated it to the AI.
-In practice, the overall refactoring of #link(REPO_SOURCES.at("ProvabilityLogic"))[FormalizedFormalLogic/ProvabilityLogic] and the mechanization of the classification theorem were mostly completed in about three weeks of actual work, which the second author regards as a substantial gain in speed and efficiency.
+In practice, the overall refactoring of #link(REPO_SOURCES.at("ProvabilityLogic").replace("/blob/", "/tree/"))[FormalizedFormalLogic/ProvabilityLogic] and the mechanization of the classification theorem were mostly completed in about three weeks of actual work, which the second author regards as a substantial gain in speed and efficiency.
 
 Apart from such delegation of proofs, we also experimented with autoformalization by an LLM, in the direction of proof theory.
 We tried to mechanize the sequent calculus for $PA$ with the $omega$-rule, its cut-elimination theorem, and the fact that $PA$ does not prove the termination of Goodstein sequences @KP82.
