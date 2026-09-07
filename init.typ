@@ -1,12 +1,18 @@
-#import "@preview/fine-lncs:0.6.5": author, institute, lncs
 #import "@preview/ctheorems:1.1.3": *
 #import "@preview/curryst:0.5.0": prooftree, rule
 
 #let auxColor = color.hsl(205deg, 55%, 40%)
 
 #let base-text-size = 10pt
-#let font-math = ("New Computer Modern Math", "libertinus serif")
+#let small-text-size = 9pt
+#let title-text-size = 14pt
+#let font-text = ("New Computer Modern", "Libertinus Serif")
+#let font-math = ("New Computer Modern Math", "Libertinus Serif")
 #let font-code = "JuliaMono"
+
+#let paper-size = "a4"
+#let page-margin = (left: 18mm, right: 18mm, top: 26mm, bottom: 26mm)
+#let par-spacing = 0.75em
 
 
 // リンクのパスの先頭ディレクトリ（リポジトリ名）から宛先リポジトリを解決する
@@ -14,8 +20,7 @@
   "Foundation": "https://github.com/FormalizedFormalLogic/Foundation/blob/master",
   "ProvabilityLogic": "https://github.com/FormalizedFormalLogic/ProvabilityLogic/blob/main",
 )
-// リンクはタプル ("Foundation", "Foundation/FirstOrder/...") で指定する:
-// 第1要素がリポジトリ名（REPO_SOURCES のキー），第2要素がリポジトリ内のパス
+// リンクは (リポジトリ名, リポジトリ内パス) のタプルで指定する
 #let lean-link(index, l) = {
   let (repo, path) = l
   link(REPO_SOURCES.at(repo) + "/" + path)[
@@ -23,60 +28,166 @@
   ]
 }
 
+
+// ---- 著者・所属 ----
+
+#let author(name, orcid: none, insts: ()) = {
+  if type(insts) != array { insts = (insts,) }
+  (name: name, orcid: orcid, insts: insts)
+}
+
+#let institute(name, addr: none, email: none, url: none) = (
+  name: name,
+  addr: addr,
+  email: email,
+  url: url,
+)
+
+#let abbrev-name(name) = {
+  let parts = name.split(" ")
+  let given = parts.slice(0, -1).map(w => w.split("-").map(p => p.first() + ".").join("-"))
+  (..given, parts.last()).join(" ")
+}
+
+#let running-author-of(authors) = {
+  let ns = authors.map(a => abbrev-name(a.name))
+  if ns.len() == 0 { none } else if ns.len() == 1 {
+    ns.first()
+  } else if ns.len() == 2 {
+    ns.join(" and ")
+  } else {
+    [#ns.first() et al.]
+  }
+}
+
+#let join-authors(items) = {
+  if items.len() == 0 { [No Author Given] } else if items.len() == 1 {
+    items.first()
+  } else if items.len() == 2 {
+    items.join([ and ])
+  } else {
+    items.slice(0, -1).join([, ]) + [, and ] + items.last()
+  }
+}
+
+
+// ctheorems の ref ルールは `numbering: none` の環境を参照すると落ちるので，そこだけ先に処理する
+#let thmref-fallback(it) = {
+  let el = it.element
+  if el != none and el.func() == figure and el.kind == "thmenv" and el.numbering == none {
+    link(it.target, el.supplement)
+  } else { it }
+}
+
+#let thmnumber(target) = context {
+  let el = query(target).first()
+  let meta = query(selector(<meta:thmenvcounter>).after(el.location())).first()
+  numbering(el.numbering, ..thmcounters.at(meta.location()).at("latest"))
+}
+
+
+// ---- 本体 ----
+
 #let init(
-  title: "",
+  title: [],
+  running-title: none,
+  running-author: auto,
+  thanks: none,
   authors: (),
-  date: (datetime.today().year(), datetime.today().month(), datetime.today().day()),
-  abstract: "",
+  abstract: none,
   keywords: (),
+  acknowledgements: none,
+  interests: none,
+  lang: "en",
   body,
 ) = {
-  // fine-lncs は著者が2人以上だと一律 "A et al." にするので，
-  // LNCS の慣例に従い2人なら "A and B" とする（3人以上は et al.）
-  let abbrev(name) = {
-    let ns = name.split(" ")
-    [#ns.at(0).split("-").map(w => w.at(0) + ".").join("-") #ns.last()]
-  }
-  let running-author = {
-    let an = authors.map(a => abbrev(a.name))
-    if an.len() == 2 [#an.at(0) and #an.at(1)] else { none }
-  }
+  // 脚注の中の `@thm:...` にも効かせるため，文書の最も外側で適用する
+  show: thmrules.with(qed-symbol: [❏])
+  show ref: thmref-fallback
 
-  // ctheorems の thmenv 参照ルールを lncs より外側にも置く．
-  // `show: thmrules` は lncs の内側にあるため，脚注の中では効かず，
-  // 脚注内の `@thm:...` が章番号付きの "2.3" ではなく素の figure カウンタの "5" になる．
-  // 本文側は内側の thmrules が先に処理するので，このルールは脚注などの取りこぼしにだけ効く．
-  show ref: it => {
-    if it.element == none { return it }
-    if it.element.func() != figure { return it }
-    if it.element.kind != "thmenv" { return it }
-    let supplement = it.element.supplement
-    if it.citation.supplement != none { supplement = it.citation.supplement }
-    let thms = query(selector(<meta:thmenvcounter>).after(it.element.location()))
-    let number = thmcounters.at(thms.first().location()).at("latest")
-    link(it.target, [#supplement~#numbering(it.element.numbering, ..number)])
-  }
+  set document(author: authors.map(a => a.name), title: title)
+  set text(font: font-text, lang: lang, size: base-text-size)
+  set par(leading: 0.5em, spacing: par-spacing)
 
-  show: lncs.with(
-    title: title,
-    authors: authors,
-    running-author: running-author,
-    abstract: abstract,
-    keywords: keywords,
-    bibliography: bibliography("references.bib", style: "assets/springer-lecture-notes-in-computer-science.csl"),
+  set page(
+    paper: paper-size,
+    margin: page-margin,
+    header-ascent: 1.6em,
+    footer-descent: 2em,
   )
 
+  let header-author = if running-author == auto {
+    running-author-of(authors)
+  } else { running-author }
+  let header-title = if running-title == none { title } else { running-title }
+
+  set page(header: context {
+    let n = counter(page).get().first()
+    if n == 1 { return none }
+    if calc.odd(n) {
+      align(right)[#header-title #h(1cm) #n]
+    } else {
+      align(left)[#n #h(1cm) #header-author]
+    }
+  })
+
   set heading(numbering: "1.1")
+  show heading: it => {
+    // 見出し番号と本文の間隔は Typst 既定より広く取る
+    let head = if it.numbering == none { it.body } else {
+      counter(heading).display(it.numbering) + h(4.5mm) + it.body
+    }
+    if it.level == 1 {
+      set text(12pt, weight: "bold")
+      block(above: 18pt, below: 16pt, head)
+    } else if it.level == 2 {
+      set text(10pt, weight: "bold")
+      block(above: 18pt, below: 8pt, head)
+    } else if it.level == 3 {
+      set text(10pt, weight: "bold")
+      // run-in 見出し
+      block(below: 0em, height: 2em + par-spacing, spacing: 0em) + head
+    } else {
+      set text(10pt, weight: "regular", style: "italic")
+      block(below: 0em, height: 1.3em + par-spacing, spacing: 0em) + head
+    }
+  }
+
+  set super(size: 8pt)
+  show footnote.entry: set text(small-text-size)
+  set footnote.entry(
+    separator: line(start: (0pt, 0pt), length: 57pt, stroke: 0.5pt),
+    indent: 1mm,
+  )
+
+  set figure(gap: 4.5mm, placement: none)
+  set figure(supplement: it => if it.func() == image { [Fig.] } else if it.func() == table {
+    [Table]
+  } else { [Figure] })
+  set figure.caption(separator: [. ])
+  show figure.caption: it => align(center)[
+    *#it.supplement #context it.counter.display()#it.separator*#it.body
+  ]
+  show figure.where(kind: table): set figure.caption(position: top)
+  show figure.where(kind: image): set image(width: 100%)
+  show figure: it => {
+    // 定理環境も figure なので除く
+    if it.kind == "thmenv" { return it }
+    set text(small-text-size)
+    set align(left)
+    it
+  }
+
+  let table-stroke = 0.5pt
+  set table(stroke: (_, _) => (left: table-stroke, right: table-stroke))
+  set table(inset: (x: 0.7mm, y: 0.74mm))
+  set table.hline(stroke: table-stroke)
 
   set math.equation(numbering: none)
-
-  set text(size: base-text-size)
-
+  show math.equation.where(block: true): set block(above: 1em, below: 1em)
   show math.equation: set text(font: font-math)
 
-  // show raw: set text(size: 7pt, font: font-code)
   show raw: set text(font: font-code)
-
   show raw.where(block: false): box.with(
     inset: (x: 4pt, y: 0pt),
     outset: (y: 3pt),
@@ -85,24 +196,105 @@
 
   show link: set text(fill: auxColor)
 
-  show: thmrules.with(qed-symbol: [#text[❏]])
+  set terms(indent: 1em, hanging-indent: 1.5em)
 
-  // For theorem environment
+  // 中央寄せの表・証明図と説明リストは上下に余白を取る
+  show align: set block(spacing: 1.2em)
+  show terms: it => block(above: 1.2em, below: 1.2em, it)
+
+  align(center, {
+    block(
+      text(weight: "bold", size: title-text-size, title)
+        + if thanks != none {
+          set super(size: 10pt)
+          footnote(numbering: _ => [⋆#h(2pt)], thanks)
+        },
+    )
+
+    v(11mm)
+
+    let insts = authors.map(a => a.insts).flatten().dedup()
+
+    join-authors(authors.map(a => {
+      let refs = a.insts.map(i => str(insts.position(x => x == i) + 1)).join(",")
+      let orcid = if a.orcid != none { [\[#a.orcid\]] } else { none }
+      [#a.name#super[#refs#orcid]]
+    }))
+
+    v(6mm)
+
+    {
+      set text(small-text-size)
+      set par(leading: 0.65em, spacing: 0.65em)
+      if insts.len() == 0 { [No Institute Given] } else {
+        insts
+          .enumerate()
+          .map(((i, inst)) => {
+            let lines = (
+              {
+                super[#(i + 1)]
+                h(0.2em)
+                inst.name
+                if inst.addr != none [, #inst.addr]
+              },
+            )
+            if inst.email != none {
+              lines.push(link("mailto:" + inst.email, inst.email))
+            }
+            if inst.url != none { lines.push(link(inst.url)) }
+            lines.join(linebreak())
+          })
+          .join(parbreak())
+      }
+    }
+
+    let has-abstract = abstract not in (none, [])
+    let has-keywords = keywords.len() > 0
+    if has-abstract or has-keywords {
+      v(11mm)
+      block(width: 85%, {
+        set align(left)
+        set par(justify: true)
+        set text(size: small-text-size)
+        if has-abstract [*Abstract.* #abstract]
+        if has-keywords {
+          if has-abstract { v(4.5mm) }
+          let display = if type(keywords) == str { keywords } else {
+            keywords.join([ $dot$ ])
+          }
+          [*Keywords:* #display]
+        }
+      })
+    }
+  })
+
+  v(18pt)
+
   show figure.where(kind: "thmenv"): set par(first-line-indent: (all: false, amount: 1em))
 
-  set par(
-    justify: true,
-    first-line-indent: (
-      all: true,
-      amount: 1em,
-    ),
-  )
+  set par(justify: true, first-line-indent: (all: true, amount: 1em))
 
   body
 
   pagebreak(weak: true)
+
+  set text(size: small-text-size)
+  if acknowledgements != none {
+    block(above: 1.5em)[*Acknowledgements.* #acknowledgements]
+  }
+  if interests != none {
+    block(above: 1.5em)[*Disclosure of Interests.* #interests]
+  }
+
+  show std.bibliography: set text(small-text-size)
+  bibliography("references.bib", style: "assets/springer-lecture-notes-in-computer-science.csl")
 }
 
+
+// ---- Lean のコード ----
+
+// 本文の版面より少しはみ出させる
+#let leancode-width = 100%
 #let leancode(code, links: (), note: none) = {
   let code-text = if code.func() == raw {
     code.text
@@ -110,10 +302,10 @@
     let raw-elem = code.children.find(it => it.func() == raw)
     if raw-elem != none { raw-elem.text } else { "" }
   }
-  block(inset: 0.5em)
   align(center, block(
-    width: 120%,
-    // fill: rgb("#eee"),
+    width: leancode-width,
+    above: 1.6em,
+    below: 0.5em,
     stroke: 0.5pt + black,
     inset: (x: 1em),
     breakable: true,
@@ -141,7 +333,9 @@
     )),
   ))
   align(center, block(
-    width: 120%,
+    width: leancode-width,
+    above: 0.5em,
+    below: 1.6em,
     if links.len() > 0 {
       grid(
         columns: (1fr, auto),
@@ -154,62 +348,42 @@
       )
     },
   ))
-  block(inset: 0.5em)
 }
 
 
-#let sqthmbox(
-  title,
-  dash: "solid",
-  base: "heading",
-) = thmbox(
+// ---- 定理環境 ----
+// 識別子を "theorem" で揃えているので，全環境が節ごとの通し番号を共有する
+
+#let sqthmbox(title) = thmbox(
   "theorem",
   title,
-  base: base,
-  //stroke: (left: 2pt + luma(200)),
+  base: "heading",
+  base_level: 1,
   inset: (top: 8pt, bottom: 8pt),
   radius: 0pt,
-  titlefmt: body => [
-    #text[*#body*]
-  ],
-  namefmt: name => [
-    #text[*(#name)*]
-  ],
-  separator: [
-    #h(.4em)
-  ],
-  base_level: 1,
+  titlefmt: strong,
+  namefmt: name => strong[(#name)],
+  separator: h(.4em),
   breakable: true,
 )
 
-
 #let definition = sqthmbox("Definition")
-#let notation = sqthmbox("Notation", dash: "dotted")
+#let notation = sqthmbox("Notation")
 #let lemma = sqthmbox("Lemma")
 #let theorem = sqthmbox("Theorem")
 #let proposition = sqthmbox("Proposition")
 #let fact = sqthmbox("Fact")
-#let corollary = sqthmbox("Corollary", base: "theorem")
-#let remark = sqthmbox("Remark", dash: "dotted")
+#let corollary = sqthmbox("Corollary")
+#let remark = sqthmbox("Remark")
 #let example = sqthmbox("Example")
 #let problem = sqthmbox("Problem")
 #let conjecture = sqthmbox("Conjecture")
 
-#let thmnumber(target) = context {
-  let el = query(target).first()
-  let meta = query(selector(<meta:thmenvcounter>).after(el.location())).first()
-  numbering(el.numbering, ..thmcounters.at(meta.location()).at("latest"))
-}
-
 #let proof = thmproof(
   "proof",
   [_Proof._],
-  titlefmt: body => [
-    #text(size: base-text-size)[#body]
-  ],
-  separator: [
-    #h(.4em)
-  ],
+  titlefmt: it => text(size: base-text-size, it),
+  separator: h(.4em),
 )
 
 
