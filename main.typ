@@ -371,9 +371,9 @@ In fact, abstracting provability alone does not suffice to mechanize the incompl
   $
     T proves fixpoint(theta) <-> theta (godelize(fixpoint(theta)))
   $
-  for any $theta(x)$. We call $fixpoint(theta)$ the _fixed point_ of $theta$.
+  for any $theta(x)$. We call $fixpoint(theta)$ the _fixpoint_ of $theta$.
 
-  Let $T_0, T$ be $cal(L)$-theories such that $T_0$ is diagonalizable, and let $Bew$ be a provability of $T_0, T$. Then the fixed point of $not Bew (x)$ is called the _Gödel sentence_ and is denoted by $Godel(Bew)$.
+  Let $T_0, T$ be $cal(L)$-theories such that $T_0$ is diagonalizable, and let $Bew$ be a provability of $T_0, T$. Then the fixpoint of $not Bew (x)$ is called the _Gödel sentence_ and is denoted by $Godel(Bew)$.
 ] <def:diagonalization_abstraction>
 
 #leancode[
@@ -571,7 +571,7 @@ This allows us to formalize Jeroslow's G2 concisely.
   As with $Bew$, we abbreviate $Wid(godelize(sigma))$ as $Wid sigma$.
   We say that $Wid$ is _sound on_ an $cal(L)$-sentence $sigma$ if $T proves Wid sigma ==> T proves not sigma$.
 
-  Let $Wid$ be a $T$-refutability predicate over $T_0$ and suppose that $T_0$ is diagonalizable. Then the fixed point of $Wid(x)$ is called the _Jeroslow sentence_ and is denoted by $Jeroslow(Wid)$.
+  Let $Wid$ be a $T$-refutability predicate over $T_0$ and suppose that $T_0$ is diagonalizable. Then the fixpoint of $Wid(x)$ is called the _Jeroslow sentence_ and is denoted by $Jeroslow(Wid)$.
 ]
 
 #leancode(
@@ -942,9 +942,9 @@ and moreover that it satisfies the derivability conditions $D1$, $D2$, $D3$, and
 ]
 
 On the other hand, making @prop:abstract_G2 concrete requires the theory to be diagonalizable (@def:diagonalization_abstraction).
-Since $T supset.eq ISigma1$, the fixed point theorem holds.
+Since $T supset.eq ISigma1$, the fixpoint theorem holds.
 
-#theorem[Fixpoint Lemma][
+#theorem[Fixpoint Theorem][
   Suppose $T supset.eq ISigma1$. For any unary arithmetical formula $theta(x)$, one can construct an arithmetic sentence $fixpoint(theta)$ such that
   $
     T proves fixpoint(theta) <-> theta (godelize(fixpoint(theta)))
@@ -1002,7 +1002,7 @@ Combining the results above, @prop:abstract_G2 immediately yields our final resu
 Using the tools developed so far, we have also proved several theorems related to Gödel's incompleteness theorems.
 
 === Variants of fixedpoint lemma
-The following fixed point theorems, which generalize @thm:fixedpoint, also hold; see @Boo94 for the proofs.
+The following fixpoint theorems, which generalize @thm:fixedpoint, also hold; see @Boo94 for the proofs.
 Although we omit the details, they are needed when we establish arithmetical completeness in @sect:provability_logic.
 Throughout this subsection, we assume $T supset.eq ISigma1$.
 
@@ -1065,7 +1065,7 @@ As related work, Löb's theorem has also been mechanized in Isabelle by Bailitis
 ]
 
 === Tarski's Undefinability Theorem
-As a corollary of the fixed point theorem, we can prove Tarski's theorem on the undefinability of truth.
+As a corollary of the fixpoint theorem, we can prove Tarski's theorem on the undefinability of truth.
 First, we prove the following lemma.
 
 #lemma[
@@ -1182,7 +1182,7 @@ By instantiating @prop:abstract_GR, we can prove the Gödel--Rosser incompletene
 ]
 
 The required provability predicate satisfying $Ros$ is constructed by so-called _witness comparison_ (see @HP93 @Lin97); we omit the details here.
-Note also that this proof internally uses the fixed point theorem (@thm:fixedpoint);
+Note also that this proof internally uses the fixpoint theorem (@thm:fixedpoint);
 hence, unlike @thm:G1, we assume that $T$ extends $ISigma1$, which is stronger than $R0$.
 Similarly, @cor:true_but_unprovable can also be strengthened; we omit the statement.
 
@@ -1340,7 +1340,7 @@ Formalization also allows us to discuss provability by a proof of _feasible_ len
 #theorem[
   Let $T supset.eq ISigma1$ be a $Delta_1$-definable and $Sigma_1$-sound theory, let $f$ be a $Sigma_1$-definable function, and let $e$ be an arbitrary natural number.
   Then we can construct the _restricted provability predicate_ $RPr(T, f, e) (x)$, a further restriction of the provability predicate expressing that "provable by a $T$-proof whose Gödel number is less than $f(e)$".
-  As with the usual Gödel sentence, let $RGodel(T, f, e)$ be a fixed point of $not RPr(T, f, e) (x)$.
+  As with the usual Gödel sentence, let $RGodel(T, f, e)$ be a fixpoint of $not RPr(T, f, e) (x)$.
 
   Then $NN models RGodel(T, f, e)$ and $T proves RGodel(T, f, e)$, but every $T$-proof of $RGodel(T, f, e)$ has code at least $f(e)$.
 ]
@@ -1542,7 +1542,7 @@ We first set up the basic framework of modal logic.
 
 In the present paper, we mainly characterize the logic #LogicGL in three ways: by a Gentzen-style sequent calculus, by Kripke semantics, and by a Hilbert-style proof system.
 Although #LogicGL is usually defined in the Hilbert style, when proving the Kripke completeness, introducing a sequent calculus makes both the mathematical proofs and the implementation of the mechanization simpler.
-Moreover, as applications, the interpolation theorem and the fixed point theorem can be derived easily via the sequent calculus (we will discuss this in @sect:application-of-sequent-calculus).
+Moreover, as applications, the interpolation theorem and the fixpoint theorem can be derived easily via the sequent calculus (we will discuss this in @sect:application-of-sequent-calculus).
 Hence, in our mechanization we first define the Gentzen-style sequent calculus, and eventually prove the equivalence of all these characterizations (@thm:GL_TFAE).
 
 We first introduce the Gentzen-style sequent calculus.
@@ -2061,8 +2061,8 @@ First, since it is a pure sequent calculus, the Craig interpolation property (CI
   ```
 ]
 
-The CIP of $LogicGL$ is important in particular because it yields the fixed point theorem of #LogicGL @Smo78 @Boo79.
-We have also mechanized the fixed point theorem of $LogicGL$ via the sequent calculus.
+The CIP of $LogicGL$ is important in particular because it yields the fixpoint theorem of #LogicGL @Smo78 @Boo79.
+We have also mechanized the fixpoint theorem of $LogicGL$ via the sequent calculus.
 
 #definition[
   A propositional variable $p$ is _modalized_ in a formula $A$ if every occurrence of $p$ in $A$ is within the scope of $Box$.
@@ -2077,16 +2077,16 @@ We have also mechanized the fixed point theorem of $LogicGL$ via the sequent cal
   ```
 ]
 
-#theorem[Fixed point theorem of #LogicGL @SV82][
+#theorem[Fixpoint theorem of #LogicGL @SV82][
   Suppose that $p$ is modalized in $A$.
   Then there exists a formula $D$ not containing $p$ and consisting only of propositional variables of $A$ such that
   $ LogicGL proves A[p := D] <-> D $
-  Moreover, such a fixed point is unique up to provable equivalence: for any formula $E$ such that $LogicGL proves A[p := E] <-> E$, we have $LogicGL proves D <-> E$.
+  Moreover, such a fixpoint is unique up to provable equivalence: for any formula $E$ such that $LogicGL proves A[p := E] <-> E$, we have $LogicGL proves D <-> E$.
 ] <thm:GL_fixpoint>
 #leancode(
   links: (("ProvabilityLogic", "ProvabilityLogic/Logic/GL/Fixedpoint.lean"),),
   note: [
-    The fresh propositional variable `q` serves only as a placeholder in the construction of the fixed point.
+    The fresh propositional variable `q` serves only as a placeholder in the construction of the fixpoint.
   ],
 )[
   ```
@@ -2097,9 +2097,9 @@ We have also mechanized the fixed point theorem of $LogicGL$ via the sequent cal
   ```
 ]
 
-A special case of the fixed point theorem of #LogicGL has also been mechanized in Lean by Gignoux @Gig26, as a supporting lemma for a mechanization of the CIP of #LogicGL based on non-wellfounded proof systems formulated coalgebraically.
-We note that Gignoux's mechanization treats formulas of the form $Box A$ and $Dia A$ and proves the fixed point equivalence semantically over Kripke frames, and its interpolants are given by a noncomputable function, whereas in our mechanization the interpolants and the fixed points can be computed constructively inside Lean from derivation trees of the sequent calculus.
-However, at present derivation trees of the sequent calculus cannot be constructed automatically by proof search or the like, so concrete derivation trees have to be input by hand. Also, when $LogicGL proves A$ is proved non-constructively, e.g., via Kripke semantics, the interpolants and the fixed points are of course not computable in Lean.
+A special case of the fixpoint theorem of #LogicGL has also been mechanized in Lean by Gignoux @Gig26, as a supporting lemma for a mechanization of the CIP of #LogicGL based on non-wellfounded proof systems formulated coalgebraically.
+We note that Gignoux's mechanization treats formulas of the form $Box A$ and $Dia A$ and proves the fixpoint equivalence semantically over Kripke frames, and its interpolants are given by a noncomputable function, whereas in our mechanization the interpolants and the fixpoints can be computed constructively inside Lean from derivation trees of the sequent calculus.
+However, at present derivation trees of the sequent calculus cannot be constructed automatically by proof search or the like, so concrete derivation trees have to be input by hand. Also, when $LogicGL proves A$ is proved non-constructively, e.g., via Kripke semantics, the interpolants and the fixpoints are of course not computable in Lean.
 
 Finally, we have also mechanized facts on the CIP of $LogicS$ and $LogicD$, which we briefly mention.
 
