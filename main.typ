@@ -2154,10 +2154,12 @@ Although the definition allows $Bew$ to be arbitrary, we mainly consider the sta
   A map $f colon PropVar -> ArithSent$, where $ArithSent$ denotes the set of arithmetic sentences, is called an _arithmetical realization_ (or simply a _realization_).
   Given a realization $f$ and a provability $Bew$, the _arithmetical interpretation_ of $A$ by $Bew$, denoted $f_Bew (A)$, is the extension of $f$ translating each modal formula $A$ into an arithmetic sentence as follows.
 
-  - $f_Bew (p) & = f(p)$
-  - $f_Bew (bot) & = bot$
-  - $f_Bew (A limp B) & = f_Bew (A) limp f_Bew (B)$
-  - $f_Bew (Box A) & = Bew (f_Bew (A))$
+  $
+           f_Bew (p) & = f(p) \
+         f_Bew (bot) & = bot \
+    f_Bew (A limp B) & = f_Bew (A) limp f_Bew (B) \
+       f_Bew (Box A) & = Bew (f_Bew (A))
+  $
 
   In particular, the interpretation $f_(Bew_T) (A)$ by $Bew_T$ is called the _standard interpretation_ of $A$ and is written $f_T (A)$.
 ] <def:arithmetical_interpretation>
