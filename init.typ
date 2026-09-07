@@ -221,8 +221,7 @@
 
     join-authors(authors.map(a => {
       let refs = a.insts.map(i => str(insts.position(x => x == i) + 1)).join(",")
-      let orcid = if a.orcid != none { [\[#a.orcid\]] } else { none }
-      [#a.name#super[#refs#orcid]]
+      [#a.name#super[#refs]]
     }))
 
     v(6mm)
@@ -246,6 +245,11 @@
               lines.push(link("mailto:" + inst.email, inst.email))
             }
             if inst.url != none { lines.push(link(inst.url)) }
+            for a in authors {
+              if inst in a.insts and a.orcid != none {
+                lines.push([ORCID: #link("https://orcid.org/" + a.orcid, a.orcid)])
+              }
+            }
             lines.join(linebreak())
           })
           .join(parbreak())
