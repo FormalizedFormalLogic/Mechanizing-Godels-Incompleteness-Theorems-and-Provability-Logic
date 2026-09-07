@@ -77,7 +77,7 @@ However, for the sake of readability, note that in some places we have modified 
 Moreover, owing to motivations other than the incompleteness theorems and provability logic that the present paper focuses on, some implementations are stated as more general definitions.
 We add comments where we deem it necessary, but for the actual working (verified) code, refer to the repository.
 
-=== Declaration of AI usage
+== Declaration of AI usage
 
 // In the interest of novelty and fairness, we declare here how AI/LLMs were used in our development.
 Our main mechanizations of the three results, the first and second incompleteness theorems and Solovay's arithmetical completeness theorem were done between 2023 and 2025, and up to that point they contained no AI-generated code.
@@ -94,12 +94,13 @@ This can be verified from the following commits, at which each result first beca
 Some proofs in modal logic and provability logic make use of AI-assisted mechanizations. This is discussed in detail in
 Appendix: @subsect:vibe-formalizing.
 
-/*
-On the other hand, since June 2026, the second author has adopted AI/LLM-assisted _vibe coding_ in Lean for #link(REPO_SOURCES.at("ProvabilityLogic"))[FormalizedFormalLogic/ProvabilityLogic], using interactive coding agents such as Anthropic's Claude both for refactoring the code and for mechanizing the new results, namely the sequent calculi for modal logics and the classification theorem of provability logics.
-We have verified that the main parts of the generated code do not rely on any device regarded as illegitimate for mechanizing mathematics in Lean, such as `sorry`, additional nontrivial axioms, or `native_decide`#footnote[Some parts still contain `sorry`s; they are isolated from the main results of this paper and do not compromise the validity of the mechanization. See @subsect:remaining_sorry_in_provlogic.].
-In @subsect:vibe-formalizing, we give a brief report on how we carried out the writing and generation of mechanized proofs using AI/LLMs in this project.
-*/
-// *The authors take full responsibility for the final artifact, including its AI-generated code.*
+== Acknowledgement
+
+数学的なレビューとしては...に開発する．
+開発においては，主にFFLの開発において積極的な意見交換や実験などを行ってくれたC7X (#link("https://github.com/indiscernibles")[\@indiscernibles]) とTrevor Morris (#link("https://github.com/gotrevor")[\@gotrevor]) に感謝する．
+また金銭的な支援として，this work was partially supported by JST CREST JPMJCR25I5 and JST BOOST JPMJBY24E2.
+また，個人ないし企業からの金銭的なサポートも受けた #footnote[See: #link("https://formalizedformallogic.github.io#financial-supports")]．
+ここに感謝する．
 
 = Mechanization of the incompleteness theorems
 
@@ -2799,7 +2800,7 @@ There are several possible ways to mechanize forcing. Two basic approaches are a
 1. The standard textbook model-theoretic approach:
   As in, for example, Kunen @Kun11, one begins with a countable transitive model $M$ of $ZFC$ and a forcing poset $PP$ with generic filter $G subset.eq PP$, and constructs a new model by the forcing extension $M[G]$.
 2. An approach using proof-theoretic forcing:
-  One constructs a kind of interpretation between theories $T_1$ and $T_2$, called a _forcing interpretation_, and establishes an appropriate conservativity result $T_1 attach(subset.eq, br:Gamma) T_2$ @Avi04.
+  One constructs a kind of interpretation between theories $T_1$ and $T_2$, called a _forcing interpretation_, and establishes an appropriate conservativity result $T_1 attach(subset.eq, br: Gamma) T_2$ @Avi04.
   For example, let $T_1 := ZFC + class("unary", not)CH$, ($CH$: the continuum hypothesis), $T_2 := ZFC$, and $Gamma := {bot}$.
   Suppose that one can construct a $Gamma$-conservative forcing interpretation of $T_1$ in $T_2$.
   A proof of $ZFC proves CH$ easily yield a proof of $ZFC + class("unary", not)CH proves bot$,
@@ -2821,10 +2822,10 @@ We briefly describe it here, assuming that the language is countable.
 Let $PP$ be the set of $LK$-sequent $Gamma$ such that $LK nproves not Gamma$.
 Endow $PP$ with the relation inductively defined by the following rules. This relation is a preorder whose greatest element is the empty sequent:
 $
-  Xi prec.eq& Xi \
-  phi, psi, Gamma prec.eq Xi =>& phi and psi, Gamma prec.eq Xi \
-  phi(t) prec.eq Xi =>& fal(x) phi(x), Gamma prec.eq Xi \
-  Delta prec.eq Xi "and" Delta subset.eq Gamma =>& Gamma prec.eq Xi
+                                       Xi prec.eq & Xi \
+                    phi, psi, Gamma prec.eq Xi => & phi and psi, Gamma prec.eq Xi \
+                             phi(t) prec.eq Xi => & fal(x) phi(x), Gamma prec.eq Xi \
+  Delta prec.eq Xi "and" Delta subset.eq Gamma => & Gamma prec.eq Xi
 $
 If $LK proves phi$, then the Gödel--Gentzen translation gives $LJ proves phi^"GG"$.
 Since Kripke semantics is sound for $LJ$, we have $p forces phi^"GG"$ for every $p in PP$.
@@ -2961,3 +2962,4 @@ Within the proofs as well, the author gives appropriate directions and tactics, 
 As a rule of thumb in pure mathematical logic, a fact proved by such an induction requires no special idea: one simply carries out the calculation, and on paper one typically works out a few representative cases and omits the rest.
 In a mechanization, every case must be treated without omission; we saw little value in a human spending time on such code, so we actively delegated it to the AI.
 In practice, the overall refactoring of #link(REPO_SOURCES.at("ProvabilityLogic"))[FormalizedFormalLogic/ProvabilityLogic] and the mechanization of the classification theorem were mostly completed in about three weeks of actual work, which the second author regards as a substantial gain in speed and efficiency.
+
