@@ -127,12 +127,12 @@ We gratefully acknowledge all of this support here.
 We mechanized the following two results.
 Here, arithmetic sentence/theory means a sentence/theory in the language $LOR = {0, 1, +, dot, <, =}$.
 
-#theorem(number: thmnumber(<thm:G1>))[Gödel's First Incompleteness Theorem][
+#theorem(number: thmnumber(<thm:G1>))[Gödel's first incompleteness theorem][
   Let $T$ be a $Delta_1$-definable, $Sigma_1$-sound arithmetic theory stronger than $R0$.
   Then $T$ is incomplete.
 ]
 
-#theorem(number: thmnumber(<thm:G2>))[Gödel's Second Incompleteness Theorem][
+#theorem(number: thmnumber(<thm:G2>))[Gödel's second incompleteness theorem][
   Let $T$ be a $Delta_1$-definable, consistent arithmetic theory stronger than $ISigma1$.
   Then $T nproves Con(T)$.
 ]
@@ -257,7 +257,7 @@ As shown below, since $T$ is $Delta_1$-definable, there is a provability predica
 $Nat models Pr(T)(godelize(psi)) <==> T proves psi$; hence $D$ is r.e.
 @thm:G1 now follows from @thm:repr by the standard diagonal argument.
 
-#theorem[Gödel's First Incompleteness Theorem @God31 @Vau62 @JS83][
+#theorem[Gödel's first incompleteness theorem @God31 @Vau62 @JS83][
   Let $T$ be a $Delta_1$-definable, $Sigma_1$-sound arithmetic theory stronger than $R0$.
   Then $T$ is incomplete;
   that is, there exists an arithmetic sentence $phi$ such that $T nproves phi$ and $T nproves not phi$.
@@ -485,7 +485,7 @@ Variants of G2 arising from this view are discussed later.
 
 As further results, we can also mechanize Löb's theorem and the formalized Löb's theorem.
 
-#proposition[Abstract version of Löb's Theorem][
+#proposition[Abstract version of Löb's theorem][
   Assume that $Bew$ satisfies $D2$ and $D3$. Then the following hold,
   where $sigma$ is an arbitrary $cal(L)$-sentence.
 
@@ -946,7 +946,7 @@ and moreover that it satisfies the derivability conditions $D1$, $D2$, $D3$, and
 On the other hand, making @prop:abstract_G2 concrete requires the theory to be diagonalizable (@def:diagonalization_abstraction).
 Since $T supset.eq ISigma1$, the fixpoint theorem holds.
 
-#theorem[Fixpoint Theorem][
+#theorem[Fixpoint theorem][
   Suppose $T supset.eq ISigma1$. For any unary arithmetical formula $theta(x)$, one can construct an arithmetic sentence $fixpoint(theta)$ such that
   $
     T proves fixpoint(theta) <-> theta (godelize(fixpoint(theta)))
@@ -977,7 +977,7 @@ Since $T supset.eq ISigma1$, the fixpoint theorem holds.
 
 Combining the results above, @prop:abstract_G2 immediately yields our final result: a mechanization of the second incompleteness theorem.
 
-#theorem[Gödel's Second Incompleteness Theorem @God31][
+#theorem[Gödel's second incompleteness theorem @God31][
   Let $T$ be a $Delta_1$-definable arithmetic theory stronger than $ISigma1$,
   and let $Con(T)$ be the consistency statement $not Pr(T)(godelize(bot))$ of $T$, where $Pr(T)(x)$ is the standard provability predicate of $T$ constructed above.
   1. If $T$ is consistent, then $T nproves Con(T)$.
@@ -1047,7 +1047,7 @@ Throughout this subsection, we assume $T supset.eq ISigma1$.
   ```
 ]
 
-=== Löb's Theorem
+=== Löb's theorem
 Instantiating the abstract version stated in @prop:abstract_Löb, we immediately obtain the concrete Löb's theorem.
 As related work, Bailitis has mechanized Löb's theorem both in Isabelle, on top of Paulson's mechanization of the incompleteness theorems (see @AFP-Incompleteness[Chapter 13]), and in Rocq @Bai24.
 
@@ -1067,7 +1067,7 @@ As related work, Bailitis has mechanized Löb's theorem both in Isabelle, on top
   ```
 ]
 
-=== Tarski's Undefinability Theorem
+=== Tarski's undefinability theorem
 As a corollary of the fixpoint theorem, we can prove Tarski's theorem on the undefinability of truth.
 First, we prove the following lemma.
 
@@ -1091,7 +1091,7 @@ First, we prove the following lemma.
 
 Taking as $T$ the _true arithmetic_ $TA$, the theory of all sentences true in $Nat$, we immediately obtain the desired theorem.
 
-#theorem[Tarski's Undefinability Theorem @Tar35][
+#theorem[Tarski's undefinability theorem @Tar35][
   There is no truth predicate $True(x)$ such that $Nat models sigma$ if and only if $Nat models True(godelize(sigma))$ for every sentence $sigma$.
 ]<thm:undefinability_of_truth>
 
@@ -1111,12 +1111,12 @@ Taking as $T$ the _true arithmetic_ $TA$, the theory of all sentences true in $N
 In contrast to this theorem, it is known that for a complexity class $Gamma$ of formulas, there is a partial truth predicate $TruePartial(Gamma, x)$, obtained by replacing "for any sentence" with "for any $Gamma$-sentence" in the definition of $True(x)$, which is itself definable by a $Gamma$-formula (cf. @HP93).
 This fact has not been mechanized yet; consequently, several statements of provability logic proved via partial truth predicates remain unmechanized, as we discuss further in @subsect:remaining_sorry_in_provlogic.
 
-=== Church's Theorem and Undecidability of First-Order Logic
+=== Church's theorem and undecidability of first-order logic
 In Mathlib, computability of a predicate (at the meta level of Lean) is defined by `ComputablePred` (cf. @Car19), which requires the types of the domain and the range to be `Primcodable` #footnote[That is, encoding into and decoding from natural numbers are primitive recursive.].
 Since the type of formulas of our arithmetic is `Primcodable` via a suitable encoding, we can ask whether the set $Thm(T)$ of sentences provable from a theory $T$ is computable.
 This yields the following theorem, commonly known as Church's theorem.
 
-#theorem[Church's Theorem (for $Sigma_1$-sound theories)][
+#theorem[Church's theorem (for $Sigma_1$-sound theories)][
   For a $Sigma_1$-sound theory $T supset.eq R0$, $Thm(T)$ is not computable.
 ]
 
@@ -1130,7 +1130,7 @@ This yields the following theorem, commonly known as Church's theorem.
 Now take as $T$ the theory $PAMinus$, a finitely axiomatized $Sigma_1$-sound fragment of $PA$ stronger than $R0$.
 Since its axioms can be conjoined into a single sentence, the deduction theorem applies, and the undecidability of first-order logic over the language of arithmetic follows.
 
-#theorem[Undecidability of First-Order Logic][
+#theorem[Undecidability of first-order logic][
   First-order logic over the language $LOR$ is not computable.
   That is, for an $LOR$-sentence $sigma$, it is undecidable whether $emptyset proves sigma$ or $emptyset nproves sigma$.
 ]
@@ -1143,7 +1143,7 @@ Since its axioms can be conjoined into a single sentence, the deduction theorem 
 
 For the speed-up theorem (@thm:speedup) below, we have also mechanized a version that weakens $Sigma_1$-soundness to mere consistency, at the cost of strengthening the base theory from $R0$ to $ISigma1$.
 
-#theorem[Church's Theorem (for consistent theories)][
+#theorem[Church's theorem (for consistent theories)][
   For a consistent theory $T supset.eq ISigma1$, $Thm(T)$ is not computable.
 ] <thm:church2>
 
@@ -1156,11 +1156,11 @@ For the speed-up theorem (@thm:speedup) below, we have also mechanized a version
 
 Note that this version does not directly apply to the above proof of the undecidability of first-order logic: that proof requires the theory to be given by a single sentence, whereas $ISigma1$, naïvely presented by an infinite axiom scheme, is not finitely axiomatized as it stands (although it is in fact finitely axiomatizable).
 
-=== Gödel--Rosser First Incompleteness Theorem
+=== Gödel--Rosser first incompleteness theorem
 In the setting of @thm:G1, the theory $T$ was required to be $Sigma_1$-sound.
 By instantiating @prop:abstract_GR, we can prove the Gödel--Rosser incompleteness theorem @Ros36, which weakens this requirement to mere consistency.
 
-#theorem[Gödel--Rosser First Incompleteness Theorem @Ros36][
+#theorem[Gödel--Rosser first incompleteness theorem @Ros36][
   Let $T supset.eq ISigma1$ be a $Delta_1$-definable and consistent theory.
   Then $T$ is incomplete.
 ] <thm:GR>
@@ -1321,11 +1321,11 @@ and is not essential; in ordinary mathematics one may always replace an r.e. the
 
 Hence all the theorems mechanized here can indeed be instantiated with concrete theories such as $ISigma1$ and $PA$.
 
-=== Jeroslow's Second Incompleteness Theorem
+=== Jeroslow's second incompleteness theorem
 Similarly, from @prop:abstract_JG2, we can also concretely mechanize Jeroslow's second incompleteness theorem @Jer73.
 We mention that Popescu and Traytel @PT21[Theorem 30] mechanized Jeroslow's theorem only at the abstract level.
 
-#theorem[Jeroslow's Second Incompleteness Theorem @Jer73][
+#theorem[Jeroslow's second incompleteness theorem @Jer73][
   Let $T supset.eq ISigma1$ be a $Delta_1$-definable and consistent theory.
   Then $T nproves forall x. not (Pr(T)(x) and Pr(T)(dot(not) x))$,
   where $dot(not)$ denotes the function taking the Gödel number of a sentence to that of its negation, i.e., $dot(not) godelize(sigma) = godelize(not sigma)$.
@@ -1435,7 +1435,7 @@ Although one may question measuring the complexity of a proof simply by its Göd
 such discussions of restricted provability are closely related to Parikh's feasibility @Par71 and to bounded arithmetic @Bus86.
 We consider these mechanizations to be a first step in that direction.
 
-=== Lindenbaum Algebra
+=== Lindenbaum algebra
 The _Lindenbaum algebra_ $frak(A)_T$ of a theory $T$ is obtained by the usual construction quotienting sentences by the equivalence relation given by $T proves sigma <-> pi$.
 We have also mechanized some results on these algebras: in particular, for a theory $T$ for which the Gödel--Rosser first incompleteness theorem holds, $frak(A)_T$ is a dense Boolean algebra.
 
@@ -1484,7 +1484,7 @@ The algebras obtained by extending the Lindenbaum algebra with provability as an
 It is known, for example, that the diagonalizable algebras of $PA$ and $ZF$ are not isomorphic @Sha93a, and these algebras are deeply related to provability logic, which we discuss in @sect:provability_logic.
 No mechanization of these algebras has been carried out at present.
 
-= Provability Logic <sect:provability_logic>
+= Provability logic <sect:provability_logic>
 
 In this section, we describe our mechanization of modal logic, in particular of provability logic.
 We have mechanized Solovay's arithmetical completeness theorem @Sol76, the most fundamental and important result in the field of provability logic.
@@ -2052,7 +2052,7 @@ Moreover, constructing countermodels via the semantics shows that these inclusio
 Sambin and Valentini @SV82 give several further applications of the sequent calculus for $LogicGL$.
 First, since it is a pure sequent calculus, the Craig interpolation property (CIP) can be shown straightforwardly by Maehara's method @Mae61 (cf. @Tak87).
 
-#theorem[Craig Interpolation Property for #LogicGL][
+#theorem[Craig interpolation property for #LogicGL][
   If $LogicGL proves A limp B$, then there exists a formula $C$ such that $LogicGL proves A limp C$ and $LogicGL proves C limp B$, and every propositional variable of $C$ occurs in both $A$ and $B$.
 ] <thm:GL_CIP>
 #leancode(links: (
@@ -2154,10 +2154,12 @@ Although the definition allows $Bew$ to be arbitrary, we mainly consider the sta
   A map $f colon PropVar -> ArithSent$, where $ArithSent$ denotes the set of arithmetic sentences, is called an _arithmetical realization_ (or simply a _realization_).
   Given a realization $f$ and a provability $Bew$, the _arithmetical interpretation_ of $A$ by $Bew$, denoted $f_Bew (A)$, is the extension of $f$ translating each modal formula $A$ into an arithmetic sentence as follows.
 
-  - $f_Bew (p) & = f(p)$
-  - $f_Bew (bot) & = bot$
-  - $f_Bew (A limp B) & = f_Bew (A) limp f_Bew (B)$
-  - $f_Bew (Box A) & = Bew (f_Bew (A))$
+  $
+           f_Bew (p) & = f(p) \
+         f_Bew (bot) & = bot \
+    f_Bew (A limp B) & = f_Bew (A) limp f_Bew (B) \
+       f_Bew (Box A) & = Bew (f_Bew (A))
+  $
 
   In particular, the interpretation $f_(Bew_T) (A)$ by $Bew_T$ is called the _standard interpretation_ of $A$ and is written $f_T (A)$.
 ] <def:arithmetical_interpretation>
@@ -2434,7 +2436,7 @@ Proving it requires arguments involving partial truth definitions, which we have
 
 The other is the uniform arithmetical completeness theorem.
 
-#theorem[Uniform Arithmetical Completeness Theorem][
+#theorem[Uniform arithmetical completeness theorem][
   For every $Sigma_1$-sound theory $T$, there exists a uniform realization $f$ such that
   for every formula $A$, $LogicGL proves A$ if and only if $T proves f_(Bew_T) (A)$.
 ]
@@ -2895,7 +2897,7 @@ Our framework already covers the classical side, so the mechanization of such tr
 The exact axiomatization of the provability logic of Heyting arithmetic has remained a difficult open problem for a long time.
 We mention it again in @subsect:provlogic_of_HA.
 
-== Set theory and Forcing <subsect:settheory>
+== Set theory and forcing <subsect:settheory>
 
 One of our current goals is to mechanize a general framework for forcing and to establish foundational results such as the independence of the continuum hypothesis.
 Han and van Doorn @HvD20 have already mechanized the latter result, but their approach is based on Boolean-valued models and has more limited applicability than forcing.
