@@ -117,7 +117,7 @@ Appendix: @sect:vibe-formalizing.
 == Acknowledgement
 
 As for mathematical review, ... .
-During the development of FFL, we thank C7X (#link("https://github.com/indiscernibles")[\@indiscernibles]) and Trevor Morris (#link("https://github.com/gotrevor")[\@gotrevor]), who were mainly engaged in active discussion and experimentation.
+During the development of FFL, we thank Hunter Monroe (#link("https://github.com/hmonroe")[\@hmonroe]), C7X (#link("https://github.com/indiscernibles")[\@indiscernibles]) and Trevor Morris (#link("https://github.com/gotrevor")[\@gotrevor]), who were mainly engaged in active discussion and experimentation.
 We also received financial support; this work was partially supported by JST CREST JPMJCR25I5 and JST BOOST JPMJBY24E2.
 In addition, we received financial support from individuals and companies #footnote[See: #link("https://formalizedformallogic.github.io#financial-supports")].
 We gratefully acknowledge all of this support here.
