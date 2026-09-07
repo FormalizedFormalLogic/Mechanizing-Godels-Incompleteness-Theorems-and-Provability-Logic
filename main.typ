@@ -1229,7 +1229,7 @@ hence we may simply define a theory $T$ to be r.e. when the predicate $sigma in 
 ]
 
 By this trick, @thm:GR and @cor:true_but_unprovable can be strengthened further.
-This is one of the strongest statements of G1 -- that is, one with the weakest assumptions -- that we have mechanized #footnote[Since the assumption is changed to extending $ISigma1$, it is not comparable with @thm:G1, which holds for any extension of $R0$.].
+This is one of the strongest (i.e., with the weakest assumptions) statements of G1 that we have mechanized #footnote[Since the assumption is changed to extending $ISigma1$, it is not comparable with @thm:G1, which holds for any extension of $R0$.].
 
 #theorem[G1 for r.e. theories][
   Let $T supset.eq ISigma1$ be an r.e. and consistent theory.
@@ -1264,12 +1264,12 @@ As for G2, at present it can only be stated in the following form, because of an
 #remark[
   To restate this in terms of the consistency of $T$ itself, one would have to mechanize $T proves fal(x) [Pr(T)(x) <-> Pr(Craig(T))(x)]$.
   This, however, requires delicate adjustments, such as making $Pr(T)(x)$ codable for theories that are merely r.e. rather than $Delta_1$-definable,
-  as well as the laborious task of formalizing Craig's trick itself within arithmetic and carrying it out there;
+  as well as the cumbersome task of formalizing Craig's trick itself within arithmetic and carrying it out there;
   we have therefore not mechanized it yet.
 ] <rmk:craig_RE>
 
-To instantiate the theorems and corollaries stated here with a concrete theory $T$ such as $ISigma1$ or $PA$,
-the $Sigma_1$-soundness (and hence consistency) of these theories, as well as the fact that they are r.e., must themselves be mechanized.
+To instantiate the theorems and corollaries stated in this paper with a concrete theory $T$ such as $ISigma1$ or $PA$,
+the $Sigma_1$-soundness (and hence consistency) and the recursive enumerability of these theories must themselves be mechanized.
 We have done this as well.
 
 #proposition[
@@ -1292,7 +1292,7 @@ We have done this as well.
 ]
 
 The following also holds.
-Here $Delta_1$-definability is stated only because of the issue pointed out in @rmk:craig_RE, and is not essential; in ordinary mathematical practice, being r.e. suffices.
+Here $Delta_1$-definability is stated only because of the issue pointed out in @rmk:craig_RE, and is not essential; in ordinary mathematics, being r.e. suffices.
 
 #proposition[
   $ISigma1$ and $PA$ are r.e. and $Delta_1$-definable.
