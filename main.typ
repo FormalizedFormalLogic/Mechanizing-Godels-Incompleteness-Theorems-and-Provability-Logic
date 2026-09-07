@@ -48,8 +48,8 @@ _Gödel's incompleteness theorems_ are among the most significant results in mat
 In his seminal paper @God31, he proved what is now known as the first incompleteness theorem (G1), and in a footnote, he outlined the second incompleteness theorem (G2).
 G2 was later proved rigorously by Hilbert and Bernays @HB39.
 We state the theorems in modern terms:
-G1, with Rosser's improvement @Ros36, states that for any consistent axiomatic system with sufficient expressive power to execute arithmetic, there exists a proposition that can neither be proved nor disproved within the system (see @thm:G1 and @thm:GR).
-G2 states that, for any consistent reasonable axiomatic system as in G1, the proposition formally representing the system's own consistency cannot be proved within the system itself (see @thm:G2).
+G1, with Rosser's improvement @Ros36, states that for any consistent axiomatic system with sufficient expressive power to execute arithmetic, there exists a proposition that can neither be proved nor disproved within the system.
+G2 states that, for any consistent reasonable axiomatic system as in G1, the proposition formally representing the system's own consistency cannot be proved within the system itself.
 
 Gödel also made another important observation: that provability can be regarded as a modality.
 In his early work @God33, he observed that the provability of intuitionistic logic can be treated similarly to the modal operator $Box$ in the modal logic now called #LogicS4.
@@ -65,35 +65,35 @@ However, these are either abstract or not full mechanizations within arithmetic.
 For instance, O'Connor's implementation assumes several facts needed for the proof of G2 as axioms, and Paulson's mechanization of G2 uses hereditarily finite sets, not arithmetic @Pau14.
 To the best of our knowledge, no full mechanization of the incompleteness theorems entirely within arithmetic has been reported, and consequently neither has any mechanization of the arithmetical side of provability logic, such as Solovay's arithmetical completeness theorem.
 
-我々は論理学の形式化プロジェクト *Formalized Formal Logic*（以下 *FFL* と省略する）で行った形式化について報告する．
-この論文の主結果は，Gödelの第一不完全性定理 (@thm:G1) および第2定理 (@thm:G2) ないし，Solovay's arithmetical completeness theorem (@thm:arithmetical_completeness) の完全に`sorry`-freeな形式化である．
-その他にも様々な系も証明してあるが，それらは各々のセクションを参考にせよ．
+We report our project: _Formalized Formal Logic_ (abbreviated as _FFL_ below), for mechanizing mathematical logic.
+The main contribution of this paper are completely `sorry`-free mechanizations of Gödel's first (@thm:G1) and second (@thm:G2) incompleteness theorems and of Solovay's arithmetical completeness theorem (@thm:arithmetical_completeness).
+We have also proved various corollaries; for these, we refer the reader to the respective sections.
+
 Our work is carried out in Lean 4, an interactive theorem prover, together with mathlib4 @Mathlib2020, its community-developed mathematics library.
 Lean 4 is based on the Calculus of Inductive Constructions (CIC) @dMU21,
 and features dependent types, quotient types, and support for noncomputable definitions, making it highly expressive.
 In addition, its powerful metaprogramming infrastructure like `aesop` @LF23 and `grind` @MdM26 enables efficient proof automation and extensibility.
 
-== Paper strcuture
+== Paper structure
 
-この報告の構成は以下のとおり．
-- @sect:Incompleteness では，不完全性定理やそれに関する系に関する形式化や技術的な詳細を概説する．
-- @sect:provability_logic では証明可能性論理についてSolovayの算術的完全性定理や分類定理について述べる．
-- @sect:futurework ではFFLの今後の進展や展望を先行研究なども交えつつ示していく．
-- @sect:vibe-formalizing ではAppendixとして，本形式化におけるAIの使用について軽く述べておく．
+This report is organized as follows.
+- @sect:Incompleteness describes the mechanization of the incompleteness theorems and their corollaries, together with the technical details.
+- @sect:provability_logic describes provability logic, in particular Solovay's arithmetical completeness theorem and the classification theorem.
+- @sect:futurework describes the future development and direction of FFL, with reference to related work.
+- @sect:vibe-formalizing is an appendix that briefly describes the use of AI in our mechanization.
 
-なお，数学的な定義や事実に関しては，ここで全てを述べるわけにはいかないため，証明は基本的に読者に既知とし，またある程度インフォーマルな形で述べることにする．
-それぞれのセクションの冒頭に記載された参考文献などを参照すること．
-また，Leanのプログラミング言語・定理証明支援系としての記法などもやはり読者には既知のものとする．
-必要なら，例えば標準的な教材 @TPiL4 を参考にしなさい．
+Since it is not our point that state all of the mathematical definitions and facts here, we omit the mathematical discussion and generally assume that their proofs are known to the reader, and we state them somewhat informally, so, see the references given at the beginning of each section.
+Moreover, we also assume that the reader is familiar with the notation, syntax, functionalities of Lean4 as either programming language and interactive theorem prover.
+If not familiar with Lean, consult standard textbook such as @TPiL4.
 
 == Repositories
 
-Our mechanization is currently hosted as a repository on GitHub．
-我々の形式化は執筆時現在でもまだ開発が進んでおり，最新のバージョンではステートメントや定義の修正が為されている可能性があることに留意せよ．
-このレポートは以下の固定されたバージョンに基づく．
+Our mechanization is currently hosted as repositories on GitHub.
+We note that, our mechanization is still under development at the time of writing this paper, so statements and definitions describing this paper may have been revised in the latest version of this repositories.
+This report is based on the following fixed versions. Each excerpted code snippet is also roughly annotated with the URL of its source as a reference.
 
-- @sect:Incompleteness，不完全性定理に関する形式化: #link(REPO_SOURCES.at("Foundation")).
-- @sect:provability_logic，証明可能性論理に関する形式化: #link(REPO_SOURCES.at("ProvabilityLogic")).
+- @sect:Incompleteness, the mechanization of the incompleteness theorems: #link(REPO_SOURCES.at("Foundation")).
+- @sect:provability_logic, the mechanization of provability logic: #link(REPO_SOURCES.at("ProvabilityLogic")).
 
 == Declaration of AI usage
 
