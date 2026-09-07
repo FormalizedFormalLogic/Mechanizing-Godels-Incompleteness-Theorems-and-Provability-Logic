@@ -2,6 +2,7 @@
 #import "@preview/curryst:0.5.0": prooftree, rule
 
 #let auxColor = color.hsl(205deg, 55%, 40%)
+#let codeBgColor = luma(245)
 
 #let base-text-size = 10pt
 #let small-text-size = 9pt
@@ -189,6 +190,7 @@
 
   show raw: set text(font: font-code)
   show raw.where(block: false): box.with(
+    fill: codeBgColor,
     inset: (x: 4pt, y: 0pt),
     outset: (y: 3pt),
     radius: 4pt,
