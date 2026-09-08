@@ -1217,8 +1217,8 @@ We mention that Popescu and Traytel @PT21[Theorem 30] mechanized Jeroslow's theo
 
 === FGH Theorem
 
-Gödel--Rosserの証明で使うwitness comparisonに似た道具立てを使うことで，次の定理を比較的簡単に形式化することが出来る．
-FGH Theorem, due to Friedman--Goldfarb--Harrington (see: @Visser2005[Section 3])は，$ISigma1 + Con(T)$ の上では $Sigma_1$-sentence は $Pr(T)(godelize(sigma))$ の形で尽くされるということを主張する．
+Using machinery similar to the witness comparison used in the proof of the Gödel--Rosser theorem, the following theorem can be mechanized easily.
+The FGH theorem, due to Friedman--Goldfarb--Harrington (see: @Visser2005[Section 3]), states that over $ISigma1 + Con(T)$ every $Sigma_1$-sentence is equivalent to one of the form $Pr(T)(godelize(pi))$.
 
 #theorem[FGH Theorem][
   Let $T supset.eq ISigma1$ be $Delta_1$-definable theory.
