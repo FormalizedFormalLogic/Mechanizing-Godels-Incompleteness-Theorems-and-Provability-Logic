@@ -1,5 +1,6 @@
 #import "@preview/ctheorems:1.1.3": *
 #import "@preview/curryst:0.5.0": prooftree, rule
+#import "@preview/cetz:0.5.2": canvas, draw
 
 #let auxColor = color.hsl(205deg, 55%, 40%)
 #let codeBgColor = luma(245)
@@ -527,11 +528,14 @@
 #let Lang(T) = $cal(L)_(#T)$
 #let LOR = Lang("OR")
 #let Ind(x) = $sans("I")#x$
+#let IOpen = Ind("Open")
+#let ISigma0 = $Ind(Sigma_0)$
 #let ISigma1 = $Ind(Sigma_1)$
 #let Robinson = $sans("Q")$
 #let R0 = $sans("R"_0)$
 #let BussS12 = $sans("S")^1_2$
 #let Con(T) = $sans("Con")_(#T)$
+#let Incon(T) = $not Con(#T)$
 
 #let Universe = $bold(upright(V))$
 #let Bit = $"Bit"$
@@ -559,3 +563,9 @@
 
 #let godelize(x) = $lr(⌜ #x ⌝)$
 #let num(x) = $overline(#x)$
+
+#let fit-to-width(body) = layout(size => {
+  let natural = measure(body)
+  let ratio = size.width / natural.width
+  scale(x: ratio * 100%, y: ratio * 100%, origin: top + left, reflow: true, body)
+})

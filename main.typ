@@ -712,7 +712,7 @@ that the graph of exponentiation is representable by a $Delta_0$-formula and tha
   image("assets/exp_presentation.png"),
   caption: [
     Explicit presentation of a $Delta_0$-graph of exponential function of our construction.
-  ]
+  ],
 ))
 
 The $ISigma1$ version of the Knaster--Tarski theorem, stated below, is useful for defining recursively defined structures over $Universe$ with appropriate complexity.
@@ -1387,6 +1387,64 @@ By a theorem of Pour-El and Kripke @PK67, this isomorphism can moreover be taken
 The algebras obtained by extending the Lindenbaum algebra with provability as an explicit unary operator are called _diagonalizable algebras_ or _Magari algebras_ (cf. @Mag75 @Sha93).
 It is known, for example, that the diagonalizable algebras of $PA$ and $ZF$ are not isomorphic @Sha93a, and these algebras are deeply related to provability logic, which we discuss in @sect:provability_logic.
 No mechanization of these algebras has been carried out at present.
+
+=== Zoo
+
+#figure(
+  fit-to-width({
+    set text(12pt)
+
+    canvas({
+      import draw: *
+
+      let node(id, x, y, label) = content((x, y), name: id, padding: .14)[#label]
+      let arrow(a, b, dash, from) = line(
+        a + "." + from,
+        b + "." + (east: "west", west: "east", south: "north", north: "south").at(from),
+        mark: (end: ">", size: .26, fill: black),
+        stroke: (thickness: .6pt, dash: dash),
+      )
+
+      let ssub(a, b, from: "east") = arrow(a, b, none, from)
+      let sub(a, b, from: "east") = arrow(a, b, "dashed", from)
+
+      node("EQ", 0, 0, $Theory("EQ")$)
+      node("R0", 1.5, 0, R0)
+      node("Q", 3.0, 0, Robinson)
+      node("PAMinus", 4.5, 0, PAMinus)
+      node("IOpen", 6.25, 0, IOpen)
+      node("ISigma0", 8.0, 0, ISigma0)
+      node("ISigma0+Omega1", 10.0, 0, $ISigma0 + Omega_1$)
+      node("ISigma1", 12.0, 0, ISigma1)
+      node("ISigma1+Con_ISigma1", 15.0, 1.0, $ISigma1 + Con(ISigma1)$)
+      node("ISigma1+NotCon_ISigma1", 12.0, -1.5, $ISigma1 + Incon(ISigma1)$)
+      node("PA", 14.0, 0, PA)
+      node("PA+NotCon_PA", 14.0, -2.5, $PA + Incon(PA)$)
+      node("PA+Con_PA", 16.5, 0, $PA + Con(PA)$)
+      node("PA+Con_PA+NotCon_(PA+Con_PA)", 16.5, -3.5, $PA + Con(PA) + Incon(PA + Con(PA))$)
+      node("TA", 20.0, 0, TA)
+
+      sub("EQ", "R0")
+      ssub("R0", "Q")
+      ssub("Q", "PAMinus")
+      sub("PAMinus", "IOpen")
+      sub("IOpen", "ISigma0")
+      sub("ISigma0", "ISigma0+Omega1")
+      sub("ISigma0+Omega1", "ISigma1")
+      sub("ISigma1", "PA")
+      ssub("ISigma1", "ISigma1+Con_ISigma1")
+      ssub("ISigma1", "ISigma1+NotCon_ISigma1", from: "south")
+      ssub("PA", "PA+Con_PA")
+      ssub("PA", "PA+NotCon_PA", from: "south")
+      ssub("PA+Con_PA", "TA")
+      ssub("PA+Con_PA", "PA+Con_PA+NotCon_(PA+Con_PA)", from: "south")
+      ssub("ISigma1+Con_ISigma1", "TA")
+    })
+  }),
+  caption: [
+    Arithmetic theory zoo
+  ],
+) <fig:zoo-arithmetic>
 
 = Provability logic <sect:provability_logic>
 
