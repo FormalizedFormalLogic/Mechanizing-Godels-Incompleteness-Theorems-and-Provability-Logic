@@ -1389,12 +1389,12 @@ It is known, for example, that the diagonalizable algebras of $PA$ and $ZF$ are 
 No mechanization of these algebras has been carried out at present.
 
 === Arithmetic Zoo
-この形式化を通じた全体の結果の可視化として，我々の形式化において行われた理論の強弱に関する _Arithmetic Zoo_ (@fig:arithmetic-zoo) を添付しておく#footnote[
-  実際の形式化に関しては例えば #link(REPO_SOURCES.at("Foundation") + "/" + "Foundation/FirstOrder/Incompleteness/Examples.lean")[
+For visualization of our results, we show the _Arithmetic Zoo_ (@fig:arithmetic-zoo), which displays the relative strength of the theories established in our mechanization#footnote[
+  For the mechanization itself, see for example #link(REPO_SOURCES.at("Foundation") + "/" + "Foundation/FirstOrder/Incompleteness/Examples.lean")[
     Foundation/FirstOrder/Incompleteness/Examples.lean
-  ] などを見よ．
-  また #link("https://formalizedformallogic.github.io/Foundation/zoo/arithmetic.png") にはLeanから自動生成されたZooを閲覧することが出来る．
-]．
+  ].
+  A auto-generated zoo from Lean is also available at #link("https://formalizedformallogic.github.io/Foundation/zoo/arithmetic.png").
+].
 
 #figure(
   fit-to-width({
@@ -1448,13 +1448,13 @@ No mechanization of these algebras has been carried out at present.
     })
   }),
   caption: [
-    _Arithmetic theory zoo_: dotted arrow $arrow.r.dotted$ は包含関係を，$->$ は真の包含関係を表す．
+    _Arithmetic theory zoo_: a dotted arrow $arrow.r.dotted$ denotes inclusion, and $->$ denotes proper inclusion.
   ],
 ) <fig:arithmetic-zoo>
 
-実際には全てproperな包含が成立するため，いくつかのedgeがproperな包含になっていない点については今後の課題としている．
-また，論理式のクラス $Gamma$ に対してのcollection principleやleast number principleを $ISigma0$ へ追加した多くの算術の部分体系 $sans("B")Gamma$ や $sans("L")Gamma$ が $ISigma0$ と $PA$ の中間などに存在する (see: @HP93)．
-これらの追加も興味深く，目下形式化中である．
+In fact all of these inclusions are proper, so establishing properness for those edges that are not yet mechanized and left future work.
+Moreover, there are many subsystems of arithmetic, such as $sans("B")Gamma$ and $sans("L")Gamma$, obtained by adding to $ISigma0$ the collection principle or the least number principle for a class $Gamma$ of formulas, which lie for instance between $ISigma0$ and $PA$ (see: @HP93).
+Adding these is also of interest, and their mechanization is currently under working.
 
 
 = Provability logic <sect:provability_logic>
