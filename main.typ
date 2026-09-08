@@ -1388,7 +1388,13 @@ The algebras obtained by extending the Lindenbaum algebra with provability as an
 It is known, for example, that the diagonalizable algebras of $PA$ and $ZF$ are not isomorphic @Sha93a, and these algebras are deeply related to provability logic, which we discuss in @sect:provability_logic.
 No mechanization of these algebras has been carried out at present.
 
-=== Zoo
+=== Arithmetic Zoo
+この形式化を通じた全体の結果の可視化として，我々の形式化において行われた理論の強弱に関する _Arithmetic Zoo_ (@fig:arithmetic-zoo) を添付しておく#footnote[
+  実際の形式化に関しては例えば #link(REPO_SOURCES.at("Foundation") + "/" + "Foundation/FirstOrder/Incompleteness/Examples.lean")[
+    Foundation/FirstOrder/Incompleteness/Examples.lean
+  ] などを見よ．
+  また #link("https://formalizedformallogic.github.io/Foundation/zoo/arithmetic.png") にはLeanから自動生成されたZooを閲覧することが出来る．
+]．
 
 #figure(
   fit-to-width({
@@ -1442,9 +1448,14 @@ No mechanization of these algebras has been carried out at present.
     })
   }),
   caption: [
-    Arithmetic theory zoo
+    _Arithmetic theory zoo_: dotted arrow $arrow.r.dotted$ は包含関係を，$->$ は真の包含関係を表す．
   ],
-) <fig:zoo-arithmetic>
+) <fig:arithmetic-zoo>
+
+実際には全てproperな包含が成立するため，いくつかのedgeがproperな包含になっていない点については今後の課題としている．
+また，論理式のクラス $Gamma$ に対してのcollection principleやleast number principleを $ISigma0$ へ追加した多くの算術の部分体系 $sans("B")Gamma$ や $sans("L")Gamma$ が $ISigma0$ と $PA$ の中間などに存在する (see: @HP93)．
+これらの追加も興味深く，目下形式化中である．
+
 
 = Provability logic <sect:provability_logic>
 
