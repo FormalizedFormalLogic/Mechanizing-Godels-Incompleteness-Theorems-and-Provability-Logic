@@ -1215,6 +1215,26 @@ We mention that Popescu and Traytel @PT21[Theorem 30] mechanized Jeroslow's theo
   ```
 ]
 
+=== FGH Theorem
+
+Gödel--Rosserの証明で使うwitness comparisonに似た道具立てを使うことで，次の定理を比較的簡単に形式化することが出来る．
+FGH Theorem, due to Friedman--Goldfarb--Harrington (see: @Visser2005[Section 3])は，$ISigma1 + Con(T)$ の上では $Sigma_1$-sentence は $Pr(T)(godelize(sigma))$ の形で尽くされるということを主張する．
+
+#theorem[FGH Theorem][
+  Let $T supset.eq ISigma1$ be $Delta_1$-definable theory.
+  For any $Sigma_1$-sentence $sigma$, there exists $Sigma_1$-sentence $pi$ satisfies below:
+  $
+    ISigma1 + Con(T) proves sigma <-> Pr(T)(godelize(pi))
+  $
+]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/FGH.lean"),))[
+  ```
+  theorem fgh_theorem_con (hσ : Hierarchy 𝚺 1 σ) :
+    ∃ π : 𝚺₁.Sentence, 𝗜𝚺₁ ∪ T.Con ⊢ σ 🡘 provabilityPred T π.val := by
+  ```
+]
+
 === On proof size
 Formalization also allows us to discuss provability by a proof of _feasible_ length or complexity in a certain sense.
 
