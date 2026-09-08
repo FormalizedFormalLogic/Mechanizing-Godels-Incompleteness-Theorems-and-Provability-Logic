@@ -309,7 +309,7 @@ Mechanizing the incompleteness theorems via such an abstract provability has pre
     stroke: none,
     $D1$,
     [
-      $T proves sigma ==> T_0 proves Bew(godelize(sigma))$
+      $T proves sigma$ implies $T_0 proves Bew(godelize(sigma))$
     ],
   ))
 
@@ -707,6 +707,13 @@ $
 $
 To work with $Bit(x, y)$ in weak arithmetic, we also mechanized the well-known fact due to Gaifman and Dimitracopoulos @GD82,
 that the graph of exponentiation is representable by a $Delta_0$-formula and that its inductive properties are provable in $Ind(Delta_0)$.
+
+#block(spacing: 2em, figure(
+  image("assets/exp_presentation.png"),
+  caption: [
+    Explicit presentation of a $Delta_0$-graph of exponential function of our construction.
+  ]
+))
 
 The $ISigma1$ version of the Knaster--Tarski theorem, stated below, is useful for defining recursively defined structures over $Universe$ with appropriate complexity.
 
