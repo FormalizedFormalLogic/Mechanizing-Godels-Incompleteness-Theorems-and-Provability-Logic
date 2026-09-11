@@ -45,17 +45,17 @@
 = Introduction
 
 _Gödel's incompleteness theorems_ are among the most significant results in mathematical logic.
-In his seminal paper @God31, he proved what is now known as the first incompleteness theorem (G1), and in a footnote, he outlined the second incompleteness theorem (G2).
+In his seminal paper @God31, he proved what is now known as the first incompleteness theorem (G1); moreover, he outlined the second incompleteness theorem (G2) in the last short section.
 G2 was later proved rigorously by Hilbert and Bernays @HB39.
 We state the theorems in modern terms:
 G1, with Rosser's improvement @Ros36, states that for any consistent axiomatic system with sufficient expressive power to execute arithmetic, there exists a proposition that can neither be proved nor disproved within the system.
 G2 states that, for any consistent reasonable axiomatic system as in G1, the proposition formally representing the system's own consistency cannot be proved within the system itself.
 
 Gödel also made another important observation: that provability can be regarded as a modality.
-In his early work @God33, he observed that the provability (_Bewiesbar_, #Bew) of intuitionistic logic can be treated similarly to the modal operator $Box$ in the modal logic now called #LogicS4.
+In his early work @God33, he observed that the provability (_Beweisbar_, #Bew) of intuitionistic logic can be treated similarly to the modal operator $Box$ in the modal logic now called #LogicS4.
 However, it follows from G2 that abstracting the behavior of the provability predicate, the most central notion of the incompleteness theorems, does not yield #LogicS4.
 Solovay @Sol76 showed that the modal logic called #LogicGL precisely captures the behavior of the standard provability predicate.
-This fact, known as _Solovay's arithmetical completeness theorem_, was a significant result that opened up the subfield of modal logic called _provability logic_.
+This fact, known as _Solovay's arithmetical completeness theorem_, was a most fundamental result in the subfield of modal logic called _provability logic_.
 
 On the other hand, recently, there has been much active work on mechanizing mathematics using interactive theorem provers, which guarantees the validity of existing and new results and enables AI/LLM-assisted or automated proving.
 There are many well-known interactive theorem provers such as Rocq @RocqProver, Isabelle @Isabelle, HOL Light @HOLLight @HOLLightTutorial, Agda @Agda, and Lean @dMU21, and mathematics has been mechanized in each of them, including in the field of mathematical logic#footnote[Some of these mechanizations are summarized in @AwesomeLogicFormalization.].
@@ -63,11 +63,11 @@ In particular, for mechanizing Gödel's incompleteness theorems, this line of wo
 As for provability logic, modal-logical properties of #LogicGL, such as its semantical completeness and automated solvers, have been mechanized by Harrison @HOLLightTutorial[Chapter 20]#footnote[We do not know when Harrison's mechanization of modal logic was carried out.], Goré and Kelly @GK07, Goré, Ramanayake and Shillito @GRS21, Maggesi and Perini Brogi @MPB21 @MPB23, Gignoux @Gig26.
 However, the existing mechanizations of the incompleteness theorems are either abstract or not carried out fully within arithmetic.
 For instance, O'Connor's implementation assumes several facts needed for the proof of G2 as axioms, and Paulson's mechanization of G2 uses hereditarily finite sets, not arithmetic @Pau14.
-To the best of our knowledge, no full mechanization of the incompleteness theorems entirely within arithmetic has been reported, and consequently neither has any mechanization of the arithmetical side of provability logic, such as Solovay's arithmetical completeness theorem.
+To the best of our knowledge, no full mechanization of the incompleteness theorems entirely within arithmetic has been reported, and neither has any mechanization of the arithmetical side of provability logic, such as Solovay's arithmetical completeness theorem.
 
 We report our project: _Formalized Formal Logic_ (abbreviated as _FFL_ below), for mechanizing mathematical logic.
 The main contributions of this paper are completely `sorry`-free mechanizations of Gödel's first (@thm:G1) and second (@thm:G2) incompleteness theorems and of Solovay's arithmetical completeness theorem (@thm:arithmetical_completeness).
-We have also proved various corollaries; for these, we refer the reader to the respective sections.
+We have also mechanized several results related to incompleteness and provability logic; for these, we refer the reader to the respective sections.
 
 Our work is carried out in Lean 4, an interactive theorem prover, together with mathlib4 @Mathlib2020, its community-developed mathematics library.
 Lean 4 is based on the Calculus of Inductive Constructions (CIC) @dMU21,
@@ -96,6 +96,7 @@ This report is based on the following fixed versions.
 - @sect:provability_logic, the mechanization of provability logic: #link(REPO_SOURCES.at("ProvabilityLogic").replace("/blob/", "/tree/")).
 
 Each excerpted code snippet is annotated with the URL of its source as a reference.
+These repositories are licensed under the Apache License 2.0.
 
 == Declaration of AI usage
 
@@ -116,8 +117,8 @@ Appendix: @sect:vibe-formalizing.
 
 == Acknowledgement
 
-As for mathematical review, ... .
-During the development of FFL, we thank Hunter Monroe (#link("https://github.com/hmonroe")[\@hmonroe]), C7X (#link("https://github.com/indiscernibles")[\@indiscernibles]) and Trevor Morris (#link("https://github.com/gotrevor")[\@gotrevor]), who were mainly engaged in active discussion and experimentation.
+First, we thank Taishi Kurahashi, Yuta Sato, C7X, Malvin Gattinger and Madeleine Gignoux for reading an early draft of this report and providing us with valuable comments and reviews.
+Second, during the development of FFL, we thank Hunter Monroe (#link("https://github.com/hmonroe")[\@hmonroe]), C7X (#link("https://github.com/indiscernibles")[\@indiscernibles]) and Trevor Morris (#link("https://github.com/gotrevor")[\@gotrevor]), who were mainly engaged in active discussion and experimentation.
 We also received financial support; this work was partially supported by JST CREST JPMJCR25I5 and JST BOOST JPMJBY24E2.
 In addition, we received financial support from individuals and companies #footnote[See: #link("https://formalizedformallogic.github.io#financial-supports")].
 We gratefully acknowledge all of this support here.
@@ -1018,7 +1019,7 @@ Since its axioms can be conjoined into a single sentence, the deduction theorem 
 
 #theorem[Undecidability of first-order logic][
   First-order logic over the language $LOR$ is not computable.
-  That is, for an $LOR$-sentence $sigma$, it is undecidable whether $emptyset proves sigma$ or $emptyset nproves sigma$.
+  That is, there is no algorithm that decides, for a given $LOR$-sentence $sigma$, whether $emptyset proves sigma$ or $emptyset nproves sigma$.
 ]
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Church.lean"),))[
@@ -1229,7 +1230,7 @@ The FGH theorem, due to Friedman--Goldfarb--Harrington (see: @Vis05[Section 3]),
 
 #theorem[FGH Theorem][
   Let $T supset.eq ISigma1$ be $Delta_1$-definable theory.
-  For any $Sigma_1$-sentence $sigma$, there exists $Sigma_1$-sentence $pi$ satisfies below:
+  For any $Sigma_1$-sentence $sigma$, there exists a $Sigma_1$-sentence $pi$ satisfying the following:
   $
     ISigma1 + Con(T) proves sigma <-> Pr(T)(godelize(pi))
   $
@@ -1381,15 +1382,15 @@ Combined with the well-known fact that any two countable, dense, and nontrivial 
   ```
 ]
 
-That is, the Lindenbaum algebras of $ISigma1$, $PA$, and even $ZF$ (although not mechanized) are all isomorphic; in this sense these algebras are not interesting.
+That is, the Lindenbaum algebras of $ISigma1$, $PA$, and even $ZF$ (if consistent and although not mechanized) are all isomorphic; in this sense, the Lindenbaum algebra of a reasonable theory does not have a rich structure.
 By a theorem of Pour-El and Kripke @PK67, this isomorphism can moreover be taken to be recursive, but such a refinement has not been mechanized at present.
 
-The algebras obtained by extending the Lindenbaum algebra with provability as an explicit unary operator are called _diagonalizable algebras_ or _Magari algebras_ (cf. @Mag75 @Sha93).
+On the other hand, the algebras obtained by extending the Lindenbaum algebra with provability as an explicit unary operator are called _diagonalizable algebras_ or _Magari algebras_ (cf. @Mag75 @Sha93).
 It is known, for example, that the diagonalizable algebras of $PA$ and $ZF$ are not isomorphic @Sha93a, and these algebras are deeply related to provability logic, which we discuss in @sect:provability_logic.
 No mechanization of these algebras has been carried out at present.
 
 === Arithmetic Zoo
-For visualization of our results, we show the _Arithmetic Zoo_ (@fig:arithmetic-zoo), which displays the relative strength of the theories established in our mechanization#footnote[
+For visualization of our mechanized progress, we show the _Arithmetic Zoo_ (@fig:arithmetic-zoo), which displays the relative strength of the theories established in our mechanization#footnote[
   For the mechanization itself, see for example #link(REPO_SOURCES.at("Foundation") + "/" + "Foundation/FirstOrder/Incompleteness/Examples.lean")[
     Foundation/FirstOrder/Incompleteness/Examples.lean
   ].
@@ -1448,11 +1449,12 @@ For visualization of our results, we show the _Arithmetic Zoo_ (@fig:arithmetic-
     })
   }),
   caption: [
-    _Arithmetic theory zoo_: a dotted arrow $arrow.r.dotted$ denotes inclusion, and $->$ denotes proper inclusion.
+    _Arithmetic theory zoo_: a dashed arrow $arrow.r.dashed$ denotes inclusion, and $->$ denotes proper inclusion.
   ],
 ) <fig:arithmetic-zoo>
 
-In fact all of these inclusions are proper, so establishing properness for those edges that are not yet mechanized and left future work.
+In fact all of these inclusions are proper and some edges are missing; for instance, $ISigma1 + Con(ISigma1)$ is a subtheory of $PA$.
+Mechanizing this properness and these missing edges is left for future work.
 Moreover, there are many subsystems of arithmetic, such as $sans("B")Gamma$ and $sans("L")Gamma$, obtained by adding to $ISigma0$ the collection principle or the least number principle for a class $Gamma$ of formulas, which lie for instance between $ISigma0$ and $PA$ (see: @HP93).
 Adding these is also of interest, and their mechanization is currently under working.
 
