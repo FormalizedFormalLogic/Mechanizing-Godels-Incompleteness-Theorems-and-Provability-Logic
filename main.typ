@@ -117,7 +117,7 @@ Appendix: @sect:vibe-formalizing.
 
 == Acknowledgement
 
-First, we thank Taishi Kurahashi, Yuta Sato, C7X, Malvin Gattinger and Madeleine Gignoux for reading an early draft of this report and providing us with valuable comments and reviews.
+First, we thank Taishi Kurahashi, Yuta Sato, C7X and Malvin Gattinger for reading an early draft of this report and providing us with valuable comments and reviews.
 Second, during the development of FFL, we thank Hunter Monroe (#link("https://github.com/hmonroe")[\@hmonroe]), C7X (#link("https://github.com/indiscernibles")[\@indiscernibles]) and Trevor Morris (#link("https://github.com/gotrevor")[\@gotrevor]), who were mainly engaged in active discussion and experimentation.
 We also received financial support; this work was partially supported by JST CREST JPMJCR25I5 and JST BOOST JPMJBY24E2.
 In addition, we received financial support from individuals and companies #footnote[See: #link("https://formalizedformallogic.github.io#financial-supports")].
