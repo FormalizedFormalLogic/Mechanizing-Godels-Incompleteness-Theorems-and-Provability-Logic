@@ -119,8 +119,6 @@ Appendix: @sect:vibe-formalizing.
 
 First, we thank Taishi Kurahashi, Yuta Sato, C7X, Malvin Gattinger, and Keita Yokoyama for reading an early draft of this report and providing us with valuable comments and reviews.
 Second, during the development of FFL, we thank Hunter Monroe (#link("https://github.com/hmonroe")[\@hmonroe]), C7X (#link("https://github.com/indiscernibles")[\@indiscernibles]) and Trevor Morris (#link("https://github.com/gotrevor")[\@gotrevor]), who were mainly engaged in active discussion and experimentation.
-Third, we would like to thank Emil Jeřábek for providing beneficial comments regarding the axioms of $R0$ in the early preprint.
-
 We also received financial support; this work was partially supported by JST CREST JPMJCR25I5 and JST BOOST JPMJBY24E2.
 In addition, we received financial support from individuals and companies #footnote[See: #link("https://formalizedformallogic.github.io#financial-supports")].
 We gratefully acknowledge all of this support here.
@@ -217,8 +215,8 @@ Among these, we use the arithmetic theory $R0$ due to Cobham (cf. @Vau62).
 
 #definition[
   The theory $R0$ consists of the equality axioms for $LOR$, together with the following schemata#footnote[
-    Our old formalization of $R0$ contained axioms of form $num(n) != num(m)$ for all $n != m$.
-    Emil Jeřábek pointed out that this axiom was unnecessary, and it was corrected to this form.
+    Our old definition of $R0$ contained axioms of form $num(n) != num(m)$ for all $n != m$.
+    Emil Jeřábek pointed out that this axioms were redundant, and it was revised accordingly. We would like to thank him for his suggestion.
   ].
   $
       num(n) + num(m) = & num(n + m) wide   && "for all" n, m in Nat \
