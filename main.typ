@@ -117,7 +117,7 @@ Appendix: @sect:vibe-formalizing.
 
 == Acknowledgement
 
-First, we thank Taishi Kurahashi, Yuta Sato, C7X and Malvin Gattinger for reading an early draft of this report and providing us with valuable comments and reviews.
+First, we thank Taishi Kurahashi, Yuta Sato, C7X, Malvin Gattinger, and Keita Yokoyama for reading an early draft of this report and providing us with valuable comments and reviews.
 Second, during the development of FFL, we thank Hunter Monroe (#link("https://github.com/hmonroe")[\@hmonroe]), C7X (#link("https://github.com/indiscernibles")[\@indiscernibles]) and Trevor Morris (#link("https://github.com/gotrevor")[\@gotrevor]), who were mainly engaged in active discussion and experimentation.
 We also received financial support; this work was partially supported by JST CREST JPMJCR25I5 and JST BOOST JPMJBY24E2.
 In addition, we received financial support from individuals and companies #footnote[See: #link("https://formalizedformallogic.github.io#financial-supports")].
@@ -214,16 +214,14 @@ It is known that the first incompleteness theorem holds even for extremely weak 
 Among these, we use the arithmetic theory $R0$ due to Cobham (cf. @Vau62).
 
 #definition[
-  The theory $R0$ consists of the equality axioms for $LOR$, together with the following variable-free atomic formulas in $LOR$,
-
+  The theory $R0$ consists of the equality axioms for $LOR$, together with the following schemata#footnote[
+    Our old definition of $R0$ contained axioms of form $num(n) != num(m)$ for all $n != m$.
+    Emil Jeřábek pointed out that this axioms were redundant, and it was revised accordingly. We would like to thank him for his suggestion.
+  ].
   $
       num(n) + num(m) = & num(n + m) wide   && "for all" n, m in Nat \
     num(n) dot num(m) = & num(n dot m) wide && "for all" n, m in Nat \
-          num(n) eq.not & num(m) wide       && "for all" n, m in Nat "such that" n eq.not m \
-  $
-  together with the following axiom scheme:
-  $
-    fal(x)[x < num(n) <-> or.big_(i < n) (x = num(i))]
+    fal(x)[x < num(n) <-> & or.big_(i < n) (x = num(i))] && "for all" n in Nat
   $
 ]
 
@@ -233,8 +231,7 @@ Among these, we use the arithmetic theory $R0$ due to Cobham (cf. @Vau62).
   | equal : ∀ φ ∈ 𝗘𝗤 ℒₒᵣ, R0 φ
   | Ω₁ (n m : ℕ) : R0 “↑n + ↑m = ↑(n + m)”
   | Ω₂ (n m : ℕ) : R0 “↑n * ↑m = ↑(n * m)”
-  | Ω₃ (n m : ℕ) : n ≠ m → R0 “↑n ≠ ↑m”
-  | Ω₄ (n : ℕ) : R0 “∀ x, x < ↑n ↔ ⋁ i < n, x = ↑i”
+  | Ω₃ (n : ℕ) : R0 “∀ x, x < ↑n ↔ ⋁ i < n, x = ↑i”
 
   notation "𝗥₀" => R0
   ```
@@ -1456,6 +1453,7 @@ For visualization of our mechanized progress, we show the _Arithmetic Zoo_ (@fig
 In fact all of these inclusions are proper and some edges are missing; for instance, $ISigma1 + Con(ISigma1)$ is a subtheory of $PA$.
 Mechanizing this properness and these missing edges is left for future work.
 Moreover, there are many subsystems of arithmetic, such as $sans("B")Gamma$ and $sans("L")Gamma$, obtained by adding to $ISigma0$ the collection principle or the least number principle for a class $Gamma$ of formulas, which lie for instance between $ISigma0$ and $PA$ (see: @HP93).
+Moreover, theory $ISigma1 + Con(ISigma1)$ places strictly beetween $ISigma1$ and $ISigma2$.
 Adding these is also of interest, and their mechanization is currently under working.
 
 
