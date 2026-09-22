@@ -531,6 +531,7 @@
 #let IOpen = Ind("Open")
 #let ISigma0 = $Ind(Sigma_0)$
 #let ISigma1 = $Ind(Sigma_1)$
+#let ISigma2 = $Ind(Sigma_2)$
 #let Robinson = $sans("Q")$
 #let R0 = $sans("R"_0)$
 #let BussS12 = $sans("S")^1_2$
