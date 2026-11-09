@@ -10,6 +10,7 @@
         addr: "Sendai, Japan",
         email: "palalansouki@gmail.com",
       ),
+      orcid: "0009-0004-4157-8076",
     ),
     author(
       "Mashu Noguchi",
